@@ -1,0 +1,753 @@
+// Modèle de données de la boutique MLC Bois.
+// Base de production et de développement : PostgreSQL (Neon), via la seule
+// variable DATABASE_URL — voir docs/DATABASE.md.
+// Contrainte volontaire : ni enum Prisma ni liste scalaire, pour que le même
+// schéma reste portable d'un moteur SQL à l'autre.
+// Sous Postgres, un `String` est un `text` sans limite de longueur : aucune
+// annotation n'est nécessaire sur les descriptions, les colonnes JSON ou les
+// notes, contrairement à MySQL où il aurait fallu `@db.Text`.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---- Catalogue ----
+
+model Group {
+  id         String     @id @default(cuid())
+  slug       String     @unique
+  label      String
+  // Traduction anglaise ; vide = repli sur le français
+  labelEn    String     @default("")
+  position   Int        @default(0)
+  categories Category[]
+}
+
+model Category {
+  id             String   @id @default(cuid())
+  groupId        String
+  slug           String
+  label          String
+  description    String   @default("")
+  image          String   @default("")
+  guideIntro     String   @default("")
+  guideClosing   String   @default("")
+  // Traductions anglaises ; vides = repli sur le français
+  labelEn        String   @default("")
+  descriptionEn  String   @default("")
+  guideIntroEn   String   @default("")
+  guideClosingEn String   @default("")
+  position       Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  group         Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  guideSections GuideSection[]
+  products      Product[]
+
+  @@unique([groupId, slug])
+  @@index([groupId])
+}
+
+model GuideSection {
+  id         String @id @default(cuid())
+  categoryId String
+  heading    String
+  body       String
+  headingEn  String @default("")
+  bodyEn     String @default("")
+  position   Int    @default(0)
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+}
+
+model Product {
+  id                    String   @id @default(cuid())
+  categoryId            String
+  brand                 String
+  name                  String
+  slug                  String   @unique
+  sku                   String
+  // Description courte : sous le titre, dans le bloc d'achat.
+  // Description longue : plus bas dans la page, dans son propre bloc.
+  shortDescription      String   @default("")
+  description           String   @default("")
+  // Encodé en JSON : pas de liste scalaire, le schéma reste portable
+  bullets               String   @default("[]")
+  // Traductions anglaises ; vides = repli sur le français
+  nameEn                String   @default("")
+  shortDescriptionEn    String   @default("")
+  descriptionEn         String   @default("")
+  bulletsEn             String   @default("[]")
+  // Attributs exigés par Google Merchant Center pour la validation des fiches
+  gtin                  String?
+  mpn                   String?
+  // new | refurbished | used
+  condition             String   @default("new")
+  googleProductCategory String   @default("")
+  // Poids d'expédition en grammes, utilisé par le flux Merchant
+  shippingWeightGrams   Int?
+  energyEfficiencyClass String?
+  image                 String?
+  // Vues complémentaires, en JSON comme `bullets`. `image` demeure la vignette
+  // de référence (listes, panier, flux Google) ; ces images-ci n'apparaissent
+  // que dans la galerie de la fiche produit.
+  images                String   @default("[]")
+  priceCents            Int
+  oldPriceCents         Int?
+  badge                 String?
+  editorialRating       Float?
+  stock                 Int      @default(0)
+  lowStockThreshold     Int      @default(5)
+  active                Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  category       Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  reviews        Review[]
+  stockMovements StockMovement[]
+  orderItems     OrderItem[]
+  campaigns      CampaignProduct[]
+  variants       ProductVariant[]
+
+  @@index([categoryId])
+  @@index([brand])
+}
+
+// Variation d'un produit vendu par volume (bois vrac & palette). Le produit
+// porte une variation par volume ; chacune a son prix. Un produit sans ligne
+// ici reste un produit simple à prix unique.
+model ProductVariant {
+  id            String  @id @default(cuid())
+  productId     String
+  // Libellé du volume, recopié tel quel dans le panier et la commande.
+  label         String
+  labelEn       String  @default("")
+  sku           String  @default("")
+  priceCents    Int
+  oldPriceCents Int?
+  position      Int     @default(0)
+  active        Boolean @default(true)
+
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  orderItems OrderItem[]
+
+  @@index([productId])
+}
+
+// ---- Avis clients, avec circuit de validation ----
+
+model Review {
+  id            String    @id @default(cuid())
+  productId     String
+  authorName    String
+  authorEmail   String?
+  city          String?
+  rating        Int
+  title         String    @default("")
+  body          String
+  // pending | approved | rejected — en texte, pour rester portable
+  status        String    @default("pending")
+  moderatorNote String?
+  moderatedAt   DateTime?
+  moderatedBy   String?
+  createdAt     DateTime  @default(now())
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([status])
+}
+
+// ---- Moyens de paiement et intégrations ----
+
+model PaymentMethod {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  label       String
+  description String   @default("")
+  // Nom d'une icône lucide-react, par exemple "credit-card"
+  icon        String   @default("credit-card")
+  feeLabel    String   @default("kostenlos")
+  enabled     Boolean  @default(true)
+  position    Int      @default(0)
+  updatedAt   DateTime @updatedAt
+}
+
+model Integration {
+  id           String   @id @default(cuid())
+  key          String   @unique
+  label        String
+  description  String   @default("")
+  // Chiffré en AES-256-GCM, ne doit jamais sortir du serveur en clair
+  secretCipher String?
+  // Quatre derniers caractères, pour l'affichage masqué dans le back-office
+  lastFour     String?
+  enabled      Boolean  @default(false)
+  updatedAt    DateTime @updatedAt
+  updatedBy    String?
+}
+
+// ---- Commandes ----
+// Droit français de la vente à distance : la commande est archivée telle qu'elle
+// a été validée par le client (§ 312f BGB). Les libellés produits, le prix
+// unitaire et le moyen de paiement sont donc recopiés dans la commande et ne
+// suivent plus les évolutions du catalogue.
+// Tous les montants sont en centimes et TTC (Preisangabenverordnung § 3) :
+// « taxCents » est la TVA *contenue* dans le total, jamais un supplément.
+
+model Order {
+  id          String @id @default(cuid())
+  // Numéro lisible communiqué au client, par ex. « MLC-2026-000042 »
+  orderNumber String @unique
+
+  // Rattachement FACULTATIF à un compte client. La commande en tant qu'invité
+  // reste possible — l'obliger à créer un compte serait contraire au principe
+  // de minimisation (art. 5 § 1 c RGPD) rappelé par la DSK en mars 2022.
+  customerId String?
+
+  // Horodatage de l'anonymisation, posé quand le compte rattaché est supprimé.
+  // La commande n'est jamais effacée : elle reste soumise aux délais de
+  // conservation comptables (huit ans pour les justificatifs depuis le BEG IV,
+  // § 147 al. 3 AO et § 257 al. 4 HGB) ; seules les coordonnées qui ne sont pas
+  // exigées par la facture (§ 14 al. 4 UStG) sont retirées.
+  anonymizedAt DateTime?
+  // Jeton aléatoire exigé pour consulter la page de confirmation : le numéro
+  // seul est séquentiel, donc devinable.
+  accessToken  String
+  // Langue dans laquelle la commande a été passée : de | en
+  locale       String    @default("fr")
+
+  // Coordonnées client
+  email String
+  phone String @default("")
+
+  // Adresse de facturation
+  billingSalutation String @default("")
+  billingFirstName  String
+  billingLastName   String
+  billingCompany    String @default("")
+  billingStreet     String
+  billingPostalCode String
+  billingCity       String
+  billingCountry    String @default("DE")
+
+  // Adresse de livraison — recopiée depuis la facturation si identique
+  shippingSameAsBilling Boolean @default(true)
+  shippingSalutation    String  @default("")
+  shippingFirstName     String  @default("")
+  shippingLastName      String  @default("")
+  shippingCompany       String  @default("")
+  shippingStreet        String  @default("")
+  shippingPostalCode    String  @default("")
+  shippingCity          String  @default("")
+  shippingCountry       String  @default("DE")
+
+  // Moyen de paiement, figé au moment de la commande
+  paymentMethodKey   String
+  paymentMethodLabel String
+  paymentMethodFee   String @default("")
+
+  // Mode de livraison choisi par le client : standard (gratuit, 3–5 jours) ou
+  // express (70 €, 24–48 h). La clé sert à réafficher le mode dans la langue du
+  // lecteur, le libellé garde une trace lisible même si les modes évoluent.
+  // Les commandes antérieures au choix du mode reçoivent le standard, qui était
+  // alors le seul existant.
+  shippingMethodKey   String @default("standard")
+  shippingMethodLabel String @default("Standardversand")
+
+  // Référence du PaymentIntent Stripe, quand l'encaissement est configuré.
+  // Reste vide sur les commandes réglées hors ligne (virement) et sur celles
+  // passées avant l'activation du paiement.
+  stripePaymentIntentId String?
+
+  // Jeton rendu par le prestataire à l'ouverture du paiement, à représenter
+  // pour authentifier ses notifications. Seul Nexi en a besoin : ses webhooks
+  // ne sont pas signés, ils rejouent ce jeton, qu'on compare à celui stocké
+  // ici. Vide pour tous les autres prestataires.
+  gatewaySecurityToken String?
+
+  // eingegangen | in_bearbeitung | versandt | zugestellt | storniert
+  status        String @default("eingegangen")
+  // offen | bezahlt | erstattet | fehlgeschlagen
+  paymentStatus String @default("offen")
+
+  // Montants en centimes, TTC
+  subtotalCents  Int
+  shippingCents  Int
+  taxCents       Int
+  totalCents     Int
+  // Taux de TVA appliqué, en points de pourcentage (10 pour le bois de chauffage domestique)
+  taxRatePercent Int    @default(19)
+  currency       String @default("EUR")
+
+  customerNote String @default("")
+  adminNote    String @default("")
+
+  // Consentements horodatés : AGB et information sur le droit de rétractation
+  termsAcceptedAt          DateTime?
+  withdrawalAcknowledgedAt DateTime?
+
+  // Le stock est décrémenté à la commande ; le drapeau évite un double
+  // réapprovisionnement si la commande est annulée deux fois de suite.
+  stockRestored Boolean @default(false)
+
+  // Attribution marketing. Renseignés quand la commande suit un clic sur le
+  // lien d'une campagne — le cookie posé par /c/<jeton> vit trente jours. Une
+  // commande sans clic préalable n'est attribuée à personne, c'est ce qui rend
+  // le chiffre exploitable.
+  campaignId           String?
+  campaignRecipientId  String?
+  // Livraison offerte accordée par une campagne. Conservé pour les commandes
+  // antérieures : depuis que le standard est gratuit sans minimum d'achat, la
+  // mention n'accorde plus d'avantage, et elle ne couvre pas l'express.
+  campaignFreeShipping Boolean @default(false)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  paidAt    DateTime?
+  shippedAt DateTime?
+
+  items             OrderItem[]
+  events            OrderEvent[]
+  customer          Customer?          @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  campaign          Campaign?          @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  campaignRecipient CampaignRecipient? @relation(fields: [campaignRecipientId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@index([customerId])
+  @@index([campaignId])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  // Le produit peut disparaître du catalogue ; la ligne de commande reste
+  // lisible grâce aux libellés recopiés ci-dessous.
+  productId String?
+  variantId    String?
+  variantLabel String  @default("")
+
+  brand String
+  name  String
+  sku   String @default("")
+  slug  String @default("")
+  image String @default("")
+  // Chemin de la fiche produit au moment de la commande : « gruppe/kategorie/produkt »
+  path  String @default("")
+
+  unitPriceCents Int
+  quantity       Int
+  lineTotalCents Int
+
+  order   Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  variant ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([variantId])
+}
+
+model OrderEvent {
+  id        String @id @default(cuid())
+  orderId   String
+  // status | payment | note | email
+  kind      String @default("status")
+  fromValue String @default("")
+  toValue   String @default("")
+  note      String @default("")
+
+  createdAt DateTime @default(now())
+  createdBy String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// ---- Stock ----
+
+model StockMovement {
+  id        String   @id @default(cuid())
+  productId String
+  delta     Int
+  // Motif du mouvement : wareneingang | korrektur | verkauf | retoure
+  reason    String   @default("korrektur")
+  note      String?
+  createdAt DateTime @default(now())
+  createdBy String?
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+// ---- Comptes clients de la boutique ----
+// Le compte est un confort, jamais une condition pour commander : la
+// Datenschutzkonferenz (Beschluss du 24 mars 2022) considère qu'imposer un
+// compte pour une commande ponctuelle viole le principe de minimisation.
+// Le compte ne stocke donc que ce qui sert à re-remplir le tunnel de commande
+// et à consulter l'historique.
+
+model Customer {
+  id           String @id @default(cuid())
+  email        String @unique
+  // Toujours haché en scrypt (src/lib/password.ts). Ne sort jamais du serveur.
+  passwordHash String
+
+  // Identité — « salutation » reste un texte libre court (herr | frau | divers),
+  // pas un enum Prisma, pour rester compatible SQLite et PostgreSQL.
+  salutation String @default("")
+  firstName  String
+  lastName   String
+  phone      String @default("")
+
+  // Adresse de facturation, pré-remplie dans le tunnel de commande
+  billingCompany    String @default("")
+  billingStreet     String @default("")
+  billingPostalCode String @default("")
+  billingCity       String @default("")
+  billingCountry    String @default("DE")
+
+  // Adresse de livraison — ignorée tant que shippingSameAsBilling est vrai
+  shippingSameAsBilling Boolean @default(true)
+  shippingSalutation    String  @default("")
+  shippingFirstName     String  @default("")
+  shippingLastName      String  @default("")
+  shippingCompany       String  @default("")
+  shippingStreet        String  @default("")
+  shippingPostalCode    String  @default("")
+  shippingCity          String  @default("")
+  shippingCountry       String  @default("DE")
+
+  // Langue d'inscription : de | en
+  locale String @default("fr")
+
+  // Vérification de l'adresse : pas obligatoire pour un simple compte client,
+  // le drapeau est en place pour un double opt-in ultérieur.
+  emailVerified Boolean @default(false)
+  active        Boolean @default(true)
+
+  lastLoginAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  orders             Order[]
+  passwordResets     CustomerPasswordReset[]
+  campaignRecipients CampaignRecipient[]
+}
+
+// Réinitialisation du mot de passe : seul le SHA-256 du jeton est stocké.
+// Le jeton en clair n'existe que dans le lien envoyé par e-mail — une fuite de
+// la base ne permet donc pas de prendre la main sur un compte.
+model CustomerPasswordReset {
+  id         String    @id @default(cuid())
+  customerId String
+  tokenHash  String    @unique
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@index([expiresAt])
+}
+
+// ---- Comptes du back-office ----
+
+model AdminUser {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         String    @default("admin")
+  active       Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// Deuxième facteur : après un mot de passe valide, un code à six chiffres est
+// envoyé par e-mail. Le code n'est jamais stocké en clair (scrypt, comme les
+// mots de passe) et la ligne porte son propre compteur de tentatives.
+// L'identifiant est un jeton aléatoire de 32 octets, pas un cuid : il transite
+// par le navigateur et ne doit pas être devinable.
+model AdminLoginChallenge {
+  id          String    @id
+  // Unique à dessein : un compte n'a jamais qu'un défi vivant à la fois. C'est
+  // la base qui garantit l'invariant, et non plus l'ordre des requêtes — deux
+  // connexions simultanées ne peuvent donc plus créer deux défis et expédier
+  // deux codes.
+  adminUserId String    @unique
+  email       String
+  codeHash    String
+  attempts    Int       @default(0)
+  expiresAt   DateTime
+  consumedAt  DateTime?
+  // Dernier envoi, pour le délai d'attente avant renvoi du code
+  sentAt      DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+
+  @@index([email])
+  @@index([expiresAt])
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+// ---- Fragments de code injectés dans la boutique ----
+//
+// Gestionnaire de balises, pixel publicitaire, balise de vérification de
+// propriété : autant de fragments que le commerçant doit pouvoir poser sans
+// attendre un déploiement.
+//
+// Le contenu est du HTML brut, inséré tel quel dans les pages de la boutique.
+// Écrire ici revient à exécuter du code chez chaque visiteur : l'écriture est
+// réservée à un administrateur authentifié et chaque ligne porte le nom de qui
+// l'a publiée. Le back-office, lui, n'est jamais concerné — l'injection a lieu
+// dans le layout de la boutique, hors duquel /admin se trouve déjà.
+
+model CodeSnippet {
+  id String @id @default(cuid())
+  // Intitulé libre, pour s'y retrouver dans la liste : « Google Tag Manager »…
+  name String
+  // head | bodyStart | bodyEnd
+  placement String
+  content   String
+  // Un fragment naît désactivé : on le colle, on le relit, puis on l'allume.
+  enabled Boolean @default(false)
+  // Ordre d'insertion à emplacement égal. Il compte : un mode consentement doit
+  // s'exécuter avant les balises qu'il gouverne.
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  updatedBy String
+
+  // La boutique ne lit que les fragments actifs, emplacement par emplacement.
+  @@index([enabled, placement, position])
+}
+
+// ---- Pages légales et informatives ----
+//
+// Les onze pages de pied de page (Impressum, AGB, Datenschutz, FAQ…) sont
+// écrites dans `src/content/legal/fr.ts` et `en.ts`. Ces fichiers restent la
+// version d'origine, versionnée avec le code ; cette table ne porte QUE les
+// pages réécrites depuis l'administration.
+//
+// Règle de lecture, appliquée dans `src/server/legalPages.ts` : une ligne ici
+// l'emporte sur le fichier, son absence fait retomber sur le fichier. Aucune
+// donnée à migrer le jour de la mise en ligne, et « réinitialiser une page »
+// revient à supprimer sa ligne.
+
+model LegalContent {
+  // Identifiant d'URL de la page : "impressum", "agb", "faq"…
+  slug String
+  // "fr" ou "en" : chaque langue se réécrit indépendamment.
+  locale String
+
+  // Page complète sérialisée en JSON (titre, chapeau, sections, date de
+  // révision). Le JSON évite onze tables filles pour une structure qui n'est
+  // jamais interrogée autrement que « toute la page d'un coup ».
+  data String
+
+  // E-mail de l'administrateur qui a publié : sur des pages juridiques,
+  // savoir qui a changé quoi n'est pas un luxe.
+  updatedBy String
+  updatedAt DateTime @updatedAt
+
+  @@id([slug, locale])
+}
+
+// ---- Campagnes marketing ----
+//
+// Une campagne fait deux choses à la fois : elle envoie un message et elle
+// applique une remise sur le site. Les deux sont volontairement liés par la
+// même période de validité, pour qu'un client qui clique sur le lien du
+// message trouve exactement le prix annoncé.
+//
+// Le prix des produits n'est jamais réécrit. La remise est calculée à
+// l'affichage à partir des dates ci-dessous : passé `endsAt`, le catalogue
+// reprend son prix de base sans qu'aucune tâche n'ait à intervenir.
+
+model Campaign {
+  id   String @id @default(cuid())
+  // Identifiant court porté par tous les liens de la campagne, par ex.
+  // « CMP-7K2QX9 ». Il relie une commande à la campagne qui l'a provoquée et
+  // reste lisible dans les exports.
+  code String @unique
+  name String
+
+  // promotion | flash | nouveaute | offre_speciale
+  type   String
+  // brouillon | en_cours | envoyee | pausee | annulee
+  status String @default("brouillon")
+
+  // Contenu du message, pré-rempli depuis le modèle du type puis modifiable.
+  // Les variantes anglaises servent aux clients dont la langue est « en » ;
+  // vides, elles retombent sur le français comme partout ailleurs.
+  subject    String @default("")
+  headline   String @default("")
+  bodyText   String @default("")
+  ctaLabel   String @default("")
+  subjectEn  String @default("")
+  headlineEn String @default("")
+  bodyTextEn String @default("")
+  ctaLabelEn String @default("")
+
+  // percent | amount | free_shipping | none
+  discountKind  String @default("percent")
+  // Pourcentage entier (20 = -20 %) ou montant en centimes, selon discountKind.
+  // Vaut 0 pour free_shipping et none.
+  discountValue Int    @default(0)
+
+  // Période d'application de la remise sur le site.
+  startsAt DateTime
+  endsAt   DateTime
+
+  // Page d'atterrissage quand la campagne porte plusieurs produits :
+  // /aktion/<landingSlug>. Vide = lien direct vers la fiche produit.
+  landingSlug String @default("")
+
+  // Cadence d'envoi. Le nombre de messages par lot et la pause qui suit sont
+  // tirés au hasard entre ces bornes : un rythme régulier est le premier
+  // signal qui fait classer un expéditeur comme automate.
+  batchMin    Int @default(3)
+  batchMax    Int @default(10)
+  delayMinSec Int @default(180)
+  delayMaxSec Int @default(420)
+
+  // Heure du prochain lot. Null tant que la campagne n'est pas lancée.
+  nextBatchAt   DateTime?
+  // Verrou anti-concurrence, posé le temps d'un lot : sans lui, deux passages
+  // simultanés du répartiteur serviraient deux fois les mêmes destinataires.
+  dispatchingAt DateTime?
+
+  startedAt   DateTime?
+  completedAt DateTime?
+  createdBy   String    @default("")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products   CampaignProduct[]
+  recipients CampaignRecipient[]
+  events     CampaignEvent[]
+  orders     Order[]
+
+  @@index([status])
+  @@index([nextBatchAt])
+  @@index([startsAt, endsAt])
+}
+
+model CampaignProduct {
+  id             String @id @default(cuid())
+  campaignId     String
+  productId      String
+  // Prix de référence figé quand le produit rejoint la campagne. C'est lui qui
+  // s'affiche barré, même si le catalogue bouge entre-temps : le client doit
+  // retrouver la remise annoncée dans le message.
+  basePriceCents Int
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, productId])
+  @@index([productId])
+}
+
+// Un destinataire est à la fois une ligne de la file d'attente et le support
+// de tout le suivi. Les deux ne sont pas séparés à dessein : un envoi et sa
+// mesure portent sur la même personne, les dissocier n'apporterait qu'une
+// jointure de plus.
+model CampaignRecipient {
+  id         String  @id @default(cuid())
+  campaignId String
+  // Rattachement facultatif : un acheteur invité n'a pas de compte.
+  customerId String?
+
+  email     String
+  firstName String @default("")
+  lastName  String @default("")
+  // de | en — langue dans laquelle le message est composé
+  locale    String @default("fr")
+
+  // Jeton aléatoire de 32 octets porté par les liens de suivi et de
+  // désinscription. Ni cuid ni dérivé de l'adresse : il circule en clair dans
+  // le message et ne doit pas être devinable, sinon n'importe qui pourrait
+  // désinscrire un client ou fausser les statistiques.
+  token String @unique
+
+  // en_attente | envoye | echec | ignore
+  status String @default("en_attente")
+  // Motif du refus renvoyé par le fournisseur, tronqué. Réservé au back-office.
+  error  String @default("")
+
+  sentAt         DateTime?
+  openedAt       DateTime?
+  firstClickedAt DateTime?
+  clickCount     Int       @default(0)
+  unsubscribedAt DateTime?
+
+  // Somme TTC des commandes attribuées, recopiée ici pour que la liste des
+  // destinataires n'ait pas à agréger les commandes à chaque affichage.
+  attributedCents Int @default(0)
+
+  campaign Campaign        @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  customer Customer?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  events   CampaignEvent[]
+  orders   Order[]
+
+  @@unique([campaignId, email])
+  @@index([campaignId, status])
+  @@index([customerId])
+}
+
+// Liste de blocage globale. Une désinscription vaut pour toutes les campagnes
+// à venir, pas seulement pour celle d'où le client est parti — l'inverse
+// reviendrait à ignorer sa demande dès le message suivant.
+model EmailSuppression {
+  // Toujours normalisée en minuscules avant écriture.
+  email      String   @id
+  // desinscription | rejet | plainte
+  reason     String   @default("desinscription")
+  // Campagne d'origine, quand elle est connue.
+  campaignId String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+// Journal horodaté. Les dates portées par CampaignRecipient donnent l'état
+// courant ; ce journal donne la chronologie, seule façon de tracer une courbe
+// de clics dans le temps.
+model CampaignEvent {
+  id          String  @id @default(cuid())
+  campaignId  String
+  recipientId String?
+
+  // envoi | ouverture | clic | commande | desinscription | echec
+  kind String
+  // Détail libre : montant de la commande, motif d'échec…
+  note String @default("")
+
+  createdAt DateTime @default(now())
+
+  campaign  Campaign           @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  recipient CampaignRecipient? @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId, kind])
+  @@index([campaignId, createdAt])
+}

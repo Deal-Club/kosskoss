@@ -1,0 +1,1231 @@
+[
+  {
+    "id": "66e3f9c9-c92b-4037-8d5f-30af67f94a0a",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "De'Longhi",
+    "name": "Magnifica Kaffeevollautomat",
+    "bullets": [
+      "Kegelmahlwerk",
+      "Milchaufschäumer",
+      "5 Getränke auf Knopfdruck"
+    ],
+    "oldPrice": "449,00 €",
+    "price": "349,00 €",
+    "badge": "Bestseller",
+    "rating": 4.7,
+    "inStock": true
+  },
+  {
+    "id": "4e75aba0-ee7a-4d7a-aeb9-e2c2010d1183",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "Siemens",
+    "name": "EQ.6 plus s700 Kaffeevollautomat",
+    "bullets": [
+      "OneTouch DoubleCup",
+      "sensoFlow System",
+      "iAroma System"
+    ],
+    "price": "899,00 €",
+    "badge": "Neu",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "db63a491-325a-4b51-af40-4e6981f5825e",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "Krups",
+    "name": "Evidence Kaffeevollautomat",
+    "bullets": [
+      "15 Kaffeespezialitäten",
+      "Quattro Force Technologie",
+      "Reinigungsautomatik"
+    ],
+    "oldPrice": "799,00 €",
+    "price": "649,00 €",
+    "badge": "-19%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "26df8245-dfb2-456d-a159-bcecdc1661e9",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "Philips",
+    "name": "Series 2200 Kaffeevollautomat",
+    "bullets": [
+      "Klassisches Milchsystem",
+      "LatteGo",
+      "5 Kaffeespezialitäten"
+    ],
+    "oldPrice": "379,00 €",
+    "price": "299,00 €",
+    "badge": "-21%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "b0684934-2883-4a78-a158-e5c1b7fe03b9",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "Jura",
+    "name": "ENA 4 Kaffeevollautomat",
+    "bullets": [
+      "Pulse Extraction Process",
+      "P.E.P.® Aroma",
+      "Kompaktes Design"
+    ],
+    "price": "649,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "50bf334d-b64e-4931-ac9c-51b49da698f1",
+    "categoryId": "haushalt/kaffeemaschinen",
+    "brand": "Melitta",
+    "name": "Caffeo Solo Kaffeevollautomat",
+    "bullets": [
+      "Kegelmahlwerk",
+      "One-Touch-Bedienung",
+      "Aroma Extraction Technology"
+    ],
+    "oldPrice": "279,00 €",
+    "price": "219,00 €",
+    "badge": "-21%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "2d2013c6-427d-4b21-ac5a-a308ec5eaeb1",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "Samsung",
+    "name": "QuickDrive Waschmaschine, 9 kg",
+    "bullets": [
+      "1400 U/Min",
+      "AddWash Funktion",
+      "WLAN-Steuerung"
+    ],
+    "oldPrice": "699,00 €",
+    "price": "549,00 €",
+    "badge": "-21%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "6ac4fbf5-9838-4e9a-b2af-6180106e1c4d",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "Bosch",
+    "name": "Serie 6 Waschmaschine, 8 kg",
+    "bullets": [
+      "i-DOS Dosierautomatik",
+      "AllergyPlus",
+      "EcoSilence Antrieb"
+    ],
+    "oldPrice": "649,00 €",
+    "price": "499,00 €",
+    "badge": "-22%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "01485681-d2b0-4747-b89b-43568ccc0540",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "Siemens",
+    "name": "iQ500 Waschmaschine, 9 kg",
+    "bullets": [
+      "varioPerfect",
+      "aquaStop",
+      "Home Connect"
+    ],
+    "price": "749,00 €",
+    "badge": "Neu",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "d9827572-3396-4f3f-83fd-1c41388078d3",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "LG",
+    "name": "AI DD Waschmaschine, 10,5 kg",
+    "bullets": [
+      "Direct Drive Motor",
+      "TurboWash 360°",
+      "WLAN-Steuerung"
+    ],
+    "oldPrice": "799,00 €",
+    "price": "629,00 €",
+    "badge": "-21%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "94d65505-03af-4dbc-94bc-3b991bed4574",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "Miele",
+    "name": "W1 Waschmaschine, 8 kg",
+    "bullets": [
+      "PowerWash System",
+      "Schontrommel",
+      "Made in Germany"
+    ],
+    "price": "999,00 €",
+    "badge": "Premium",
+    "rating": 4.9,
+    "inStock": false
+  },
+  {
+    "id": "24a23ff5-118f-469f-bbf3-5015a6c77c16",
+    "categoryId": "haushalt/waschmaschinen",
+    "brand": "AEG",
+    "name": "6000 Series Waschmaschine, 7 kg",
+    "bullets": [
+      "ÖkoMix Technologie",
+      "SensiCare System",
+      "Startzeitvorwahl"
+    ],
+    "oldPrice": "549,00 €",
+    "price": "429,00 €",
+    "badge": "-22%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "eda7efec-f73d-4264-b51b-a7a02a4919b2",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "Bosch",
+    "name": "Serie 4 Geschirrspüler vollintegrierbar",
+    "slug": "bosch-geschirrspueler-vollintegrierbar",
+    "bullets": [
+      "14 Maßgedecke",
+      "Home Connect",
+      "Energieeffizienzklasse C"
+    ],
+    "oldPrice": "649,00 €",
+    "price": "499,00 €",
+    "badge": "-22%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "72b63169-35a7-40c4-b832-116d779d88fe",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "Siemens",
+    "name": "iQ300 Geschirrspüler",
+    "bullets": [
+      "varioSpeed Plus",
+      "Aqua-Sensor",
+      "3 Körbe"
+    ],
+    "oldPrice": "599,00 €",
+    "price": "479,00 €",
+    "badge": "-20%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "8a301bf8-ac39-4e9d-b862-daf0bf074005",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "Miele",
+    "name": "G 7000 Geschirrspüler",
+    "bullets": [
+      "AutoDos",
+      "3D-Besteckschublade",
+      "Made in Germany"
+    ],
+    "price": "1.099,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "5a3dc050-f037-4257-8408-e465e4903331",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "AEG",
+    "name": "6000 Series Geschirrspüler",
+    "bullets": [
+      "AirDry Technologie",
+      "SoftGrip Körbe",
+      "60-Minuten-Programm"
+    ],
+    "oldPrice": "549,00 €",
+    "price": "429,00 €",
+    "badge": "-22%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "1eb120b6-9f11-4c7d-9938-2ac3b107231f",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "Beko",
+    "name": "b300 Geschirrspüler teilintegrierbar",
+    "slug": "beko-geschirrspueler-teilintegrierbar",
+    "bullets": [
+      "AquaIntense",
+      "EcoNightWash",
+      "13 Maßgedecke"
+    ],
+    "price": "379,00 €",
+    "badge": "Neu",
+    "rating": 4.1,
+    "inStock": true
+  },
+  {
+    "id": "d33e6e9a-7205-4d72-b871-a43e0db9304f",
+    "categoryId": "haushalt/geschirrspueler",
+    "brand": "Neff",
+    "name": "N 50 Geschirrspüler",
+    "bullets": [
+      "emotionLight",
+      "Zeolith-Trocknung",
+      "FlexRack Plus"
+    ],
+    "oldPrice": "749,00 €",
+    "price": "599,00 €",
+    "badge": "-20%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "bdf9043c-637d-4eee-ac6c-394004cc7f35",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "iRobot",
+    "name": "Roomba Saugroboter mit Wischfunktion",
+    "bullets": [
+      "App-Steuerung",
+      "Automatische Absaugstation",
+      "Für Tierhaare"
+    ],
+    "oldPrice": "549,00 €",
+    "price": "399,00 €",
+    "badge": "-27%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "8dc9b52d-7dd7-4eb0-b953-cbf04aca1c3e",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "Dyson",
+    "name": "V15 Detect Akkusauger",
+    "bullets": [
+      "Laser-Staubsichtbarkeit",
+      "LCD-Display",
+      "Bis 60 Min. Laufzeit"
+    ],
+    "price": "649,00 €",
+    "badge": "Premium",
+    "rating": 4.7,
+    "inStock": false
+  },
+  {
+    "id": "295adead-78dc-4035-b602-58788cbd5c41",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "Miele",
+    "name": "Complete C3 Bodenstaubsauger",
+    "bullets": [
+      "HEPA-Filter",
+      "Variabler Saugkraftregler",
+      "Made in Germany"
+    ],
+    "oldPrice": "349,00 €",
+    "price": "279,00 €",
+    "badge": "-20%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "51cfdf89-2091-43b1-9574-508e4277aa65",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "Kärcher",
+    "name": "VC 6 Bodenstaubsauger",
+    "bullets": [
+      "RotorTurbine",
+      "Geräuscharm",
+      "Beutellos"
+    ],
+    "price": "199,00 €",
+    "badge": "Neu",
+    "rating": 4,
+    "inStock": true
+  },
+  {
+    "id": "0ccd0655-dfdd-41d2-bbd7-441eb9a2c623",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "Philips",
+    "name": "3000 Series Saugroboter",
+    "bullets": [
+      "Kartierung per App",
+      "AquaProtect",
+      "Automatische Ladefunktion"
+    ],
+    "oldPrice": "399,00 €",
+    "price": "299,00 €",
+    "badge": "-25%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "3e4b2864-731d-4d67-9801-43bbd3da39cd",
+    "categoryId": "haushalt/staubsauger",
+    "brand": "Rowenta",
+    "name": "X-Force Flex Akkusauger",
+    "bullets": [
+      "3-in-1-Reinigung",
+      "Flexibles Gelenk",
+      "LED-Nachleuchten"
+    ],
+    "oldPrice": "279,00 €",
+    "price": "219,00 €",
+    "badge": "-21%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "9db5ca7c-1178-4570-9c37-9f043fa05a20",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "Miele",
+    "name": "H 7000 Einbaubackofen mit Pyrolyse",
+    "slug": "miele-einbaubackofen-mit-pyrolyse",
+    "bullets": [
+      "73 L Garraum",
+      "Umluft plus",
+      "Selbstreinigung"
+    ],
+    "price": "799,00 €",
+    "badge": "Neu",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "29765db3-4dc9-476d-802c-deacfb6e23f5",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "Bosch",
+    "name": "Serie 6 Einbaubackofen",
+    "bullets": [
+      "3D-Heißluft",
+      "PerfectBake",
+      "Assistenzfunktionen"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "699,00 €",
+    "badge": "-22%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "4fe2a5bc-5a95-4ca2-a74d-cb46f6cf2f40",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "Siemens",
+    "name": "iQ500 Einbaubackofen",
+    "bullets": [
+      "coolStart",
+      "activeClean",
+      "Home Connect"
+    ],
+    "price": "849,00 €",
+    "badge": "Neu",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "f5387425-d544-4cb4-98b3-74e7493e8854",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "AEG",
+    "name": "SurroundCook Einbaubackofen",
+    "bullets": [
+      "SteamBake Funktion",
+      "Pyrolyse-Selbstreinigung",
+      "Vollteleskopauszug"
+    ],
+    "oldPrice": "999,00 €",
+    "price": "799,00 €",
+    "badge": "-20%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "d130fa1f-6ff0-4423-97d9-dee0dea8e436",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "Neff",
+    "name": "Slide&Hide Einbaubackofen",
+    "bullets": [
+      "Versenkbare Backofentür",
+      "CircoTherm",
+      "VarioSteam"
+    ],
+    "price": "949,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "93ae58e6-c4ce-41b9-9c93-c0e0d2fbd6f4",
+    "categoryId": "haushalt/backoefen-herde",
+    "brand": "Bauknecht",
+    "name": "BAK5 Einbauherd-Set",
+    "slug": "bauknecht-einbauherd-set",
+    "bullets": [
+      "Autark-Kochfeld inklusive",
+      "4 Kochzonen",
+      "Aqua-Clean"
+    ],
+    "oldPrice": "699,00 €",
+    "price": "549,00 €",
+    "badge": "-21%",
+    "rating": 4.1,
+    "inStock": true
+  },
+  {
+    "id": "1f8c5dfa-7ab4-4b40-b4da-a755929db8f6",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "Philips",
+    "name": "Viva Collection Küchenmaschine, 1200 W",
+    "slug": "philips-kuechenmaschine-1200-w",
+    "bullets": [
+      "ProBlend 6 Technologie",
+      "2 L Glasbehälter",
+      "Eiscrush-Funktion"
+    ],
+    "oldPrice": "89,99 €",
+    "price": "59,99 €",
+    "badge": "-33%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "13427719-4b9b-4652-a64c-9bf11fb27dc3",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "Bosch",
+    "name": "MUM5 Küchenmaschine",
+    "bullets": [
+      "1000 W Motor",
+      "3D PlanetaryMixing",
+      "3,9 L Edelstahlschüssel"
+    ],
+    "oldPrice": "349,00 €",
+    "price": "279,00 €",
+    "badge": "-20%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "c75d010f-eb2b-49d0-85e9-b689283f7452",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "KitchenAid",
+    "name": "Artisan Küchenmaschine",
+    "bullets": [
+      "4,8 L Edelstahlschüssel",
+      "10 Geschwindigkeitsstufen",
+      "Robuster Metallkorpus"
+    ],
+    "price": "599,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "1012d087-8c05-4e34-bbc5-a58e98db7aec",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "Kenwood",
+    "name": "Chef Titanium Küchenmaschine",
+    "bullets": [
+      "1400 W Motor",
+      "Planetarisches Rührsystem",
+      "Umfangreiches Zubehör"
+    ],
+    "oldPrice": "499,00 €",
+    "price": "379,00 €",
+    "badge": "-24%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "9f5a0ca7-6525-4bf5-9b4a-37c8d39cf763",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "WMF",
+    "name": "Kult X Küchenmaschine",
+    "bullets": [
+      "Kompaktes Design",
+      "500 W Motor",
+      "Mix & Go Trinkflasche"
+    ],
+    "price": "149,00 €",
+    "badge": "Neu",
+    "rating": 4,
+    "inStock": true
+  },
+  {
+    "id": "7ef6d8db-3707-41cc-a03a-c7060dfdb6b5",
+    "categoryId": "haushalt/kuechenmaschinen",
+    "brand": "Krups",
+    "name": "Prep&Cook Küchenmaschine",
+    "bullets": [
+      "Kochfunktion bis 130°C",
+      "4,5 L Schüssel",
+      "Integrierte Waage"
+    ],
+    "oldPrice": "449,00 €",
+    "price": "349,00 €",
+    "badge": "-22%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "5e414a3a-e571-4819-b8c4-b00e37566565",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "Daikin",
+    "name": "Sensira Split-Klimagerät, 3,5 kW",
+    "slug": "daikin-split-klimageraet-3-5-kw",
+    "bullets": [
+      "Kühlen & Heizen",
+      "WLAN-fähig",
+      "Flüsterleiser Betrieb"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "699,00 €",
+    "badge": "-22%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "64f44b33-7f35-4145-b3a4-ba27e2ce3872",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "LG",
+    "name": "Dualcool Klimagerät",
+    "bullets": [
+      "Wi-Fi Steuerung",
+      "Dual Inverter Kompressor",
+      "Schlafmodus"
+    ],
+    "oldPrice": "799,00 €",
+    "price": "649,00 €",
+    "badge": "-19%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "48bf25f0-bdf5-4806-904b-a52ad2cddf71",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "De'Longhi",
+    "name": "Pinguino Mobiles Klimagerät",
+    "slug": "de-longhi-mobiles-klimageraet",
+    "bullets": [
+      "3-in-1-Funktion",
+      "Real Feel Technologie",
+      "LED-Display"
+    ],
+    "price": "449,00 €",
+    "badge": "Neu",
+    "rating": 4.1,
+    "inStock": true
+  },
+  {
+    "id": "948dec6d-5609-4b83-8c9c-8ea92f2eea2d",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "Comfee",
+    "name": "Eco Friendly Mobiles Klimagerät, 9000 BTU",
+    "slug": "comfee-mobiles-klimageraet-9000-btu",
+    "bullets": [
+      "App-Steuerung",
+      "Entfeuchtungsfunktion",
+      "Fensterkit inklusive"
+    ],
+    "oldPrice": "399,00 €",
+    "price": "329,00 €",
+    "badge": "-18%",
+    "rating": 4,
+    "inStock": true
+  },
+  {
+    "id": "afad8075-cf60-40e2-abdb-633afeccaf64",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "Klarstein",
+    "name": "Windwaker Split-Klimagerät, 2,6 kW",
+    "slug": "klarstein-split-klimageraet-2-6-kw",
+    "bullets": [
+      "Eco-Modus",
+      "Timerfunktion",
+      "Fernbedienung inklusive"
+    ],
+    "price": "599,00 €",
+    "badge": "Premium",
+    "rating": 4.7,
+    "inStock": false
+  },
+  {
+    "id": "a0fe7fbe-8e94-4629-81f0-17fc378453e8",
+    "categoryId": "haushalt/klimageraete",
+    "brand": "Panasonic",
+    "name": "Etherea Split-Klimagerät",
+    "bullets": [
+      "nanoeX Luftreinigung",
+      "Flüsterleiser Betrieb",
+      "WLAN-fähig"
+    ],
+    "oldPrice": "999,00 €",
+    "price": "799,00 €",
+    "badge": "-20%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "5012de97-ba14-48cb-852d-dfc6d4ec5f64",
+    "categoryId": "multimedia/smartphones",
+    "brand": "Apple",
+    "name": "iPhone 16, 128 GB",
+    "bullets": [
+      "6,1\" Super Retina Display",
+      "A18 Chip",
+      "Dual-Kamera-System"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "799,00 €",
+    "badge": "-11%",
+    "rating": 4.7,
+    "inStock": true
+  },
+  {
+    "id": "9b214755-fa53-4d30-b079-ec4a265b6a62",
+    "categoryId": "multimedia/smartphones",
+    "brand": "Samsung",
+    "name": "Galaxy S24, 256 GB",
+    "bullets": [
+      "6,2\" Dynamic AMOLED",
+      "Snapdragon 8 Gen 3",
+      "Galaxy AI"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "749,00 €",
+    "badge": "-17%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "e569d532-f0d1-4064-86d1-d80775a84f08",
+    "categoryId": "multimedia/smartphones",
+    "brand": "Google",
+    "name": "Pixel 9, 128 GB",
+    "bullets": [
+      "Tensor G4 Chip",
+      "Google KI-Funktionen",
+      "6,3\" OLED-Display"
+    ],
+    "price": "699,00 €",
+    "badge": "Neu",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "603b6941-5b9a-49a7-876e-52ba76bd0ca9",
+    "categoryId": "multimedia/smartphones",
+    "brand": "Xiaomi",
+    "name": "14T, 256 GB",
+    "bullets": [
+      "Leica-Kamerasystem",
+      "120 W HyperCharge",
+      "6,67\" AMOLED"
+    ],
+    "oldPrice": "649,00 €",
+    "price": "499,00 €",
+    "badge": "-23%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "7f45c465-f499-454f-b91d-91f1f7c4fefd",
+    "categoryId": "multimedia/smartphones",
+    "brand": "OnePlus",
+    "name": "12, 256 GB",
+    "bullets": [
+      "Hasselblad-Kamera",
+      "100 W SUPERVOOC-Laden",
+      "Snapdragon 8 Gen 3"
+    ],
+    "price": "749,00 €",
+    "badge": "Premium",
+    "rating": 4.5,
+    "inStock": false
+  },
+  {
+    "id": "3ed36423-f4af-4329-bf8b-334c946955ea",
+    "categoryId": "multimedia/smartphones",
+    "brand": "Sony",
+    "name": "Xperia 1 VI, 256 GB",
+    "bullets": [
+      "4K-Display",
+      "Zeiss-Optik",
+      "Triple-Kamera mit Zoom"
+    ],
+    "oldPrice": "1.299,00 €",
+    "price": "999,00 €",
+    "badge": "-23%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "94f50982-e62f-4225-970b-da9d592bc104",
+    "categoryId": "multimedia/videospiele",
+    "brand": "Sony",
+    "name": "DualSense Wireless Controller",
+    "bullets": [
+      "Haptisches Feedback",
+      "Adaptive Trigger",
+      "Eingebautes Mikrofon"
+    ],
+    "oldPrice": "74,99 €",
+    "price": "59,99 €",
+    "badge": "-20%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "a3454b82-9369-4d82-8c37-64dc31f570f4",
+    "categoryId": "multimedia/videospiele",
+    "brand": "Microsoft",
+    "name": "Xbox Wireless Controller",
+    "bullets": [
+      "Hybrid D-Pad",
+      "Strukturierte Griffe",
+      "Bluetooth-Kompatibilität"
+    ],
+    "oldPrice": "64,99 €",
+    "price": "54,99 €",
+    "badge": "-15%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "882300b7-17e2-4e15-83ce-60f98dd70719",
+    "categoryId": "multimedia/videospiele",
+    "brand": "Nintendo",
+    "name": "Switch Pro Controller",
+    "bullets": [
+      "Amiibo-Funktion",
+      "Bewegungssteuerung",
+      "Integriertes HD-Rumble"
+    ],
+    "price": "69,99 €",
+    "badge": "Bestseller",
+    "rating": 4.8,
+    "inStock": true
+  },
+  {
+    "id": "53e1fdb5-a167-42f2-9958-7787c264ad32",
+    "categoryId": "multimedia/videospiele",
+    "brand": "Razer",
+    "name": "Kitty Edition Gaming-Headset",
+    "bullets": [
+      "THX Spatial Audio",
+      "Kabelloses Design",
+      "RGB-Beleuchtung"
+    ],
+    "oldPrice": "129,00 €",
+    "price": "99,99 €",
+    "badge": "-22%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "83b77a6a-532a-4a23-8f5c-b4919aa3846f",
+    "categoryId": "multimedia/videospiele",
+    "brand": "Logitech",
+    "name": "G29 Lenkrad mit Pedalen",
+    "bullets": [
+      "Force-Feedback",
+      "Echtleder-Lenkrad",
+      "PS/PC-kompatibel"
+    ],
+    "price": "349,00 €",
+    "badge": "Premium",
+    "rating": 4.6,
+    "inStock": false
+  },
+  {
+    "id": "fe683912-4096-4a66-aaeb-83c97290c36a",
+    "categoryId": "multimedia/videospiele",
+    "brand": "8BitDo",
+    "name": "Ultimate Controller 2.4G",
+    "bullets": [
+      "Hall-Effekt-Sticks",
+      "Programmierbare Tasten",
+      "Ladestation inklusive"
+    ],
+    "oldPrice": "79,99 €",
+    "price": "64,99 €",
+    "badge": "-19%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "cf577a02-cff1-4c3e-a70b-26128fedd21f",
+    "categoryId": "multimedia/fernseher",
+    "brand": "LG",
+    "name": "OLED evo 55\" 4K Fernseher",
+    "bullets": [
+      "120 Hz Gaming",
+      "Dolby Vision",
+      "webOS Smart TV"
+    ],
+    "oldPrice": "1.499,00 €",
+    "price": "1.199,00 €",
+    "badge": "-20%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "56aa7e97-ee85-499d-9d64-cc55050bcc40",
+    "categoryId": "multimedia/fernseher",
+    "brand": "Samsung",
+    "name": "Neo QLED 65\" 4K Fernseher",
+    "bullets": [
+      "Quantum Matrix Technologie",
+      "120 Hz Gaming",
+      "Tizen Smart TV"
+    ],
+    "oldPrice": "1.799,00 €",
+    "price": "1.399,00 €",
+    "badge": "-22%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "d5abf9db-eb28-4641-8dc0-8921548d639f",
+    "categoryId": "multimedia/fernseher",
+    "brand": "Sony",
+    "name": "Bravia XR 55\" OLED Fernseher",
+    "bullets": [
+      "Cognitive Processor XR",
+      "Acoustic Surface Audio",
+      "Google TV"
+    ],
+    "price": "1.599,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "1939d182-7ec2-491a-9d2d-4bc56c753a67",
+    "categoryId": "multimedia/fernseher",
+    "brand": "Philips",
+    "name": "Ambilight 50\" 4K Fernseher",
+    "bullets": [
+      "3-seitiges Ambilight",
+      "P5 Perfect Picture Engine",
+      "Android TV"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "699,00 €",
+    "badge": "-22%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "df56d9cc-9734-4556-8b97-d00e53a91ffa",
+    "categoryId": "multimedia/fernseher",
+    "brand": "Panasonic",
+    "name": "MSW504 43\" 4K Fernseher",
+    "slug": "panasonic-43-4k-fernseher",
+    "bullets": [
+      "HDR10+",
+      "Dolby Atmos",
+      "Kompaktes Design"
+    ],
+    "price": "449,00 €",
+    "badge": "Neu",
+    "rating": 4.1,
+    "inStock": true
+  },
+  {
+    "id": "15cf82e4-6d87-454d-ba19-4c5ef06daf60",
+    "categoryId": "multimedia/fernseher",
+    "brand": "Hisense",
+    "name": "ULED 65\" 4K Fernseher",
+    "bullets": [
+      "Quantum-Dot-Technologie",
+      "Dolby Vision IQ",
+      "Game Mode Pro"
+    ],
+    "oldPrice": "999,00 €",
+    "price": "749,00 €",
+    "badge": "-25%",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "8abf1b73-d15c-4eb2-b92c-df51cad93291",
+    "categoryId": "multimedia/computer",
+    "brand": "Apple",
+    "name": "MacBook Air 13\" M3",
+    "bullets": [
+      "8-Core CPU",
+      "18 Std. Akkulaufzeit",
+      "Liquid Retina Display"
+    ],
+    "oldPrice": "1.299,00 €",
+    "price": "1.149,00 €",
+    "badge": "-12%",
+    "rating": 4.7,
+    "inStock": true
+  },
+  {
+    "id": "1ec3f6ae-eda7-4552-94d9-eb73714f12b0",
+    "categoryId": "multimedia/computer",
+    "brand": "Dell",
+    "name": "XPS 13 Notebook",
+    "bullets": [
+      "Intel Core Ultra 7",
+      "16 GB RAM",
+      "InfinityEdge Display"
+    ],
+    "oldPrice": "1.399,00 €",
+    "price": "1.199,00 €",
+    "badge": "-14%",
+    "rating": 4.5,
+    "inStock": true
+  },
+  {
+    "id": "7f6f868d-689c-4cbf-ba99-c2f4b602921f",
+    "categoryId": "multimedia/computer",
+    "brand": "Lenovo",
+    "name": "ThinkPad X1 Carbon",
+    "bullets": [
+      "14\" 2.8K-Display",
+      "Robustes Carbon-Gehäuse",
+      "Schnelle Aufladung"
+    ],
+    "price": "1.499,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "4a734b9d-27ed-4fad-83bc-9f251d182b88",
+    "categoryId": "multimedia/computer",
+    "brand": "HP",
+    "name": "Pavilion Desktop PC",
+    "bullets": [
+      "AMD Ryzen 7",
+      "16 GB RAM",
+      "512 GB SSD"
+    ],
+    "oldPrice": "799,00 €",
+    "price": "649,00 €",
+    "badge": "-19%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "af300988-b8f8-49f8-b7eb-22e064742e8f",
+    "categoryId": "multimedia/computer",
+    "brand": "Asus",
+    "name": "ROG Strix Gaming-Notebook",
+    "bullets": [
+      "RTX 4060",
+      "165 Hz Display",
+      "RGB-Tastatur"
+    ],
+    "price": "1.699,00 €",
+    "badge": "Neu",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "03f9633a-e8c0-467c-a878-79b7309d9a65",
+    "categoryId": "multimedia/computer",
+    "brand": "Acer",
+    "name": "Swift Go 14 Notebook",
+    "bullets": [
+      "Intel Core i5",
+      "OLED-Display",
+      "10 Std. Akkulaufzeit"
+    ],
+    "oldPrice": "899,00 €",
+    "price": "749,00 €",
+    "badge": "-17%",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "c78d67c2-e434-4e27-b39f-f64b32a0d1f1",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Garmin",
+    "name": "Venu 3 Smartwatch",
+    "bullets": [
+      "AMOLED-Display",
+      "14 Tage Akkulaufzeit",
+      "Schlaf- & Fitness-Tracking"
+    ],
+    "oldPrice": "449,00 €",
+    "price": "349,00 €",
+    "badge": "-22%",
+    "rating": 4.6,
+    "inStock": true
+  },
+  {
+    "id": "b7d6e875-eae7-4633-a890-b4d747fdd204",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Apple",
+    "name": "Watch Series 10",
+    "bullets": [
+      "Größtes Retina-Display",
+      "Blutsauerstoffmessung",
+      "Wassergeschützt"
+    ],
+    "oldPrice": "449,00 €",
+    "price": "399,00 €",
+    "badge": "-11%",
+    "rating": 4.7,
+    "inStock": true
+  },
+  {
+    "id": "10f6d088-09e3-4fc7-be67-3a3386264579",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Samsung",
+    "name": "Galaxy Watch 7",
+    "bullets": [
+      "BioActive Sensor",
+      "Wear OS",
+      "Sturzerkennung"
+    ],
+    "price": "329,00 €",
+    "badge": "Neu",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "96d8e58c-7634-448d-bcb7-c95a7e0ffe51",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Fitbit",
+    "name": "Sense 2",
+    "bullets": [
+      "Stresstracking",
+      "6 Tage Akkulaufzeit",
+      "Google-Integration"
+    ],
+    "oldPrice": "299,00 €",
+    "price": "229,00 €",
+    "badge": "-23%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "00ae96f9-1e18-4195-bf96-4edfe52755ea",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Withings",
+    "name": "ScanWatch 2",
+    "bullets": [
+      "Hybride Analoguhr",
+      "EKG-Funktion",
+      "30 Tage Akkulaufzeit"
+    ],
+    "price": "299,00 €",
+    "badge": "Premium",
+    "rating": 4.8,
+    "inStock": false
+  },
+  {
+    "id": "c84ad0bd-a065-4785-81ee-6f24053dae3b",
+    "categoryId": "multimedia/smartwatches",
+    "brand": "Amazfit",
+    "name": "GTR 4",
+    "bullets": [
+      "AMOLED-Display",
+      "Zepp OS",
+      "14 Tage Akkulaufzeit"
+    ],
+    "oldPrice": "219,00 €",
+    "price": "169,00 €",
+    "badge": "-23%",
+    "rating": 4.1,
+    "inStock": true
+  },
+  {
+    "id": "fd2a22cb-6440-4443-88f0-7d7f087151a0",
+    "categoryId": "multimedia/drohnen",
+    "brand": "DJI",
+    "name": "Mini 4 Pro Fly More Combo",
+    "bullets": [
+      "Unter 249 g Startgewicht",
+      "4K/60fps HDR-Video",
+      "Rundum-Hinderniserkennung"
+    ],
+    "oldPrice": "1.199,00 €",
+    "price": "1.099,00 €",
+    "badge": "-8%",
+    "rating": 4.8,
+    "inStock": true
+  },
+  {
+    "id": "6811dbe3-eb1e-4569-a5a9-cdeb9d9477d6",
+    "categoryId": "multimedia/drohnen",
+    "brand": "DJI",
+    "name": "Air 3S",
+    "bullets": [
+      "Dual-Kamera mit 1-Zoll-Sensor",
+      "Bis 45 Minuten Flugzeit",
+      "LiDAR-Nachtlandung"
+    ],
+    "price": "1.049,00 €",
+    "badge": "Neu",
+    "rating": 4.7,
+    "inStock": true
+  },
+  {
+    "id": "ee8f21dc-99c8-42c1-a626-bfab0d8ec577",
+    "categoryId": "multimedia/drohnen",
+    "brand": "DJI",
+    "name": "Neo",
+    "bullets": [
+      "Handstart ohne Fernsteuerung",
+      "4K-Ultraweitwinkel",
+      "135 g Leichtgewicht"
+    ],
+    "price": "199,00 €",
+    "badge": "Bestseller",
+    "rating": 4.4,
+    "inStock": true
+  },
+  {
+    "id": "bc417b7c-9b93-4f00-82f4-811c5e52e44f",
+    "categoryId": "multimedia/drohnen",
+    "brand": "Autel Robotics",
+    "name": "EVO Lite+ Premium Bundle",
+    "bullets": [
+      "1-Zoll-CMOS-Sensor",
+      "6K-Videoaufnahme",
+      "Bis 40 Minuten Flugzeit"
+    ],
+    "oldPrice": "1.149,00 €",
+    "price": "949,00 €",
+    "badge": "-17%",
+    "rating": 4.3,
+    "inStock": true
+  },
+  {
+    "id": "7aec4f0f-8de0-426d-8ad1-bbda9ad352fc",
+    "categoryId": "multimedia/drohnen",
+    "brand": "HoverAir",
+    "name": "X1 Pro",
+    "bullets": [
+      "Selbstfliegende Kamera",
+      "8K-Video",
+      "Faltbar, passt in die Handfläche"
+    ],
+    "price": "549,00 €",
+    "rating": 4.2,
+    "inStock": true
+  },
+  {
+    "id": "047a651a-c428-4aa4-b103-fd2c1aa550f7",
+    "categoryId": "multimedia/drohnen",
+    "brand": "Potensic",
+    "name": "ATOM 2",
+    "bullets": [
+      "Unter 249 g Startgewicht",
+      "3-Achsen-Gimbal",
+      "Bis 32 Minuten Flugzeit"
+    ],
+    "oldPrice": "349,00 €",
+    "price": "279,00 €",
+    "badge": "-20%",
+    "rating": 4.1,
+    "inStock": false
+  }
+]

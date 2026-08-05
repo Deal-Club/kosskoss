@@ -1,0 +1,340 @@
+[
+  {
+    "id": "haushalt/kaffeemaschinen",
+    "group": "haushalt",
+    "slug": "kaffeemaschinen",
+    "label": "Kaffeemaschinen",
+    "description": "Kaffeevollautomaten und Filterkaffeemaschinen für perfekten Genuss jeden Morgen.",
+    "image": "/images/products/coffee-machine.jpg",
+    "guide": {
+      "intro": "Vom klassischen Kaffeevollautomaten bis zur kompakten Siebträgermaschine – bei Hausgeräte Pfeffer finden Sie die passende Lösung für Ihren perfekten Kaffeegenuss.",
+      "sections": [
+        {
+          "heading": "Kaffeevollautomat oder Siebträgermaschine?",
+          "body": "Vollautomaten übernehmen Mahlen, Brühen und Milchaufschäumen auf Knopfdruck – ideal für den Alltag. Wer Wert auf volle Kontrolle über Mahlgrad, Brühdruck und Crema legt, greift zur klassischen Siebträgermaschine."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf ein Kegelmahlwerk statt Schlagmahlwerk für ein gleichmäßigeres Mahlergebnis, eine einfache Reinigungsautomatik sowie die Anzahl der wählbaren Kaffeespezialitäten."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Kaffeemaschinen",
+          "body": "De'Longhi, Siemens, Jura, Krups, Philips und Melitta zählen zu den gefragtesten Herstellern – bei uns finden Sie aktuelle Modelle aller Marken im direkten Vergleich."
+        }
+      ],
+      "closing": "Sie sind sich unsicher, welche Kaffeemaschine zu Ihrem Kaffeekonsum passt? Unser Serviceteam berät Sie gerne persönlich."
+    }
+  },
+  {
+    "id": "haushalt/waschmaschinen",
+    "group": "haushalt",
+    "slug": "waschmaschinen",
+    "label": "Waschmaschinen",
+    "description": "Frontlader mit hoher Schleuderleistung, Dosierautomatik und leiser Betrieb.",
+    "image": "/images/products/washing-machine.jpg",
+    "guide": {
+      "intro": "Saubere Wäsche, geringer Energieverbrauch und leiser Betrieb – unsere Waschmaschinen überzeugen mit moderner Technik für jeden Haushalt.",
+      "sections": [
+        {
+          "heading": "Frontlader oder Toplader?",
+          "body": "Frontlader bieten ein größeres Trommelvolumen und lassen sich als Waschturm mit einem Trockner kombinieren. Toplader punkten mit geringerem Platzbedarf und einfacher Beladung von oben."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtige Kennzahlen sind die Schleuderdrehzahl (mind. 1400 U/Min für schnelleres Trocknen), die Energieeffizienzklasse sowie Sonderprogramme wie Mischgewebe oder Sportwäsche."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Waschmaschinen",
+          "body": "Samsung, Bosch, Siemens, LG, Miele und AEG bieten zuverlässige Modelle mit smarter App-Steuerung und geringem Wasserverbrauch."
+        }
+      ],
+      "closing": "Fragen zu Anschluss, Maßen oder passendem Zubehör? Unser Serviceteam hilft Ihnen gerne weiter."
+    }
+  },
+  {
+    "id": "haushalt/geschirrspueler",
+    "group": "haushalt",
+    "slug": "geschirrspueler",
+    "label": "Geschirrspüler",
+    "description": "Vollintegrierbare und teilintegrierbare Geschirrspüler für jede Küche.",
+    "image": "/images/products/dishwasher.jpg",
+    "guide": {
+      "intro": "Ob vollintegrierbar oder freistehend – ein guter Geschirrspüler spart Zeit, Wasser und Energie im Vergleich zum Abwasch von Hand.",
+      "sections": [
+        {
+          "heading": "Vollintegrierbar, teilintegrierbar oder freistehend?",
+          "body": "Vollintegrierbare Geräte verschwinden komplett hinter einer Möbelfront, teilintegrierbare zeigen nur das Bedienfeld, und freistehende Modelle lassen sich flexibel überall aufstellen."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf die Anzahl der Maßgedecke, den Wasserverbrauch pro Spülgang sowie praktische Extras wie Besteckschublade und automatische Dosierung."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Geschirrspüler",
+          "body": "Bosch, Siemens, Miele, AEG, Neff und Beko gehören zu den zuverlässigsten Herstellern mit langer Lebensdauer und leisen Programmen."
+        }
+      ],
+      "closing": "Unsicher bei der passenden Einbaugröße? Kontaktieren Sie unser Serviceteam für eine unverbindliche Beratung."
+    }
+  },
+  {
+    "id": "haushalt/staubsauger",
+    "group": "haushalt",
+    "slug": "staubsauger",
+    "label": "Staubsauger",
+    "description": "Saugroboter, Akkusauger und Bodenstaubsauger für mühelose Sauberkeit.",
+    "image": "/images/products/vacuum.jpg",
+    "guide": {
+      "intro": "Von klassischen Bodenstaubsaugern über wendige Akkusauger bis zum selbstständigen Saugroboter – wir haben die passende Lösung für jeden Boden.",
+      "sections": [
+        {
+          "heading": "Beutellos, mit Beutel oder Saugroboter?",
+          "body": "Beutellose Modelle sparen Folgekosten, Beutelsauger halten die Hygiene beim Entleeren höher, und Saugroboter übernehmen die Reinigung vollautomatisch nach Zeitplan."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtig sind Saugleistung, Akkulaufzeit bei kabellosen Geräten, ein HEPA-Filter für Allergiker sowie die Eignung für Hartböden und Teppiche gleichermaßen."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Staubsauger",
+          "body": "iRobot, Dyson, Miele, Kärcher, Philips und Rowenta bieten Modelle für jeden Bedarf und jedes Budget."
+        }
+      ],
+      "closing": "Noch Fragen zur passenden Saugleistung für Ihre Wohnfläche? Wir beraten Sie gerne."
+    }
+  },
+  {
+    "id": "haushalt/backoefen-herde",
+    "group": "haushalt",
+    "slug": "backoefen-herde",
+    "label": "Backöfen & Herde",
+    "description": "Einbaubacköfen, Herd-Sets und Kochfelder mit Pyrolyse und smarten Funktionen.",
+    "image": "/images/products/oven.jpg",
+    "guide": {
+      "intro": "Vom Einbaubackofen mit Pyrolyse-Selbstreinigung bis zum kompletten Herd-Set – für jede Küche die passende Wärmequelle.",
+      "sections": [
+        {
+          "heading": "Einbaubackofen oder Herd-Set?",
+          "body": "Ein separater Einbaubackofen lässt sich frei in Augenhöhe platzieren, ein Herd-Set kombiniert Backofen und Kochfeld platzsparend in einer Einheit."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf Garraumgröße, Umluft- und Heißluftfunktionen, Selbstreinigung per Pyrolyse sowie smarte Assistenzprogramme."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Backöfen & Herde",
+          "body": "Miele, Bosch, Siemens, AEG, Neff und Bauknecht überzeugen mit langlebiger Technik und intuitiver Bedienung."
+        }
+      ],
+      "closing": "Wir beraten Sie gerne zu Einbaumaßen und dem passenden Kochfeld für Ihren neuen Backofen."
+    }
+  },
+  {
+    "id": "haushalt/kuechenmaschinen",
+    "group": "haushalt",
+    "slug": "kuechenmaschinen",
+    "label": "Küchenmaschinen",
+    "description": "Küchenmaschinen und Mixer für Teig, Smoothies und alles dazwischen.",
+    "image": "/images/products/blender.jpg",
+    "guide": {
+      "intro": "Kneten, Rühren, Mixen und mehr – eine Küchenmaschine erleichtert die tägliche Zubereitung in der Küche erheblich.",
+      "sections": [
+        {
+          "heading": "Kompakte Küchenmaschine oder Profi-Modell?",
+          "body": "Kompakte Modelle eignen sich für gelegentliches Mixen und kleine Mengen, Profi-Küchenmaschinen mit großer Schüssel und starkem Motor meistern auch schwere Teige mühelos."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtig sind Motorleistung, Schüsselvolumen, die Anzahl der Geschwindigkeitsstufen sowie mitgeliefertes Zubehör wie Rühr-, Knet- und Schneidwerkzeuge."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Küchenmaschinen",
+          "body": "Philips, Bosch, KitchenAid, Kenwood, WMF und Krups zählen zu den beliebtesten Herstellern für Hobby- und Profiköche."
+        }
+      ],
+      "closing": "Fragen zum passenden Zubehör für Ihre Küchenmaschine? Unser Serviceteam hilft gerne weiter."
+    }
+  },
+  {
+    "id": "haushalt/klimageraete",
+    "group": "haushalt",
+    "slug": "klimageraete",
+    "label": "Klimageräte",
+    "description": "Split- und mobile Klimageräte zum Kühlen und Heizen mit App-Steuerung.",
+    "image": "/images/products/aircon.jpg",
+    "guide": {
+      "intro": "Angenehme Temperaturen an heißen Tagen – mit unseren Split- und mobilen Klimageräten behalten Sie in jedem Raum einen kühlen Kopf.",
+      "sections": [
+        {
+          "heading": "Mobiles Klimagerät oder fest installierte Split-Anlage?",
+          "body": "Mobile Geräte lassen sich ohne Montage sofort in Betrieb nehmen, Split-Klimaanlagen mit fest installierter Außeneinheit arbeiten leiser und effizienter im Dauerbetrieb."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf die Kühlleistung in kW passend zur Raumgröße, den Energieeffizienzstandard sowie Zusatzfunktionen wie Entfeuchtung und Heizen im Winter."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Klimageräte",
+          "body": "Daikin, LG, De'Longhi, Comfee, Klarstein und Panasonic bieten zuverlässige Lösungen für Wohnung und Homeoffice."
+        }
+      ],
+      "closing": "Unsicher bei der passenden Kühlleistung? Unser Serviceteam berät Sie gerne zu Ihrem Raum."
+    }
+  },
+  {
+    "id": "multimedia/smartphones",
+    "group": "multimedia",
+    "slug": "smartphones",
+    "label": "Smartphones",
+    "description": "Aktuelle Smartphone-Modelle mit starken Kameras und langer Akkulaufzeit.",
+    "image": "/images/products/smartphone.jpg",
+    "guide": {
+      "intro": "Von der Kamera bis zur Akkulaufzeit – bei uns finden Sie aktuelle Smartphones aller großen Hersteller im Vergleich.",
+      "sections": [
+        {
+          "heading": "Welches Betriebssystem passt zu mir?",
+          "body": "iOS überzeugt mit nahtloser Integration ins Apple-Ökosystem, Android bietet mehr Auswahl an Herstellern, Preisklassen und individuellen Anpassungsmöglichkeiten."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtige Kriterien sind Displaygröße und -technologie, Kameraqualität, Akkukapazität sowie interner Speicherplatz und Update-Garantie."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Smartphones",
+          "body": "Apple, Samsung, Google, Xiaomi, OnePlus und Sony liefern sich einen ständigen Wettlauf um Kamera, Leistung und Display."
+        }
+      ],
+      "closing": "Fragen zum passenden Speicherplatz oder Zubehör? Unser Serviceteam berät Sie gerne."
+    }
+  },
+  {
+    "id": "multimedia/videospiele",
+    "group": "multimedia",
+    "slug": "videospiele",
+    "label": "Videospiele",
+    "description": "Controller, Headsets und Zubehör für Konsole und PC.",
+    "image": "/images/products/game-controller.jpg",
+    "guide": {
+      "intro": "Controller, Headsets und Gaming-Zubehör für ein noch intensiveres Spielerlebnis auf Konsole und PC.",
+      "sections": [
+        {
+          "heading": "Kabelgebunden oder kabellos?",
+          "body": "Kabellose Controller und Headsets bieten mehr Bewegungsfreiheit, kabelgebundenes Zubehör punktet mit minimaler Latenz und entfällt bei der Akkuladung."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf Kompatibilität mit Ihrer Plattform, Akkulaufzeit bei kabellosen Geräten sowie Zusatzfunktionen wie haptisches Feedback oder programmierbare Tasten."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Videospiele",
+          "body": "Sony, Microsoft, Nintendo, Razer, Logitech und 8BitDo zählen zu den bekanntesten Namen für Controller und Gaming-Zubehör."
+        }
+      ],
+      "closing": "Unsicher, welches Zubehör zu Ihrer Konsole passt? Unser Serviceteam hilft gerne weiter."
+    }
+  },
+  {
+    "id": "multimedia/fernseher",
+    "group": "multimedia",
+    "slug": "fernseher",
+    "label": "Fernseher",
+    "description": "OLED, QLED und 4K-Fernseher für Kino-Feeling zu Hause.",
+    "image": "/images/products/tv.jpg",
+    "guide": {
+      "intro": "OLED, QLED oder LED – für echtes Kino-Feeling zu Hause bieten wir aktuelle Fernseher aller gängigen Bildschirmtechnologien.",
+      "sections": [
+        {
+          "heading": "OLED, QLED oder LED?",
+          "body": "OLED-Fernseher liefern perfektes Schwarz und starke Kontraste, QLED punktet mit hoher Spitzenhelligkeit, klassische LED-Modelle überzeugen preislich."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtig sind Bildschirmgröße passend zum Sitzabstand, Bildwiederholrate für Gaming, HDR-Unterstützung sowie die Smart-TV-Plattform."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Fernseher",
+          "body": "LG, Samsung, Sony, Philips, Panasonic und Hisense bieten Modelle für jedes Budget und jeden Anspruch."
+        }
+      ],
+      "closing": "Fragen zur passenden Bildschirmgröße für Ihr Wohnzimmer? Unser Serviceteam berät Sie gerne."
+    }
+  },
+  {
+    "id": "multimedia/computer",
+    "group": "multimedia",
+    "slug": "computer",
+    "label": "Computer",
+    "description": "Notebooks und Desktop-PCs für Arbeit, Kreativität und Gaming.",
+    "image": "/images/products/computer.jpg",
+    "guide": {
+      "intro": "Ob Notebook für unterwegs oder leistungsstarker Desktop-PC – bei uns finden Sie die passende Ausstattung für Arbeit, Kreativität und Gaming.",
+      "sections": [
+        {
+          "heading": "Notebook oder Desktop-PC?",
+          "body": "Notebooks überzeugen durch Mobilität und integrierten Akku, Desktop-PCs bieten mehr Leistung, Erweiterbarkeit und meist ein besseres Preis-Leistungs-Verhältnis."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Achten Sie auf Prozessor und Arbeitsspeicher passend zum Einsatzzweck, ausreichend SSD-Speicher sowie bei Notebooks auf Akkulaufzeit und Displayqualität."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Computer",
+          "body": "Apple, Dell, Lenovo, HP, Asus und Acer bieten Geräte für Büro, Kreativarbeit und Gaming gleichermaßen."
+        }
+      ],
+      "closing": "Unsicher bei der passenden Konfiguration? Unser Serviceteam berät Sie gerne persönlich."
+    }
+  },
+  {
+    "id": "multimedia/smartwatches",
+    "group": "multimedia",
+    "slug": "smartwatches",
+    "label": "Smartwatches",
+    "description": "Fitness-Tracking, Benachrichtigungen und lange Akkulaufzeit am Handgelenk.",
+    "image": "/images/products/smartwatch.jpg",
+    "guide": {
+      "intro": "Fitness-Tracking, Benachrichtigungen und smarte Funktionen direkt am Handgelenk – für einen aktiven und vernetzten Alltag.",
+      "sections": [
+        {
+          "heading": "Smartwatch oder Fitness-Tracker?",
+          "body": "Smartwatches bieten App-Unterstützung, Benachrichtigungen und teils Mobilfunkanbindung, reine Fitness-Tracker punkten mit längerer Akkulaufzeit und kompakterem Design."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Wichtig sind Akkulaufzeit, Kompatibilität mit Ihrem Smartphone-Betriebssystem, Wasserdichtigkeit sowie Gesundheitsfunktionen wie Pulsmessung oder EKG."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Smartwatches",
+          "body": "Garmin, Apple, Samsung, Fitbit, Withings und Amazfit bieten Modelle für Sportler ebenso wie für den Alltag."
+        }
+      ],
+      "closing": "Fragen zur passenden Smartwatch für Ihr Betriebssystem? Unser Serviceteam berät Sie gerne."
+    }
+  },
+  {
+    "id": "multimedia/drohnen",
+    "group": "multimedia",
+    "slug": "drohnen",
+    "label": "Drohnen",
+    "description": "Kameradrohnen mit 4K-Aufnahme, langer Flugzeit und Hinderniserkennung.",
+    "image": "/images/products/drone.jpg",
+    "guide": {
+      "intro": "Ob Luftaufnahmen im Urlaub, Immobilienfotografie oder der erste Flug im Park – bei Hausgeräte Pfeffer finden Sie Kameradrohnen für jedes Einsatzgebiet und jedes Budget.",
+      "sections": [
+        {
+          "heading": "Unter 250 g oder größere Klasse?",
+          "body": "Drohnen unter 250 g Startgewicht fallen in die EU-Klasse C0 und dürfen ohne Fernpiloten-Zeugnis geflogen werden – ideal für Einsteiger und Reisen. Schwerere Modelle bieten größere Sensoren, mehr Windstabilität und längere Reichweiten, erfordern aber eine Registrierung und den EU-Kompetenznachweis."
+        },
+        {
+          "heading": "Worauf Sie beim Kauf achten sollten",
+          "body": "Entscheidend sind die Sensorgröße für gute Aufnahmen bei wenig Licht, ein mechanischer 3-Achsen-Gimbal für ruckelfreie Videos, die reale Flugzeit pro Akku sowie eine Hinderniserkennung in mehrere Richtungen. Ein Fly-More-Set mit Ersatzakkus verlängert den Flugtag spürbar."
+        },
+        {
+          "heading": "Beliebte Marken im Bereich Drohnen",
+          "body": "DJI dominiert den Markt mit der Mini- und Air-Serie, Autel Robotics punktet mit großen Sensoren, HoverAir mit selbstfliegenden Kompaktkameras und Potensic mit günstigen Einsteigermodellen."
+        }
+      ],
+      "closing": "Unsicher, welche Drohne ohne Führerschein geflogen werden darf? Unser Serviceteam berät Sie gerne zu Klassen, Versicherung und Zubehör."
+    }
+  }
+]

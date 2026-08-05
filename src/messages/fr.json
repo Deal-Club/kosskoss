@@ -1,0 +1,796 @@
+{
+  "common": {
+    "searchPlaceholder": "Hêtre 33 cm, bûches densifiées, granulés …",
+    "account": "Compte",
+    "wishlist": "Favoris",
+    "cart": "Panier",
+    "categories": "Catégories",
+    "showAll": "Tout afficher",
+    "viewShop": "Voir la boutique",
+    "language": "Langue",
+    "home": "Accueil",
+    "breadcrumb": "Fil d'Ariane",
+    "shopName": "MLC Bois",
+    "groupNames": {
+      "bois-de-chauffage": "Bois de chauffage",
+      "equipement": "Poêles"
+    },
+    "categoryNames": {
+      "vrac": "Bois de chauffage en vrac",
+      "palette": "Bois de chauffage sur palette",
+      "granules": "Granulés de bois",
+      "bois-compresse": "Bois compressé",
+      "poele-a-bois": "Poêle à bois"
+    },
+    "from": "dès"
+  },
+  "header": {
+    "homeAriaLabel": "MLC Bois – page d'accueil",
+    "logoAlt": "MLC Bois",
+    "search": "Rechercher",
+    "lieferzusage": "Livraison partout en France métropolitaine",
+    "beratung": "Conseil & commande",
+    "oeffnung": "Lun–Ven 8h–17h · Sam 9h–13h",
+    "lieferbanner": "Livraison offerte dès 6 MAP",
+    "anrufenAria": "Appeler le {nummer}"
+  },
+  "hero": {
+    "eyebrow": "Séché en séchoir · humidité sur brut inférieure à 18 %",
+    "titel": "Du bois qui brûle",
+    "titelAkzent": "dès qu'il arrive.",
+    "beschreibung": "Hêtre, chêne, bouleau et frêne issus de forêts françaises. 72 heures en séchoir, puis directement sur la remorque. Vous ne le stockez pas deux étés : vous chauffez le soir même.",
+    "bildAlt": "Bûches de hêtre fendues, rangées dans le séchoir",
+    "belege": {
+      "feuchte": "Humidité sur brut après séchage, mesurée sur chaque lot",
+      "lieferung": "Délai en Île-de-France, 3 à 8 jours dans le reste de la France",
+      "heizwert": "Pouvoir calorifique du hêtre par stère"
+    },
+    "ctaCatalogue": "Voir nos bois"
+  },
+  "interventions": {
+    "label": "Nous livrons à",
+    "srListe": "Nous livrons notamment à {villes}."
+  },
+  "home": {
+    "metaTitle": "MLC Bois | Bois de chauffage séché en séchoir, livré en 48 heures",
+    "metaDescription": "Hêtre, chêne, bouleau et frêne en 25, 33 et 50 cm. Humidité sur brut inférieure à 18 %, relevé de mesure joint à chaque livraison. Livraison partout en France métropolitaine.",
+    "bestsellerEyebrow": "Les plus commandés",
+    "bestseller": "Ce qui part cette semaine",
+    "bestsellerCta": "Tout le catalogue"
+  },
+  "trust": {
+    "feuchte": "Chaque lot mesuré avant le départ",
+    "lieferung": "Partout en France métropolitaine, 48 h en Île-de-France",
+    "laengen": "Trois longueurs de bûche, fendues et prêtes à brûler",
+    "herkunft": "Bois issu de forêts françaises, certifié PEFC"
+  },
+  "group": {
+    "metaTitle": "{label} | MLC Bois",
+    "metaDescription": "Toutes les catégories de l'univers {label} chez MLC Bois : bois séché en séchoir, prix clairs et livraison rapide.",
+    "intro": "Toutes les catégories de l'univers {label} en un coup d'œil.",
+    "productCount": "{count, plural, =0 {Aucun article pour l'instant} one {# article} other {# articles}}"
+  },
+  "category": {
+    "metaTitle": "{label} | MLC Bois",
+    "productsCount": "<b>{filtered}</b> produits sur {total}",
+    "sortBy": "Trier par",
+    "sortRelevance": "Pertinence",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "sortNewest": "Nouveautés",
+    "emptyTitle": "Aucun produit trouvé",
+    "emptyHint": "Ajustez vos filtres pour voir plus de résultats.",
+    "emptyReset": "Réinitialiser les filtres",
+    "filtersTitle": "Filtres",
+    "filtersReset": "Réinitialiser",
+    "filtersClose": "Fermer les filtres",
+    "filtersApply": "{count, plural, =0 {Voir les produits} one {Voir # produit} other {Voir # produits}}",
+    "filterBrand": "Marque",
+    "filterPrice": "Prix",
+    "filterRating": "Note",
+    "filterMinStars": "à partir de {rating} étoiles",
+    "filterInStockOnly": "Disponible immédiatement uniquement",
+    "priceRanges": {
+      "under100": "Jusqu'à 100 €",
+      "from100": "100 € - 300 €",
+      "from300": "300 € - 600 €",
+      "from600": "600 € - 1 000 €",
+      "over1000": "Plus de 1 000 €"
+    },
+    "guideTitle": "{label} chez MLC Bois",
+    "guideDiscover": "Découvrir {label}",
+    "guideAdvice": "Demander conseil"
+  },
+  "product": {
+    "details": "Détails du produit & informations service",
+    "description": "Description de l'article",
+    "features": "Caractéristiques",
+    "related": "Produits similaires",
+    "sku": "Réf.",
+    "ratingOf": "{rating} sur 5",
+    "reviewCount": "{count, plural, one {# avis} other {# avis}}",
+    "paymentTitle": "Moyens de paiement sécurisés",
+    "metaTitle": "{name} | MLC Bois",
+    "onRequest": "Sur demande",
+    "originalPrice": "Prix d'origine",
+    "vatNote": "Prix hors service et frais de livraison",
+    "inStock": "En stock – livraison standard offerte (3 à 5 jours)",
+    "outOfStock": "Sur demande – disponible sous 2 à 4 semaines",
+    "decreaseQuantity": "Diminuer la quantité de 1",
+    "increaseQuantity": "Augmenter la quantité de 1",
+    "addToCart": "Ajouter au panier",
+    "fastDelivery": "Livraison standard : gratuite (3-5 jours ouvrables)",
+    "expressDelivery": "Livraison express : 60 € (24-48 h)",
+    "warranty": "14 jours de rétractation, sans avoir à se justifier",
+    "vatNoteFreeShipping": "Livraison standard offerte",
+    "galleryLabel": "Autres vues du produit",
+    "galleryView": "Afficher la vue {index} sur {total}",
+    "chooseVolume": "Choisissez un volume",
+    "fromPrice": "à partir de",
+    "perStere": "le stère"
+  },
+  "reviews": {
+    "title": "Avis clients",
+    "count": "{count, plural, one {# avis} other {# avis}}",
+    "starsLabel": "{star} étoiles",
+    "starsAria": "{rating} étoiles sur 5",
+    "listAria": "Avis clients, {count, plural, one {# avis} other {# avis}} — faites défiler pour les parcourir",
+    "scrollHint": "{count, plural, one {# avis} other {Les # avis}} — faites défiler dans le cadre",
+    "emptyTitle": "Ce produit n'a pas encore reçu d'avis client.",
+    "emptyHint": "Partagez votre expérience et rédigez le premier avis — il aidera les autres à choisir.",
+    "editorial": "Appréciation de la rédaction : {rating} sur 5",
+    "writeTitle": "Rédiger un avis",
+    "formRatingLabel": "Votre note",
+    "formRatingAria": "{value} étoiles sur 5",
+    "formRatingRequired": "Merci de choisir une note de 1 à 5 étoiles.",
+    "formName": "Nom",
+    "formCity": "Ville (facultatif)",
+    "formEmail": "E-mail (facultatif)",
+    "formEmailHint": "Non publié. Nous l'utilisons uniquement en cas de question sur votre avis.",
+    "formTitle": "Titre (facultatif)",
+    "formTitlePlaceholder": "par ex. Bien sec, flamme régulière",
+    "formBody": "Votre expérience",
+    "formBodyPlaceholder": "Qu'est-ce qui vous a plu, qu'est-ce qui vous a déçu ? 10 caractères minimum.",
+    "formBodyCounter": "{count} / 2000 caractères",
+    "formSubmit": "Envoyer l'avis",
+    "formSubmitting": "Envoi en cours…",
+    "formModerationNote": "Chaque avis est vérifié avant publication.",
+    "formError": "Votre avis n'a pas pu être envoyé. Merci de réessayer.",
+    "formSuccessTitle": "Merci ! Votre avis sera publié après vérification.",
+    "formSuccessHint": "Nous lisons chaque avis nous-mêmes. La validation prend en général un à deux jours ouvrés."
+  },
+  "payment": {
+    "title": "Moyens de paiement sécurisés",
+    "free": "gratuit",
+    "acceptedTitle": "Moyens de paiement acceptés",
+    "vitrine": {
+      "virement": "Virement bancaire",
+      "carte": "Carte bancaire",
+      "paypal": "PayPal"
+    }
+  },
+  "footer": {
+    "logoAlt": "MLC Bois",
+    "homeAriaLabel": "MLC Bois – page d'accueil",
+    "deliveryTitle": "Livraison standard : gratuite (3-5 jours ouvrables)",
+    "deliveryDetail": "Livraison express : 60 € (24-48 h)",
+    "warrantyTitle": "Humidité sur brut inférieure à 18 %",
+    "warrantyDetail": "Relevé de mesure joint à chaque livraison",
+    "paymentTitle": "Paiement sécurisé",
+    "paymentDetail": "Transmission chiffrée SSL",
+    "contact": "Contact",
+    "service": "Service",
+    "about": "À propos",
+    "legal": "Mentions légales",
+    "linkOrderStatus": "Suivi de commande",
+    "linkReturns": "Retours & réclamations",
+    "linkWithdrawal": "Droit de rétractation",
+    "linkContact": "Contact",
+    "linkAboutUs": "À propos",
+    "linkJobs": "Emploi & carrières",
+    "linkPress": "Presse",
+    "linkPartner": "Programme partenaires",
+    "linkImprint": "Mentions légales",
+    "linkPrivacy": "Confidentialité",
+    "linkTerms": "CGV",
+    "linkCookies": "Préférences cookies",
+    "copyright": "© {year} MLC Bois.",
+    "oeffnung": "Du lundi au vendredi 8h–17h · Samedi 9h–13h"
+  },
+  "cart": {
+    "title": "Panier",
+    "metaTitle": "Panier | MLC Bois",
+    "addToCart": "Ajouter au panier",
+    "buyNow": "Acheter maintenant",
+    "added": "Ajouté",
+    "soldOut": "Épuisé",
+    "increase": "Augmenter la quantité de 1",
+    "decrease": "Diminuer la quantité de 1",
+    "quantityLabel": "Quantité",
+    "indicatorWithItems": "Panier : {count, plural, one {# article} other {# articles}}, {total}",
+    "itemCount": "{count, plural, one {# article} other {# articles}}",
+    "emptyTitle": "Votre panier est vide",
+    "emptyText": "Parcourez notre bois de chauffage et nos combustibles, et déposez ici ce qui vous intéresse.",
+    "emptyCta": "Voir le catalogue",
+    "columnProduct": "Article",
+    "columnUnitPrice": "Prix unitaire",
+    "columnQuantity": "Quantité",
+    "columnLineTotal": "Total",
+    "remove": "Retirer l'article",
+    "removeLabel": "Retirer {name} du panier",
+    "clear": "Vider le panier",
+    "continueShopping": "Continuer mes achats",
+    "summaryTitle": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Frais de livraison",
+    "shippingFree": "offerte",
+    "total": "Total",
+    "vatIncluded": "dont TVA {rate} % ({amount})",
+    "vatNote": "Tous les prix s'entendent TVA comprise.",
+    "shippingStandardHint": "La livraison standard est offerte, sans montant minimum de commande.",
+    "shippingRule": "Livraison standard offerte (3 à 5 jours ouvrés), livraison express 60,00 € (24 à 48 heures). Le mode de livraison se choisit au moment de la commande.",
+    "deliveryTime": "L'expédition intervient après réception du paiement.",
+    "withdrawalHint": "En tant que consommateur, vous disposez d'un délai de rétractation de 14 jours (art. L221-18 du Code de la consommation). Le détail figure dans la page Droit de rétractation.",
+    "toCheckout": "Passer commande",
+    "onlyLeft": "Plus que {count} en stock",
+    "stockAdjusted": "La quantité a été ajustée au stock disponible.",
+    "revalidated": "Les prix et la disponibilité viennent d'être mis à jour. Merci de vérifier votre panier.",
+    "removedUnavailable": "Les articles qui ne sont plus disponibles ont été retirés de votre panier.",
+    "loading": "Chargement du panier…",
+    "drawerTitle": "Votre panier",
+    "drawerClose": "Fermer le panier",
+    "drawerViewCart": "Voir le panier",
+    "campaignFreeShipping": "Livraison offerte grâce à votre offre"
+  },
+  "checkout": {
+    "metaTitle": "Commande | MLC Bois",
+    "title": "Commande",
+    "backToCart": "Retour au panier",
+    "emptyTitle": "Votre panier est vide",
+    "emptyText": "Ajoutez d'abord des articles au panier pour passer commande.",
+    "emptyCta": "Voir le catalogue",
+    "stepOf": "Étape {current} sur {total}",
+    "steps": {
+      "contact": "Contact & adresse",
+      "payment": "Paiement",
+      "review": "Vérifier & commander"
+    },
+    "next": "Continuer",
+    "back": "Retour",
+    "edit": "Modifier",
+    "contactTitle": "Coordonnées",
+    "contactHint": "C'est à cette adresse que nous vous écrirons en cas de question sur votre commande.",
+    "email": "Adresse e-mail",
+    "phone": "Téléphone",
+    "phoneHint": "Nécessaire pour convenir du créneau de livraison.",
+    "billingTitle": "Adresse de facturation",
+    "shippingTitle": "Adresse de livraison",
+    "sameAsBilling": "L'adresse de livraison est identique à l'adresse de facturation",
+    "salutation": "Civilité",
+    "salutationNone": "Non précisée",
+    "salutationMr": "Monsieur",
+    "salutationMrs": "Madame",
+    "salutationDiverse": "Autre",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "company": "Société (facultatif)",
+    "street": "Numéro et nom de rue",
+    "postalCode": "Code postal",
+    "city": "Ville",
+    "country": "Pays",
+    "countryFR": "France",
+    "countryHint": "Sélectionnez votre pays de livraison.",
+    "countryPlaceholder": "Rechercher un pays",
+    "countryToggle": "Ouvrir la liste des pays",
+    "countryEmpty": "Aucun pays trouvé.",
+    "noteTitle": "Remarque sur la commande (facultatif)",
+    "notePlaceholder": "par ex. date de livraison souhaitée ou précisions sur l'accès à la propriété.",
+    "paymentTitle": "Choisir le moyen de paiement",
+    "paymentNone": "Aucun moyen de paiement n'est activé pour le moment. Merci de nous contacter par téléphone.",
+    "paymentFree": "gratuit",
+    "reviewTitle": "Vérifier la commande",
+    "reviewIntro": "Merci de vérifier vos informations. En cliquant sur le bouton, vous passez une commande ferme avec obligation de paiement.",
+    "reviewContact": "Contact",
+    "reviewBilling": "Adresse de facturation",
+    "reviewShipping": "Adresse de livraison",
+    "reviewShippingMethod": "Mode de livraison",
+    "reviewPayment": "Moyen de paiement",
+    "reviewItems": "Vos articles",
+    "reviewNote": "Votre remarque",
+    "quantityShort": "{count} ×",
+    "essentialProperties": "Caractéristiques essentielles",
+    "shippingMethodTitle": "Mode de livraison",
+    "shippingMethods": {
+      "standard": {
+        "label": "Livraison standard",
+        "delay": "Livraison sous 3 à 5 jours ouvrés"
+      },
+      "express": {
+        "label": "Livraison express",
+        "delay": "Livraison sous 24 à 48 heures"
+      }
+    },
+    "deliveryTitle": "Livraison",
+    "deliveryTime": "L'expédition intervient après réception du paiement.",
+    "deliveryCountry": "Livraison en France métropolitaine.",
+    "summaryTitle": "Montant total",
+    "subtotal": "Sous-total",
+    "shipping": "Frais de livraison",
+    "shippingFree": "offerte",
+    "total": "Total",
+    "vatIncluded": "dont TVA {rate} % ({amount})",
+    "priceNote": "Tous les prix sont des prix définitifs.",
+    "termsLabel": "J'ai lu et j'accepte les <terms>conditions générales de vente</terms>. J'ai pris connaissance de la <privacy>politique de confidentialité</privacy>.",
+    "withdrawalLabel": "J'ai lu les <withdrawal>informations sur le droit de rétractation</withdrawal> et je sais que je peux me rétracter de ce contrat dans un délai de 14 jours sans avoir à me justifier.",
+    "consentRequired": "Merci de confirmer les deux mentions pour finaliser la commande.",
+    "submit": "Commander avec obligation de paiement",
+    "submitting": "Envoi de la commande…",
+    "submitNote": "En validant, vous concluez un contrat payant portant sur les articles ci-dessus, pour un montant total de {total}.",
+    "errors": {
+      "invalid_payload": "La commande n'a pas pu être lue. Merci de réessayer.",
+      "cart_empty": "Votre panier est vide.",
+      "cart_too_large": "Votre panier contient trop d'articles différents.",
+      "invalid_email": "Merci d'indiquer une adresse e-mail valide.",
+      "invalid_name": "Merci d'indiquer vos nom et prénom.",
+      "invalid_street": "Merci d'indiquer le numéro et le nom de la rue.",
+      "invalid_postal_code": "Merci d'indiquer un code postal valide (5 chiffres).",
+      "invalid_city": "Merci d'indiquer une ville.",
+      "unsupported_country": "Merci d'indiquer un pays valide.",
+      "invalid_phone": "Merci d'indiquer un numéro de téléphone valide.",
+      "invalid_payment_method": "Merci de choisir un moyen de paiement disponible.",
+      "terms_required": "Merci d'accepter les conditions générales de vente.",
+      "withdrawal_required": "Merci de confirmer les informations sur le droit de rétractation.",
+      "product_unavailable": "Un article de votre panier n'est plus disponible.",
+      "insufficient_stock": "Il {available, plural, =0 {ne reste aucune unité} one {ne reste que # unité} other {ne reste que # unités}} de « {name} ».",
+      "order_failed": "La commande n'a pas pu être finalisée. Merci de réessayer.",
+      "network": "La connexion à la boutique est interrompue. Merci de réessayer.",
+      "invalid_quantity": "Merci de choisir une quantité entre 1 et 20 par article."
+    },
+    "confirmation": {
+      "metaTitle": "Confirmation de commande {orderNumber} | MLC Bois",
+      "title": "Merci pour votre commande",
+      "subtitle": "Nous avons bien reçu votre commande.",
+      "orderNumber": "Numéro de commande",
+      "orderDate": "Date de commande",
+      "emailNotice": "Veuillez consulter votre adresse email pour avoir les informations de paiement de votre commande afin de valider votre commande.",
+      "notFoundTitle": "Commande introuvable",
+      "notFoundText": "Le lien est incomplet ou a expiré. Merci d'utiliser le lien figurant dans votre confirmation de commande.",
+      "itemsTitle": "Articles commandés",
+      "addressTitle": "Adresses",
+      "contactTitle": "Contact",
+      "paymentTitle": "Paiement",
+      "statusTitle": "Statut",
+      "statusOrder": "Statut de la commande",
+      "statusPayment": "Statut du paiement",
+      "instructionsTitle": "La suite",
+      "instructions": {
+        "vorkasse": "Merci de virer le montant total de {total} en indiquant le numéro de commande {orderNumber}. Votre marchandise part dès réception du paiement.",
+        "rechnung": "Vous recevrez la facture avec la marchandise. Le montant de {total} est payable sous 14 jours après réception, sans escompte.",
+        "nachnahme": "Le montant de {total} est encaissé à la remise par le livreur. Merci de prévoir l'appoint.",
+        "provider": "Le paiement via {label} n'est pas encore traité automatiquement. Nous vous écrirons dès que le prestataire de paiement sera activé sur la boutique.",
+        "generic": "Nous vérifions votre commande et vous écrivons dès que la marchandise est prête à partir."
+      },
+      "bankTitle": "Coordonnées bancaires",
+      "bankHolder": "Titulaire du compte",
+      "bankIban": "IBAN",
+      "bankBic": "BIC",
+      "bankBank": "Banque",
+      "bankTransferType": "Type de virement",
+      "bankReference": "Référence à indiquer",
+      "bankDemoNotice": "Remarque : ces coordonnées bancaires sont un espace réservé pour l'environnement de test et ne correspondent à aucun compte réel. Elles doivent être remplacées par les vraies coordonnées avant la mise en production.",
+      "providerNotice": "Le prestataire de paiement pour {label} se configure dans le back-office, rubrique « Intégrations ». D'ici là, nous confirmons manuellement la réception du paiement.",
+      "withdrawalTitle": "Droit de rétractation",
+      "withdrawalText": "Vous disposez d'un délai de quatorze jours à compter du jour où vous, ou un tiers que vous avez désigné, prenez physiquement possession du bien pour vous rétracter de ce contrat sans avoir à vous justifier. Le texte complet et le formulaire type de rétractation figurent sur la page dédiée.",
+      "withdrawalLink": "Voir le droit de rétractation",
+      "continueShopping": "Continuer mes achats",
+      "print": "Imprimer la commande",
+      "paidText": "Nous avons bien reçu votre commande et votre paiement.",
+      "pendingTitle": "Commande enregistrée, paiement à confirmer",
+      "pendingText": "Votre commande est bien enregistrée, mais nous n'avons pas encore reçu la confirmation du paiement. Elle sera préparée dès que le règlement sera confirmé.",
+      "interruptedTitle": "Paiement interrompu",
+      "interruptedText": "Votre commande est enregistrée, mais le paiement n'a pas été finalisé : rien n'a été débité. Contactez-nous à contact@mlc-bois.fr avec votre numéro de commande pour la régler.",
+      "failedTitle": "Le paiement n'a pas abouti",
+      "failedText": "Votre commande est enregistrée, mais le paiement a été refusé et rien n'a été débité. Contactez-nous à contact@mlc-bois.fr avec votre numéro de commande pour choisir un autre moyen de règlement."
+    }
+  },
+  "wishlist": {
+    "title": "Favoris",
+    "intro": "Les articles mis en favori restent enregistrés dans ce navigateur — sans compte et sans connexion.",
+    "add": "Ajouter aux favoris",
+    "remove": "Retirer des favoris",
+    "loading": "Chargement des favoris …",
+    "count": "{count, plural, one {# article} other {# articles}}",
+    "clear": "Vider les favoris",
+    "emptyTitle": "Votre liste de favoris est encore vide.",
+    "emptyText": "Cliquez sur le cœur d'un article pour le retrouver ici plus tard.",
+    "emptyCta": "Découvrir le catalogue"
+  },
+  "account": {
+    "metaTitle": "Mon compte",
+    "title": "Mon compte",
+    "guestNotice": "Le compte client est facultatif. Vous pouvez commander à tout moment en tant qu'invité, sans créer de compte.",
+    "nav": {
+      "aria": "Espace client",
+      "dashboard": "Vue d'ensemble",
+      "orders": "Commandes",
+      "addresses": "Adresses",
+      "data": "Mes informations",
+      "logout": "Se déconnecter",
+      "loggingOut": "Déconnexion en cours …"
+    },
+    "common": {
+      "save": "Enregistrer",
+      "saving": "Enregistrement …",
+      "loading": "Chargement …",
+      "back": "Retour",
+      "optional": "facultatif",
+      "shopCta": "Voir la boutique"
+    },
+    "fields": {
+      "salutation": "Civilité",
+      "salutationNone": "Non précisée",
+      "salutationMr": "Monsieur",
+      "salutationMrs": "Madame",
+      "salutationDiverse": "Autre",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "company": "Société",
+      "street": "Numéro et nom de rue",
+      "postalCode": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "countryFR": "France",
+      "countryHint": "Sélectionnez votre pays de livraison.",
+      "email": "Adresse e-mail",
+      "phone": "Téléphone",
+      "phoneHint": "Uniquement pour les questions liées à la livraison.",
+      "password": "Mot de passe"
+    },
+    "errors": {
+      "invalid_payload": "La demande n'a pas pu être lue.",
+      "invalid_email": "Merci d'indiquer une adresse e-mail valide.",
+      "invalid_name": "Merci d'indiquer vos nom et prénom.",
+      "invalid_salutation": "Merci de choisir une civilité valide.",
+      "invalid_phone": "Merci d'indiquer un numéro de téléphone valide.",
+      "weak_password": "Le mot de passe doit compter au moins 12 caractères.",
+      "password_mismatch": "Les deux mots de passe ne correspondent pas.",
+      "invalid_credentials": "L'adresse e-mail ou le mot de passe est incorrect.",
+      "account_disabled": "L'adresse e-mail ou le mot de passe est incorrect.",
+      "invalid_street": "Merci d'indiquer le numéro et le nom de la rue.",
+      "invalid_postal_code": "Merci d'indiquer un code postal valide.",
+      "invalid_city": "Merci d'indiquer une ville.",
+      "unsupported_country": "Merci d'indiquer un pays valide.",
+      "invalid_token": "Ce lien a expiré ou a déjà été utilisé. Merci d'en demander un nouveau.",
+      "rate_limited": "Trop de tentatives. Merci de patienter un instant avant de réessayer.",
+      "not_found": "Introuvable.",
+      "confirmation_required": "Merci de confirmer explicitement la suppression.",
+      "mail_failed": "L'e-mail n'a pas pu être envoyé. Merci de réessayer plus tard.",
+      "server_error": "Une erreur est survenue. Merci de réessayer plus tard.",
+      "network": "Aucune connexion au serveur. Merci de vérifier votre connexion Internet."
+    },
+    "login": {
+      "metaTitle": "Connexion",
+      "title": "Connexion",
+      "intro": "Connectez-vous pour consulter vos commandes et gérer vos adresses.",
+      "submit": "Se connecter",
+      "submitting": "Connexion …",
+      "forgot": "Mot de passe oublié ?",
+      "noAccount": "Pas encore de compte client ?",
+      "registerLink": "Créer un compte",
+      "registered": "Si l'adresse était encore disponible, votre compte est maintenant créé. Connectez-vous avec votre mot de passe.",
+      "passwordChanged": "Votre mot de passe a été modifié. Connectez-vous avec le nouveau mot de passe."
+    },
+    "register": {
+      "metaTitle": "Créer un compte",
+      "title": "Créer un compte",
+      "intro": "Avec un compte, vous consultez vos commandes à tout moment et n'avez pas à ressaisir votre adresse.",
+      "passwordHint": "12 caractères minimum. Une phrase longue et facile à retenir est plus sûre qu'un mot de passe court et compliqué.",
+      "privacyNote": "La façon dont nous traitons vos données est décrite dans la <privacy>politique de confidentialité</privacy>.",
+      "submit": "Créer un compte",
+      "submitting": "Création du compte …",
+      "haveAccount": "Vous avez déjà un compte ?",
+      "loginLink": "Aller à la connexion",
+      "doneTitle": "Consultez votre boîte mail",
+      "doneText": "Si l'adresse était encore disponible, votre compte est créé et nous vous avons envoyé un e-mail. Connectez-vous ensuite avec votre mot de passe.",
+      "doneCta": "Aller à la connexion"
+    },
+    "forgot": {
+      "metaTitle": "Mot de passe oublié",
+      "title": "Mot de passe oublié",
+      "intro": "Indiquez votre adresse e-mail. Si un compte y est associé, nous vous envoyons un lien de réinitialisation.",
+      "submit": "Demander le lien",
+      "submitting": "Envoi …",
+      "doneTitle": "Consultez votre boîte mail",
+      "doneText": "Si un compte est associé à cette adresse e-mail, nous vous avons envoyé un lien de réinitialisation. Le lien est valable 30 minutes et ne peut servir qu'une fois.",
+      "devLink": "Mode développement sans service d'e-mail. Lien de réinitialisation :",
+      "backToLogin": "Retour à la connexion"
+    },
+    "reset": {
+      "metaTitle": "Nouveau mot de passe",
+      "title": "Choisir un nouveau mot de passe",
+      "intro": "Choisissez un nouveau mot de passe pour votre compte client.",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordConfirm": "Confirmer le nouveau mot de passe",
+      "submit": "Enregistrer le mot de passe",
+      "submitting": "Enregistrement …",
+      "invalidTitle": "Ce lien n'est plus valable",
+      "invalidText": "Ce lien a expiré ou a déjà été utilisé. Merci d'en demander un nouveau.",
+      "requestNew": "Demander un nouveau lien",
+      "doneTitle": "Mot de passe modifié",
+      "doneText": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter avec le nouveau mot de passe.",
+      "toLogin": "Aller à la connexion"
+    },
+    "dashboard": {
+      "metaTitle": "Vue d'ensemble",
+      "greeting": "Bonjour {name}",
+      "intro": "Vous trouvez ici vos commandes, vos adresses et tous les réglages relatifs à vos données.",
+      "memberSince": "Client depuis {date}",
+      "orderCount": "{count, plural, =0 {Aucune commande pour l'instant} one {# commande} other {# commandes}}",
+      "recentTitle": "Dernières commandes",
+      "allOrders": "Voir toutes les commandes",
+      "emptyOrders": "Aucune commande n'a encore été passée avec ce compte.",
+      "tiles": {
+        "ordersTitle": "Commandes",
+        "ordersText": "Consulter le statut, les lignes et les montants de vos commandes.",
+        "addressesTitle": "Adresses",
+        "addressesText": "Enregistrer l'adresse de facturation et de livraison pour la prochaine commande.",
+        "dataTitle": "Mes informations",
+        "dataText": "Changer de mot de passe, exporter ses données ou supprimer son compte."
+      }
+    },
+    "orders": {
+      "metaTitle": "Mes commandes",
+      "title": "Mes commandes",
+      "intro": "Toutes les commandes passées avec ce compte.",
+      "empty": "Aucune commande n'a encore été passée avec ce compte.",
+      "number": "Numéro de commande",
+      "date": "Date",
+      "status": "Statut",
+      "payment": "Paiement",
+      "total": "Total",
+      "items": "Articles",
+      "view": "Voir le détail",
+      "guestHint": "Les commandes passées en tant qu'invité, sans compte, n'apparaissent pas ici. Utilisez pour cela le lien figurant dans votre confirmation de commande.",
+      "detailMetaTitle": "Commande {orderNumber}",
+      "backToList": "Retour à mes commandes",
+      "orderedOn": "Commandé le {date}"
+    },
+    "addresses": {
+      "metaTitle": "Mes adresses",
+      "title": "Mes adresses",
+      "intro": "Ces adresses remplissent automatiquement le tunnel de commande. Les commandes déjà passées n'en sont pas modifiées.",
+      "billingTitle": "Adresse de facturation",
+      "shippingTitle": "Adresse de livraison",
+      "sameAsBilling": "L'adresse de livraison est identique à l'adresse de facturation",
+      "nameHint": "Les nom et prénom proviennent de vos informations personnelles et se modifient dans « Mes informations ».",
+      "emptyHint": "Vous n'êtes pas obligé de renseigner quoi que ce soit ici. Un champ vide signifie simplement que nous n'enregistrons rien.",
+      "saved": "Vos adresses ont été enregistrées."
+    },
+    "data": {
+      "metaTitle": "Mes informations",
+      "title": "Mes informations",
+      "intro": "Vous gérez ici vos données personnelles, votre mot de passe et vos droits au titre du RGPD.",
+      "profileTitle": "Données personnelles",
+      "profileIntro": "Les modifications s'appliquent à vos commandes à venir.",
+      "emailFixed": "L'adresse e-mail est aussi votre identifiant de connexion. Pour la modifier, écrivez-nous via le formulaire de contact.",
+      "profileSaved": "Vos données ont été enregistrées.",
+      "passwordTitle": "Changer de mot de passe",
+      "passwordIntro": "Pour des raisons de sécurité, nous avons d'abord besoin de votre mot de passe actuel.",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "newPasswordConfirm": "Confirmer le nouveau mot de passe",
+      "passwordSubmit": "Changer le mot de passe",
+      "passwordSaved": "Votre mot de passe a été modifié.",
+      "exportTitle": "Exporter mes données",
+      "exportIntro": "Vous recevez un fichier JSON contenant toutes les données enregistrées pour votre compte, commandes comprises. Votre mot de passe n'y figure pas : il est stocké uniquement sous forme d'empreinte non réversible.",
+      "exportLegal": "Droit d'accès au titre de l'article 15 du RGPD et portabilité au titre de l'article 20 du RGPD.",
+      "exportButton": "Télécharger mes données au format JSON",
+      "deleteTitle": "Supprimer mon compte",
+      "deleteIntro": "Votre compte, votre mot de passe et vos adresses enregistrées seront définitivement supprimés. Cette action est irréversible.",
+      "deleteRetention": "Les commandes déjà passées restent conservées : les factures et pièces comptables sont soumises à des durées de conservation légales (article L123-22 du Code de commerce, dix ans, et article L102 B du Livre des procédures fiscales, six ans). L'article 17, paragraphe 3, point b du RGPD prévoit expressément ce cas. Vos commandes sont alors détachées de votre compte et vos coordonnées en sont retirées.",
+      "deletePasswordLabel": "Pour confirmer : votre mot de passe",
+      "deleteConfirmLabel": "Saisissez {word} pour confirmer la suppression",
+      "deleteButton": "Supprimer définitivement le compte",
+      "deleteSubmitting": "Suppression du compte …",
+      "deleteDoneTitle": "Votre compte a été supprimé",
+      "deleteDoneText": "Nous avons supprimé votre compte client. Merci de la confiance que vous nous avez accordée.",
+      "deleteDoneCta": "Retour à l'accueil"
+    }
+  },
+  "campaign": {
+    "eyebrow": "Offre",
+    "endsIn": "Se termine dans",
+    "dayShort": "J",
+    "validUntil": "Valable jusqu'au {date}",
+    "legalNote": "Les prix promotionnels indiqués sont valables jusqu'au {date} et sont appliqués automatiquement dans le panier. Au-delà, le prix habituel s'applique de nouveau. Prix hors frais de livraison."
+  },
+  "sortiment": {
+    "eyebrow": "Catalogue",
+    "titel": "Cinq rayons, un seul degré de séchage",
+    "einleitung": "Du bois bûche en vrac ou sur palette, des granulés, du bois compressé et des poêles. Tout est séché en séchoir et part de notre dépôt de Saint-Denis vers toute la France métropolitaine.",
+    "artikel": "{anzahl} articles",
+    "beschreibung": {
+      "vrac": "Livré en grande caisse et déversé chez vous. Le meilleur prix au mètre cube apparent.",
+      "palette": "Rangé et cerclé sur palette, déposé au sol. Rien à empiler dans l'urgence.",
+      "granules": "Certifiés ENplus A1, pour poêle et chaudière à granulés.",
+      "bois-compresse": "Un tiers de la place, des braises qui tiennent la nuit.",
+      "poele-a-bois": "Poêles à bûches et à granulés, choisis pour leur rendement et leurs pièces détachées."
+    }
+  },
+  "feuchte": {
+    "eyebrow": "Humidité sur brut",
+    "titel": "Un bois humide vous coûte la moitié de la chaleur",
+    "einleitung": "Un kilo de bois contient toujours la même énergie. Ce qui décide de la part qui arrive réellement dans la pièce, c'est l'eau qu'il contient : elle doit d'abord s'évaporer, et cette évaporation consomme une chaleur qui ne réchauffe plus personne.",
+    "bildAlt": "Bûches en train de brûler dans un poêle à bois",
+    "grenzwert": "Seuil du label France Bois Bûche (classe H1)",
+    "nutzbar": "Utilisable :",
+    "stufen": {
+      "frisch": {
+        "titel": "Fraîchement abattu",
+        "text": "Sorti de la forêt. Il fume, encrasse la vitre — et ne doit tout simplement pas être brûlé dans cet état."
+      },
+      "luft": {
+        "titel": "Deux ans de séchage à l'air",
+        "text": "Sous abri, ventilé, empilé à distance du mur. Après deux étés, c'est le meilleur résultat réaliste."
+      },
+      "kammer": {
+        "titel": "Notre bois, séché en séchoir",
+        "text": "72 heures à 75 °C. Nous mesurons chaque lot et joignons le relevé à la livraison."
+      }
+    },
+    "fussnote": "Le label France Bois Bûche et la norme NF EN ISO 17225-5 classent en H1 le bois dont l'humidité sur brut ne dépasse pas 20 %. Le bois séché à l'air atteint cette valeur après environ deux étés ; le bois séché en séchoir sort ainsi de production. Un humidimètre coûte moins de 20 € et met fin à toute discussion — mesurez sur une bûche fraîchement fendue, jamais sur la face extérieure."
+  },
+  "holzarten": {
+    "eyebrow": "Pouvoirs calorifiques",
+    "titel": "Quel bois pour quel appareil",
+    "einleitung": "Les valeurs correspondent à un bois à 20 % d'humidité sur brut, en kilowattheures par stère. L'épicéa figure dans le tableau bien que nous ne le vendions qu'en petit bois d'allumage : sa place est au démarrage du feu, pas dans la charge de fond.",
+    "spalten": {
+      "holz": "Type de bois",
+      "heizwert": "Pouvoir calorifique",
+      "dichte": "Poids",
+      "glut": "Tenue des braises",
+      "eignung": "Adapté à"
+    },
+    "namen": {
+      "hainbuche": "Charme",
+      "buche": "Hêtre",
+      "eiche": "Chêne",
+      "esche": "Frêne",
+      "birke": "Bouleau",
+      "fichte": "Épicéa"
+    },
+    "eignung": {
+      "hainbuche": "Poêle de masse, longues soirées de chauffe",
+      "buche": "Poêle à bûches, le polyvalent",
+      "eiche": "Poêle de masse, feu continu",
+      "esche": "Poêle à vitre panoramique",
+      "birke": "Cheminée ouverte, brasero",
+      "fichte": "Uniquement pour allumer"
+    },
+    "glutAria": "Tenue des braises {wert} sur 5",
+    "fussnote": "Source : tables de pouvoir calorifique des chambres d'agriculture, arrondies commercialement. 1 stère correspond à environ 1,4 mètre cube apparent en vrac."
+  },
+  "lieferung": {
+    "eyebrow": "Livraison",
+    "titel": "Du dépôt jusque devant chez vous",
+    "einleitung": "Nous livrons partout en France et dans certaines villes de Belgique. En France avec notre propre remorque, ailleurs sur palette par transporteur — dans les deux cas vous êtes prévenu avant le passage.",
+    "schritte": {
+      "bestellung": {
+        "titel": "Commande",
+        "text": "Choisissez le type de bois, la longueur de bûche ou le pellet et la quantité puis validez votre commande"
+      },
+      "termin": {
+        "titel": "Créneau",
+        "text": "Nous appelons la veille et annonçons un créneau de deux heures. Vous n'avez pas à bloquer votre journée."
+      },
+      "abladen": {
+        "titel": "Déchargement",
+        "text": "Le déchargement en bord de voirie est compris dans le prix. Nous disposons des transpalettes pour transporter les palettes jusqu'à votre garage ou parking de stockage."
+      }
+    },
+    "tabelle": {
+      "zone": "Zone",
+      "plz": "Code postal",
+      "dauer": "Délai",
+      "kosten": "Tarif"
+    },
+    "zonen": {
+      "a": {
+        "name": "Zone A",
+        "gebiet": "Paris et petite couronne (75, 92, 93, 94)"
+      },
+      "b": {
+        "name": "Zone B",
+        "gebiet": "Grande couronne, Oise et Eure-et-Loir (77, 78, 91, 95, 60, 28)"
+      },
+      "c": {
+        "name": "Zone C",
+        "gebiet": "Reste de la France métropolitaine, par transporteur"
+      }
+    },
+    "freiHinweis": "À partir de 6 MAP, la livraison est offerte en zones A et B. La zone C couvre le reste du pays : elle part sur palette par transporteur, qui n'assure pas le déchargement."
+  },
+  "stimmen": {
+    "eyebrow": "Avis clients",
+    "titel": "Ce qu'il en reste après le premier hiver",
+    "basis": "Moyenne sur {anzahl} articles notés",
+    "sterneAria": "{wert} étoiles sur 5",
+    "kunden": {
+      "frank": {
+        "name": "Franck D.",
+        "ort": "Vincennes",
+        "kauf": "Hêtre 33 cm, palette",
+        "note": "5",
+        "text": "Livré le mardi matin, le créneau annoncé a été tenu et le bois prend au premier allume-feu, sans siffler."
+      },
+      "annika": {
+        "name": "Annie S.",
+        "ort": "Melun",
+        "kauf": "Mélange feuillus 25 cm",
+        "note": "4",
+        "text": "Le rapport qualité-prix est là, mais les bûches sont d'épaisseur inégale — j'ai dû en refendre quelques-unes pour mon petit poêle. La prochaine fois je prendrai du hêtre pur en 25 cm."
+      },
+      "jochen": {
+        "name": "Joachim R.",
+        "ort": "Rambouillet",
+        "kauf": "Bûches densifiées, 960 kg",
+        "note": "5",
+        "text": "La palette est arrivée une semaine après la date annoncée. En revanche on m'a prévenu avant et le prix a été ajusté sans que j'ai à le demander."
+      }
+    }
+  },
+  "recherche": {
+    "metaTitle": "Résultats pour « {query} » | MLC Bois",
+    "breadcrumb": "Résultats de recherche",
+    "titre": "Résultats pour « {query} »",
+    "resultats": "{count, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}",
+    "vide": "Saisissez un terme pour lancer une recherche — une essence, une longueur ou une marque."
+  },
+  "faq": {
+    "eyebrow": "Questions fréquentes",
+    "titel": "Ce que les acheteurs veulent savoir avant",
+    "einleitung": "Si votre question ne figure pas ici, appelez-nous. Du lundi au vendredi de 8h à 17h et le samedi de 9h à 13h, la personne qui décroche a elle-même livré le bois.",
+    "fragen": {
+      "srm": {
+        "frage": "Quelle différence entre le mètre cube apparent, le stère et le mètre cube réel ?",
+        "antwort": "Un mètre cube apparent (MAP) est un mètre cube de bois versé en vrac, tel qu'il tombe de la benne. Rangé proprement, le même volume donne environ 0,7 stère. Si l'on retire tout l'air entre les bûches, il reste à peu près 0,4 mètre cube de bois réel. Nous vendons au mètre cube apparent, parce que c'est la quantité qui arrive réellement chez vous."
+      },
+      "trocken": {
+        "frage": "Comment savoir si le bois est vraiment sec ?",
+        "antwort": "Au son et aux fentes : les bûches sèches sonnent clair quand on en frappe deux l'une contre l'autre, et présentent des fentes en étoile sur la coupe. Seule la mesure est fiable. Enfoncez l'humidimètre dans une bûche fraîchement fendue, pas sur la face extérieure — à l'extérieur, même un bois humide paraît sec. Notre relevé de mesure est joint à chaque livraison."
+      },
+      "lagern": {
+        "frage": "Comment stocker le bois après la livraison ?",
+        "antwort": "Le bois séché en séchoir n'a plus besoin de sécher, mais il ne doit pas se réhumidifier. Sous abri, à distance du mur et pas à même le sol — une palette dessous suffit. Dans une cave fermée et sans ventilation, le bois reprend l'humidité de l'air et repasse au-dessus de 20 % en un an."
+      },
+      "restaurant": {
+        "frage": "Livrez-vous aussi les restaurants et les boulangeries ?",
+        "antwort": "Oui. Pour les fours à bois et les restaurants de grillades, nous proposons du hêtre en 25 et 33 cm à moins de 15 % d'humidité sur brut, en réapprovisionnement hebdomadaire sur demande. À partir de trois palettes par mois, un tarif dégressif s'applique. Écrivez-nous via le formulaire de contact, nous répondons le jour ouvré même."
+      },
+      "livraison": {
+        "frage": "Combien coûte la livraison et sous quel délai ?",
+        "antwort": "La livraison standard est offerte, sans minimum de commande, sous 3 à 5 jours ouvrés. La livraison express est facturée 60 € et intervient sous 24 à 48 heures. Nous livrons partout en France et dans certaines villes de Belgique : en France avec notre propre remorque, ailleurs sur palette par transporteur. Dans les deux cas, vous êtes prévenu avant le passage."
+      },
+      "abladen": {
+        "frage": "Où le bois est-il déposé exactement ?",
+        "antwort": "Le déchargement en bord de voirie est compris dans le prix. Nous disposons de transpalettes pour amener les palettes jusqu'à votre garage ou votre parking de stockage. Signalez un accès étroit, un portail bas ou une cour fermée au moment de la commande : nous adaptons le véhicule."
+      }
+    }
+  },
+  "exitIntent": {
+    "title": "Avant de partir…",
+    "subtitle": "{count, plural, one {Vous avez regardé ce produit pendant votre visite. Il vous attend toujours.} other {Vous avez regardé # produits pendant votre visite. Ils vous attendent toujours.}}",
+    "cta": "Voir ces produits",
+    "dismiss": "Continuer mes achats",
+    "close": "Fermer"
+  },
+  "recentlyViewed": {
+    "title": "Consultés récemment",
+    "intro": "Les produits que vous avez regardés pendant cette visite. La liste ne survit pas à la fermeture de l'onglet.",
+    "loading": "Chargement de votre historique…",
+    "count": "{count, plural, one {# produit consulté} other {# produits consultés}}",
+    "emptyTitle": "Rien à montrer pour l'instant",
+    "emptyText": "Ouvrez une fiche produit et elle apparaîtra ici.",
+    "emptyCta": "Découvrir le catalogue"
+  }
+}

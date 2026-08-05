@@ -1,0 +1,8 @@
+[
+  { "url": "https://images.unsplash.com/photo-1649711895336-20ff39db62f8?fm=jpg&q=80&w=900&auto=format&fit=crop", "localPath": "/images/products/aircon.jpg" },
+  { "url": "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?fm=jpg&q=80&w=900&auto=format&fit=crop", "localPath": "/images/products/drone.jpg" },
+  { "url": "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?fm=jpg&q=80&w=1600&auto=format&fit=crop", "localPath": "/images/hero/tv-hero.jpg" },
+  { "url": "https://images.unsplash.com/photo-1473968512647-3e447244af8f?fm=jpg&q=80&w=1600&auto=format&fit=crop", "localPath": "/images/hero/drone-hero.jpg" },
+  { "url": "https://images.unsplash.com/photo-1626806787461-102c1bfaaea1?fm=jpg&q=80&w=1600&auto=format&fit=crop", "localPath": "/images/hero/laundry-hero.jpg" },
+  { "url": "https://images.unsplash.com/photo-1510707577719-ae7c14805e3a?fm=jpg&q=80&w=1600&auto=format&fit=crop", "localPath": "/images/hero/coffee-hero.jpg" }
+]

@@ -1,0 +1,796 @@
+{
+  "common": {
+    "searchPlaceholder": "Beech 33 cm, wood briquettes, pellets …",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "categories": "Categories",
+    "showAll": "View all",
+    "viewShop": "Go to shop",
+    "language": "Language",
+    "home": "Home",
+    "breadcrumb": "Breadcrumb",
+    "shopName": "MLC Bois",
+    "groupNames": {
+      "bois-de-chauffage": "Firewood",
+      "equipement": "Stoves"
+    },
+    "categoryNames": {
+      "vrac": "Loose firewood",
+      "palette": "Palletised firewood",
+      "granules": "Wood pellets",
+      "bois-compresse": "Compressed logs",
+      "poele-a-bois": "Wood stoves"
+    },
+    "from": "from"
+  },
+  "header": {
+    "homeAriaLabel": "MLC Bois – home page",
+    "logoAlt": "MLC Bois",
+    "search": "Search",
+    "lieferzusage": "Delivered anywhere in mainland France",
+    "beratung": "Advice & orders",
+    "oeffnung": "Mon–Fri 8am–5pm · Sat 9am–1pm",
+    "lieferbanner": "Free delivery from 6 loose m³",
+    "anrufenAria": "Call: {nummer}"
+  },
+  "hero": {
+    "eyebrow": "Kiln-dried · under 18 % moisture content",
+    "titel": "Wood that burns",
+    "titelAkzent": "the day it arrives.",
+    "beschreibung": "Beech, oak, birch and ash from French forests. 72 hours in the kiln, then straight onto the trailer. You won't stack it for two summers — you'll heat with it the same evening.",
+    "bildAlt": "Split beech logs, neatly stacked in the drying kiln",
+    "belege": {
+      "feuchte": "Moisture content after kiln drying, measured on every batch",
+      "lieferung": "Delivery time in Île-de-France, 3 to 8 days elsewhere in France",
+      "heizwert": "Calorific value of beech per stacked m³"
+    },
+    "ctaCatalogue": "Browse our wood"
+  },
+  "interventions": {
+    "label": "We deliver to",
+    "srListe": "We deliver in particular to {villes}."
+  },
+  "home": {
+    "metaTitle": "MLC Bois | Kiln-dried firewood, delivered within 48 hours",
+    "metaDescription": "Beech, oak, birch and ash in 25, 33 and 50 cm. Under 18 % moisture content, measurement record with every delivery. Delivered anywhere in mainland France.",
+    "bestsellerEyebrow": "Most ordered",
+    "bestseller": "What's going out this week",
+    "bestsellerCta": "Full range"
+  },
+  "trust": {
+    "feuchte": "Every batch measured before it leaves",
+    "lieferung": "Anywhere in mainland France, 48 h in Île-de-France",
+    "laengen": "Three log lengths, split and ready to burn",
+    "herkunft": "Wood from French forests, PEFC certified"
+  },
+  "group": {
+    "metaTitle": "{label} | MLC Bois",
+    "metaDescription": "Every category in the {label} range at MLC Bois: kiln-dried wood, clear prices and fast delivery.",
+    "intro": "Every category in the {label} range at a glance.",
+    "productCount": "{count, plural, =0 {No items yet} one {# item} other {# items}}"
+  },
+  "category": {
+    "metaTitle": "{label} | MLC Bois",
+    "productsCount": "<b>{filtered}</b> of {total} products",
+    "sortBy": "Sort by",
+    "sortRelevance": "Relevance",
+    "sortPriceAsc": "Price low to high",
+    "sortPriceDesc": "Price high to low",
+    "sortNewest": "New arrivals",
+    "emptyTitle": "No products found",
+    "emptyHint": "Adjust your filters to see more results.",
+    "emptyReset": "Reset filters",
+    "filtersTitle": "Filters",
+    "filtersReset": "Reset",
+    "filtersClose": "Close filters",
+    "filtersApply": "{count, plural, =0 {View products} one {View # product} other {View # products}}",
+    "filterBrand": "Brand",
+    "filterPrice": "Price",
+    "filterRating": "Rating",
+    "filterMinStars": "{rating} stars and up",
+    "filterInStockOnly": "In stock only",
+    "priceRanges": {
+      "under100": "Up to €100",
+      "from100": "€100 - €300",
+      "from300": "€300 - €600",
+      "from600": "€600 - €1,000",
+      "over1000": "Over €1,000"
+    },
+    "guideTitle": "{label} at MLC Bois",
+    "guideDiscover": "Discover {label}",
+    "guideAdvice": "Ask for advice"
+  },
+  "product": {
+    "details": "Product details & service information",
+    "description": "Product description",
+    "features": "Features",
+    "related": "Similar products",
+    "sku": "Item no.",
+    "ratingOf": "{rating} out of 5",
+    "reviewCount": "{count, plural, one {# review} other {# reviews}}",
+    "paymentTitle": "Secure payment methods",
+    "metaTitle": "{name} | MLC Bois",
+    "onRequest": "On request",
+    "originalPrice": "Original price",
+    "vatNote": "Price excludes service and delivery costs",
+    "inStock": "In stock – standard delivery free (3–5 days)",
+    "outOfStock": "On request – available in 2–4 weeks",
+    "decreaseQuantity": "Decrease quantity by 1",
+    "increaseQuantity": "Increase quantity by 1",
+    "addToCart": "Add to cart",
+    "fastDelivery": "Standard delivery: free (3-5 business days)",
+    "expressDelivery": "Express delivery: €60 (24-48 h)",
+    "warranty": "14-day right of withdrawal, no reason required",
+    "vatNoteFreeShipping": "Free standard delivery",
+    "galleryLabel": "More product views",
+    "galleryView": "Show view {index} of {total}",
+    "chooseVolume": "Choose a volume",
+    "fromPrice": "from",
+    "perStere": "per stère"
+  },
+  "reviews": {
+    "title": "Customer reviews",
+    "count": "{count, plural, one {# review} other {# reviews}}",
+    "starsLabel": "{star} stars",
+    "starsAria": "{rating} out of 5 stars",
+    "listAria": "Customer reviews, {count, plural, one {# review} other {# reviews}} — scroll to browse",
+    "scrollHint": "{count, plural, one {# review} other {All # reviews}} — scroll within the box",
+    "emptyTitle": "This product has no customer reviews yet.",
+    "emptyHint": "Share your experience and write the first review — it helps others decide.",
+    "editorial": "Editorial assessment: {rating} out of 5",
+    "writeTitle": "Write a review",
+    "formRatingLabel": "Your rating",
+    "formRatingAria": "{value} out of 5 stars",
+    "formRatingRequired": "Please choose a rating from 1 to 5 stars.",
+    "formName": "Name",
+    "formCity": "Town (optional)",
+    "formEmail": "Email (optional)",
+    "formEmailHint": "Not published. We only use it if we have a question about your review.",
+    "formTitle": "Title (optional)",
+    "formTitlePlaceholder": "e.g. Properly dry, steady flame",
+    "formBody": "Your experience",
+    "formBodyPlaceholder": "What did you like, what didn't work? At least 10 characters.",
+    "formBodyCounter": "{count} / 2000 characters",
+    "formSubmit": "Submit review",
+    "formSubmitting": "Sending…",
+    "formModerationNote": "Every review is checked before it is published.",
+    "formError": "Your review could not be sent. Please try again.",
+    "formSuccessTitle": "Thank you! Your review will be published once checked.",
+    "formSuccessHint": "We read every review ourselves. Approval usually takes one to two working days."
+  },
+  "payment": {
+    "title": "Secure payment methods",
+    "free": "free",
+    "acceptedTitle": "Accepted payment methods",
+    "vitrine": {
+      "virement": "Bank transfer",
+      "carte": "Credit card",
+      "paypal": "PayPal"
+    }
+  },
+  "footer": {
+    "logoAlt": "MLC Bois",
+    "homeAriaLabel": "MLC Bois – home page",
+    "deliveryTitle": "Standard delivery: free (3-5 business days)",
+    "deliveryDetail": "Express delivery: €60 (24-48 hrs)",
+    "warrantyTitle": "Under 18 % moisture content",
+    "warrantyDetail": "Measurement record with every delivery",
+    "paymentTitle": "Secure payment",
+    "paymentDetail": "SSL-encrypted transmission",
+    "contact": "Contact",
+    "service": "Service",
+    "about": "About us",
+    "legal": "Legal",
+    "linkOrderStatus": "Order status",
+    "linkReturns": "Returns & complaints",
+    "linkWithdrawal": "Right of withdrawal",
+    "linkContact": "Contact",
+    "linkAboutUs": "About us",
+    "linkJobs": "Jobs & careers",
+    "linkPress": "Press",
+    "linkPartner": "Partner programme",
+    "linkImprint": "Legal notice",
+    "linkPrivacy": "Privacy",
+    "linkTerms": "Terms & conditions",
+    "linkCookies": "Cookie settings",
+    "copyright": "© {year} MLC Bois.",
+    "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm"
+  },
+  "cart": {
+    "title": "Cart",
+    "metaTitle": "Cart | MLC Bois",
+    "addToCart": "Add to cart",
+    "buyNow": "Buy now",
+    "added": "Added",
+    "soldOut": "Sold out",
+    "increase": "Increase quantity by 1",
+    "decrease": "Decrease quantity by 1",
+    "quantityLabel": "Quantity",
+    "indicatorWithItems": "Cart: {count, plural, one {# item} other {# items}}, {total}",
+    "itemCount": "{count, plural, one {# item} other {# items}}",
+    "emptyTitle": "Your cart is empty",
+    "emptyText": "Browse our firewood and solid fuels, and drop what interests you here.",
+    "emptyCta": "View the range",
+    "columnProduct": "Item",
+    "columnUnitPrice": "Unit price",
+    "columnQuantity": "Quantity",
+    "columnLineTotal": "Total",
+    "remove": "Remove item",
+    "removeLabel": "Remove {name} from the cart",
+    "clear": "Empty cart",
+    "continueShopping": "Continue shopping",
+    "summaryTitle": "Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Delivery costs",
+    "shippingFree": "free",
+    "total": "Total",
+    "vatIncluded": "incl. {rate} % VAT ({amount})",
+    "vatNote": "All prices include VAT.",
+    "shippingStandardHint": "Standard delivery is free, with no minimum order value.",
+    "shippingRule": "Standard delivery free (3–5 working days), express delivery €60.00 (24–48 hours). You choose the delivery method at checkout.",
+    "deliveryTime": "Dispatch takes place once payment has been received.",
+    "withdrawalHint": "As a consumer you have a 14-day right of withdrawal (art. L221-18 of the French Consumer Code). Details are on the right of withdrawal page.",
+    "toCheckout": "Proceed to checkout",
+    "onlyLeft": "Only {count} left in stock",
+    "stockAdjusted": "The quantity has been adjusted to the available stock.",
+    "revalidated": "Prices and availability have just been updated. Please check your cart.",
+    "removedUnavailable": "Items that are no longer available have been removed from your cart.",
+    "loading": "Loading cart…",
+    "drawerTitle": "Your cart",
+    "drawerClose": "Close cart",
+    "drawerViewCart": "View cart",
+    "campaignFreeShipping": "Free delivery through your offer"
+  },
+  "checkout": {
+    "metaTitle": "Checkout | MLC Bois",
+    "title": "Checkout",
+    "backToCart": "Back to cart",
+    "emptyTitle": "Your cart is empty",
+    "emptyText": "Add items to your cart first to proceed to checkout.",
+    "emptyCta": "View the range",
+    "stepOf": "Step {current} of {total}",
+    "steps": {
+      "contact": "Contact & address",
+      "payment": "Payment",
+      "review": "Review & order"
+    },
+    "next": "Continue",
+    "back": "Back",
+    "edit": "Edit",
+    "contactTitle": "Contact details",
+    "contactHint": "This is the address we will write to if we have a question about your order.",
+    "email": "Email address",
+    "phone": "Phone",
+    "phoneHint": "Needed to agree a delivery slot.",
+    "billingTitle": "Billing address",
+    "shippingTitle": "Delivery address",
+    "sameAsBilling": "Delivery address is the same as the billing address",
+    "salutation": "Title",
+    "salutationNone": "Not specified",
+    "salutationMr": "Mr",
+    "salutationMrs": "Mrs",
+    "salutationDiverse": "Other",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "company": "Company (optional)",
+    "street": "Street and number",
+    "postalCode": "Postcode",
+    "city": "Town",
+    "country": "Country",
+    "countryFR": "France",
+    "countryHint": "Select your delivery country.",
+    "countryPlaceholder": "Search for a country",
+    "countryToggle": "Open country list",
+    "countryEmpty": "No country found.",
+    "noteTitle": "Note about the order (optional)",
+    "notePlaceholder": "e.g. preferred delivery date or details about access to the property.",
+    "paymentTitle": "Choose a payment method",
+    "paymentNone": "No payment method is enabled at the moment. Please contact us by phone.",
+    "paymentFree": "free",
+    "reviewTitle": "Review your order",
+    "reviewIntro": "Please check your details. Clicking the button places a binding order with an obligation to pay.",
+    "reviewContact": "Contact",
+    "reviewBilling": "Billing address",
+    "reviewShipping": "Delivery address",
+    "reviewShippingMethod": "Delivery method",
+    "reviewPayment": "Payment method",
+    "reviewItems": "Your items",
+    "reviewNote": "Your note",
+    "quantityShort": "{count} ×",
+    "essentialProperties": "Essential characteristics",
+    "shippingMethodTitle": "Delivery method",
+    "shippingMethods": {
+      "standard": {
+        "label": "Standard delivery",
+        "delay": "Delivery within 3–5 working days"
+      },
+      "express": {
+        "label": "Express delivery",
+        "delay": "Delivery within 24–48 hours"
+      }
+    },
+    "deliveryTitle": "Delivery",
+    "deliveryTime": "Dispatch takes place once payment has been received.",
+    "deliveryCountry": "Delivery within mainland France.",
+    "summaryTitle": "Total amount",
+    "subtotal": "Subtotal",
+    "shipping": "Delivery costs",
+    "shippingFree": "free",
+    "total": "Total",
+    "vatIncluded": "incl. {rate} % VAT ({amount})",
+    "priceNote": "All prices are final prices.",
+    "termsLabel": "I have read and accept the <terms>terms and conditions</terms>. I have taken note of the <privacy>privacy policy</privacy>.",
+    "withdrawalLabel": "I have read the <withdrawal>right of withdrawal information</withdrawal> and understand that I may withdraw from this contract within 14 days without giving a reason.",
+    "consentRequired": "Please confirm both statements to complete the order.",
+    "submit": "Place order with obligation to pay",
+    "submitting": "Submitting order…",
+    "submitNote": "By submitting, you enter into a paid contract for the items listed above, for a total of {total}.",
+    "errors": {
+      "invalid_payload": "The order could not be read. Please try again.",
+      "cart_empty": "Your cart is empty.",
+      "cart_too_large": "Your cart contains too many different items.",
+      "invalid_email": "Please enter a valid email address.",
+      "invalid_name": "Please enter a first and last name.",
+      "invalid_street": "Please enter a street and house number.",
+      "invalid_postal_code": "Please enter a valid postcode (5 digits).",
+      "invalid_city": "Please enter a town.",
+      "unsupported_country": "Please enter a valid country.",
+      "invalid_phone": "Please enter a valid phone number.",
+      "invalid_payment_method": "Please choose an available payment method.",
+      "terms_required": "Please accept the terms and conditions.",
+      "withdrawal_required": "Please confirm the right of withdrawal information.",
+      "product_unavailable": "An item in your cart is no longer available.",
+      "insufficient_stock": "{available, plural, =0 {No units are} one {Only # unit is} other {Only # units are}} available of “{name}”.",
+      "order_failed": "The order could not be completed. Please try again.",
+      "network": "The connection to the shop was lost. Please try again.",
+      "invalid_quantity": "Please choose a quantity between 1 and 20 per item."
+    },
+    "confirmation": {
+      "metaTitle": "Order confirmation {orderNumber} | MLC Bois",
+      "title": "Thank you for your order",
+      "subtitle": "We have received your order.",
+      "orderNumber": "Order number",
+      "orderDate": "Order date",
+      "emailNotice": "Please check your email inbox for the payment details of your order in order to validate it.",
+      "notFoundTitle": "Order not found",
+      "notFoundText": "The link is incomplete or has expired. Please use the link from your order confirmation.",
+      "itemsTitle": "Items ordered",
+      "addressTitle": "Addresses",
+      "contactTitle": "Contact",
+      "paymentTitle": "Payment",
+      "statusTitle": "Status",
+      "statusOrder": "Order status",
+      "statusPayment": "Payment status",
+      "instructionsTitle": "What happens next",
+      "instructions": {
+        "vorkasse": "Please transfer the total of {total} quoting order number {orderNumber}. Your goods will be dispatched once payment has been received.",
+        "rechnung": "You will receive the invoice with the goods. The amount of {total} is due within 14 days of receipt, without deduction.",
+        "nachnahme": "The amount of {total} is collected by the driver on handover. Please have the exact sum ready.",
+        "provider": "Payment via {label} is not yet processed automatically. We will email you as soon as the payment provider is enabled in the shop.",
+        "generic": "We are checking your order and will email you as soon as the goods are ready to ship."
+      },
+      "bankTitle": "Bank details",
+      "bankHolder": "Account holder",
+      "bankIban": "IBAN",
+      "bankBic": "BIC",
+      "bankBank": "Bank",
+      "bankTransferType": "Transfer type",
+      "bankReference": "Payment reference",
+      "bankDemoNotice": "Note: these bank details are a placeholder for the test environment and belong to no real account. They must be replaced with the real details before going live.",
+      "providerNotice": "The payment provider for {label} is configured in the back office under “Integrations”. Until then we confirm incoming payments manually.",
+      "withdrawalTitle": "Right of withdrawal",
+      "withdrawalText": "You have the right to withdraw from this contract within fourteen days without giving any reason, starting from the day on which you, or a third party named by you, take physical possession of the goods. The full text and the model withdrawal form are on the dedicated page.",
+      "withdrawalLink": "See the right of withdrawal",
+      "continueShopping": "Continue shopping",
+      "print": "Print order",
+      "paidText": "We have received your order and your payment.",
+      "pendingTitle": "Order placed, payment to be confirmed",
+      "pendingText": "Your order has been placed, but we have not yet received confirmation of payment. It will be prepared as soon as the payment is confirmed.",
+      "interruptedTitle": "Payment interrupted",
+      "interruptedText": "Your order has been placed, but the payment was not completed and nothing has been charged. Contact us at contact@mlc-bois.fr with your order number to settle it.",
+      "failedTitle": "The payment did not go through",
+      "failedText": "Your order has been placed, but the payment was declined and nothing has been charged. Contact us at contact@mlc-bois.fr with your order number to choose another payment method."
+    }
+  },
+  "wishlist": {
+    "title": "Wishlist",
+    "intro": "Saved items stay in this browser — no account and no sign-in needed.",
+    "add": "Add to wishlist",
+    "remove": "Remove from wishlist",
+    "loading": "Loading wishlist …",
+    "count": "{count, plural, one {# item} other {# items}}",
+    "clear": "Clear wishlist",
+    "emptyTitle": "Your wishlist is still empty.",
+    "emptyText": "Click the heart on an item to collect it here and find it again later.",
+    "emptyCta": "Discover the range"
+  },
+  "account": {
+    "metaTitle": "My account",
+    "title": "My account",
+    "guestNotice": "A customer account is optional. You can order as a guest at any time, without creating one.",
+    "nav": {
+      "aria": "Account area",
+      "dashboard": "Overview",
+      "orders": "Orders",
+      "addresses": "Addresses",
+      "data": "My details",
+      "logout": "Sign out",
+      "loggingOut": "Signing you out …"
+    },
+    "common": {
+      "save": "Save",
+      "saving": "Saving …",
+      "loading": "Loading …",
+      "back": "Back",
+      "optional": "optional",
+      "shopCta": "Go to shop"
+    },
+    "fields": {
+      "salutation": "Title",
+      "salutationNone": "Not specified",
+      "salutationMr": "Mr",
+      "salutationMrs": "Mrs",
+      "salutationDiverse": "Other",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "company": "Company",
+      "street": "Street and number",
+      "postalCode": "Postcode",
+      "city": "Town",
+      "country": "Country",
+      "countryFR": "France",
+      "countryHint": "Select your delivery country.",
+      "email": "Email address",
+      "phone": "Phone",
+      "phoneHint": "Only for questions about the delivery.",
+      "password": "Password"
+    },
+    "errors": {
+      "invalid_payload": "The request could not be read.",
+      "invalid_email": "Please enter a valid email address.",
+      "invalid_name": "Please enter a first and last name.",
+      "invalid_salutation": "Please choose a valid title.",
+      "invalid_phone": "Please enter a valid phone number.",
+      "weak_password": "The password must be at least 12 characters long.",
+      "password_mismatch": "The two passwords do not match.",
+      "invalid_credentials": "The email address or password is incorrect.",
+      "account_disabled": "The email address or password is incorrect.",
+      "invalid_street": "Please enter a street and house number.",
+      "invalid_postal_code": "Please enter a valid postcode.",
+      "invalid_city": "Please enter a town.",
+      "unsupported_country": "Please enter a valid country.",
+      "invalid_token": "This link has expired or has already been used. Please request a new one.",
+      "rate_limited": "Too many attempts. Please wait a moment and try again.",
+      "not_found": "Not found.",
+      "confirmation_required": "Please confirm the deletion explicitly.",
+      "mail_failed": "The email could not be sent. Please try again later.",
+      "server_error": "An error occurred. Please try again later.",
+      "network": "No connection to the server. Please check your internet connection."
+    },
+    "login": {
+      "metaTitle": "Sign in",
+      "title": "Sign in",
+      "intro": "Sign in to view your orders and manage your addresses.",
+      "submit": "Sign in",
+      "submitting": "Signing in …",
+      "forgot": "Forgotten your password?",
+      "noAccount": "No customer account yet?",
+      "registerLink": "Create an account",
+      "registered": "If the address was still available, your account has now been created. Please sign in with your password.",
+      "passwordChanged": "Your password has been changed. Please sign in with the new password."
+    },
+    "register": {
+      "metaTitle": "Create an account",
+      "title": "Create an account",
+      "intro": "With an account you can view your orders at any time and won't need to retype your address.",
+      "passwordHint": "At least 12 characters. A long, memorable sentence is safer than a short, complicated password.",
+      "privacyNote": "How we process your data is set out in the <privacy>privacy policy</privacy>.",
+      "submit": "Create account",
+      "submitting": "Creating account …",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Go to sign-in",
+      "doneTitle": "Check your inbox",
+      "doneText": "If the address was still available, your account has been created and we have sent you an email. Then sign in with your password.",
+      "doneCta": "Go to sign-in"
+    },
+    "forgot": {
+      "metaTitle": "Forgotten password",
+      "title": "Forgotten password",
+      "intro": "Enter your email address. If an account exists for it, we will send you a reset link.",
+      "submit": "Request link",
+      "submitting": "Sending …",
+      "doneTitle": "Check your inbox",
+      "doneText": "If an account exists for this email address, we have sent you a link to reset your password. The link is valid for 30 minutes and can only be used once.",
+      "devLink": "Development mode without an email service. Reset link:",
+      "backToLogin": "Back to sign-in"
+    },
+    "reset": {
+      "metaTitle": "New password",
+      "title": "Choose a new password",
+      "intro": "Choose a new password for your customer account.",
+      "newPassword": "New password",
+      "newPasswordConfirm": "Repeat new password",
+      "submit": "Save password",
+      "submitting": "Saving …",
+      "invalidTitle": "This link is no longer valid",
+      "invalidText": "This link has expired or has already been used. Please request a new one.",
+      "requestNew": "Request a new link",
+      "doneTitle": "Password changed",
+      "doneText": "Your password has been changed. You can now sign in with the new password.",
+      "toLogin": "Go to sign-in"
+    },
+    "dashboard": {
+      "metaTitle": "Overview",
+      "greeting": "Hello {name}",
+      "intro": "Here you will find your orders, your addresses and all the settings for your data.",
+      "memberSince": "Customer since {date}",
+      "orderCount": "{count, plural, =0 {No orders yet} one {# order} other {# orders}}",
+      "recentTitle": "Recent orders",
+      "allOrders": "View all orders",
+      "emptyOrders": "Nothing has been ordered with this account yet.",
+      "tiles": {
+        "ordersTitle": "Orders",
+        "ordersText": "View the status, lines and amounts of your orders.",
+        "addressesTitle": "Addresses",
+        "addressesText": "Store a billing and delivery address for your next order.",
+        "dataTitle": "My details",
+        "dataText": "Change your password, export your data or delete your account."
+      }
+    },
+    "orders": {
+      "metaTitle": "My orders",
+      "title": "My orders",
+      "intro": "Every order you have placed with this account.",
+      "empty": "Nothing has been ordered with this account yet.",
+      "number": "Order number",
+      "date": "Date",
+      "status": "Status",
+      "payment": "Payment",
+      "total": "Total",
+      "items": "Items",
+      "view": "View details",
+      "guestHint": "Orders you placed as a guest, without an account, do not appear here. Use the link from your order confirmation instead.",
+      "detailMetaTitle": "Order {orderNumber}",
+      "backToList": "Back to my orders",
+      "orderedOn": "Ordered on {date}"
+    },
+    "addresses": {
+      "metaTitle": "My addresses",
+      "title": "My addresses",
+      "intro": "These addresses fill in the checkout automatically. Orders that are already complete are not affected.",
+      "billingTitle": "Billing address",
+      "shippingTitle": "Delivery address",
+      "sameAsBilling": "Delivery address is the same as the billing address",
+      "nameHint": "Your first and last name come from your personal details and can be changed under “My details”.",
+      "emptyHint": "You don't have to store anything here. Empty fields simply mean we save nothing.",
+      "saved": "Your addresses have been saved."
+    },
+    "data": {
+      "metaTitle": "My details",
+      "title": "My details",
+      "intro": "Here you manage your personal data, your password and your rights under the GDPR.",
+      "profileTitle": "Personal details",
+      "profileIntro": "Changes apply to your future orders.",
+      "emailFixed": "The email address is also your sign-in name. To change it, please write to us via the contact form.",
+      "profileSaved": "Your details have been saved.",
+      "passwordTitle": "Change password",
+      "passwordIntro": "For security reasons we first need your current password.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "newPasswordConfirm": "Repeat new password",
+      "passwordSubmit": "Change password",
+      "passwordSaved": "Your password has been changed.",
+      "exportTitle": "Export my data",
+      "exportIntro": "You receive a JSON file with all the data we hold for your account, including your orders. Your password is not included: it is stored only as a non-reversible hash.",
+      "exportLegal": "Right of access under art. 15 GDPR and data portability under art. 20 GDPR.",
+      "exportButton": "Download data as JSON",
+      "deleteTitle": "Delete account",
+      "deleteIntro": "Your account, your password and your saved addresses will be permanently deleted. This cannot be undone.",
+      "deleteRetention": "Completed orders remain stored: invoices and accounting records are subject to statutory retention periods (art. L123-22 of the French Commercial Code, ten years, and art. L102 B of the French Tax Procedure Code, six years). Art. 17(3)(b) GDPR expressly covers this case. Your orders are detached from your account and your contact details are removed from them.",
+      "deletePasswordLabel": "To confirm: your password",
+      "deleteConfirmLabel": "Type {word} to confirm the deletion",
+      "deleteButton": "Delete account permanently",
+      "deleteSubmitting": "Deleting account …",
+      "deleteDoneTitle": "Your account has been deleted",
+      "deleteDoneText": "We have deleted your customer account. Thank you for shopping with us.",
+      "deleteDoneCta": "Back to the home page"
+    }
+  },
+  "campaign": {
+    "eyebrow": "Offer",
+    "endsIn": "Ends in",
+    "dayShort": "D",
+    "validUntil": "Valid until {date}",
+    "legalNote": "The promotional prices shown are valid until {date} and are applied automatically in the cart. After that, the regular price applies again. Prices exclude delivery costs."
+  },
+  "sortiment": {
+    "eyebrow": "Range",
+    "titel": "Five aisles, one level of dryness",
+    "einleitung": "Split logs loose or on pallets, pellets, compressed logs and stoves. All kiln-dried, shipped from our Saint-Denis depot to anywhere in mainland France.",
+    "artikel": "{anzahl} items",
+    "beschreibung": {
+      "vrac": "Delivered in a large crate and tipped at your door. Best price per cubic metre.",
+      "palette": "Stacked and strapped on a pallet, set down on the ground. Nothing to stack in a hurry.",
+      "granules": "ENplus A1 certified, for pellet stoves and boilers.",
+      "bois-compresse": "A third of the space, embers through the night.",
+      "poele-a-bois": "Log and pellet stoves, chosen for efficiency and spare-part availability."
+    }
+  },
+  "feuchte": {
+    "eyebrow": "Moisture content",
+    "titel": "Wet wood costs you half the heat",
+    "einleitung": "A kilogram of wood always holds the same energy. What decides how much of it reaches the room is the water inside: it has to evaporate first, and that evaporation consumes heat which then warms nobody.",
+    "bildAlt": "Logs burning in a wood stove",
+    "grenzwert": "France Bois Bûche label threshold (class H1)",
+    "nutzbar": "Usable:",
+    "stufen": {
+      "frisch": {
+        "titel": "Freshly felled",
+        "text": "Straight out of the forest. It smokes, sooties up the glass — and simply must not be burned in that state."
+      },
+      "luft": {
+        "titel": "Two years air-dried",
+        "text": "Under cover, ventilated, stacked away from the wall. After two summers, that is the realistic best case."
+      },
+      "kammer": {
+        "titel": "Our wood, kiln-dried",
+        "text": "72 hours at 75 °C. We measure every batch and enclose the record with the delivery."
+      }
+    },
+    "fussnote": "The France Bois Bûche label and standard NF EN ISO 17225-5 class wood at or below 20 % moisture content as H1. Air-dried wood reaches that figure after roughly two summers; kiln-dried wood leaves production that way. A moisture meter costs under €20 and settles any argument — measure on a freshly split log, never on the outer face."
+  },
+  "holzarten": {
+    "eyebrow": "Calorific values",
+    "titel": "Which wood for which appliance",
+    "einleitung": "The figures are for wood at 20 % moisture content, in kilowatt-hours per stacked cubic metre. Spruce is in the table even though we only sell it as kindling: its place is at the start of a fire, not in the sustained load.",
+    "spalten": {
+      "holz": "Species",
+      "heizwert": "Calorific value",
+      "dichte": "Weight",
+      "glut": "Ember life",
+      "eignung": "Suited to"
+    },
+    "namen": {
+      "hainbuche": "Hornbeam",
+      "buche": "Beech",
+      "eiche": "Oak",
+      "esche": "Ash",
+      "birke": "Birch",
+      "fichte": "Spruce"
+    },
+    "eignung": {
+      "hainbuche": "Masonry heater, long heating evenings",
+      "buche": "Log stove, the all-rounder",
+      "eiche": "Masonry heater, continuous burn",
+      "esche": "Stove with a viewing window",
+      "birke": "Open fireplace, fire bowl",
+      "fichte": "Lighting the fire only"
+    },
+    "glutAria": "Ember life {wert} out of 5",
+    "fussnote": "Source: calorific value tables from the French chambers of agriculture, commercially rounded. 1 stacked cubic metre equals roughly 1.4 loose cubic metres."
+  },
+  "lieferung": {
+    "eyebrow": "Delivery",
+    "titel": "From the depot to your driveway",
+    "einleitung": "We deliver anywhere in mainland France. In Île-de-France on our own trailer, elsewhere on a pallet by freight carrier — either way you are told before we come.",
+    "schritte": {
+      "bestellung": {
+        "titel": "Order",
+        "text": "Choose the wood type, the log length or pellets, and the quantity, then confirm your order"
+      },
+      "termin": {
+        "titel": "Slot",
+        "text": "We call the day before and give you a two-hour window. You don't have to keep a whole day free."
+      },
+      "abladen": {
+        "titel": "Unloading",
+        "text": "Kerbside unloading is included in the price. Stacking in a yard, cellar or garage costs €35 per loose cubic metre."
+      }
+    },
+    "tabelle": {
+      "zone": "Zone",
+      "plz": "Postcode",
+      "dauer": "Lead time",
+      "kosten": "Cost"
+    },
+    "zonen": {
+      "a": {
+        "name": "Zone A",
+        "gebiet": "Paris and inner suburbs (75, 92, 93, 94)"
+      },
+      "b": {
+        "name": "Zone B",
+        "gebiet": "Outer Île-de-France, Oise and Eure-et-Loir (77, 78, 91, 95, 60, 28)"
+      },
+      "c": {
+        "name": "Zone C",
+        "gebiet": "Rest of mainland France, by freight carrier"
+      }
+    },
+    "freiHinweis": "From 6 loose m³ delivery is free in zones A and B. Zone C covers the rest of the country: it ships on a pallet by freight carrier, who does not unload."
+  },
+  "stimmen": {
+    "eyebrow": "Customer voices",
+    "titel": "What's left after the first winter",
+    "basis": "Average across {anzahl} rated items",
+    "sterneAria": "{wert} out of 5 stars",
+    "kunden": {
+      "frank": {
+        "name": "Franck D.",
+        "ort": "Vincennes",
+        "kauf": "Beech 33 cm, pallet",
+        "note": "5",
+        "text": "Delivered Tuesday morning, the announced window was kept. I measured it again myself: 15.8 %. The wood catches on the first firelighter, without hissing."
+      },
+      "annika": {
+        "name": "Annie S.",
+        "ort": "Melun",
+        "kauf": "Mixed hardwood 25 cm",
+        "note": "4",
+        "text": "Good value, but the logs vary in thickness — I had to re-split a few for my small stove. Next time I'll take pure beech in 25 cm."
+      },
+      "jochen": {
+        "name": "Joachim R.",
+        "ort": "Rambouillet",
+        "kauf": "Wood briquettes, 960 kg",
+        "note": "5",
+        "text": "The pallet arrived a week later than first stated. On the other hand they called ahead and adjusted the price without my having to ask."
+      }
+    }
+  },
+  "recherche": {
+    "metaTitle": "Results for “{query}” | MLC Bois",
+    "breadcrumb": "Search results",
+    "titre": "Results for “{query}”",
+    "resultats": "{count, plural, =0 {No results} one {# result} other {# results}}",
+    "vide": "Enter a search term to get started — a species, a length or a brand."
+  },
+  "faq": {
+    "eyebrow": "Frequently asked questions",
+    "titel": "What buyers want to know beforehand",
+    "einleitung": "If your question is not here, give us a call. Monday to Friday 8am to 5pm and Saturday 9am to 1pm, the person who picks up has delivered the wood themselves.",
+    "fragen": {
+      "srm": {
+        "frage": "What is the difference between a loose cubic metre, a stacked cubic metre and a solid cubic metre?",
+        "antwort": "A loose cubic metre is a cubic metre of wood tipped in loose, just as it falls out of the bin. Neatly stacked, the same quantity comes to roughly 0.7 stacked cubic metres. Take out all the air between the logs and about 0.4 solid cubic metres of actual wood remains. We sell by the loose cubic metre, because that is the quantity that actually arrives at your place."
+      },
+      "trocken": {
+        "frage": "How do I know the wood is really dry?",
+        "antwort": "By the sound and the cracks: dry logs ring bright when you knock two together, and show star-shaped cracks on the end grain. Only measuring is certain. Push the moisture meter into a freshly split log, not into the outer face — on the outside, even wet wood reads dry. Our measurement record comes with every delivery."
+      },
+      "lagern": {
+        "frage": "How do I store the wood after delivery?",
+        "antwort": "Kiln-dried wood no longer needs to dry, but it must not get wet again. Under cover, away from the wall and not directly on the ground — a pallet underneath is enough. In a closed cellar without ventilation, wood draws moisture from the air and is back above 20 % within a year."
+      },
+      "restaurant": {
+        "frage": "Do you also deliver to restaurants and bakeries?",
+        "antwort": "Yes. For wood-fired ovens and grill restaurants we supply beech in 25 and 33 cm at under 15 % moisture content, on weekly call-off if wanted. From three pallets a month a separate tiered price applies. Write to us via the contact form and we'll reply the same working day."
+      },
+      "livraison": {
+        "frage": "How much does delivery cost, and how long does it take?",
+        "antwort": "Standard delivery is free, with no minimum order, within 3 to 5 working days. Express delivery costs €60 and arrives within 24 to 48 hours. We deliver anywhere in France and to selected towns in Belgium: in France on our own trailer, elsewhere on a pallet by freight carrier. Either way, you are told before we come."
+      },
+      "abladen": {
+        "frage": "Where exactly is the wood left?",
+        "antwort": "Kerbside unloading is included in the price. We carry pallet trucks, so pallets can be taken through to your garage or storage bay. Tell us about a narrow entrance, a low gate or an enclosed courtyard when you order and we will bring the right vehicle."
+      }
+    }
+  },
+  "exitIntent": {
+    "title": "Before you go…",
+    "subtitle": "{count, plural, one {You looked at this product during your visit. It is still waiting for you.} other {You looked at # products during your visit. They are still waiting for you.}}",
+    "cta": "See these products",
+    "dismiss": "Keep browsing",
+    "close": "Close"
+  },
+  "recentlyViewed": {
+    "title": "Recently viewed",
+    "intro": "The products you looked at during this visit. The list does not survive closing the tab.",
+    "loading": "Loading your browsing history…",
+    "count": "{count, plural, one {# product viewed} other {# products viewed}}",
+    "emptyTitle": "Nothing to show yet",
+    "emptyText": "Open a product page and it will appear here.",
+    "emptyCta": "Browse the catalogue"
+  }
+}

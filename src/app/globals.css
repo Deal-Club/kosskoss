@@ -1,0 +1,245 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Deux familles KossKoss Select :
+     - Cinzel (serif haute couture) pour les titres et le logotype ;
+     - Manrope (grotesque humaniste) pour le texte courant, substitut libre de
+       Gilroy (charte). --font-display / --font-sans sont branchés dans layout.tsx. */
+  --font-sans: var(--font-manrope), "Manrope Fallback", system-ui, sans-serif;
+  --font-display: var(--font-cinzel), "Cinzel Fallback", Georgia, serif;
+  --font-mono: var(--font-manrope), system-ui, sans-serif;
+
+  /* Couleurs de marque, disponibles en utilitaires (bg-sand, text-deep…) */
+  --color-sand: var(--sand);
+  --color-deep: var(--deep);
+  --color-cream: var(--cream);
+  --color-gold: var(--gold);
+  --color-footer: var(--footer);
+  --color-footer-foreground: var(--footer-foreground);
+
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.75);
+}
+
+/* Palette KossKoss Select — Bleu Profond & Beige Sable (charte).
+   Fond crème chaud, encres bleu profond, accents sable. Beaucoup de
+   respiration : le luxe se joue dans le blanc et la typographie. */
+:root {
+  --deep: #0f3b46; /* Bleu Profond — primaire */
+  --sand: #f3e8dd; /* Beige Sable — secondaire */
+  --cream: #faf6f0; /* crème chaud — fond de page */
+  --gold: #b98a4b; /* laiton discret — étoiles d'avis, filets */
+
+  --background: #faf6f0;
+  --foreground: #123138;
+  --card: #ffffff;
+  --card-foreground: #123138;
+  --popover: #ffffff;
+  --popover-foreground: #123138;
+
+  --primary: #0f3b46;
+  --primary-foreground: #f5efe6;
+  --secondary: #f3e8dd;
+  --secondary-foreground: #0f3b46;
+
+  --muted: #f1e8dd;
+  --muted-foreground: #6a7a7d;
+  --accent: #eaddcd;
+  --accent-foreground: #0f3b46;
+  --destructive: #a4322a;
+
+  --border: #e7ddce;
+  --input: #e2d7c6;
+  --ring: #0f3b46;
+
+  --footer: #0f3b46;
+  --footer-foreground: #e7dccd;
+
+  --chart-1: #0f3b46;
+  --chart-2: #3f6b73;
+  --chart-3: #b98a4b;
+  --chart-4: #cdb79b;
+  --chart-5: #8aa1a4;
+
+  /* Coins doux, premium — mais jamais bulleux. */
+  --radius: 0.85rem;
+
+  --sidebar: #ffffff;
+  --sidebar-foreground: #123138;
+  --sidebar-primary: #0f3b46;
+  --sidebar-primary-foreground: #f5efe6;
+  --sidebar-accent: #f3e8dd;
+  --sidebar-accent-foreground: #0f3b46;
+  --sidebar-border: #e7ddce;
+  --sidebar-ring: #0f3b46;
+}
+
+.dark {
+  --background: #0c2c33;
+  --foreground: #f1e9dd;
+  --card: #123840;
+  --card-foreground: #f1e9dd;
+  --popover: #123840;
+  --popover-foreground: #f1e9dd;
+  --primary: #f3e8dd;
+  --primary-foreground: #0f3b46;
+  --secondary: #1c4650;
+  --secondary-foreground: #f1e9dd;
+  --muted: #17414a;
+  --muted-foreground: #a9bcbf;
+  --accent: #1c4650;
+  --accent-foreground: #f1e9dd;
+  --destructive: #e0796f;
+  --border: #ffffff1a;
+  --input: #ffffff26;
+  --ring: #cdb79b;
+  --footer: #0a262c;
+  --footer-foreground: #d8cbb9;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/40;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Grain crème très léger : donne de la matière au fond sans image. */
+    background-image: radial-gradient(
+      circle at 1px 1px,
+      color-mix(in oklab, var(--deep) 4%, transparent) 1px,
+      transparent 0
+    );
+    background-size: 26px 26px;
+  }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: 0.005em;
+  }
+}
+
+@layer components {
+  /* Surtitre de section : petite capitale au large interlettrage, filet doré. */
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Prix & grandeurs : chiffres tabulaires alignés en colonne. */
+  .figure {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: "tnum", "lnum";
+  }
+
+  /* Logotype : Cinzel très espacé, comme sur la charte. */
+  .wordmark {
+    font-family: var(--font-display);
+    letter-spacing: 0.22em;
+    font-weight: 600;
+  }
+
+  /* Filet décoratif sous les titres de section. */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      var(--gold),
+      color-mix(in oklab, var(--gold) 0%, transparent)
+    );
+  }
+}
+
+/* Révélations à l'apparition : une seule chorégraphie au chargement,
+   décalée par --d, plutôt que mille micro-animations. */
+@keyframes kk-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kk-rise {
+  animation: kk-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes kk-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(1.5deg);
+  }
+}
+
+.kk-float {
+  animation: kk-float 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

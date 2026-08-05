@@ -1,0 +1,25 @@
+"use client";
+
+import { ShoppingBag } from "lucide-react";
+import { useCart } from "@/components/cart/CartProvider";
+import { cartItemCount } from "@/lib/kk/cart-totals";
+
+export function CartButton() {
+  const { lines, openDrawer, ready } = useCart();
+  const count = ready ? cartItemCount(lines) : 0;
+  return (
+    <button
+      type="button"
+      onClick={openDrawer}
+      aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+      className="relative grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand"
+    >
+      <ShoppingBag className="h-5 w-5" />
+      {count > 0 && (
+        <span className="absolute -right-0.5 -top-0.5 grid h-4 min-w-[1rem] place-items-center rounded-full bg-deep px-1 text-[0.6rem] font-semibold text-primary-foreground">
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
