@@ -81,6 +81,9 @@ model Product {
   description           String   @default("")
   // Encodé en JSON : pas de liste scalaire, le schéma reste portable
   bullets               String   @default("[]")
+  // Tags du Diagnostic Beauté (JSON de clés : peau_grasse, hydratation…).
+  // Servent au moteur de recommandation par score de correspondance.
+  tags                  String   @default("[]")
   // Traductions anglaises ; vides = repli sur le français
   nameEn                String   @default("")
   shortDescriptionEn    String   @default("")

@@ -129,6 +129,45 @@ function imageFor(category: string): string {
   return imgs[n % imgs.length];
 }
 
+// Tags du Diagnostic Beauté par catégorie (base) + par produit (spécifique).
+const CATEGORY_TAGS: Record<string, string[]> = {
+  nettoyants: ["nettoyage"],
+  serums: ["traitement"],
+  hydratants: ["hydratation"],
+  solaires: ["solaire", "protection"],
+  corps: ["corps"],
+  cheveux: ["cheveux"],
+};
+const PRODUCT_TAGS: Record<string, string[]> = {
+  "cerave-nettoyant-hydratant": ["peau_seche", "peau_sensible", "hydratation"],
+  "bioderma-sensibio-h2o": ["peau_sensible", "apaisant"],
+  "lrp-effaclar-gel": ["peau_grasse", "imperfections"],
+  "cetaphil-gentle-cleanser": ["peau_sensible", "peau_seche"],
+  "to-niacinamide": ["peau_grasse", "imperfections", "matifiant"],
+  "to-hyaluronic": ["hydratation", "peau_seche", "peau_mixte"],
+  "cerave-vitamine-c": ["eclat", "anti_age", "peau_mixte"],
+  "lrp-vitamin-c10": ["eclat", "anti_age", "premium"],
+  "to-glycolic": ["eclat", "imperfections", "peau_grasse"],
+  "cerave-creme-hydratante": ["hydratation", "peau_seche"],
+  "lrp-effaclar-k": ["peau_grasse", "matifiant", "imperfections"],
+  "nivea-soft": ["hydratation", "budget_eco"],
+  "neutrogena-hydro-boost": ["hydratation", "peau_mixte", "peau_grasse"],
+  "cerave-sa-creme": ["peau_seche", "imperfections"],
+  "lrp-anthelios-uvmune": ["peau_sensible", "anti_age"],
+  "garnier-ambre-solaire": ["budget_eco"],
+  "bioderma-photoderm": ["peau_sensible"],
+  "nivea-lait-corps": ["peau_seche", "budget_eco"],
+  "palmers-cocoa-butter": ["peau_seche"],
+  "vaseline-intensive-care": ["hydratation", "budget_eco"],
+  "cerave-lotion-corps": ["hydratation", "peau_seche"],
+  "cantu-leave-in": [],
+  "shea-moisture-curl": [],
+  "garnier-ultra-doux": ["budget_eco"],
+};
+function tagsFor(p: SeedProduct): string[] {
+  return [...new Set([...(CATEGORY_TAGS[p.category] ?? []), ...(PRODUCT_TAGS[p.slug] ?? [])])];
+}
+
 function skuOf(slug: string): string {
   return `KK-${slug.toUpperCase().replace(/-/g, "").slice(0, 14)}`;
 }
@@ -164,6 +203,7 @@ async function main() {
 
   for (const p of PRODUCTS) {
     const image = imageFor(p.category);
+    const tags = JSON.stringify(tagsFor(p));
     const product = await prisma.product.upsert({
       where: { slug: p.slug },
       update: {
@@ -177,6 +217,7 @@ async function main() {
         oldPriceCents: p.oldPriceFcfa ?? null,
         badge: p.badge ?? null,
         image,
+        tags,
         active: true,
       },
       create: {
@@ -192,6 +233,7 @@ async function main() {
         oldPriceCents: p.oldPriceFcfa ?? null,
         badge: p.badge ?? null,
         image,
+        tags,
         stock: 30,
         active: true,
       },
