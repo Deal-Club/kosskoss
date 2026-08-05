@@ -14,6 +14,7 @@ import {
   Plug,
   Receipt,
   ShoppingBag,
+  Sparkles,
   Star,
   Store,
   Tags,
@@ -60,6 +61,7 @@ export function AdminSidebar({
         { label: "Catégories", href: "/admin/categories", icon: Tags },
         { label: "Produits", href: "/admin/products", icon: Package },
         { label: "Stock", href: "/admin/stock", icon: Warehouse },
+        { label: "Diagnostic beauté", href: "/admin/diagnostic", icon: Sparkles },
       ],
     },
     {

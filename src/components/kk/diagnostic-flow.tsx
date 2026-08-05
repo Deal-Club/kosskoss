@@ -24,7 +24,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
-import { QUESTIONS, type DiagIcon } from "@/lib/kk/diagnostic";
+import type { DiagIcon } from "@/lib/kk/diagnostic";
+import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
 import { Petal, BottleMotif } from "./motifs";
@@ -36,7 +37,7 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
 
 type Phase = "intro" | "question" | "loading" | "result";
 
-export function DiagnosticFlow() {
+export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const { add, openDrawer } = useCart();
   const [phase, setPhase] = useState<Phase>("intro");
   const [qIndex, setQIndex] = useState(0);
@@ -44,7 +45,7 @@ export function DiagnosticFlow() {
   const [result, setResult] = useState<DiagnosticResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const question = QUESTIONS[qIndex];
+  const question = questions[qIndex];
   const selected = question ? answers[question.id] : undefined;
 
   function choose(answerId: string) {
@@ -52,7 +53,7 @@ export function DiagnosticFlow() {
   }
 
   async function next() {
-    if (qIndex < QUESTIONS.length - 1) {
+    if (qIndex < questions.length - 1) {
       setQIndex((i) => i + 1);
       return;
     }
@@ -60,7 +61,7 @@ export function DiagnosticFlow() {
     setPhase("loading");
     setError(null);
     try {
-      const answerIds = QUESTIONS.map((q) => answers[q.id]).filter(Boolean);
+      const answerIds = questions.map((q) => answers[q.id]).filter(Boolean);
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -252,18 +253,18 @@ export function DiagnosticFlow() {
   }
 
   /* --------------------------------------------------------- Question -- */
-  const Icon = (icon: DiagIcon) => ICONS[icon];
+  const Icon = (icon: string) => ICONS[icon as DiagIcon] ?? Check;
   return (
     <MinimalShell>
       <section className="relative mx-auto max-w-3xl px-6 py-10">
         <Petal className="pointer-events-none absolute -left-24 top-20 hidden h-72 w-72 text-sand/60 lg:block" />
         <p className="eyebrow text-center">
-          Étape {qIndex + 1} sur {QUESTIONS.length}
+          Étape {qIndex + 1} sur {questions.length}
         </p>
         <div className="mx-auto mt-3 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand">
           <div
             className="h-full rounded-full bg-deep transition-all"
-            style={{ width: `${((qIndex + 1) / QUESTIONS.length) * 100}%` }}
+            style={{ width: `${((qIndex + 1) / questions.length) * 100}%` }}
           />
         </div>
 
@@ -315,7 +316,7 @@ export function DiagnosticFlow() {
             disabled={!selected}
             className="group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {qIndex === QUESTIONS.length - 1 ? "Voir ma routine" : "Continuer"}
+            {qIndex === questions.length - 1 ? "Voir ma routine" : "Continuer"}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>

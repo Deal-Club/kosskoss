@@ -1,5 +1,5 @@
 import { prisma } from "@/server/prisma";
-import { aggregateProfile } from "@/lib/kk/diagnostic";
+import { aggregateProfileFromAnswers } from "./diagnostic-data";
 import type { KKProductView, KKTone, KKBadge } from "@/types/kk";
 
 const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
@@ -50,7 +50,7 @@ function scoreOf(productTags: string[], profile: Record<string, number>): number
  * préférence de budget et la disponibilité.
  */
 export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResult> {
-  const { tags, chips } = aggregateProfile(answerIds);
+  const { tags, chips } = await aggregateProfileFromAnswers(answerIds);
 
   const rows = await prisma.product.findMany({
     where: { active: true, stock: { gt: 0 }, category: { group: { slug: "soins-visage" } } },

@@ -378,6 +378,50 @@ model OrderEvent {
   @@index([orderId])
 }
 
+// ---- Diagnostic Beauté ----
+// Questionnaire éditable depuis le back-office. Le moteur de recommandation
+// (src/server/kk/diagnostic.ts) lit ces tables ; les tags produits vivent sur
+// Product.tags. Les poids de tags par réponse sont encodés en JSON.
+
+model DiagQuestion {
+  id         String  @id @default(cuid())
+  // Clé stable (ne change pas si le libellé change) : sert au seed et à l'ordre.
+  key        String  @unique
+  title      String
+  titleEn    String  @default("")
+  subtitle   String  @default("")
+  subtitleEn String  @default("")
+  position   Int     @default(0)
+  active     Boolean @default(true)
+
+  answers DiagAnswer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DiagAnswer {
+  id            String  @id @default(cuid())
+  questionId    String
+  key           String
+  label         String
+  labelEn       String  @default("")
+  description   String  @default("")
+  descriptionEn String  @default("")
+  // Nom d'icône lucide (droplet, sun, shield…), résolu côté front.
+  icon          String  @default("check")
+  // Poids de tags en JSON : { "peau_grasse": 3, "imperfections": 1 }
+  tags          String  @default("{}")
+  // Étiquette de profil affichée dans le résultat (facultative).
+  chip          String  @default("")
+  position      Int     @default(0)
+  active        Boolean @default(true)
+
+  question DiagQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+}
+
 // ---- Stock ----
 
 model StockMovement {

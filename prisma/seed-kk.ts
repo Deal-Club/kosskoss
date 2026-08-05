@@ -12,6 +12,7 @@
  */
 import { config as loadEnv } from "dotenv";
 import { prisma } from "../src/server/prisma";
+import { QUESTIONS } from "../src/lib/kk/diagnostic";
 
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
@@ -172,6 +173,31 @@ function skuOf(slug: string): string {
   return `KK-${slug.toUpperCase().replace(/-/g, "").slice(0, 14)}`;
 }
 
+// Initialise le questionnaire en base depuis la config de code — une seule
+// fois : si des questions existent déjà (potentiellement éditées en admin), on
+// n'y touche pas.
+async function seedDiagnostic() {
+  if ((await prisma.diagQuestion.count()) > 0) return;
+  for (const [qi, q] of QUESTIONS.entries()) {
+    const question = await prisma.diagQuestion.create({
+      data: { key: q.id, title: q.title, subtitle: q.subtitle, position: qi, active: true },
+    });
+    await prisma.diagAnswer.createMany({
+      data: q.answers.map((a, ai) => ({
+        questionId: question.id,
+        key: a.id,
+        label: a.label,
+        description: a.description,
+        icon: a.icon,
+        tags: JSON.stringify(a.tags),
+        chip: a.chip ?? "",
+        position: ai,
+        active: true,
+      })),
+    });
+  }
+}
+
 async function main() {
   // Réinitialise le catalogue de démonstration (branche de dev, sans commande)
   // pour repartir propre et ne pas cumuler d'anciens produits de démo.
@@ -255,6 +281,8 @@ async function main() {
       });
     }
   }
+
+  await seedDiagnostic();
 
   const [products, categories, groups] = await Promise.all([
     prisma.product.count(),
