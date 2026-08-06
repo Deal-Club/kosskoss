@@ -1,5 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { prisma } from "@/server/prisma";
+import { hashPassword } from "@/lib/password";
+import { openCustomerSession } from "@/server/customerSession";
 
 export type KKPaymentMethod = "orange_money" | "mtn_momo" | "carte";
 
@@ -22,7 +24,7 @@ export type CheckoutInput = {
 };
 
 export type CheckoutResult =
-  | { ok: true; orderNumber: string; accessToken: string }
+  | { ok: true; orderNumber: string; accessToken: string; account: "created" | "linked" | "none" }
   | { ok: false; error: string };
 
 function isValidEmail(email: string): boolean {
@@ -108,6 +110,40 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   const firstName = space > 0 ? name.slice(0, space) : name;
   const lastName = space > 0 ? name.slice(space + 1) : name;
 
+  // Compte client à l'opt-in (« suivre ma commande »). Un compte neuf ouvre une
+  // session (auto-connexion) ; si l'e-mail a déjà un compte, on rattache la
+  // commande sans ouvrir de session (on ne connecte jamais quelqu'un à un compte
+  // existant sur simple saisie d'e-mail).
+  const emailNorm = input.email.trim().toLowerCase();
+  let customerId: string | undefined;
+  let account: "created" | "linked" | "none" = "none";
+  let newCustomer: { id: string; email: string } | null = null;
+  if (input.followOrder) {
+    const existing = await prisma.customer.findUnique({ where: { email: emailNorm } });
+    if (existing) {
+      customerId = existing.id;
+      account = "linked";
+    } else {
+      const tempPassword = randomBytes(12).toString("base64url");
+      const created = await prisma.customer.create({
+        data: {
+          email: emailNorm,
+          passwordHash: await hashPassword(tempPassword),
+          firstName,
+          lastName,
+          phone: input.phone.trim(),
+          billingCountry: "CM",
+          shippingCountry: "CM",
+          locale: input.locale === "en" ? "en" : "fr",
+          active: true,
+        },
+      });
+      customerId = created.id;
+      account = "created";
+      newCustomer = { id: created.id, email: created.email };
+    }
+  }
+
   const year = new Date().getFullYear();
   const count = await prisma.order.count();
   const orderNumber = `KOSS-${year}-${String(count + 1).padStart(6, "0")}`;
@@ -118,6 +154,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       data: {
         orderNumber,
         accessToken,
+        customerId,
         locale: input.locale === "en" ? "en" : "fr",
         email: input.email.trim(),
         phone: input.phone.trim(),
@@ -154,7 +191,12 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     }
   });
 
-  return { ok: true, orderNumber, accessToken };
+  // Auto-connexion uniquement pour un compte fraîchement créé.
+  if (newCustomer) {
+    await openCustomerSession(newCustomer);
+  }
+
+  return { ok: true, orderNumber, accessToken, account };
 }
 
 /** Charge une commande pour la page de confirmation (jeton d'accès requis). */

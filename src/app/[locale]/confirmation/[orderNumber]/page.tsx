@@ -5,6 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { getKossOrder } from "@/server/kk/checkout";
+import { getCurrentCustomer } from "@/server/customerSession";
 import { formatFcfa } from "@/lib/kk/format";
 import { BRAND, CONTACT } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -50,6 +51,10 @@ export default async function ConfirmationPage({
   const token = Array.isArray(sp.t) ? sp.t[0] : sp.t;
   const order = await getKossOrder(orderNumber, token ?? "");
   if (!order) notFound();
+
+  const account = order.customerId
+    ? { loggedIn: Boolean(await getCurrentCustomer()) }
+    : null;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -106,6 +111,28 @@ export default async function ConfirmationPage({
               livraison est ensuite coordonnée avec vous via WhatsApp.
             </p>
           </div>
+
+          {account && (
+            <div className="mt-4 rounded-2xl border border-border bg-card p-5 text-sm text-deep">
+              {account.loggedIn ? (
+                <p>
+                  <span className="font-semibold">Espace client créé.</span> Vous êtes connecté —{" "}
+                  <Link href="/compte" className="font-semibold underline underline-offset-2">
+                    accéder à mes commandes
+                  </Link>
+                  .
+                </p>
+              ) : (
+                <p>
+                  <span className="font-semibold">Un compte existe déjà pour cet e-mail.</span>{" "}
+                  <Link href="/compte/connexion" className="font-semibold underline underline-offset-2">
+                    Connectez-vous
+                  </Link>{" "}
+                  pour suivre cette commande.
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="mt-8 text-center">
             <Link href="/" className="text-sm font-semibold text-deep underline underline-offset-4">

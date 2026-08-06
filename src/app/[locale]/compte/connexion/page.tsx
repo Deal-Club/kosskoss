@@ -1,51 +1,55 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { redirect } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
-import { AccountAuthShell } from "@/components/account/AccountShell";
-import { LoginForm } from "@/components/account/LoginForm";
-import { safeReturnPath } from "@/components/account/request";
+import { redirect } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AccountLogin } from "@/components/kk/account";
 import { getCurrentCustomer } from "@/server/customerSession";
+import type { Locale } from "@/i18n/routing";
 
-type PageParams = Promise<{ locale: string }>;
-type PageSearch = Promise<{ weiter?: string; hinweis?: string }>;
+type Params = Promise<{ locale: Locale }>;
+type Search = Promise<Record<string, string | string[] | undefined>>;
 
-export const dynamic = "force-dynamic";
-
-export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "account" });
-  return { title: t("login.metaTitle"), robots: { index: false, follow: false } };
-}
+export const metadata: Metadata = {
+  title: "Connexion — KossKoss Select",
+  robots: { index: false, follow: true },
+};
 
 export default async function LoginPage({
   params,
   searchParams,
 }: {
-  params: PageParams;
-  searchParams: PageSearch;
+  params: Params;
+  searchParams: Search;
 }) {
   const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) notFound();
+  const sp = await searchParams;
   setRequestLocale(locale);
 
-  // Déjà connecté : inutile de redemander les identifiants.
-  const current = await getCurrentCustomer();
-  if (current) {
-    redirect({ href: "/compte", locale });
-  }
+  if (await getCurrentCustomer()) redirect(locale === "en" ? "/en/compte" : "/compte");
 
-  const { weiter, hinweis } = await searchParams;
-  const t = await getTranslations({ locale, namespace: "account" });
-
-  const notice =
-    hinweis === "registriert" ? "registered" : hinweis === "passwort" ? "passwordChanged" : undefined;
+  const weiter = Array.isArray(sp.weiter) ? sp.weiter[0] : sp.weiter;
 
   return (
-    <AccountAuthShell locale={locale} title={t("login.title")} intro={t("login.intro")}>
-      <LoginForm returnPath={safeReturnPath(weiter)} notice={notice} />
-    </AccountAuthShell>
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
+      <main className="flex-1">
+        <section className="mx-auto max-w-md px-6 py-16">
+          <h1 className="text-center text-3xl text-deep sm:text-4xl">Mon espace client</h1>
+          <p className="mt-2 text-center text-muted-foreground">
+            Connectez-vous pour suivre vos commandes et votre routine.
+          </p>
+          <div className="mt-8">
+            <AccountLogin returnTo={weiter} />
+          </div>
+          <p className="mx-auto mt-6 max-w-sm text-center text-sm text-muted-foreground">
+            Pas encore de compte ? Il est créé automatiquement lors de votre première commande, en
+            cochant « Je veux suivre ma commande ».
+          </p>
+        </section>
+      </main>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }

@@ -1,0 +1,92 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, LogOut } from "lucide-react";
+
+const inputCls =
+  "mt-1 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-deep";
+
+export function AccountLogin({ returnTo }: { returnTo?: string }) {
+  const router = useRouter();
+  const safeReturn =
+    returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/compte";
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/account/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        setError("E-mail ou mot de passe incorrect.");
+        setSubmitting(false);
+        return;
+      }
+      router.push(safeReturn);
+      router.refresh();
+    } catch {
+      setError("Une erreur est survenue. Réessayez.");
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <form onSubmit={submit} className="mx-auto max-w-md">
+      <label className="block text-sm">
+        <span className="font-medium text-foreground">E-mail</span>
+        <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} autoComplete="email" />
+      </label>
+      <label className="mt-4 block text-sm">
+        <span className="font-medium text-foreground">Mot de passe</span>
+        <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputCls} autoComplete="current-password" />
+      </label>
+      {error && (
+        <p role="alert" className="mt-3 rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">
+          {error}
+        </p>
+      )}
+      <button
+        type="submit"
+        disabled={submitting}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 disabled:opacity-60"
+      >
+        {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+        Se connecter
+      </button>
+    </form>
+  );
+}
+
+export function AccountLogout() {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  async function logout() {
+    setBusy(true);
+    try {
+      await fetch("/api/account/logout", { method: "POST" });
+    } catch {
+      /* ignore */
+    }
+    router.push("/");
+    router.refresh();
+  }
+  return (
+    <button
+      type="button"
+      onClick={logout}
+      disabled={busy}
+      className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
+    >
+      <LogOut className="h-4 w-4" /> Se déconnecter
+    </button>
+  );
+}

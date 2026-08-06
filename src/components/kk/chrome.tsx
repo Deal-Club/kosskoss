@@ -101,13 +101,13 @@ export function SiteHeader() {
           >
             <Search className="h-5 w-5" />
           </button>
-          <button
-            type="button"
+          <Link
+            href="/compte"
             aria-label="Mon compte"
             className="hidden h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand sm:grid"
           >
             <User className="h-5 w-5" />
-          </button>
+          </Link>
           <CartButton />
         </div>
       </div>

@@ -1,153 +1,95 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { hasLocale } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ChevronRight, MapPin, Receipt, ShieldCheck } from "lucide-react";
-import { Link } from "@/i18n/navigation";
-import { routing } from "@/i18n/routing";
-import { AccountShell } from "@/components/account/AccountShell";
+import Link from "next/link";
+import { setRequestLocale } from "next-intl/server";
+import { Package, Sparkles, ChevronRight } from "lucide-react";
+import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AccountLogout } from "@/components/kk/account";
 import { requireCustomer } from "@/server/customerSession";
-import { listCustomerOrders } from "@/server/customers";
-import { formatPrice } from "@/server/store";
-import { ORDER_STATUS_LABELS, PAYMENT_STATUS_LABELS } from "@/lib/orderStatus";
+import { getAccountOrders } from "@/server/kk/account";
+import { formatFcfa } from "@/lib/kk/format";
+import type { Locale } from "@/i18n/routing";
 
-type PageParams = Promise<{ locale: string }>;
+type Params = Promise<{ locale: Locale }>;
 
-// La page dépend du cookie de session : jamais de rendu statique, jamais de cache.
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: "Mon compte — KossKoss Select",
+  robots: { index: false, follow: false },
+};
 
-export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "account" });
-  return {
-    title: t("metaTitle"),
-    // Un espace client n'a rien à faire dans un index de moteur de recherche.
-    robots: { index: false, follow: false },
-  };
+function formatDate(iso: string): string {
+  return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(
+    new Date(iso),
+  );
 }
 
-export default async function AccountDashboardPage({ params }: { params: PageParams }) {
+export default async function AccountPage({ params }: { params: Params }) {
   const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
-
   const customer = await requireCustomer(locale, "/compte");
-  const t = await getTranslations({ locale, namespace: "account" });
-
-  const orders = await listCustomerOrders(customer.id, 3);
-  const language = locale === "en" ? "en" : "fr";
-  const dateFormatter = new Intl.DateTimeFormat(language === "en" ? "en-GB" : "fr-FR", {
-    dateStyle: "long",
-  });
-
-  const tiles = [
-    {
-      href: "/compte/commandes",
-      icon: Receipt,
-      title: t("dashboard.tiles.ordersTitle"),
-      text: t("dashboard.tiles.ordersText"),
-    },
-    {
-      href: "/compte/adresses",
-      icon: MapPin,
-      title: t("dashboard.tiles.addressesTitle"),
-      text: t("dashboard.tiles.addressesText"),
-    },
-    {
-      href: "/compte/informations",
-      icon: ShieldCheck,
-      title: t("dashboard.tiles.dataTitle"),
-      text: t("dashboard.tiles.dataText"),
-    },
-  ];
+  const orders = await getAccountOrders(customer.id);
 
   return (
-    <AccountShell
-      locale={locale}
-      active="dashboard"
-      title={t("dashboard.greeting", { name: `${customer.firstName} ${customer.lastName}`.trim() })}
-      intro={t("dashboard.intro")}
-    >
-      <p className="text-sm text-muted-foreground">
-        {t("dashboard.memberSince", { date: dateFormatter.format(new Date(customer.createdAt)) })}
-      </p>
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
+      <main className="flex-1">
+        <section className="mx-auto max-w-4xl px-6 py-12">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="eyebrow">Espace client</p>
+              <h1 className="mt-2 text-3xl text-deep sm:text-4xl">Bonjour {customer.firstName}</h1>
+            </div>
+            <AccountLogout />
+          </div>
 
-      {/* Accès rapides */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {tiles.map(({ href, icon: Icon, title, text }) => (
-          <Link
-            key={href}
-            href={href}
-            className="group rounded-sm border border-border bg-white p-5 transition-colors hover:border-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            <Icon className="mb-3 h-6 w-6 text-primary" aria-hidden />
-            <h2 className="flex items-center gap-1 text-sm font-black text-foreground">
-              {title}
-              <ChevronRight
-                className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5"
-                aria-hidden
-              />
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">{text}</p>
-          </Link>
-        ))}
-      </div>
-
-      {/* Dernières commandes */}
-      <section className="rounded-sm border border-border bg-white p-5 sm:p-6">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h2 className="text-lg font-black text-foreground">{t("dashboard.recentTitle")}</h2>
-          <Link
-            href="/compte/commandes"
-            className="text-sm font-semibold text-primary hover:underline"
-          >
-            {t("dashboard.allOrders")}
-          </Link>
-        </div>
-
-        {orders.length === 0 ? (
-          <div className="py-6 text-center">
-            <p className="text-sm text-muted-foreground">{t("dashboard.emptyOrders")}</p>
+          <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/"
-              className="mt-4 inline-block rounded-sm bg-primary px-6 py-2.5 text-sm font-bold text-primary-foreground hover:brightness-110"
+              href="/diagnostic"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-deep transition hover:border-deep/40"
             >
-              {t("common.shopCta")}
+              <Sparkles className="h-4 w-4" /> Refaire mon diagnostic
             </Link>
           </div>
-        ) : (
-          <ul className="divide-y divide-border">
-            {orders.map((order) => (
-              <li key={order.orderNumber} className="flex flex-wrap items-center gap-3 py-3">
-                <span className="min-w-0 flex-1">
-                  <Link
-                    href={`/compte/commandes/${order.orderNumber}`}
-                    className="block text-sm font-black text-foreground hover:text-primary"
-                  >
-                    {order.orderNumber}
-                  </Link>
-                  <span className="block text-xs text-muted-foreground">
-                    {t("orders.orderedOn", {
-                      date: dateFormatter.format(new Date(order.createdAt)),
-                    })}
-                  </span>
-                </span>
-                <span className="text-xs font-semibold text-muted-foreground">
-                  {ORDER_STATUS_LABELS[order.status][language]} ·{" "}
-                  {PAYMENT_STATUS_LABELS[order.paymentStatus][language]}
-                </span>
-                <span className="text-sm font-black whitespace-nowrap text-foreground">
-                  {formatPrice(order.totalCents)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
 
-      <p className="rounded-sm border border-border bg-white px-4 py-3 text-xs text-muted-foreground">
-        {t("guestNotice")}
-      </p>
-    </AccountShell>
+          <h2 className="mt-10 flex items-center gap-2 text-lg text-deep">
+            <Package className="h-5 w-5" /> Mes commandes
+          </h2>
+
+          {orders.length === 0 ? (
+            <div className="mt-4 rounded-2xl border border-dashed border-border p-10 text-center">
+              <p className="text-muted-foreground">Vous n&rsquo;avez pas encore de commande.</p>
+              <Link href="/soins-visage" className="mt-3 inline-block text-sm font-semibold text-deep underline underline-offset-4">
+                Découvrir la boutique
+              </Link>
+            </div>
+          ) : (
+            <ul className="mt-4 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+              {orders.map((o) => (
+                <li key={o.orderNumber}>
+                  <Link
+                    href={`/compte/commandes/${o.orderNumber}`}
+                    className="flex items-center gap-4 px-5 py-4 transition hover:bg-sand/40"
+                  >
+                    <div className="flex-1">
+                      <p className="font-medium text-deep">{o.orderNumber}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(o.createdAt)} · {o.itemCount} article{o.itemCount > 1 ? "s" : ""}
+                      </p>
+                    </div>
+                    <span className="hidden rounded-full bg-sand px-3 py-1 text-xs font-medium text-deep sm:inline">
+                      {o.statusLabel}
+                    </span>
+                    <span className="figure text-sm font-semibold text-deep">{formatFcfa(o.totalFcfa)}</span>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </main>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }
