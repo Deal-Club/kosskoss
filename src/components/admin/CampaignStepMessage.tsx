@@ -298,7 +298,7 @@ export function CampaignStepMessage({ draft, products, onChange }: CampaignStepM
               </div>
 
               <p className="mt-3 text-center text-[10px] leading-4 text-muted-foreground">
-                MLC BOIS · 27 Grande Rue · 21700 Villebichot
+                KOSSKOSS SELECT · Cameroun
                 <br />
                 Mentions légales · Confidentialité · lien de désinscription
               </p>

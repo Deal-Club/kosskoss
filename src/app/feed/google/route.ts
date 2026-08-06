@@ -113,7 +113,7 @@ export async function GET(): Promise<Response> {
     tag("link", base, "  ") +
     tag(
       "description",
-      "Flux produits complet pour Google Merchant Center : bois de chauffage, bûches densifiées, granulés et allume-feu.",
+      "Flux produits complet pour Google Merchant Center : cosmétiques et produits de soin (visage, corps, cheveux, hygiène).",
       "  ",
     ) +
     tag("language", MERCHANT_LANGUAGE, "  ");

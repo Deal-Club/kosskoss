@@ -30,10 +30,6 @@ import {
 } from "@/lib/campaigns";
 import { siteUrl } from "@/server/emails/customerAccount";
 
-const LOGO_WIDTH = 220;
-// Rapport d'origine du fichier : 747 × 162
-const LOGO_HEIGHT = Math.round((LOGO_WIDTH * 162) / 747);
-
 /**
  * Identification du fournisseur reprise de src/content/legal/fr.ts.
  *
@@ -42,13 +38,13 @@ const LOGO_HEIGHT = Math.round((LOGO_WIDTH * 162) / 747);
  * les pages légales — voir docs/LEGAL.md.
  */
 const IMPRESSUM = {
-  name: "MLC BOIS",
-  street: "27 Grande Rue",
-  city: "21700 Villebichot",
-  country: "France",
-  managingDirector: "Prénom Nom (à compléter)",
-  register: "RCS Dijon 990 527 871",
-  vatId: "FR71990527871",
+  name: "KOSSKOSS SELECT",
+  street: "À compléter",
+  city: "À compléter",
+  country: "Cameroun",
+  managingDirector: "À compléter",
+  register: "RCCM à compléter",
+  vatId: "NIU à compléter",
 } as const;
 
 // ---- Entrées ----
@@ -209,7 +205,7 @@ function priceHtml(product: CampaignMailProduct): string {
   return (
     `<span style="font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#6b7280; text-decoration:line-through;">${base}</span>` +
     `&nbsp;&nbsp;` +
-    `<span style="font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold; color:#c24400;">${promo}</span>`
+    `<span style="font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold; color:#0f3b46;">${promo}</span>`
   );
 }
 
@@ -341,7 +337,6 @@ interface RenderInput {
 
 function renderHtml(input: RenderInput & { paragraphs: string[]; token: string }): string {
   const isEnglish = input.locale === "en";
-  const logo = `${siteUrl()}/images/logo-full.png`;
 
   const body = input.paragraphs
     .map(
@@ -352,7 +347,7 @@ function renderHtml(input: RenderInput & { paragraphs: string[]; token: string }
 
   const button = `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 24px 0;">
                   <tr>
-                    <td align="center" bgcolor="#c24400" style="background-color:#c24400; border-radius:4px;">
+                    <td align="center" bgcolor="#0f3b46" style="background-color:#0f3b46; border-radius:4px;">
                       <a href="${escapeHtml(input.action)}" style="display:inline-block; padding:14px 28px; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">${escapeHtml(input.ctaLabel)}</a>
                     </td>
                   </tr>
@@ -396,11 +391,12 @@ function renderHtml(input: RenderInput & { paragraphs: string[]; token: string }
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%; background-color:#ffffff; border:1px solid #e0e2e6; border-radius:6px;">
             <tr>
               <td align="center" style="background-color:#ffffff; padding:32px 24px 24px 24px; border-radius:6px 6px 0 0;">
-                <img src="${logo}" alt="MLC Bois — bois de chauffage" width="${LOGO_WIDTH}" height="${LOGO_HEIGHT}" style="display:block; width:${LOGO_WIDTH}px; height:auto; border:0; outline:none; text-decoration:none;" />
+                <span style="display:inline-block; font-family:Georgia,'Times New Roman',serif; font-size:26px; letter-spacing:2px; font-weight:bold; color:#0f3b46;">KOSSKOSS</span>
+                <span style="display:block; margin-top:2px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:4px; color:#0f3b46;">SELECT</span>
               </td>
             </tr>
             <tr>
-              <td style="background-color:#ff5c00; font-size:0; line-height:0; height:4px;">&nbsp;</td>
+              <td style="background-color:#0f3b46; font-size:0; line-height:0; height:4px;">&nbsp;</td>
             </tr>
             <tr>
               <td style="background-color:#ffffff; padding:32px 32px 8px 32px;">

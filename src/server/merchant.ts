@@ -33,12 +33,14 @@ export const MERCHANT_CURRENCY = "EUR";
 /** Langue du contenu du flux. */
 export const MERCHANT_LANGUAGE = "fr";
 /**
- * Taux de TVA — déjà compris dans priceCents.
- * Le bois de chauffage vendu à un particulier relève du taux réduit de 10 %
- * (art. 278 bis du CGI). Une vente à un professionnel assujetti reste à 20 % :
- * si la boutique ouvre un canal B2B, ce taux ne pourra plus être une constante.
+ * Taux de TVA servant à ventiler la taxe dans le flux — déjà compris dans
+ * priceCents (les prix sont affichés TTC).
+ * PLACEHOLDER : le taux applicable aux produits cosmétiques au Cameroun est à
+ * confirmer avec le comptable (TVA de droit commun ~19,25 %) avant la mise en
+ * ligne. La valeur ci-dessous est provisoire et ne doit pas être publiée telle
+ * quelle sans validation.
  */
-export const MERCHANT_VAT_RATE = 0.1;
+export const MERCHANT_VAT_RATE = 0.1925;
 
 // Doivent rester alignés sur COMPANY (src/content/legal/fr.ts), qui fait
 // autorité pour les mentions légales et la facture PDF.

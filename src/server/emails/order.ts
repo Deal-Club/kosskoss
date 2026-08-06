@@ -31,10 +31,6 @@ const BANK_TRANSFER_KEY = "banque";
 
 export type OrderEmailLocale = "fr" | "en";
 
-const LOGO_WIDTH = 220;
-// Rapport d'origine du fichier : 747 × 162
-const LOGO_HEIGHT = Math.round((LOGO_WIDTH * 162) / 747);
-
 function siteUrl(): string {
   return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
 }
@@ -72,8 +68,6 @@ interface LayoutInput {
 }
 
 function layout(input: LayoutInput): string {
-  const logo = `${siteUrl()}/images/logo-full.png`;
-
   const intro = input.intro
     .map(
       (paragraph) =>
@@ -84,7 +78,7 @@ function layout(input: LayoutInput): string {
   const action = input.action
     ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:8px 0 20px 0;">
                   <tr>
-                    <td align="center" bgcolor="#c24400" style="background-color:#c24400; border-radius:4px;">
+                    <td align="center" bgcolor="#0f3b46" style="background-color:#0f3b46; border-radius:4px;">
                       <a href="${escapeHtml(input.action.url)}" style="display:inline-block; padding:14px 28px; font-family:Arial,Helvetica,sans-serif; font-size:15px; font-weight:bold; color:#ffffff; text-decoration:none;">${escapeHtml(input.action.label)}</a>
                     </td>
                   </tr>
@@ -114,11 +108,12 @@ function layout(input: LayoutInput): string {
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%; background-color:#ffffff; border:1px solid #e0e2e6; border-radius:6px;">
             <tr>
               <td align="center" style="background-color:#ffffff; padding:32px 24px 24px 24px; border-radius:6px 6px 0 0;">
-                <img src="${logo}" alt="MLC Bois — bois de chauffage" width="${LOGO_WIDTH}" height="${LOGO_HEIGHT}" style="display:block; width:${LOGO_WIDTH}px; height:auto; border:0; outline:none; text-decoration:none;" />
+                <span style="display:inline-block; font-family:Georgia,'Times New Roman',serif; font-size:26px; letter-spacing:2px; font-weight:bold; color:#0f3b46;">KOSSKOSS</span>
+                <span style="display:block; margin-top:2px; font-family:Arial,Helvetica,sans-serif; font-size:11px; letter-spacing:4px; color:#0f3b46;">SELECT</span>
               </td>
             </tr>
             <tr>
-              <td style="background-color:#ff5c00; font-size:0; line-height:0; height:4px;">&nbsp;</td>
+              <td style="background-color:#0f3b46; font-size:0; line-height:0; height:4px;">&nbsp;</td>
             </tr>
             <tr>
               <td style="background-color:#ffffff; padding:32px 32px 8px 32px;">
@@ -403,8 +398,8 @@ export function buildOrderConfirmationEmail(
     action: { label: fr ? "Voir ma commande" : "View order", url: orderUrl },
     footnote: escapeHtml(footnote),
     footer: fr
-      ? "MLC Bois — message automatique relatif à votre commande."
-      : "MLC Bois — automated message about your order.",
+      ? "KossKoss Select — message automatique relatif à votre commande."
+      : "KossKoss Select — automated message about your order.",
   });
 
   const bankText = bankOrder
@@ -521,7 +516,7 @@ export function buildOrderNotificationEmail(order: OrderRecord): Omit<MailMessag
     action: { label: "Ouvrir dans le back-office", url: adminUrl },
     footnote:
       "Le stock a déjà été réservé à l'enregistrement de la commande. Le paiement est encore en attente : à confirmer dans le back-office dès réception.",
-    footer: "MLC Bois — notification automatique du back-office.",
+    footer: "KossKoss Select — notification automatique du back-office.",
   });
 
   const text = [

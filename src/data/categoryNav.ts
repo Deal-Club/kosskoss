@@ -36,42 +36,8 @@ export interface CategoryNavGroup {
   items: CategoryNavItem[];
 }
 
-export const categoryGroups: CategoryNavGroup[] = [
-  {
-    slug: "bois-de-chauffage",
-    href: "/bois-de-chauffage",
-    items: [
-      {
-        slug: "vrac",
-        href: "/bois-de-chauffage/vrac",
-        image: "/images/brennholz/lose-schuettung.jpg",
-      },
-      {
-        slug: "palette",
-        href: "/bois-de-chauffage/palette",
-        image: "/images/brennholz/palette-box.jpg",
-      },
-      {
-        slug: "granules",
-        href: "/bois-de-chauffage/granules",
-        image: "/images/brennholz/pellets.jpg",
-      },
-      {
-        slug: "bois-compresse",
-        href: "/bois-de-chauffage/bois-compresse",
-        image: "/images/brennholz/briketts.jpg",
-      },
-    ],
-  },
-  {
-    slug: "equipement",
-    href: "/equipement",
-    items: [
-      {
-        slug: "poele-a-bois",
-        href: "/equipement/poele-a-bois",
-        image: "/images/brennholz/kaminfeuer.jpg",
-      },
-    ],
-  },
-];
+// Volontairement vide : le catalogue cosmétique KossKoss sera défini à partir
+// des sites de référence. Tant que cette liste est vide, le menu et la rangée
+// de catégories du header ne s'affichent pas — ils reviennent dès la première
+// entrée ajoutée. Voir le modèle d'entrée dans l'en-tête de ce fichier.
+export const categoryGroups: CategoryNavGroup[] = [];

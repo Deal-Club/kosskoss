@@ -185,7 +185,7 @@ export const paypalGateway: PaymentGateway = {
         payment_source: {
           paypal: {
             experience_context: {
-              brand_name: "MLC Bois",
+              brand_name: "KossKoss Select",
               locale: order.locale === "en" ? "en-GB" : "fr-FR",
               // L'adresse de livraison est déjà saisie dans le tunnel.
               shipping_preference: "NO_SHIPPING",

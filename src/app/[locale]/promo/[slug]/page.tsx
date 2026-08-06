@@ -17,10 +17,10 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
   const { locale, slug } = await params;
   const landing = await getCampaignLanding(slug, locale);
-  if (!landing) return { title: "MLC Bois" };
+  if (!landing) return { title: "KossKoss Select" };
 
   return {
-    title: `${landing.headline} | MLC Bois`,
+    title: `${landing.headline} | KossKoss Select`,
     // L'adresse porte le code de la campagne et n'a de sens que le temps de
     // l'offre : la laisser indexer ferait remonter des prix périmés dans les
     // résultats de recherche longtemps après la fin.

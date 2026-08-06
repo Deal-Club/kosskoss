@@ -29,7 +29,7 @@ export async function buildLegalMetadata(slug: LegalSlug, locale: string): Promi
   const first = stripMarks(page.intro ?? page.sections[0]?.body ?? "");
 
   return {
-    title: `${page.title} | MLC Bois`,
+    title: `${page.title} | KossKoss Select`,
     description: first.slice(0, 155),
     alternates: {
       canonical: `${SITE_URL}${path}`,

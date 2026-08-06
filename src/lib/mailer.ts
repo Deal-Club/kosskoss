@@ -7,7 +7,7 @@
  *   SMTP_USER       adresse complète du compte, ex. "contact@mlc-bois.fr"
  *   SMTP_PASSWORD   mot de passe de cette boîte
  *   MAIL_FROM       adresse expéditrice (défaut : SMTP_USER)
- *   MAIL_FROM_NAME  nom affiché (facultatif, défaut « MLC Bois »)
+ *   MAIL_FROM_NAME  nom affiché (facultatif, défaut « KossKoss Select »)
  *
  * Tant que la configuration est incomplète, `isMailConfigured()` renvoie false :
  * en développement le code de connexion est alors affiché dans la console au

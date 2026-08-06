@@ -18,7 +18,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Maintenance en cours — MLC Bois</title>
+<title>Maintenance en cours — KossKoss Select</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
   body {

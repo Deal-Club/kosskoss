@@ -194,7 +194,7 @@ async function buildPdf(rows: ExportRow[], subtitle: string): Promise<Uint8Array
     doc,
     font: await doc.embedFont(StandardFonts.Helvetica),
     bold: await doc.embedFont(StandardFonts.HelveticaBold),
-    title: "MLC Bois — Catalogue produits",
+    title: "KossKoss Select — Catalogue produits",
     subtitle,
   };
 

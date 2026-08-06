@@ -139,9 +139,8 @@ export async function Header() {
           </div>
         </div>
 
-        {/* Rangée des types de bois. Défilable au doigt sur mobile : sans
-            elle, un visiteur au téléphone devait ouvrir un menu pour voir
-            qu'on vend du hêtre.
+        {/* Rangée des catégories. Défilable au doigt sur mobile : sans elle,
+            un visiteur au téléphone devait ouvrir un menu pour voir les rayons.
             Tant que le catalogue est vide, la bande ne s'affiche pas : un
             bandeau ne portant qu'un lien perdu à droite ferait un trou entre
             l'en-tête et le hero. */}

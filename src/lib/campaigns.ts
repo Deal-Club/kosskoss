@@ -344,7 +344,7 @@ export const CAMPAIGN_TYPES: readonly CampaignTypeDefinition[] = [
     suggestedHours: 336,
     fr: {
       subject: "Nouveau au catalogue : {produit}",
-      headline: "Nouveau chez MLC Bois",
+      headline: "Nouveau chez KossKoss Select",
       bodyText:
         "Bonjour {prenom},\n\n" +
         "{marque} {produit} est disponible dès maintenant, au prix de {prix}.\n\n" +
@@ -354,7 +354,7 @@ export const CAMPAIGN_TYPES: readonly CampaignTypeDefinition[] = [
     },
     en: {
       subject: "New in our range: {produit}",
-      headline: "New at MLC Bois",
+      headline: "New at KossKoss Select",
       bodyText:
         "Hello {prenom},\n\n" +
         "the {marque} {produit} is now available from us, priced at {prix}.\n\n" +

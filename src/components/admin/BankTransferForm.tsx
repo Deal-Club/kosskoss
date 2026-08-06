@@ -50,7 +50,7 @@ export function BankTransferForm({ initial }: { initial: BankTransferSettings })
           <input
             value={holder}
             onChange={(event) => setHolder(event.target.value)}
-            placeholder="ex. MLC Bois"
+            placeholder="ex. KossKoss Select"
             className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
           />
         </label>

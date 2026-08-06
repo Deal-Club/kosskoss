@@ -92,7 +92,7 @@ export interface GatewayKeyField {
  */
 export interface GatewayConnectionCheck {
   ok: boolean;
-  /** Phrase de synthèse, ex. « Compte MLC Bois — France, EUR ». */
+  /** Phrase de synthèse, ex. « Compte KossKoss Select — Cameroun, FCFA ». */
   summary: string;
   /** Ce qui manque ou ne colle pas ; vide quand tout est bon. */
   issues: string[];

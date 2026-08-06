@@ -80,7 +80,7 @@ export function CategoryPreview({
 
         <section className="border-t border-border pt-4">
           <h2 className="text-sm font-black text-foreground">
-            {displayLabel ? `${displayLabel} chez MLC Bois` : "Guide d'achat"}
+            {displayLabel ? `${displayLabel} chez KossKoss Select` : "Guide d'achat"}
           </h2>
           <p className="mt-2 text-xs text-muted-foreground">
             {intro.trim() || <Placeholder>Introduction du guide non renseignée</Placeholder>}

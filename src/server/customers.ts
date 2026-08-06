@@ -740,7 +740,7 @@ export async function exportCustomerData(customerId: string): Promise<Record<str
   return {
     hinweis:
       "Droit d'accès au titre de l'article 15 du RGPD et portabilité au titre de l'article 20. " +
-      "Ce fichier contient toutes les données personnelles que MLC Bois a enregistrées pour " +
+      "Ce fichier contient toutes les données personnelles que KossKoss Select a enregistrées pour " +
       "votre compte client. Votre mot de passe n'y figure pas : il est stocké uniquement sous " +
       "forme d'empreinte non réversible.",
     erstelltAm: new Date().toISOString(),

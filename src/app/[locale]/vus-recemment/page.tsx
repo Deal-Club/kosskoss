@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: PageParams }): Prom
   const t = await getTranslations({ locale, namespace: "recentlyViewed" });
 
   return {
-    title: `${t("title")} | MLC Bois`,
+    title: `${t("title")} | KossKoss Select`,
     description: t("emptyText"),
     // La liste vit dans sessionStorage : rien à indexer.
     robots: { index: false, follow: true },

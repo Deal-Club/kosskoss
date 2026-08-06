@@ -12,28 +12,10 @@ export interface GoogleCategory {
 }
 
 export const GOOGLE_CATEGORY_BY_SLUG: Record<string, GoogleCategory> = {
-  // Les cinq rayons de combustible partagent la même feuille de taxonomie :
-  // Google ne distingue ni l'essence ni le conditionnement, seulement l'usage.
-  vrac: {
-    id: "625",
-    path: "Maison et jardin > Accessoires pour cheminées et poêles à bois > Combustible et bois de chauffage",
-  },
-  palette: {
-    id: "625",
-    path: "Maison et jardin > Accessoires pour cheminées et poêles à bois > Combustible et bois de chauffage",
-  },
-  granules: {
-    id: "625",
-    path: "Maison et jardin > Accessoires pour cheminées et poêles à bois > Combustible et bois de chauffage",
-  },
-  "bois-compresse": {
-    id: "625",
-    path: "Maison et jardin > Accessoires pour cheminées et poêles à bois > Combustible et bois de chauffage",
-  },
-  // « poele-a-bois » n'a volontairement pas d'entrée : un poêle n'est pas un
-  // combustible, et le déclarer sous 625 ferait refuser la fiche par Merchant
-  // Center. À renseigner avec la bonne feuille de taxonomie le jour où des
-  // appareils entrent au catalogue.
+  // Table héritée, à redéfinir avec les feuilles de taxonomie cosmétique
+  // (« Santé et beauté > Soins personnels ») une fois le catalogue KossKoss
+  // figé. Les entrées ci-dessous ne correspondent plus à aucune catégorie
+  // active et seront remplacées à ce moment-là.
   kaffeemaschinen: {
     id: "736",
     path: "Maison et jardin > Cuisine et salle à manger > Appareils de cuisine > Machines à café et à expresso",
