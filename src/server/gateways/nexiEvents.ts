@@ -43,9 +43,9 @@ export function nexiPaymentStatus(
   result: string | undefined,
   operationType: string | undefined,
 ): PaymentStatus | null {
-  if (result === "EXECUTED") return "bezahlt";
-  if (result === "AUTHORIZED" && operationType === "CAPTURE") return "bezahlt";
-  if (result && FAILED_RESULTS.has(result)) return "fehlgeschlagen";
+  if (result === "EXECUTED") return "payee";
+  if (result === "AUTHORIZED" && operationType === "CAPTURE") return "payee";
+  if (result && FAILED_RESULTS.has(result)) return "echouee";
   return null;
 }
 

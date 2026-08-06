@@ -77,10 +77,10 @@ export default async function AdminOrdersPage({
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-black text-foreground">Commandes</h1>
-        {counts.eingegangen > 0 && (
+        {counts.recue > 0 && (
           <span className="rounded-sm bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
-            {counts.eingegangen} nouvelle{counts.eingegangen === 1 ? "" : "s"} commande
-            {counts.eingegangen === 1 ? "" : "s"}
+            {counts.recue} nouvelle{counts.recue === 1 ? "" : "s"} commande
+            {counts.recue === 1 ? "" : "s"}
           </span>
         )}
       </div>

@@ -124,7 +124,7 @@ export const stripeGateway: PaymentGateway = {
         const session = event.data.object as Stripe.Checkout.Session;
         return {
           orderNumber: orderNumberOf(session),
-          paymentStatus: session.payment_status === "paid" ? "bezahlt" : null,
+          paymentStatus: session.payment_status === "paid" ? "payee" : null,
           reference: paymentIntentOf(session),
           // `amount_total` est le montant effectivement réglé, en centimes,
           // remises et taxes comprises : c'est bien lui qu'il faut comparer au
@@ -136,7 +136,7 @@ export const stripeGateway: PaymentGateway = {
       case "checkout.session.expired":
       case "checkout.session.async_payment_failed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        return { orderNumber: orderNumberOf(session), paymentStatus: "fehlgeschlagen" };
+        return { orderNumber: orderNumberOf(session), paymentStatus: "echouee" };
       }
       default:
         // Événement non pertinent pour l'état de paiement : accusé de réception

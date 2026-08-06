@@ -172,8 +172,8 @@ function toRecord(row: NonNullable<OrderRow>): OrderRecord {
       ? row.shippingMethodKey
       : DEFAULT_SHIPPING_METHOD_KEY,
     shippingMethodLabel: row.shippingMethodLabel,
-    status: isOrderStatus(row.status) ? row.status : "eingegangen",
-    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "offen",
+    status: isOrderStatus(row.status) ? row.status : "recue",
+    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "en_attente",
     subtotalCents: row.subtotalCents,
     shippingCents: row.shippingCents,
     taxCents: row.taxCents,
@@ -291,11 +291,11 @@ export async function listOrders(filter: OrderListFilter = {}): Promise<OrderLis
 export async function countOrdersByStatus(): Promise<Record<OrderStatus | "total", number>> {
   const grouped = await prisma.order.groupBy({ by: ["status"], _count: { _all: true } });
   const counts: Record<OrderStatus | "total", number> = {
-    eingegangen: 0,
-    in_bearbeitung: 0,
-    versandt: 0,
-    zugestellt: 0,
-    storniert: 0,
+    recue: 0,
+    en_traitement: 0,
+    expediee: 0,
+    livree: 0,
+    annulee: 0,
     total: 0,
   };
   for (const entry of grouped) {
@@ -307,7 +307,7 @@ export async function countOrdersByStatus(): Promise<Record<OrderStatus | "total
 
 /** Commandes qui demandent encore une action : ni livrées ni annulées. */
 export async function countOpenOrders(): Promise<number> {
-  return prisma.order.count({ where: { status: { in: ["eingegangen", "in_bearbeitung"] } } });
+  return prisma.order.count({ where: { status: { in: ["recue", "en_traitement"] } } });
 }
 
 // ---- Numéro de commande ----
@@ -630,8 +630,8 @@ export async function createOrder(
             paymentMethodFee: method.feeLabel,
             shippingMethodKey: shippingMethod.key,
             shippingMethodLabel: shippingMethod.label,
-            status: "eingegangen",
-            paymentStatus: "offen",
+            status: "recue",
+            paymentStatus: "en_attente",
             subtotalCents: totals.subtotalCents,
             shippingCents: totals.shippingCents,
             taxCents: totals.taxCents,
@@ -665,7 +665,7 @@ export async function createOrder(
             events: {
               create: {
                 kind: "status",
-                toValue: "eingegangen",
+                toValue: "recue",
                 note: `Commande passée dans la boutique (${method.label}, ${shippingMethod.label})`,
                 createdBy: "shop",
               },
@@ -711,7 +711,7 @@ export async function updateOrderStatus(
 
   let stockRestored = current.stockRestored;
 
-  if (status === "storniert" && !current.stockRestored) {
+  if (status === "annulee" && !current.stockRestored) {
     const items = await prisma.orderItem.findMany({
       where: { orderId: id, productId: { not: null } },
       select: { productId: true, quantity: true },
@@ -738,7 +738,7 @@ export async function updateOrderStatus(
     data: {
       status,
       stockRestored,
-      shippedAt: status === "versandt" ? new Date() : undefined,
+      shippedAt: status === "expediee" ? new Date() : undefined,
       events: {
         create: {
           kind: "status",
@@ -771,7 +771,7 @@ export async function updatePaymentStatus(
     where: { id },
     data: {
       paymentStatus,
-      paidAt: paymentStatus === "bezahlt" ? new Date() : undefined,
+      paidAt: paymentStatus === "payee" ? new Date() : undefined,
       events: {
         create: {
           kind: "payment",

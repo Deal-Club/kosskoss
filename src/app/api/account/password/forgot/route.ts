@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     message:
-      "Falls ein Konto mit dieser E-Mail-Adresse besteht, haben wir Ihnen einen Link zum " +
+      "Si un compte existe pour cette adresse e-mail, nous venons de vous envoyer " +
       "un lien de réinitialisation du mot de passe.",
     // Repli de développement, comme pour le code du back-office : sans
     // fournisseur d'e-mail configuré, le lien est renvoyé ici et écrit dans la

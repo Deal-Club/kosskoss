@@ -68,7 +68,7 @@ export async function POST(request: Request, { params }: { params: Params }) {
   //
   // Le contrôle ne porte que sur le passage en « payée » : un échec ou un
   // remboursement n'ont pas à correspondre au total.
-  if (result.paymentStatus === "bezahlt") {
+  if (result.paymentStatus === "payee") {
     const montantAnnonce = result.amountCents;
     const deviseAnnoncee = result.currency?.toUpperCase();
 

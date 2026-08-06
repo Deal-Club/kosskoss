@@ -101,7 +101,7 @@ export async function saveGatewayConfig(input: GatewayConfig): Promise<GatewayCo
  *
  * Renvoie null dès qu'une condition manque — prestataire désactivé, moyen de
  * paiement non rattaché, clés absentes — de sorte qu'une configuration
- * incomplète fasse simplement retomber la commande sur le mode « offen » (comme
+ * incomplète fasse simplement retomber la commande sur le mode « en attente » (comme
  * le virement) plutôt que d'échouer.
  */
 export async function resolveGatewayForMethod(methodKey: string): Promise<PaymentGateway | null> {

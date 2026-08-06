@@ -8,8 +8,8 @@ import { accountErrorResponse } from "@/server/accountMessages";
  * Connexion d'un client.
  *
  * Un seul message d'échec, quel que soit le motif : adresse inconnue, mot de
- * passe faux ou compte désactivé renvoient tous « E-Mail-Adresse oder Passwort
- * ist falsch. » avec le même statut 401. `authenticateCustomer` vérifie en plus
+ * passe faux ou compte désactivé renvoient tous « L'adresse e-mail ou le mot
+ * de passe est incorrect. » avec le même statut 401. `authenticateCustomer` vérifie en plus
  * un haché factice quand l'adresse n'existe pas, pour que la durée de la
  * réponse ne trahisse rien non plus.
  */

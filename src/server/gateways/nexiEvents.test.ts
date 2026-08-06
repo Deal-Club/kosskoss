@@ -4,12 +4,12 @@ import { nexiPaymentStatus, readNexiNotification } from "./nexiEvents";
 
 describe("nexiPaymentStatus", () => {
   it("ne considère payée qu'une opération réellement exécutée", () => {
-    assert.equal(nexiPaymentStatus("EXECUTED", "CAPTURE"), "bezahlt");
-    assert.equal(nexiPaymentStatus("EXECUTED", "AUTHORIZATION"), "bezahlt");
+    assert.equal(nexiPaymentStatus("EXECUTED", "CAPTURE"), "payee");
+    assert.equal(nexiPaymentStatus("EXECUTED", "AUTHORIZATION"), "payee");
   });
 
   it("ne compte une autorisation que si elle porte sur une capture", () => {
-    assert.equal(nexiPaymentStatus("AUTHORIZED", "CAPTURE"), "bezahlt");
+    assert.equal(nexiPaymentStatus("AUTHORIZED", "CAPTURE"), "payee");
     // Fonds réservés, pas encore encaissés : la commande reste en attente.
     assert.equal(nexiPaymentStatus("AUTHORIZED", "AUTHORIZATION"), null);
     assert.equal(nexiPaymentStatus("AUTHORIZED", undefined), null);
@@ -17,7 +17,7 @@ describe("nexiPaymentStatus", () => {
 
   it("marque l'échec sur un refus, une annulation ou une invalidation", () => {
     for (const result of ["DECLINED", "DENIED_BY_RISK", "FAILED", "CANCELED", "VOID"]) {
-      assert.equal(nexiPaymentStatus(result, "AUTHORIZATION"), "fehlgeschlagen", result);
+      assert.equal(nexiPaymentStatus(result, "AUTHORIZATION"), "echouee", result);
     }
   });
 

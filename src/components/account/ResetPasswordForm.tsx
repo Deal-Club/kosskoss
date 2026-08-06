@@ -60,7 +60,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-[#16a34a]" aria-hidden />
         <h2 className="text-lg font-black text-foreground">{t("reset.doneTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">{t("reset.doneText")}</p>
-        <Link href={{ pathname: "/compte/connexion", query: { hinweis: "passwort" } }} className={`${PRIMARY_BUTTON} mt-5`}>
+        <Link href="/compte/connexion" className={`${PRIMARY_BUTTON} mt-5`}>
           {t("reset.toLogin")}
         </Link>
       </div>

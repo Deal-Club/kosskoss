@@ -26,7 +26,7 @@ function confirmationUrl(order: OrderRecord): string {
 /**
  * Ouvre une session de paiement si le moyen choisi est encaissé en ligne, et
  * rend l'URL vers laquelle rediriger le navigateur. Ne lève jamais : la commande
- * est déjà écrite (statut « offen »), donc un prestataire injoignable la laisse
+ * est déjà écrite (statut « en attente »), donc un prestataire injoignable la laisse
  * réglable autrement plutôt que de casser une commande valable.
  */
 async function startOnlinePayment(order: OrderRecord): Promise<string | undefined> {

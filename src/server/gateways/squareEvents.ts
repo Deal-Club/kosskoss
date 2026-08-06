@@ -37,16 +37,16 @@ const HANDLED_TYPES = new Set(["payment.created", "payment.updated"]);
  * Traduit un statut de paiement Square en statut de commande de la boutique.
  *
  * Les états transitoires (`PENDING`, `APPROVED` — carte autorisée mais non
- * capturée) rendent null : la commande reste « offen » jusqu'à l'encaissement
+ * capturée) rendent null : la commande reste « en_attente » jusqu'à l'encaissement
  * réel, sans quoi une autorisation jamais capturée passerait pour un paiement.
  */
 export function squarePaymentStatus(status: string | undefined): PaymentStatus | null {
   switch (status) {
     case "COMPLETED":
-      return "bezahlt";
+      return "payee";
     case "FAILED":
     case "CANCELED":
-      return "fehlgeschlagen";
+      return "echouee";
     default:
       return null;
   }

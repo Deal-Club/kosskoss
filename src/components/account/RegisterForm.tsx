@@ -92,8 +92,8 @@ export function RegisterForm() {
           className={`${INPUT} sm:w-56`}
         >
           <option value="">{t("fields.salutationNone")}</option>
-          <option value="herr">{t("fields.salutationMr")}</option>
-          <option value="frau">{t("fields.salutationMrs")}</option>
+          <option value="m">{t("fields.salutationMr")}</option>
+          <option value="mme">{t("fields.salutationMrs")}</option>
           <option value="divers">{t("fields.salutationDiverse")}</option>
         </select>
       </div>

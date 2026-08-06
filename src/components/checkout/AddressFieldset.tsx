@@ -61,8 +61,8 @@ export function AddressFieldset({
           className={`${INPUT} sm:w-56`}
         >
           <option value="">{t("salutationNone")}</option>
-          <option value="herr">{t("salutationMr")}</option>
-          <option value="frau">{t("salutationMrs")}</option>
+          <option value="m">{t("salutationMr")}</option>
+          <option value="mme">{t("salutationMrs")}</option>
           <option value="divers">{t("salutationDiverse")}</option>
         </select>
       </div>

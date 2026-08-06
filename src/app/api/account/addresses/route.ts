@@ -25,7 +25,7 @@ export async function PUT(request: Request) {
 
   return NextResponse.json({
     ok: true,
-    message: "Ihre Adressen wurden gespeichert.",
+    message: "Vos adresses ont été enregistrées.",
     billing: updated.billing,
     shippingSameAsBilling: updated.shippingSameAsBilling,
     shipping: updated.shipping,

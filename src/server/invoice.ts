@@ -93,8 +93,17 @@ function dateFrancaise(iso: string): string {
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
+/** Civilité stockée (m | mme) rendue lisible sur la facture. */
+function civilite(code: string): string {
+  if (code === "m") return "M.";
+  if (code === "mme") return "Mme";
+  return "";
+}
+
 function lignesAdresse(adresse: OrderAddress): string[] {
-  const nom = [adresse.salutation, adresse.firstName, adresse.lastName].filter(Boolean).join(" ");
+  const nom = [civilite(adresse.salutation), adresse.firstName, adresse.lastName]
+    .filter(Boolean)
+    .join(" ");
   return [
     adresse.company,
     nom,

@@ -54,7 +54,7 @@ export async function requireCustomer(locale: string, returnTo?: string): Promis
   redirect(
     getPathname({
       href: returnTo
-        ? { pathname: "/compte/connexion", query: { weiter: returnTo } }
+        ? { pathname: "/compte/connexion", query: { suite: returnTo } }
         : "/compte/connexion",
       locale: target,
     }),

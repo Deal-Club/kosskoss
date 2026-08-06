@@ -270,7 +270,7 @@ export const paypalGateway: PaymentGateway = {
       case "PAYMENT.CAPTURE.COMPLETED":
         return {
           orderNumber: paypalOrderNumber(event),
-          paymentStatus: "bezahlt",
+          paymentStatus: "payee",
           reference: event.resource?.id,
           amountCents: decimalToCents(event.resource?.amount?.value) ?? undefined,
           currency: event.resource?.amount?.currency_code,
@@ -280,7 +280,7 @@ export const paypalGateway: PaymentGateway = {
       case "PAYMENT.CAPTURE.REVERSED":
         return {
           orderNumber: paypalOrderNumber(event),
-          paymentStatus: "fehlgeschlagen",
+          paymentStatus: "echouee",
           reference: event.resource?.id,
         };
 

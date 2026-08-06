@@ -60,11 +60,11 @@ function amountValue(cents: number): string {
 function paymentStatusOf(status: MolliePaymentStatus): GatewayWebhookResult["paymentStatus"] {
   switch (status) {
     case MolliePaymentStatus.paid:
-      return "bezahlt";
+      return "payee";
     case MolliePaymentStatus.failed:
     case MolliePaymentStatus.canceled:
     case MolliePaymentStatus.expired:
-      return "fehlgeschlagen";
+      return "echouee";
     default:
       return null;
   }

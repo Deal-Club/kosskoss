@@ -9,7 +9,7 @@ function event(type: string, payment: Record<string, unknown>): string {
 
 describe("squarePaymentStatus", () => {
   it("ne considère payée qu'une capture réellement terminée", () => {
-    assert.equal(squarePaymentStatus("COMPLETED"), "bezahlt");
+    assert.equal(squarePaymentStatus("COMPLETED"), "payee");
   });
 
   it("laisse la commande en attente sur une autorisation non capturée", () => {
@@ -19,8 +19,8 @@ describe("squarePaymentStatus", () => {
   });
 
   it("marque l'échec sur un paiement refusé ou annulé", () => {
-    assert.equal(squarePaymentStatus("FAILED"), "fehlgeschlagen");
-    assert.equal(squarePaymentStatus("CANCELED"), "fehlgeschlagen");
+    assert.equal(squarePaymentStatus("FAILED"), "echouee");
+    assert.equal(squarePaymentStatus("CANCELED"), "echouee");
   });
 
   it("ignore un statut inconnu plutôt que de deviner", () => {
@@ -40,7 +40,7 @@ describe("readSquareEvent", () => {
       }),
     );
 
-    assert.equal(result?.paymentStatus, "bezahlt");
+    assert.equal(result?.paymentStatus, "payee");
     assert.equal(result?.payment.reference_id, "MLC-2026-000123");
     assert.equal(result?.payment.id, "pay_1");
   });

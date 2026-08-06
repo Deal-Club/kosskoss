@@ -8,48 +8,49 @@
 // reste identique sous SQLite et sous PostgreSQL.
 
 export const ORDER_STATUSES = [
-  "eingegangen",
-  "in_bearbeitung",
-  "versandt",
-  "zugestellt",
-  "storniert",
+  "recue",
+  "en_traitement",
+  "expediee",
+  "livree",
+  "annulee",
 ] as const;
 
-export const PAYMENT_STATUSES = ["offen", "bezahlt", "erstattet", "fehlgeschlagen"] as const;
+export const PAYMENT_STATUSES = ["en_attente", "payee", "remboursee", "echouee"] as const;
 
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-// `de` et `en` alimentent la boutique publique, `fr` le back-office.
-export const ORDER_STATUS_LABELS: Record<OrderStatus, { de: string; en: string; fr: string }> = {
-  eingegangen: { de: "Eingegangen", en: "Received", fr: "Reçue" },
-  in_bearbeitung: { de: "In Bearbeitung", en: "In progress", fr: "En traitement" },
-  versandt: { de: "Versandt", en: "Shipped", fr: "Expédiée" },
-  zugestellt: { de: "Zugestellt", en: "Delivered", fr: "Livrée" },
-  storniert: { de: "Storniert", en: "Cancelled", fr: "Annulée" },
+// `fr` alimente la boutique française et tout le back-office, `en` la version
+// anglaise (/en). La langue est choisie d'après la locale de la page.
+export const ORDER_STATUS_LABELS: Record<OrderStatus, { en: string; fr: string }> = {
+  recue: { en: "Received", fr: "Reçue" },
+  en_traitement: { en: "In progress", fr: "En traitement" },
+  expediee: { en: "Shipped", fr: "Expédiée" },
+  livree: { en: "Delivered", fr: "Livrée" },
+  annulee: { en: "Cancelled", fr: "Annulée" },
 };
 
-export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, { de: string; en: string; fr: string }> = {
-  offen: { de: "Offen", en: "Open", fr: "En attente" },
-  bezahlt: { de: "Bezahlt", en: "Paid", fr: "Payée" },
-  erstattet: { de: "Erstattet", en: "Refunded", fr: "Remboursée" },
-  fehlgeschlagen: { de: "Fehlgeschlagen", en: "Failed", fr: "Échouée" },
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, { en: string; fr: string }> = {
+  en_attente: { en: "Pending", fr: "En attente" },
+  payee: { en: "Paid", fr: "Payée" },
+  remboursee: { en: "Refunded", fr: "Remboursée" },
+  echouee: { en: "Failed", fr: "Échouée" },
 };
 
 /** Pastilles du back-office, dans le même esprit que celles des avis clients. */
 export const ORDER_STATUS_BADGES: Record<OrderStatus, string> = {
-  eingegangen: "bg-accent text-accent-foreground",
-  in_bearbeitung: "bg-secondary text-secondary-foreground",
-  versandt: "bg-[#16a34a] text-white",
-  zugestellt: "bg-muted text-muted-foreground",
-  storniert: "bg-destructive text-white",
+  recue: "bg-accent text-accent-foreground",
+  en_traitement: "bg-secondary text-secondary-foreground",
+  expediee: "bg-[#16a34a] text-white",
+  livree: "bg-muted text-muted-foreground",
+  annulee: "bg-destructive text-white",
 };
 
 export const PAYMENT_STATUS_BADGES: Record<PaymentStatus, string> = {
-  offen: "bg-accent text-accent-foreground",
-  bezahlt: "bg-[#16a34a] text-white",
-  erstattet: "bg-muted text-muted-foreground",
-  fehlgeschlagen: "bg-destructive text-white",
+  en_attente: "bg-accent text-accent-foreground",
+  payee: "bg-[#16a34a] text-white",
+  remboursee: "bg-muted text-muted-foreground",
+  echouee: "bg-destructive text-white",
 };
 
 export function isOrderStatus(value: unknown): value is OrderStatus {

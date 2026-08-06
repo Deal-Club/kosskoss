@@ -23,7 +23,7 @@ export async function PATCH(request: Request) {
 
   return NextResponse.json({
     ok: true,
-    message: "Ihre Daten wurden gespeichert.",
+    message: "Vos informations ont été enregistrées.",
     customer: {
       salutation: updated.salutation,
       firstName: updated.firstName,

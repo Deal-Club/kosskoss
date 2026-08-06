@@ -290,8 +290,8 @@ function itemsText(order: OrderRecord): string {
  */
 function greeting(address: OrderAddress, fr: boolean): string {
   const lastName = address.lastName;
-  if (address.salutation === "herr") return fr ? `Monsieur ${lastName}` : `Dear Mr ${lastName}`;
-  if (address.salutation === "frau") return fr ? `Madame ${lastName}` : `Dear Ms ${lastName}`;
+  if (address.salutation === "m") return fr ? `Monsieur ${lastName}` : `Dear Mr ${lastName}`;
+  if (address.salutation === "mme") return fr ? `Madame ${lastName}` : `Dear Ms ${lastName}`;
   const full = [address.firstName, lastName].filter(Boolean).join(" ");
   return fr ? `Bonjour ${full}` : `Hello ${full}`;
 }

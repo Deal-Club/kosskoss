@@ -69,7 +69,7 @@ export const RESET_TTL_MINUTES = 30;
 export const SUPPORTED_COUNTRIES = COUNTRY_CODES;
 
 /** Civilités acceptées — texte libre court, pas d'enum Prisma. */
-export const SALUTATIONS = ["", "herr", "frau", "divers"] as const;
+export const SALUTATIONS = ["", "m", "mme", "divers"] as const;
 
 /** Adresse de remplacement posée sur les commandes d'un compte supprimé. */
 const ANONYMIZED_EMAIL = "supprime@compte.invalid";
@@ -689,8 +689,8 @@ export async function listCustomerOrders(
   return rows.map((row) => ({
     orderNumber: row.orderNumber,
     createdAt: row.createdAt.toISOString(),
-    status: isOrderStatus(row.status) ? row.status : "eingegangen",
-    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "offen",
+    status: isOrderStatus(row.status) ? row.status : "recue",
+    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "en_attente",
     totalCents: row.totalCents,
     currency: row.currency,
     itemCount: row.items.reduce((sum, item) => sum + item.quantity, 0),
@@ -738,79 +738,79 @@ export async function exportCustomerData(customerId: string): Promise<Record<str
   const customer = toRecord(row);
 
   return {
-    hinweis:
+    note:
       "Droit d'accès au titre de l'article 15 du RGPD et portabilité au titre de l'article 20. " +
       "Ce fichier contient toutes les données personnelles que KossKoss Select a enregistrées pour " +
       "votre compte client. Votre mot de passe n'y figure pas : il est stocké uniquement sous " +
       "forme d'empreinte non réversible.",
-    erstelltAm: new Date().toISOString(),
-    konto: {
-      kundennummer: customer.id,
+    genereLe: new Date().toISOString(),
+    compte: {
+      numeroClient: customer.id,
       email: customer.email,
-      anrede: customer.salutation,
-      vorname: customer.firstName,
-      nachname: customer.lastName,
-      telefon: customer.phone,
-      sprache: customer.locale,
-      emailBestaetigt: customer.emailVerified,
-      aktiv: customer.active,
-      registriertAm: customer.createdAt,
-      zuletztGeaendertAm: customer.updatedAt,
-      letzteAnmeldung: customer.lastLoginAt ?? null,
+      civilite: customer.salutation,
+      prenom: customer.firstName,
+      nom: customer.lastName,
+      telephone: customer.phone,
+      langue: customer.locale,
+      emailVerifie: customer.emailVerified,
+      actif: customer.active,
+      inscritLe: customer.createdAt,
+      modifieLe: customer.updatedAt,
+      derniereConnexion: customer.lastLoginAt ?? null,
     },
-    adressen: {
-      rechnungsadresse: customer.billing,
-      lieferadresseEntsprichtRechnungsadresse: customer.shippingSameAsBilling,
-      lieferadresse: customer.shipping,
+    adresses: {
+      adresseFacturation: customer.billing,
+      livraisonIdentiqueALaFacturation: customer.shippingSameAsBilling,
+      adresseLivraison: customer.shipping,
     },
-    bestellungen: orders.map((order) => ({
-      bestellnummer: order.orderNumber,
-      bestelltAm: order.createdAt.toISOString(),
-      status: order.status,
-      zahlungsstatus: order.paymentStatus,
-      zahlungsart: order.paymentMethodLabel,
-      waehrung: order.currency,
-      zwischensummeCent: order.subtotalCents,
-      versandCent: order.shippingCents,
-      enthalteneUmsatzsteuerCent: order.taxCents,
-      umsatzsteuersatzProzent: order.taxRatePercent,
-      gesamtCent: order.totalCents,
-      rechnungsadresse: {
-        anrede: order.billingSalutation,
-        vorname: order.billingFirstName,
-        nachname: order.billingLastName,
-        firma: order.billingCompany,
-        strasse: order.billingStreet,
-        plz: order.billingPostalCode,
-        ort: order.billingCity,
-        land: order.billingCountry,
+    commandes: orders.map((order) => ({
+      numeroCommande: order.orderNumber,
+      commandeeLe: order.createdAt.toISOString(),
+      statut: order.status,
+      statutPaiement: order.paymentStatus,
+      moyenPaiement: order.paymentMethodLabel,
+      devise: order.currency,
+      sousTotal: order.subtotalCents,
+      fraisLivraison: order.shippingCents,
+      tvaIncluse: order.taxCents,
+      tauxTvaPourcent: order.taxRatePercent,
+      total: order.totalCents,
+      adresseFacturation: {
+        civilite: order.billingSalutation,
+        prenom: order.billingFirstName,
+        nom: order.billingLastName,
+        societe: order.billingCompany,
+        rue: order.billingStreet,
+        codePostal: order.billingPostalCode,
+        ville: order.billingCity,
+        pays: order.billingCountry,
       },
-      lieferadresse: order.shippingSameAsBilling
-        ? "entspricht der Rechnungsadresse"
+      adresseLivraison: order.shippingSameAsBilling
+        ? "identique à l'adresse de facturation"
         : {
-            anrede: order.shippingSalutation,
-            vorname: order.shippingFirstName,
-            nachname: order.shippingLastName,
-            firma: order.shippingCompany,
-            strasse: order.shippingStreet,
-            plz: order.shippingPostalCode,
-            ort: order.shippingCity,
-            land: order.shippingCountry,
+            civilite: order.shippingSalutation,
+            prenom: order.shippingFirstName,
+            nom: order.shippingLastName,
+            societe: order.shippingCompany,
+            rue: order.shippingStreet,
+            codePostal: order.shippingPostalCode,
+            ville: order.shippingCity,
+            pays: order.shippingCountry,
           },
-      anmerkung: order.customerNote,
-      positionen: order.items.map((item) => ({
-        marke: item.brand,
-        bezeichnung: item.name,
-        artikelnummer: item.sku,
-        menge: item.quantity,
-        einzelpreisCent: item.unitPriceCents,
-        positionssummeCent: item.lineTotalCents,
+      note: order.customerNote,
+      articles: order.items.map((item) => ({
+        marque: item.brand,
+        designation: item.name,
+        reference: item.sku,
+        quantite: item.quantity,
+        prixUnitaire: item.unitPriceCents,
+        totalLigne: item.lineTotalCents,
       })),
-      verlauf: order.events.map((event) => ({
-        art: event.kind,
-        von: event.fromValue,
-        nach: event.toValue,
-        am: event.createdAt.toISOString(),
+      historique: order.events.map((event) => ({
+        type: event.kind,
+        de: event.fromValue,
+        vers: event.toValue,
+        le: event.createdAt.toISOString(),
       })),
     })),
   };
@@ -825,16 +825,15 @@ export async function exportCustomerData(customerId: string): Promise<Record<str
  * enregistrées pour le confort, téléphone, demandes de réinitialisation.
  *
  * Ce qui reste, et pourquoi : la commande elle-même. Les justificatifs
- * comptables et les factures se conservent huit ans depuis le BEG IV du
- * 29 octobre 2024 (§ 147 al. 3 AO, § 257 al. 4 HGB ; dix ans pour les livres et
- * les comptes annuels), et l'art. 17 § 3 b RGPD réserve expressément le cas
- * d'une obligation légale de conservation. La commande est détachée du compte,
- * ses coordonnées de contact
- * (e-mail, téléphone, message du client) sont effacées et son jeton d'accès est
- * régénéré pour que les anciens liens de confirmation ne fonctionnent plus.
- * Le nom et l'adresse de facturation subsistent : ce sont des mentions
- * obligatoires de la facture (§ 14 al. 4 UStG), les retirer rendrait la pièce
- * comptable non conforme.
+ * comptables et les factures doivent être conservés pendant la durée légale
+ * de conservation applicable (à confirmer selon la réglementation comptable
+ * et fiscale camerounaise), et le droit à l'effacement réserve expressément le
+ * cas d'une obligation légale de conservation. La commande est détachée du
+ * compte, ses coordonnées de contact (e-mail, téléphone, message du client)
+ * sont effacées et son jeton d'accès est régénéré pour que les anciens liens
+ * de confirmation ne fonctionnent plus. Le nom et l'adresse de facturation
+ * subsistent : ce sont des mentions obligatoires de la facture, les retirer
+ * rendrait la pièce comptable non conforme.
  */
 export async function deleteCustomerAccount(
   customerId: string,

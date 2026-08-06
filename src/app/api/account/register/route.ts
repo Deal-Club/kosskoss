@@ -44,7 +44,7 @@ export async function POST(request: Request) {
   return NextResponse.json({
     ok: true,
     message:
-      "Wenn die Adresse noch nicht vergeben war, ist Ihr Konto jetzt angelegt. " +
-      "Wir haben Ihnen eine E-Mail geschickt. Bitte melden Sie sich mit Ihrem Passwort an.",
+      "Si l'adresse n'était pas déjà utilisée, votre compte est maintenant créé. " +
+      "Nous vous avons envoyé un e-mail. Vous pouvez désormais vous connecter avec votre mot de passe.",
   });
 }

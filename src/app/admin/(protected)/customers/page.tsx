@@ -14,8 +14,8 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
 });
 
 const SALUTATION_LABELS: Record<string, string> = {
-  herr: "M.",
-  frau: "Mme",
+  m: "M.",
+  mme: "Mme",
   divers: "Divers",
 };
 

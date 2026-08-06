@@ -89,7 +89,7 @@ export function OrderStatusPanel({
         </select>
       </label>
 
-      {nextStatus === "storniert" && status !== "storniert" && (
+      {nextStatus === "annulee" && status !== "annulee" && (
         <p className="mb-4 rounded-sm border border-accent bg-accent/15 px-3 py-2 text-xs font-semibold text-foreground">
           En cas d&apos;annulation, la marchandise est automatiquement recréditée au stock.
         </p>

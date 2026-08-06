@@ -1,4 +1,4 @@
-// Modèle de données de la boutique MLC Bois.
+// Modèle de données de la boutique KossKoss Select.
 // Base de production et de développement : PostgreSQL (Neon), via la seule
 // variable DATABASE_URL — voir docs/DATABASE.md.
 // Contrainte volontaire : ni enum Prisma ni liste scalaire, pour que le même
@@ -277,10 +277,10 @@ model Order {
   // ici. Vide pour tous les autres prestataires.
   gatewaySecurityToken String?
 
-  // eingegangen | in_bearbeitung | versandt | zugestellt | storniert
-  status        String @default("eingegangen")
-  // offen | bezahlt | erstattet | fehlgeschlagen
-  paymentStatus String @default("offen")
+  // recue | en_traitement | expediee | livree | annulee
+  status        String @default("recue")
+  // en_attente | payee | remboursee | echouee
+  paymentStatus String @default("en_attente")
 
   // Montants en centimes, TTC
   subtotalCents  Int
@@ -452,7 +452,7 @@ model Customer {
   // Toujours haché en scrypt (src/lib/password.ts). Ne sort jamais du serveur.
   passwordHash String
 
-  // Identité — « salutation » reste un texte libre court (herr | frau | divers),
+  // Identité — « salutation » reste un texte libre court (m | mme | divers),
   // pas un enum Prisma, pour rester compatible SQLite et PostgreSQL.
   salutation String @default("")
   firstName  String

@@ -38,7 +38,7 @@ export async function sendAccountRequest(
 }
 
 /**
- * Nettoie un chemin de retour lu dans l'URL (« ?weiter=… »).
+ * Nettoie un chemin de retour lu dans l'URL (« ?suite=… »).
  * Seuls les chemins internes sont acceptés : « //evil.example » ou une URL
  * absolue transformeraient la page de connexion en redirection ouverte.
  */

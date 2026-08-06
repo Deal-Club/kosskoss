@@ -174,8 +174,8 @@ export async function listCampaignOrders(campaignId: string): Promise<CampaignOr
     // Les statuts sont stockés en texte libre : une valeur inconnue ne peut
     // venir que d'une base modifiée à la main, on retombe sur l'état d'entrée
     // plutôt que de faire tomber la page.
-    status: isOrderStatus(row.status) ? row.status : "eingegangen",
-    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "offen",
+    status: isOrderStatus(row.status) ? row.status : "recue",
+    paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "en_attente",
     freeShipping: row.campaignFreeShipping,
   }));
 }

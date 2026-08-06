@@ -27,7 +27,7 @@ export default async function LoginPage({
 
   if (await getCurrentCustomer()) redirect(locale === "en" ? "/en/compte" : "/compte");
 
-  const weiter = Array.isArray(sp.weiter) ? sp.weiter[0] : sp.weiter;
+  const suite = Array.isArray(sp.suite) ? sp.suite[0] : sp.suite;
 
   return (
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
@@ -40,7 +40,7 @@ export default async function LoginPage({
             Connectez-vous pour suivre vos commandes et votre routine.
           </p>
           <div className="mt-8">
-            <AccountLogin returnTo={weiter} />
+            <AccountLogin returnTo={suite} />
           </div>
           <p className="mx-auto mt-6 max-w-sm text-center text-sm text-muted-foreground">
             Pas encore de compte ? Il est créé automatiquement lors de votre première commande, en
