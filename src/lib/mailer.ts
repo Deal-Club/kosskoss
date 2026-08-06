@@ -19,7 +19,7 @@
  */
 import nodemailer, { type Transporter } from "nodemailer";
 
-const DEFAULT_FROM_NAME = "MLC Bois";
+const DEFAULT_FROM_NAME = "KossKoss Select";
 
 /** Fichier joint au message, transmis tel quel à nodemailer. */
 export interface MailAttachment {

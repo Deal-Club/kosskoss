@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { prisma } from "@/server/prisma";
 import { hashPassword } from "@/lib/password";
 import { openCustomerSession } from "@/server/customerSession";
+import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/emails";
 
 export type KKPaymentMethod = "orange_money" | "mtn_momo" | "carte";
 
@@ -118,13 +119,14 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   let customerId: string | undefined;
   let account: "created" | "linked" | "none" = "none";
   let newCustomer: { id: string; email: string } | null = null;
+  let tempPassword: string | null = null;
   if (input.followOrder) {
     const existing = await prisma.customer.findUnique({ where: { email: emailNorm } });
     if (existing) {
       customerId = existing.id;
       account = "linked";
     } else {
-      const tempPassword = randomBytes(12).toString("base64url");
+      tempPassword = randomBytes(12).toString("base64url");
       const created = await prisma.customer.create({
         data: {
           email: emailNorm,
@@ -194,6 +196,19 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   // Auto-connexion uniquement pour un compte fraîchement créé.
   if (newCustomer) {
     await openCustomerSession(newCustomer);
+  }
+
+  // E-mails transactionnels (best-effort : les fonctions avalent leurs erreurs
+  // et ne partent que si le SMTP est configuré — la commande n'échoue jamais).
+  await sendOrderConfirmationEmail({
+    to: input.email.trim(),
+    firstName,
+    orderNumber,
+    items: orderItems,
+    totalFcfa: subtotal,
+  });
+  if (account === "created" && tempPassword) {
+    await sendAccountAccessEmail(emailNorm, firstName, tempPassword);
   }
 
   return { ok: true, orderNumber, accessToken, account };
