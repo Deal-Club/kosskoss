@@ -178,7 +178,7 @@ model PaymentMethod {
   description String   @default("")
   // Nom d'une icône lucide-react, par exemple "credit-card"
   icon        String   @default("credit-card")
-  feeLabel    String   @default("kostenlos")
+  feeLabel    String   @default("")
   enabled     Boolean  @default(true)
   position    Int      @default(0)
   updatedAt   DateTime @updatedAt
