@@ -102,7 +102,7 @@ export function AdminSidebar({
   }
 
   const panel = (
-    <div className="flex h-full flex-col bg-secondary text-secondary-foreground">
+    <div className="flex h-full flex-col bg-deep text-white">
       <div className="border-b border-white/10 px-5 py-5">
         <Link
           href="/admin"
@@ -112,7 +112,7 @@ export function AdminSidebar({
         >
           {/* Fond sombre : c'est la variante claire du logo qui s'impose. */}
           <Logo tone="light" className="h-8 w-auto" />
-          <span className="mt-1.5 block text-[11px] font-semibold tracking-widest text-primary uppercase">
+          <span className="mt-1.5 block text-[11px] font-semibold tracking-widest text-sand uppercase">
             Administration
           </span>
         </Link>
@@ -136,14 +136,14 @@ export function AdminSidebar({
                     className={cn(
                       "flex items-center gap-3 rounded-sm px-2.5 py-2 text-sm transition-colors",
                       isActive(href)
-                        ? "bg-primary/15 font-bold text-white"
+                        ? "bg-white/10 font-bold text-white"
                         : "text-white/70 hover:bg-white/5 hover:text-white",
                     )}
                   >
                     <Icon
                       className={cn(
                         "h-4 w-4 shrink-0",
-                        isActive(href) ? "text-primary" : "text-white/50",
+                        isActive(href) ? "text-sand" : "text-white/50",
                       )}
                     />
                     <span className="flex-1">{label}</span>
@@ -151,7 +151,7 @@ export function AdminSidebar({
                       <span
                         title={badgeTitle}
                         aria-label={badgeTitle ? `${badge} ${badgeTitle}` : undefined}
-                        className="rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-black text-primary-foreground"
+                        className="rounded-full bg-sand px-1.5 py-0.5 text-[10px] font-black text-deep"
                       >
                         {badge}
                       </span>
@@ -167,7 +167,7 @@ export function AdminSidebar({
       <div className="border-t border-white/10 px-4 py-4">
         <Link
           href="/"
-          className="mb-3 flex items-center gap-2 text-xs text-white/60 transition-colors hover:text-primary"
+          className="mb-3 flex items-center gap-2 text-xs text-white/60 transition-colors hover:text-sand"
         >
           <Store className="h-3.5 w-3.5" />
           Voir la boutique
@@ -183,12 +183,12 @@ export function AdminSidebar({
   return (
     <>
       {/* Le fond sombre couvre toute la hauteur du document, le menu reste visible au défilement */}
-      <aside className="hidden w-60 shrink-0 bg-secondary lg:block">
+      <aside className="hidden w-60 shrink-0 bg-deep lg:block">
         <div className="sticky top-0 h-screen overflow-y-auto">{panel}</div>
       </aside>
 
       {/* Barre mobile : la même navigation, ouverte par-dessus le contenu */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-secondary px-4 py-3 text-secondary-foreground lg:hidden">
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-deep px-4 py-3 text-white lg:hidden">
         <Link href="/admin" aria-label="KossKoss Select — administration">
           <Logo tone="light" className="h-7 w-auto sm:h-7" />
         </Link>
