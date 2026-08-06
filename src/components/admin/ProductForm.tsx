@@ -169,19 +169,19 @@ export function ProductForm({
   const selectedCategory = categories.find((entry) => entry.id === categoryId);
   // L'adresse publique du produit reprend la règle du serveur : slug de la marque
   // et du nom accolés.
-  const productSlug = slugify(`${brand}-${name}`) || "produkt";
+  const productSlug = slugify(`${brand}-${name}`) || "produit";
 
   return (
     <div
       className={
         showPreview
-          ? "grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]"
+          ? "grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_380px]"
           : "grid grid-cols-1 gap-6"
       }
     >
       <form
         onSubmit={handleSubmit}
-        className="min-w-0 max-w-2xl rounded-sm border border-border bg-white p-6 xl:max-w-none"
+        className="min-w-0 max-w-2xl rounded-sm border border-border bg-white p-6 lg:max-w-none"
       >
         <label className="mb-4 block text-sm">
           <span className="mb-1 block font-semibold text-foreground">Catégorie</span>
@@ -479,7 +479,7 @@ export function ProductForm({
 
       {showPreview && (
         <PreviewPanel
-          url={`mlc-bois.fr/${categoryId || "univers/categorie"}/${productSlug}`}
+          url={`kosskoss.select/${categoryId || "univers/categorie"}/${productSlug}`}
           actions={
             <div className="flex rounded-sm border border-border bg-white text-xs font-bold">
               <button

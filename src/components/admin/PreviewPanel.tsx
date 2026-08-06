@@ -12,12 +12,12 @@ interface PreviewPanelProps {
  * Cadre commun aux aperçus du back-office : titre, fausse barre d'adresse et
  * zone défilante qui reste visible pendant que l'on remplit le formulaire.
  *
- * Réservé au bureau : en dessous de 1280 px le formulaire occupe toute la
- * largeur et le panneau disparaît.
+ * Visible à partir de 1024 px ; en dessous le formulaire occupe toute la
+ * largeur et le panneau passe simplement sous lui.
  */
 export function PreviewPanel({ url, actions, children }: PreviewPanelProps) {
   return (
-    <aside className="hidden xl:block">
+    <aside className="hidden lg:block">
       <div className="sticky top-6">
         <div className="mb-2 flex items-center justify-between gap-2">
           <h2 className="text-sm font-black tracking-wide text-foreground uppercase">

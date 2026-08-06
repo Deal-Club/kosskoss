@@ -229,7 +229,7 @@ export function ProductPreview({
                 : "bg-muted text-muted-foreground"
             }`}
           >
-            In den Warenkorb
+            Ajouter au panier
           </span>
 
           <div className="flex flex-col gap-1.5 border-t border-border pt-3 text-[11px] text-muted-foreground">
@@ -244,7 +244,7 @@ export function ProductPreview({
 
         {filledBullets.length > 0 && (
           <section className="mt-4 border-t border-border pt-4">
-            <h2 className="mb-2 text-xs font-bold text-foreground">Ausstattung &amp; Merkmale</h2>
+            <h2 className="mb-2 text-xs font-bold text-foreground">Caractéristiques</h2>
             <ul className="space-y-1 text-xs text-muted-foreground">
               {filledBullets.map((bullet) => (
                 <li key={bullet} className="flex gap-2">
@@ -257,7 +257,7 @@ export function ProductPreview({
 
         {description.trim() && (
           <section className="mt-4 border-t border-border pt-4">
-            <h2 className="mb-2 text-xs font-bold text-foreground">Artikelbeschreibung</h2>
+            <h2 className="mb-2 text-xs font-bold text-foreground">Description</h2>
             {/* Même rendu que la fiche publique : les paragraphes saisis dans
                 le back-office doivent rester lisibles dans l'aperçu. */}
             <p className="whitespace-pre-line text-xs text-muted-foreground">{description}</p>
