@@ -2,7 +2,7 @@ import Link from "next/link";
 import {
   AlertTriangle,
   ArrowRight,
-  Euro,
+  Coins,
   Package,
   PackageX,
   Plus,
@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { requireAdminSession } from "@/lib/dal";
 import { prisma } from "@/server/prisma";
-import { formatPrice } from "@/server/store";
+import { formatFcfa } from "@/lib/kk/format";
 import {
   PriceDistributionChart,
   StockStatusChart,
@@ -139,7 +139,7 @@ export default async function AdminDashboardPage() {
         key: product.id,
         href: productHref(product.id),
         title: `${product.brand} ${product.name}`,
-        note: `${formatPrice(product.oldPriceCents ?? 0)} au lieu de ${formatPrice(product.priceCents)}`,
+        note: `${formatFcfa(product.oldPriceCents ?? 0)} au lieu de ${formatFcfa(product.priceCents)}`,
       })),
     },
   ] satisfies TaskBlock[]).filter((block) => block.items.length > 0);
@@ -150,14 +150,14 @@ export default async function AdminDashboardPage() {
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
     .slice(0, 6);
 
-  // Tranches de prix en centimes, bornes lisibles pour un catalogue d'électroménager
-  const PRICE_STEPS = [20000, 50000, 100000, 150000];
+  // Tranches de prix en FCFA (le montant est stocké en entier dans priceCents).
+  const PRICE_STEPS = [10000, 20000, 30000, 50000];
   const priceBuckets: PriceBucket[] = [
-    { label: "moins de 200 €", count: 0 },
-    { label: "200–499 €", count: 0 },
-    { label: "500–999 €", count: 0 },
-    { label: "1 000–1 499 €", count: 0 },
-    { label: "1 500 € et plus", count: 0 },
+    { label: "moins de 10 000 FCFA", count: 0 },
+    { label: "10 000–19 999", count: 0 },
+    { label: "20 000–29 999", count: 0 },
+    { label: "30 000–49 999", count: 0 },
+    { label: "50 000 FCFA et plus", count: 0 },
   ];
   for (const product of products) {
     const index = PRICE_STEPS.findIndex((step) => product.priceCents < step);
@@ -183,7 +183,7 @@ export default async function AdminDashboardPage() {
   const stockValueItems: CategoryValue[] = Array.from(valueByCategory, ([label, value]) => ({
     label,
     value,
-    valueLabel: formatPrice(value),
+    valueLabel: formatFcfa(value),
   }))
     .sort((a, b) => b.value - a.value)
     .slice(0, 8);
@@ -205,9 +205,9 @@ export default async function AdminDashboardPage() {
     },
     {
       label: "Valeur du stock",
-      value: formatPrice(stockValueCents),
+      value: formatFcfa(stockValueCents),
       href: "/admin/stock",
-      icon: Euro,
+      icon: Coins,
       note: "Stock × prix de vente",
     },
     {
@@ -275,7 +275,7 @@ export default async function AdminDashboardPage() {
         <StockStatusChart
           status={stockStatus}
           totalUnits={totalUnits}
-          averagePriceLabel={formatPrice(averagePriceCents)}
+          averagePriceLabel={formatFcfa(averagePriceCents)}
         />
         <PriceDistributionChart buckets={priceBuckets} />
         <StockValueChart items={stockValueItems} />

@@ -9,7 +9,8 @@ const STATUS_COLORS = {
   out: "#e3000e",
 } as const;
 
-const BRAND = "#e3000e";
+// Bleu profond KossKoss pour les barres de données (distribution, valeur stock).
+const BRAND = "#0f3b46";
 
 export interface PriceBucket {
   label: string;
