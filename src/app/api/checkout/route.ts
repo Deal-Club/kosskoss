@@ -225,7 +225,7 @@ export async function POST(request: Request) {
     }
     // Panne inattendue : la trace reste côté serveur, le client ne reçoit
     // qu'un message générique.
-    console.error("[checkout] Bestellung fehlgeschlagen:", error);
+    console.error("[checkout] Commande échouée :", error);
     return errorResponse("order_failed", 500);
   }
 }

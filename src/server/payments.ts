@@ -158,7 +158,7 @@ export async function reorderPaymentMethods(ids: string[]): Promise<PaymentMetho
   return listPaymentMethods();
 }
 
-/** Verschiebt eine Zahlungsart um eine Position nach oben oder unten. */
+/** Déplace un moyen de paiement d'une position vers le haut ou vers le bas. */
 export async function movePaymentMethod(
   id: string,
   direction: "up" | "down",

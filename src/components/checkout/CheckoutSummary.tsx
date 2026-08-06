@@ -8,10 +8,9 @@ import type { CartLine, CartTotals } from "@/lib/cart";
 
 // Bloc récapitulatif du tunnel de commande.
 //
-// § 312j Abs. 2 BGB impose que le prix total, les frais de livraison et les
-// caractéristiques essentielles des articles soient visibles « unmittelbar
-// bevor der Verbraucher seine Bestellung abgibt » — donc juste au-dessus du
-// bouton, sans que le client ait à ouvrir quoi que ce soit.
+// Le prix total, les frais de livraison et les caractéristiques essentielles
+// des articles doivent rester visibles juste au-dessus du bouton de commande,
+// avant que le client ne valide, sans qu'il ait à ouvrir quoi que ce soit.
 
 export function CheckoutSummary({
   lines,

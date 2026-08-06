@@ -78,7 +78,7 @@ async function sellerRecipients(): Promise<string[]> {
   } catch (error) {
     // La liste des comptes est un complément : sans elle, la boîte de la
     // boutique reste notifiée.
-    console.error("[bestellung] Lecture des comptes back-office impossible :", error);
+    console.error("[commande] Lecture des comptes back-office impossible :", error);
   }
 
   return [...addresses];
@@ -94,7 +94,7 @@ async function deliver(
     await sendMail({ to, ...message });
     return to;
   } catch (error) {
-    console.error(`[bestellung] Envoi impossible (${context} → ${to}) :`, error);
+    console.error(`[commande] Envoi impossible (${context} → ${to}) :`, error);
     return null;
   }
 }
@@ -106,7 +106,7 @@ async function logToOrder(orderId: string, note: string): Promise<void> {
       data: { orderId, kind: "email", note, createdBy: "system" },
     });
   } catch (error) {
-    console.error("[bestellung] Journalisation de l'e-mail impossible :", error);
+    console.error("[commande] Journalisation de l'e-mail impossible :", error);
   }
 }
 
@@ -119,7 +119,7 @@ async function logToOrder(orderId: string, note: string): Promise<void> {
 export async function sendOrderEmails(order: OrderRecord): Promise<void> {
   if (isMailDevFallback()) {
     console.info(
-      `[bestellung] ${order.orderNumber} : aucun SMTP configuré — confirmation vers ${order.email} et notification vendeur non envoyées.`,
+      `[commande] ${order.orderNumber} : aucun SMTP configuré — confirmation vers ${order.email} et notification vendeur non envoyées.`,
     );
     return;
   }
@@ -128,7 +128,7 @@ export async function sendOrderEmails(order: OrderRecord): Promise<void> {
 
   if (sellers.length === 0) {
     console.error(
-      "[bestellung] Aucun destinataire vendeur : renseigner ADMIN_EMAIL ou activer un compte back-office.",
+      "[commande] Aucun destinataire vendeur : renseigner ADMIN_EMAIL ou activer un compte back-office.",
     );
   }
 
@@ -157,7 +157,7 @@ export async function sendOrderEmails(order: OrderRecord): Promise<void> {
       },
     ];
   } catch (error) {
-    console.error(`[bestellung] ${order.orderNumber} : facture PDF non générée :`, error);
+    console.error(`[commande] ${order.orderNumber} : facture PDF non générée :`, error);
   }
 
   // Les deux envois partent ensemble : la confirmation du client ne doit pas
