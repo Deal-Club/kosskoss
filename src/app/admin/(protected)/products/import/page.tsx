@@ -35,8 +35,8 @@ export default async function ProductImportPage() {
             « univers/slug », voir la liste ci-dessous.
           </li>
           <li>
-            <span className="font-semibold text-foreground">price / oldPrice</span> — format
-            français, ex. 1 399,00 €.
+            <span className="font-semibold text-foreground">price / oldPrice</span> — montant en
+            FCFA, ex. 18 500.
           </li>
           <li>
             <span className="font-semibold text-foreground">bullets</span> — caractéristiques

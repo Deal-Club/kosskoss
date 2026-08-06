@@ -1,22 +1,20 @@
-// Utilitaires de conversion de prix — module pur, sans dépendance à la base.
-// Importable dans les parseurs de saisie et les tests sans déclencher Prisma.
+// Utilitaires de prix — module pur, sans dépendance à la base.
+// Devise KossKoss : Franc CFA (XAF), SANS sous-unité. Le champ historique
+// `priceCents` porte donc un ENTIER de FCFA (jamais divisé/multiplié par 100).
 
 /**
- * Convertit une chaîne de prix française ("349,00 €") en centimes.
+ * Convertit une saisie de prix ("18 500", "18.500 FCFA") en entier FCFA.
  * Retourne 0 si la valeur est manquante ou non numérique.
  */
 export function toCents(value: string): number {
-  const normalized = value.replace(/\./g, "").replace(",", ".").replace(/[^0-9.]/g, "");
+  const normalized = value.replace(/[.\s]/g, "").replace(",", ".").replace(/[^0-9.]/g, "");
   const parsed = Number.parseFloat(normalized);
-  return Number.isFinite(parsed) ? Math.round(parsed * 100) : 0;
+  return Number.isFinite(parsed) ? Math.round(parsed) : 0;
 }
 
 /**
- * Formate des centimes en chaîne de prix française ("349,00 €").
+ * Formate un entier FCFA en chaîne lisible ("18 500 FCFA").
  */
 export function formatPrice(cents: number): string {
-  return `${(cents / 100).toLocaleString("fr-FR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })} €`;
+  return `${Math.round(cents).toLocaleString("fr-FR")} FCFA`;
 }

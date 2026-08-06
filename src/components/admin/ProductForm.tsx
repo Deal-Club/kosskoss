@@ -67,10 +67,8 @@ export function ProductForm({
     (initialData?.variants ?? []).map((v) => ({
       id: v.id,
       label: v.label,
-      price: (v.priceCents / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2 }),
-      oldPrice: v.oldPriceCents
-        ? (v.oldPriceCents / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2 })
-        : "",
+      price: v.priceCents.toLocaleString("fr-FR"),
+      oldPrice: v.oldPriceCents ? v.oldPriceCents.toLocaleString("fr-FR") : "",
     })),
   );
   const [error, setError] = useState<string | null>(null);
@@ -287,7 +285,7 @@ export function ProductForm({
             <input
               value={oldPrice}
               onChange={(event) => setOldPrice(event.target.value)}
-              placeholder="ex. 449,00 €"
+              placeholder="ex. 22 000"
               className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
             />
           </label>
@@ -297,7 +295,7 @@ export function ProductForm({
               required
               value={price}
               onChange={(event) => setPrice(event.target.value)}
-              placeholder="ex. 349,00 €"
+              placeholder="ex. 18 500"
               className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
             />
           </label>
@@ -337,7 +335,7 @@ export function ProductForm({
                           ),
                         )
                       }
-                      placeholder="ex. 1 MAP"
+                      placeholder="ex. 50 ml"
                       aria-label={`Volume de la variation ${index + 1}`}
                       className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
                     />
@@ -354,7 +352,7 @@ export function ProductForm({
                           ),
                         )
                       }
-                      placeholder="ex. 175,00 €"
+                      placeholder="ex. 9 000"
                       aria-label={`Prix de la variation ${index + 1}`}
                       className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
                     />
@@ -373,7 +371,7 @@ export function ProductForm({
                           ),
                         )
                       }
-                      placeholder="ex. 200,00 €"
+                      placeholder="ex. 12 000"
                       aria-label={`Ancien prix de la variation ${index + 1}`}
                       className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
                     />

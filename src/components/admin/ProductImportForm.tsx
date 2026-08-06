@@ -42,8 +42,8 @@ const CSV_HEADER =
 function buildExample(categoryId: string): string {
   return [
     CSV_HEADER,
-    `${categoryId};MLC Bois;Hêtre 33 cm — palette 2 MAP;649,00 €;799,00 €;-18%;Humidité < 18 %|Séché en séchoir|Fendu prêt à brûler;Palette de hêtre séché en séchoir, livrée avec son relevé de mesure.;12`,
-    `${categoryId};MLC Bois;Chêne 50 cm — vrac 3 MAP;579,00 €;;Nouveau;Braises longue durée|Humidité < 18 %|Livré en vrac;Chêne séché en séchoir pour poêle de masse et feu continu.;6`,
+    `${categoryId};CeraVe;Sérum Éclat Vitamine C;20 000;24 000;Bestseller;Vitamine C pure|Céramides|Acide hyaluronique;Sérum antioxydant éclat pour un teint unifié.;30`,
+    `${categoryId};The Ordinary;Niacinamide 10% + Zinc 1%;9 000;;Nouveau;Niacinamide 10%|Zinc 1%|Réduit les imperfections;Sérum régulateur de sébum et de pores.;30`,
   ].join("\n");
 }
 
