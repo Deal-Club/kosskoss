@@ -108,7 +108,7 @@ export function AdminSidebar({
           href="/admin"
           onClick={() => setMobileOpen(false)}
           className="block"
-          aria-label="MLC Bois — administration"
+          aria-label="KossKoss Select — administration"
         >
           {/* Fond sombre : c'est la variante claire du logo qui s'impose. */}
           <Logo tone="light" className="h-8 w-auto" />
@@ -189,7 +189,7 @@ export function AdminSidebar({
 
       {/* Barre mobile : la même navigation, ouverte par-dessus le contenu */}
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-secondary px-4 py-3 text-secondary-foreground lg:hidden">
-        <Link href="/admin" aria-label="MLC Bois — administration">
+        <Link href="/admin" aria-label="KossKoss Select — administration">
           <Logo tone="light" className="h-7 w-auto sm:h-7" />
         </Link>
         <button

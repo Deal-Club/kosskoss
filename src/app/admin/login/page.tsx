@@ -299,7 +299,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="mt-4 text-center text-xs text-muted-foreground">
-          MLC Bois — administration
+          KossKoss Select — administration
         </p>
       </div>
     </div>

@@ -18,14 +18,6 @@
 
 import type { MailMessage } from "@/lib/mailer";
 
-const LOGO_WIDTH = 220;
-// Rapport d'origine du fichier : 747 × 162
-const LOGO_HEIGHT = Math.round((LOGO_WIDTH * 162) / 747);
-
-function siteUrl(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/+$/, "");
-}
-
 function escapeHtml(value: string): string {
   return value
     .replace(/&/g, "&amp;")
@@ -42,7 +34,6 @@ export interface AdminOtpEmailInput {
 
 export function buildAdminOtpEmail(input: AdminOtpEmailInput): Omit<MailMessage, "to"> {
   const { code, name, expiresInMinutes } = input;
-  const logo = `${siteUrl()}/images/logo-full.png`;
   const safeName = escapeHtml(name);
 
   const html = `<!doctype html>
@@ -67,11 +58,12 @@ export function buildAdminOtpEmail(input: AdminOtpEmailInput): Omit<MailMessage,
                  il disparaîtrait sur un bandeau sombre. -->
             <tr>
               <td align="center" style="background-color:#ffffff; padding:32px 24px 24px 24px; border-radius:6px 6px 0 0;">
-                <img src="${logo}" alt="MLC Bois — bois de chauffage" width="${LOGO_WIDTH}" height="${LOGO_HEIGHT}" style="display:block; width:${LOGO_WIDTH}px; height:auto; border:0; outline:none; text-decoration:none;" />
+                <div style="font-family:Georgia,'Times New Roman',serif; font-size:22px; letter-spacing:5px; font-weight:bold; color:#0f3b46;">KOSSKOSS</div>
+                <div style="font-family:Arial,Helvetica,sans-serif; font-size:10px; letter-spacing:6px; color:#0f3b46; opacity:0.7; margin-top:3px;">SELECT</div>
               </td>
             </tr>
             <tr>
-              <td style="background-color:#ff5c00; font-size:0; line-height:0; height:4px;">&nbsp;</td>
+              <td style="background-color:#0f3b46; font-size:0; line-height:0; height:4px;">&nbsp;</td>
             </tr>
 
             <tr>
@@ -119,7 +111,7 @@ export function buildAdminOtpEmail(input: AdminOtpEmailInput): Omit<MailMessage,
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%;">
             <tr>
               <td align="center" style="padding:20px 16px 0 16px; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:20px; color:#4b5563;">
-                MLC Bois — message automatique, merci de ne pas y répondre.
+                KossKoss Select — message automatique, merci de ne pas y répondre.
               </td>
             </tr>
           </table>
@@ -131,7 +123,7 @@ export function buildAdminOtpEmail(input: AdminOtpEmailInput): Omit<MailMessage,
 </html>`;
 
   const text = [
-    "Votre code de connexion à l'administration MLC Bois",
+    "Votre code de connexion à l'administration KossKoss Select",
     "",
     `Bonjour ${name},`,
     "Saisissez ce code sur la page de connexion pour terminer votre accès à l'administration.",

@@ -42,15 +42,15 @@ export const MERCHANT_VAT_RATE = 0.1;
 
 // Doivent rester alignés sur COMPANY (src/content/legal/fr.ts), qui fait
 // autorité pour les mentions légales et la facture PDF.
-export const SHOP_NAME = "MLC Bois";
-export const SHOP_PHONE = "+33 6 35 01 35 57";
+export const SHOP_NAME = "KossKoss Select";
+export const SHOP_PHONE = "+237 658 01 36 46";
 
 /**
  * URL publique de la boutique. Toutes les URL du flux doivent être absolues et
  * pointer vers le domaine vérifié dans Merchant Center.
  */
 export function siteUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mlc-bois.fr";
+  const raw = process.env.NEXT_PUBLIC_SITE_URL ?? "https://kosskoss.vercel.app";
   return raw.replace(/\/+$/, "");
 }
 

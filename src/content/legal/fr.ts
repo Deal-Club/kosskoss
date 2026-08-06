@@ -32,29 +32,29 @@ const UPDATED_AT = "2026-07-30";
  * `capital`, `managingDirector`, `phone` et `email` — voir docs/LEGAL.md § 3.
  */
 export const COMPANY = {
-  name: "MLC BOIS",
-  /** Forme sociale telle qu'immatriculée. */
-  legalForm: "Société par actions simplifiée unipersonnelle (SASU)",
-  street: "27 Grande Rue",
-  city: "21700 Villebichot",
-  country: "France",
-  email: "contact@mlc-bois.fr",
-  phone: "+33 6 35 01 35 57",
-  /** Président — directeur de la publication au sens de la LCEN. À COMPLÉTER. */
-  managingDirector: "Prénom Nom (à compléter)",
-  /** Immatriculation au registre du commerce et des sociétés. */
-  register: "RCS Dijon 990 527 871",
-  /** Numéro unique d'identification (SIREN). */
-  siren: "990 527 871",
-  /** Établissement principal (SIRET du siège). */
-  siret: "990 527 871 00018",
-  /** Capital social, mention obligatoire pour une société commerciale. À COMPLÉTER. */
-  capital: "à compléter",
-  /** Numéro de TVA intracommunautaire. */
-  vatId: "FR71990527871",
-  domain: "www.mlc-bois.fr",
-  /** Hébergeur, à nommer au titre de l'article 6 III 1° de la LCEN. */
-  host: "Hetzner Online GmbH, Industriestr. 25, 91710 Gunzenhausen, Allemagne — +49 9831 505-0",
+  name: "KossKoss Select",
+  /** Forme sociale — à renseigner selon l'immatriculation camerounaise. */
+  legalForm: "À compléter",
+  street: "À compléter",
+  city: "À compléter",
+  country: "Cameroun",
+  email: "contact@kosskoss.cm",
+  phone: "+237 658 01 36 46",
+  /** Directeur de la publication. À COMPLÉTER. */
+  managingDirector: "À compléter",
+  /** Registre du commerce (RCCM). À COMPLÉTER. */
+  register: "RCCM à compléter",
+  /** Champ hérité (SIREN, France) — sans objet au Cameroun. À COMPLÉTER. */
+  siren: "À compléter",
+  /** Champ hérité (SIRET, France) — sans objet au Cameroun. À COMPLÉTER. */
+  siret: "À compléter",
+  /** Capital social. À COMPLÉTER. */
+  capital: "À compléter",
+  /** Numéro d'identifiant unique (NIU). À COMPLÉTER. */
+  vatId: "NIU à compléter",
+  domain: "kosskoss.vercel.app",
+  /** Hébergeur. */
+  host: "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis",
 } as const;
 
 /** Adresse de retour (identique au siège dans ce modèle). */
@@ -62,7 +62,7 @@ const RETURN_ADDRESS = `${COMPANY.name}, service retours, ${COMPANY.street}, ${C
 
 /** Avertissement placé en tête de chaque page juridique. */
 const DISCLAIMER =
-  "Avertissement : ce texte est un modèle rédigé avec soin pour la boutique en ligne MLC Bois. L'identité, l'adresse, l'immatriculation et le numéro de TVA sont ceux du registre. Restent à renseigner avant publication : le capital social, le nom du président, le téléphone, l'assureur et le médiateur de la consommation. Faites ensuite relire le texte par un juriste : c'est à cette condition seulement qu'il est utilisable en l'état.";
+  "Avertissement : contenu juridique provisoire pour la boutique en ligne KossKoss Select (marché Cameroun). L'identité de la société, l'adresse, l'immatriculation (RCCM) et le NIU restent à renseigner avant publication, puis à faire relire par un juriste — c'est à cette condition seulement que ce texte est utilisable.";
 
 /** Assemble le chapeau : avertissement puis texte d'introduction. */
 function intro(lead: string): string {
