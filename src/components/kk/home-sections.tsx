@@ -253,7 +253,7 @@ export function MaisonSection({
               </Link>
               <Link
                 href="/diagnostic"
-                className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary-foreground/85 underline-offset-4 hover:underline"
+                className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary-foreground/85 kk-underline"
               >
                 Faire le diagnostic
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
@@ -309,7 +309,7 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
         </div>
         <Link
           href="/faq"
-          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep underline-offset-4 hover:underline"
+          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep kk-underline"
         >
           Toutes les questions
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

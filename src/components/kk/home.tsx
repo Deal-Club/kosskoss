@@ -54,7 +54,7 @@ export function Hero() {
             </Link>
             <Link
               href="/soins-visage"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-deep underline-offset-4 hover:underline"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
             >
               Découvrir la boutique
               <ArrowUpRight className="h-4 w-4" />
@@ -135,7 +135,7 @@ function SectionHead({ eyebrow, title, action }: { eyebrow: string; title: strin
       {action && (
         <Link
           href="/soins-visage"
-          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep underline-offset-4 hover:underline"
+          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep kk-underline"
         >
           {action}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -241,7 +241,7 @@ export function EditorialBlock() {
           </ul>
           <Link
             href="/soins-visage"
-            className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-deep underline-offset-4 hover:underline"
+            className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-deep kk-underline"
           >
             Découvrir la sélection
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

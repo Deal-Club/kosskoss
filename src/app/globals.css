@@ -459,18 +459,22 @@
   content: "";
   position: absolute;
   /* Le disque naît au milieu du bord inférieur et monte : le geste se lit,
-     là où un disque centré ne donne qu'un fondu. Son diamètre (160 % de la
-     largeur) le fait couvrir les deux angles hauts avant la fin de la course. */
+     là où un disque centré ne donne qu'un fondu.
+
+     Le diamètre est calibré au plus juste — assez pour atteindre les deux
+     angles hauts, pas davantage. Un disque trop large couvrirait le bouton dès
+     le dixième de sa course : on ne verrait plus une montée, mais un
+     basculement sec de couleur. */
   top: 100%;
   left: 50%;
   z-index: -1;
-  width: 160%;
+  width: 115%;
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--kk-fill, var(--sand));
   transform: translate(-50%, -50%) scale(0);
   transform-origin: center;
-  transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.44, 1);
+  transition: transform 0.6s cubic-bezier(0.33, 1, 0.4, 1);
 }
 
 .kk-fill:hover::before,
