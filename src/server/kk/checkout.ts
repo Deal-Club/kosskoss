@@ -222,6 +222,14 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     }
   });
 
+  // Le compteur d'usage n'est incrémenté qu'une fois la commande réellement
+  // écrite : un panier abandonné au moment de payer ne doit pas consommer le
+  // code. Hors transaction, à dessein — un échec d'incrément ne doit pas
+  // annuler une commande déjà valide.
+  if (couponCode) {
+    await consommerCoupon(couponCode);
+  }
+
   // Auto-connexion uniquement pour un compte fraîchement créé.
   if (newCustomer) {
     await openCustomerSession(newCustomer);

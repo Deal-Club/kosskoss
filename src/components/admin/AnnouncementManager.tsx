@@ -3,9 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { GripVertical, Loader2, Plus, Trash2 } from "lucide-react";
-import type { AnnouncementConfig, AnnouncementItem } from "@/server/announcements";
+import {
+  VITESSE_MAX,
+  VITESSE_MIN,
+  type AnnouncementConfig,
+  type AnnouncementItem,
+} from "@/lib/kk/announcement";
 import { ICONES_DISPONIBLES } from "@/components/kk/announcement-bar";
-import { VITESSE_MAX, VITESSE_MIN } from "@/server/announcements";
 
 /**
  * Administration du bandeau d'annonce : les messages d'un côté, l'apparence de

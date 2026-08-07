@@ -20,6 +20,8 @@ export async function POST(request: Request) {
     followOrder: Boolean(body.followOrder),
     paymentMethod: body.paymentMethod as KKPaymentMethod,
     locale: String(body.locale ?? "fr"),
+    // Seul le code transite ; le montant de la remise est recalculé en base.
+    couponCode: typeof body.couponCode === "string" ? body.couponCode : undefined,
   });
 
   return NextResponse.json(result, { status: result.ok ? 200 : 400 });

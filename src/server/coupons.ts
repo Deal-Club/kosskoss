@@ -1,4 +1,13 @@
 import { prisma } from "@/server/prisma";
+import {
+  calculerRemise,
+  estCouponKind,
+  MESSAGES_COUPON,
+  normaliserCode,
+  type CouponKind,
+  type CouponView,
+  type ResultatCoupon,
+} from "@/lib/kk/coupon";
 
 /**
  * Codes de réduction.
@@ -15,92 +24,17 @@ import { prisma } from "@/server/prisma";
  * au prix plein plutôt que d'honorer une remise périmée.
  */
 
-export type CouponKind = "pourcentage" | "montant";
-
-export interface CouponView {
-  id: string;
-  code: string;
-  kind: CouponKind;
-  value: number;
-  minSubtotalCents: number;
-  maxDiscountCents: number;
-  startsAt: string | null;
-  endsAt: string | null;
-  maxUses: number;
-  usedCount: number;
-  active: boolean;
-  description: string;
-}
-
-/** Motifs de refus, traduits pour le client par `MESSAGES_COUPON`. */
-export type CouponError =
-  | "code_absent"
-  | "code_inconnu"
-  | "code_inactif"
-  | "code_expire"
-  | "code_pas_encore_valide"
-  | "code_epuise"
-  | "montant_insuffisant";
-
-export const MESSAGES_COUPON: Record<CouponError, string> = {
-  code_absent: "Saisissez un code promo.",
-  code_inconnu: "Ce code n'existe pas.",
-  code_inactif: "Ce code n'est plus actif.",
-  code_expire: "Ce code a expiré.",
-  code_pas_encore_valide: "Ce code n'est pas encore valable.",
-  code_epuise: "Ce code a atteint son nombre maximal d'utilisations.",
-  montant_insuffisant: "Votre panier n'atteint pas le montant minimum de ce code.",
-};
-
-export interface CouponApplique {
-  code: string;
-  kind: CouponKind;
-  /** Remise en FCFA entiers, déjà plafonnée et bornée au sous-total. */
-  discountCents: number;
-  /** Libellé court affiché à côté de la remise, par ex. « −10 % ». */
-  label: string;
-}
-
-export type ResultatCoupon =
-  | { ok: true; coupon: CouponApplique }
-  | { ok: false; error: CouponError; message: string };
-
-/**
- * Normalise la saisie : majuscules, sans espaces ni tirets décoratifs.
- * « bienvenue-10 » et « BIENVENUE 10 » désignent le même code.
- */
-export function normaliserCode(saisie: unknown): string {
-  return String(saisie ?? "")
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "")
-    .slice(0, 32);
-}
-
-function estKind(valeur: string): valeur is CouponKind {
-  return valeur === "pourcentage" || valeur === "montant";
-}
-
-/**
- * Remise due pour un sous-total donné.
- *
- * Deux garde-fous : le plafond éventuel du code, et le sous-total lui-même —
- * une remise ne peut pas dépasser ce que le client doit, sinon la boutique lui
- * devrait de l'argent.
- */
-export function calculerRemise(
-  kind: CouponKind,
-  value: number,
-  subtotalCents: number,
-  maxDiscountCents: number,
-): number {
-  const brut =
-    kind === "pourcentage"
-      ? Math.round((subtotalCents * Math.min(100, Math.max(0, value))) / 100)
-      : Math.max(0, value);
-
-  const plafonne = maxDiscountCents > 0 ? Math.min(brut, maxDiscountCents) : brut;
-  return Math.max(0, Math.min(plafonne, subtotalCents));
-}
+// Types, messages et arithmétique vivent dans `src/lib/kk/coupon` : le tunnel
+// de commande et le back-office sont des composants clients et ne peuvent pas
+// importer ce module-ci, qui tire Prisma.
+export type {
+  CouponKind,
+  CouponView,
+  CouponError,
+  CouponApplique,
+  ResultatCoupon,
+} from "@/lib/kk/coupon";
+export { MESSAGES_COUPON, normaliserCode, calculerRemise } from "@/lib/kk/coupon";
 
 /**
  * Valide un code pour un sous-total donné et rend la remise applicable.
@@ -146,7 +80,7 @@ export async function validerCoupon(
     };
   }
 
-  const kind = estKind(coupon.kind) ? coupon.kind : "pourcentage";
+  const kind = estCouponKind(coupon.kind) ? coupon.kind : "pourcentage";
   const discountCents = calculerRemise(kind, coupon.value, subtotalCents, coupon.maxDiscountCents);
 
   return {
@@ -201,7 +135,7 @@ function toView(ligne: {
   return {
     id: ligne.id,
     code: ligne.code,
-    kind: estKind(ligne.kind) ? ligne.kind : "pourcentage",
+    kind: estCouponKind(ligne.kind) ? ligne.kind : "pourcentage",
     value: ligne.value,
     minSubtotalCents: ligne.minSubtotalCents,
     maxDiscountCents: ligne.maxDiscountCents,
@@ -245,7 +179,7 @@ function dateOuNull(valeur: unknown): Date | null {
 
 /** Champs communs à la création et à la mise à jour, déjà assainis. */
 function donnees(entree: CouponInput) {
-  const kind = estKind(entree.kind) ? entree.kind : "pourcentage";
+  const kind = estCouponKind(entree.kind) ? entree.kind : "pourcentage";
   // Un pourcentage au-delà de 100 offrirait le produit et créerait un avoir.
   const value = kind === "pourcentage" ? Math.min(100, Math.max(1, entier(entree.value, 1))) : entier(entree.value);
 

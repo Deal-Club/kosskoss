@@ -40,6 +40,14 @@ export function CheckoutForm({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Code promo. `remise` n'est qu'un affichage : c'est le serveur qui refait le
+  // calcul à la commande, à partir du seul code. Un montant bidouillé ici
+  // n'aurait donc aucun effet sur ce qui est facturé.
+  const [codeSaisi, setCodeSaisi] = useState("");
+  const [coupon, setCoupon] = useState<{ code: string; label: string; discountCents: number } | null>(null);
+  const [messageCoupon, setMessageCoupon] = useState<string | null>(null);
+  const [verifCoupon, setVerifCoupon] = useState(false);
+
   const selectedPayment = payments.find((entry) => entry.key === paymentMethod);
 
   if (ready && lines.length === 0) {
@@ -51,6 +59,44 @@ export function CheckoutForm({
         </Link>
       </div>
     );
+  }
+
+  async function verifierCode(e: React.FormEvent) {
+    e.preventDefault();
+    const code = codeSaisi.trim();
+    if (!code) return;
+    setVerifCoupon(true);
+    setMessageCoupon(null);
+    try {
+      const res = await fetch("/api/kk/coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code,
+          items: lines.map((l) => ({ productId: l.productId, variantId: l.variantId, quantity: l.quantity })),
+        }),
+      });
+      const data = (await res.json()) as
+        | { ok: true; code: string; label: string; discountCents: number }
+        | { ok: false; message: string };
+      if (data.ok) {
+        setCoupon({ code: data.code, label: data.label, discountCents: data.discountCents });
+        setMessageCoupon(null);
+      } else {
+        setCoupon(null);
+        setMessageCoupon(data.message);
+      }
+    } catch {
+      setMessageCoupon("Impossible de vérifier le code pour l'instant.");
+    } finally {
+      setVerifCoupon(false);
+    }
+  }
+
+  function retirerCode() {
+    setCoupon(null);
+    setCodeSaisi("");
+    setMessageCoupon(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -70,6 +116,7 @@ export function CheckoutForm({
           followOrder,
           paymentMethod,
           locale,
+          couponCode: coupon?.code,
         }),
       });
       const data = (await res.json()) as
@@ -194,9 +241,82 @@ export function CheckoutForm({
                 </li>
               ))}
             </ul>
-            <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+            {/* Code promo. Placé juste au-dessus du total : c'est là que le
+                client regarde ce qu'il va payer, donc là qu'il pense à son
+                code. Le mettre en tête du tunnel inviterait tout le monde à
+                partir en chercher un ailleurs avant de commander. */}
+            <div className="mt-5 border-t border-border pt-4">
+              {coupon ? (
+                <div className="flex items-center justify-between gap-3 rounded-xl bg-sand px-4 py-3">
+                  <span className="min-w-0 text-sm">
+                    <span className="font-semibold text-deep">{coupon.code}</span>
+                    <span className="ml-2 text-muted-foreground">{coupon.label}</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={retirerCode}
+                    className="shrink-0 text-xs font-medium text-muted-foreground underline underline-offset-4 transition hover:text-deep"
+                  >
+                    Retirer
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {/* `div` et non `form` : ce bloc vit dans le formulaire de
+                      commande, et un formulaire imbriqué est invalide en HTML —
+                      le navigateur le déplacerait, cassant la soumission. */}
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="code-promo" className="sr-only">
+                      Code promo
+                    </label>
+                    <input
+                      id="code-promo"
+                      value={codeSaisi}
+                      onChange={(e) => setCodeSaisi(e.target.value.toUpperCase())}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") verifierCode(e);
+                      }}
+                      placeholder="Code promo"
+                      autoComplete="off"
+                      maxLength={32}
+                      className="min-w-0 flex-1 rounded-xl border border-border bg-card px-4 py-2.5 text-sm uppercase tracking-wider outline-none transition focus:border-deep"
+                    />
+                    <button
+                      type="button"
+                      onClick={verifierCode}
+                      disabled={verifCoupon || !codeSaisi.trim()}
+                      className="shrink-0 rounded-xl border border-deep px-4 py-2.5 text-sm font-semibold text-deep transition hover:bg-sand disabled:opacity-40"
+                    >
+                      {verifCoupon ? "…" : "Appliquer"}
+                    </button>
+                  </div>
+                  {messageCoupon && (
+                    <p role="alert" className="mt-2 text-xs text-destructive">
+                      {messageCoupon}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+
+            {coupon && (
+              <div className="mt-4 space-y-1.5 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Sous-total</span>
+                  <span className="figure text-muted-foreground">{formatFcfa(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Remise {coupon.label}</span>
+                  <span className="figure text-deep">−{formatFcfa(coupon.discountCents)}</span>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
               <span className="font-semibold text-deep">Total à payer</span>
-              <span className="figure text-xl font-semibold text-deep">{formatFcfa(subtotal)}</span>
+              <span className="figure text-xl font-semibold text-deep">
+                {formatFcfa(Math.max(0, subtotal - (coupon?.discountCents ?? 0)))}
+              </span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
               Livraison coordonnée via WhatsApp après commande.

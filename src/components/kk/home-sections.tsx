@@ -164,8 +164,9 @@ export function BrandStrip({ brands }: { brands: string[] }) {
 /**
  * Présentation de la maison, sur fond bleu profond.
  *
- * Le fond sombre est le seul de la page : il marque une pause dans le déroulé
- * crème et donne à cette section le poids d'une prise de parole.
+ * Avec la section « Trouver vite » en haut de page et l'appel à l'action en
+ * bas, c'est l'un des trois ancrages sombres du déroulé crème : ils rythment
+ * la page et donnent à ces sections le poids d'une prise de parole.
  *
  * Les trois repères chiffrés sont comptés en base — jamais d'indicateur inventé
  * (nombre de clients, années d'existence) tant qu'il n'est pas vérifiable.
@@ -204,7 +205,7 @@ export function MaisonSection({
   ];
 
   return (
-    <section className="relative overflow-hidden bg-deep text-primary-foreground">
+    <section className="kk-enter relative overflow-hidden bg-deep text-primary-foreground">
       {/* Motif de marque. C'est ici la prise de parole de la maison : le seul
           endroit de l'accueil où un fond travaillé se justifie pleinement. */}
       <PatternBackdrop align="split" />
@@ -312,7 +313,7 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-16">
-      <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      <div className="kk-enter mb-10 flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Bon à savoir</p>
           <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Les questions qu&rsquo;on nous pose</h2>
@@ -376,7 +377,7 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
 export function HomeCta({ whatsappUrl }: { whatsappUrl?: string }) {
   return (
     <section className="mx-auto max-w-7xl px-6 pb-16">
-      <div className="relative overflow-hidden rounded-[2rem] bg-deep px-8 py-14 text-center text-primary-foreground sm:px-14 sm:py-16">
+      <div className="kk-enter relative overflow-hidden rounded-[2rem] bg-deep px-8 py-14 text-center text-primary-foreground sm:px-14 sm:py-16">
         <PatternBackdrop align="center" />
         <div className="relative mx-auto max-w-2xl">
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">

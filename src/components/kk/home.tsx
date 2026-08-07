@@ -14,6 +14,7 @@ import type { KKProductView, KKTestimonialView } from "@/types/kk";
 import { TYPES_DE_PEAU, PREOCCUPATIONS, type Besoin } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
 import { Monogram, Petal, Flourish } from "./motifs";
+import { PatternBackdrop } from "./pattern-backdrop";
 
 /* ------------------------------------------------------------------ Hero -- */
 
@@ -98,24 +99,24 @@ export function Hero() {
 
 /* --------------------------------------------------- Sélection par peau -- */
 
-/** Une entrée de besoin : libellé, précision, et lien vers le rayon filtré. */
+/**
+ * Une entrée de besoin, en pastille.
+ *
+ * Les cartes précédentes portaient chacune leur précision sur trois lignes :
+ * huit blocs hauts qui mangeaient un écran entier pour huit liens. La
+ * précision passe en `title` — elle reste disponible au survol sans occuper
+ * la page — et la pastille tient sur une ligne.
+ */
 function BesoinCard({ besoin }: { besoin: Besoin }) {
   return (
     <li>
       <Link
         href={`/soins-visage?besoin=${besoin.tag}`}
-        className="group flex h-full flex-col justify-between gap-3 rounded-2xl border border-border/70 bg-card px-5 py-4 transition-colors hover:border-deep/40 hover:bg-sand/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-deep"
+        title={besoin.hint}
+        className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.06] px-4 py-2 text-sm text-primary-foreground/90 backdrop-blur-sm transition hover:border-gold/70 hover:bg-primary-foreground/15 hover:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
       >
-        <div>
-          <span className="flex items-center gap-2 text-sm font-semibold text-deep">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold transition-transform duration-300 group-hover:scale-150" />
-            {besoin.label}
-          </span>
-          <span className="mt-1.5 block text-xs leading-relaxed text-muted-foreground">
-            {besoin.hint}
-          </span>
-        </div>
-        <ArrowRight className="h-3.5 w-3.5 self-end text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-deep" />
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold transition-transform duration-300 group-hover:scale-150" />
+        {besoin.label}
       </Link>
     </li>
   );
@@ -137,20 +138,28 @@ function BesoinCard({ besoin }: { besoin: Besoin }) {
 export function SkinTypeStrip() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-10">
-      <div className="kk-enter overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/50">
-        <div className="grid gap-8 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] lg:gap-12">
+      {/* Sur bleu profond, avec le tissage bogolan : le motif est dessiné dans
+          cette couleur et n'existe vraiment que sur fond sombre. La section
+          gagne au passage le poids d'une prise de parole, entre le hero et le
+          rayon — et huit pastilles sur deux lignes occupent le tiers de la
+          place que prenaient huit cartes. */}
+      <div className="kk-enter relative overflow-hidden rounded-[1.75rem] bg-deep text-primary-foreground">
+        <PatternBackdrop align="split" opacity="opacity-40" />
+        <div className="relative grid gap-7 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] lg:items-center lg:gap-12">
           <div className="lg:max-w-xs">
-            <p className="eyebrow">Trouver vite</p>
-            <h2 className="mt-2 text-2xl leading-tight text-deep sm:text-[1.75rem]">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-gold">
+              Trouver vite
+            </p>
+            <h2 className="mt-2 text-2xl leading-tight sm:text-[1.75rem]">
               Votre peau, votre routine
             </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-3 text-sm leading-relaxed text-primary-foreground/70">
               Dites-nous ce qui vous préoccupe : nous ouvrons le rayon
               correspondant, déjà trié.
             </p>
             <Link
               href="/diagnostic"
-              className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-deep kk-underline"
+              className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary-foreground underline-offset-4 hover:underline"
             >
               <Sparkles className="h-4 w-4 text-gold" />
               Je ne sais pas, guidez-moi
@@ -158,12 +167,12 @@ export function SkinTypeStrip() {
             </Link>
           </div>
 
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-primary-foreground/45">
                 Type de peau
               </p>
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <ul className="mt-2.5 flex flex-wrap gap-2.5">
                 {TYPES_DE_PEAU.map((b) => (
                   <BesoinCard key={b.tag} besoin={b} />
                 ))}
@@ -171,10 +180,10 @@ export function SkinTypeStrip() {
             </div>
 
             <div>
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-primary-foreground/45">
                 Préoccupation
               </p>
-              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <ul className="mt-2.5 flex flex-wrap gap-2.5">
                 {PREOCCUPATIONS.map((b) => (
                   <BesoinCard key={b.tag} besoin={b} />
                 ))}

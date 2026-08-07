@@ -1,5 +1,5 @@
 import { Sparkles, Truck, Gift, Percent, BadgeCheck, Clock, MessageCircle, Star } from "lucide-react";
-import type { AnnouncementConfig, AnnouncementItem } from "@/server/announcements";
+import type { AnnouncementConfig, AnnouncementItem } from "@/lib/kk/announcement";
 
 /**
  * Bandeau d'annonce défilant.
