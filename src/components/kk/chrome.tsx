@@ -45,6 +45,12 @@ function FacebookIcon({ className }: { className?: string }) {
  * éditorial. Chaque entrée pointe vers une page qui existe — un lien mort dans
  * le pied de page d'une boutique en ligne coûte la confiance du visiteur, et
  * les mentions légales doivent rester atteignables depuis toutes les pages.
+ *
+ * La navigation principale, elle, n'est plus une liste écrite ici : elle est
+ * lue en base (`getShopNavigation`) et rendue par `DesktopNav`. C'est ce qui
+ * évite qu'un changement d'univers dans le catalogue — « Corps & Cheveux »
+ * devenu « Corps & Hygiène », ajout de « Homme » — laisse des entrées de menu
+ * pointant vers des pages qui n'existent plus.
  */
 const FOOTER_HELP = [
   { label: "Livraison", href: "/livraison" },

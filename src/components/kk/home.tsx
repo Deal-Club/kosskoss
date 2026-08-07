@@ -62,18 +62,24 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Visuel hero — composition placeholder (aucune photo réelle). */}
+        {/* Visuel hero — produit réel du catalogue.
+            Nubiance HRB-3 : un correcteur d'hyperpigmentation, d'une marque
+            formulée pour les peaux noires et métissées. C'est le sujet même du
+            positionnement, et la préoccupation que le diagnostic met en avant.
+            `object-contain` sur fond sable plutôt que `object-cover` : les
+            photos du catalogue sont carrées et détourées sur blanc, un cadrage
+            plein couperait le flacon. */}
         <div
           className="kk-rise relative mx-auto w-full max-w-md"
           style={{ "--d": "200ms" } as React.CSSProperties}
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-2xl shadow-deep/15">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-sand shadow-2xl shadow-deep/15">
             <Image
-              src="/images/products/p3.jpg"
-              alt="Sélection de soins KossKoss Select"
+              src="/images/products/NUB-HRB-JOU-50.jpg"
+              alt="Nubiance HRB-3, soin jour correcteur d'hyperpigmentation"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
+              className="object-contain p-8"
               priority
             />
             <span className="absolute bottom-5 left-5 rounded-full bg-cream/90 px-4 py-2 text-xs font-semibold text-deep shadow-sm">
@@ -201,13 +207,15 @@ export function EditorialBlock() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-16">
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="relative order-last aspect-[5/4] overflow-hidden rounded-[2rem] lg:order-first">
+        {/* Même parti pris que le hero : photo produit réelle, posée sur sable
+            et non recadrée. */}
+        <div className="relative order-last aspect-[5/4] overflow-hidden rounded-[2rem] bg-sand lg:order-first">
           <Image
-            src="/images/products/p6.jpg"
-            alt="Rituel de soins KossKoss Select"
+            src="/images/products/BOJ-GLO-SER-30.jpg"
+            alt="Beauty of Joseon, sérum éclat propolis et niacinamide"
             fill
             sizes="(max-width: 1024px) 100vw, 45vw"
-            className="object-cover"
+            className="object-contain p-10"
           />
         </div>
         <div className="max-w-xl">

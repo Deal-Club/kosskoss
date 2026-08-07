@@ -26,13 +26,21 @@ import { PatternBackdrop } from "./pattern-backdrop";
  * marques et la liste des univers sont comptés dans la base au moment du rendu.
  */
 
-/** Visuels de secours par univers, tant que les catégories n'ont pas d'image. */
+/**
+ * Visuels de secours par univers, tant que les catégories n'ont pas d'image.
+ *
+ * Ce sont des photos de produits réels du catalogue : les visuels génériques
+ * p1/p3/p6 ont disparu avec le catalogue de démonstration, et les référencer
+ * laissait trois images cassées sur l'accueil. Les clés suivent les slugs
+ * d'univers réellement en base — « corps-cheveux » n'existe plus.
+ */
 const UNIVERSE_IMAGE: Record<string, string> = {
-  "soins-visage": "/images/products/p3.jpg",
-  "corps-cheveux": "/images/products/p6.jpg",
+  "soins-visage": "/images/products/BOJ-GLO-SER-30.jpg",
+  "corps-hygiene": "/images/products/NUB-BAU-COR-450.jpg",
+  homme: "/images/products/CLI-MEN-DEO-75.jpg",
 };
 
-const FALLBACK_IMAGE = "/images/products/p1.jpg";
+const FALLBACK_IMAGE = "/images/products/BOJ-GIN-CLE-210.jpg";
 
 /* ----------------------------------------------------------- Nos univers -- */
 

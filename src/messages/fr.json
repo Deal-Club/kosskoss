@@ -13,15 +13,18 @@
     "shopName": "KossKoss Select",
     "groupNames": {
       "soins-visage": "Soins du visage",
-      "corps-cheveux": "Corps & Cheveux"
+      "corps-hygiene": "Corps & Hygiène",
+      "homme": "Homme"
     },
     "categoryNames": {
       "nettoyants": "Nettoyants",
-      "serums": "Sérums",
+      "toniques": "Toniques",
+      "traitements": "Sérums & Traitements",
       "hydratants": "Hydratants",
       "solaires": "Solaires",
       "corps": "Soins du corps",
-      "cheveux": "Cheveux"
+      "hygiene": "Hygiène",
+      "homme": "Homme"
     },
     "from": "dès"
   },

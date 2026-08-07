@@ -12,16 +12,19 @@
     "breadcrumb": "Breadcrumb",
     "shopName": "KossKoss Select",
     "groupNames": {
-      "soins-visage": "Face care",
-      "corps-cheveux": "Body & Hair"
+      "soins-visage": "Facial care",
+      "corps-hygiene": "Body & Hygiene",
+      "homme": "Men"
     },
     "categoryNames": {
       "nettoyants": "Cleansers",
-      "serums": "Serums",
-      "hydratants": "Moisturisers",
+      "toniques": "Toners",
+      "traitements": "Serums & Treatments",
+      "hydratants": "Moisturizers",
       "solaires": "Sun care",
       "corps": "Body care",
-      "cheveux": "Hair"
+      "hygiene": "Hygiene",
+      "homme": "Men"
     },
     "from": "from"
   },
