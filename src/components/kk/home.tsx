@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import {
   Sparkles,
@@ -10,8 +10,8 @@ import {
   BadgeCheck,
   MessageCircle,
 } from "lucide-react";
-import { MOCK_SKIN_TYPES, MOCK_TESTIMONIALS } from "@/data/kk/home-mock";
-import type { KKProductView } from "@/types/kk";
+import { MOCK_SKIN_TYPES } from "@/data/kk/home-mock";
+import type { KKProductView, KKTestimonialView } from "@/types/kk";
 import { ProductCard } from "./product-card";
 import { Monogram, Petal, Flourish } from "./motifs";
 
@@ -24,7 +24,7 @@ export function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
         <div className="max-w-xl">
           <p className="eyebrow kk-rise flex items-center gap-2" style={{ "--d": "0ms" } as React.CSSProperties}>
-            <span className="h-px w-8 bg-gold" /> Cosmétique · Cameroun
+            <span className="h-px w-8 bg-gold" /> Concept-store beauté · Afrique centrale
           </p>
           <h1
             className="kk-rise mt-5 text-[2.6rem] leading-[1.05] text-deep sm:text-6xl"
@@ -36,8 +36,9 @@ export function Hero() {
             className="kk-rise mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg"
             style={{ "--d": "160ms" } as React.CSSProperties}
           >
-            Découvrez une cosmétique experte et sur-mesure. Des soins adaptés à
-            votre texture de peau, pensés pour révéler votre éclat naturel.
+            Une sélection courte de soins pour les peaux noires, mates et
+            métissées. Des marques reconnues, des circuits d&rsquo;approvisionnement
+            sérieux, et des routines pensées pour le climat d&rsquo;ici.
           </p>
           <div
             className="kk-rise mt-9 flex flex-wrap items-center gap-4"
@@ -95,7 +96,7 @@ export function SkinTypeStrip() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-6">
       <div className="flex flex-col gap-5 rounded-2xl border border-border/60 bg-card/60 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg text-deep">Choisissez selon votre peau</h2>
+        <h2 className="text-lg text-deep">Choisissez selon votre type de peau</h2>
         <ul className="flex flex-wrap gap-3">
           {MOCK_SKIN_TYPES.map((s) => (
             <li key={s.key}>
@@ -172,9 +173,9 @@ export function DiagnosticPromo() {
               Votre routine en quelques réponses
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Répondez à quelques questions sur votre peau et vos envies : nous
-              composons une sélection de soins parfaitement adaptée, prête à
-              ajouter au panier.
+              Cinq questions sur votre peau, vos préoccupations et votre budget.
+              Nous vous proposons ensuite une sélection courte, adaptée à votre
+              profil et au climat local — libre à vous de la suivre ou non.
             </p>
             <Link
               href="/diagnostic"
@@ -213,12 +214,13 @@ export function EditorialBlock() {
           <p className="eyebrow">Notre exigence</p>
           <h2 className="mt-3 text-3xl text-deep sm:text-4xl">Des soins choisis avec méthode</h2>
           <p className="mt-5 leading-relaxed text-muted-foreground">
-            Chaque produit de la maison est retenu pour sa formule, sa tolérance
-            et ses résultats. Nous privilégions des marques transparentes et des
-            actifs qui ont fait leurs preuves — rien au hasard.
+            Nous filtrons l&rsquo;offre plutôt que de l&rsquo;empiler : chaque référence
+            entre au catalogue pour sa formule, sa tolérance et son intérêt réel
+            sur les peaux riches en mélanine. Peu de doublons, aucun produit au
+            hasard.
           </p>
           <ul className="mt-6 space-y-3">
-            {["Formules sélectionnées une à une", "Marques transparentes et vérifiées", "Conseils adaptés à votre peau"].map(
+            {["Chaque référence a une raison d'être", "Marques reconnues, circuits d'approvisionnement sérieux", "Conseils adaptés aux peaux noires et métissées"].map(
               (item) => (
                 <li key={item} className="flex items-center gap-3 text-sm text-foreground">
                   <BadgeCheck className="h-5 w-5 shrink-0 text-gold" />
@@ -231,7 +233,7 @@ export function EditorialBlock() {
             href="/soins-visage"
             className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-deep underline-offset-4 hover:underline"
           >
-            Découvrir la maison
+            Découvrir la sélection
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
@@ -255,16 +257,23 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-export function Testimonials() {
+/**
+ * Avis clients. N'affiche que de vrais avis passés par la modération.
+ * Liste vide = section entièrement masquée : mieux vaut pas d'avis du tout
+ * qu'un témoignage écrit par la boutique.
+ */
+export function Testimonials({ testimonials }: { testimonials: KKTestimonialView[] }) {
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="bg-sand/50">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="text-center">
-          <p className="eyebrow">Avis vérifiés</p>
-          <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Ce qu&rsquo;elles en pensent</h2>
+          <p className="eyebrow">Avis publiés après modération</p>
+          <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Ce qu&rsquo;en disent nos clients</h2>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-3">
-          {MOCK_TESTIMONIALS.map((t) => (
+          {testimonials.map((t) => (
             <figure key={t.id} className="flex flex-col rounded-2xl border border-border/60 bg-card p-7">
               <Stars rating={t.rating} />
               <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-foreground">
@@ -272,7 +281,8 @@ export function Testimonials() {
               </blockquote>
               <figcaption className="mt-5 text-sm">
                 <span className="font-semibold text-deep">{t.author}</span>
-                <span className="text-muted-foreground"> · {t.city}</span>
+                {t.city && <span className="text-muted-foreground"> · {t.city}</span>}
+                <span className="mt-1 block text-muted-foreground">à propos de {t.productName}</span>
               </figcaption>
             </figure>
           ))}
@@ -285,11 +295,13 @@ export function Testimonials() {
 /* ------------------------------------------------------------ Réassurance -- */
 
 export function TrustRow() {
+  // L'authenticité passe en tête : c'est la première inquiétude de nos clients,
+  // avant même le prix ou le délai.
   const items = [
+    { icon: BadgeCheck, title: "Produits authentiques", text: "Circuits d'approvisionnement sérieux" },
+    { icon: MessageCircle, title: "Conseil avant l'achat", text: "On vous guide, sans jargon" },
     { icon: Smartphone, title: "Paiement Mobile Money", text: "Orange Money & MTN" },
     { icon: Truck, title: "Livraison Cameroun", text: "Partout, suivi WhatsApp" },
-    { icon: BadgeCheck, title: "Produits authentiques", text: "Marques sélectionnées" },
-    { icon: MessageCircle, title: "Support à l'écoute", text: "Une équipe disponible" },
   ];
   return (
     <section className="mx-auto max-w-7xl px-6 py-14">

@@ -3,10 +3,15 @@
 import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toggleWishlistItem, useWishlist, type WishlistItem } from "@/lib/wishlist";
+import { toggleFavorite, useFavorites, type FavoriteItem } from "@/lib/favorites";
+
+// Habillage « bois » du cœur des favoris, encore utilisé par les pages qui
+// n'ont pas migré vers le thème KossKoss (recherche, campagnes, vus récemment).
+// Le magasin est le même que celui du thème KossKoss : un produit mis en favori
+// depuis la recherche se retrouve bien dans /favoris.
 
 interface WishlistButtonProps {
-  item: Omit<WishlistItem, "addedAt">;
+  item: Omit<FavoriteItem, "addedAt">;
   /** « icon » pour la pastille sur une vignette, « full » pour un bouton avec libellé. */
   variant?: "icon" | "full";
   className?: string;
@@ -14,7 +19,7 @@ interface WishlistButtonProps {
 
 export function WishlistButton({ item, variant = "icon", className }: WishlistButtonProps) {
   const t = useTranslations("wishlist");
-  const { items, ready } = useWishlist();
+  const { items, ready } = useFavorites();
   // Avant hydratation la liste est vide : le cœur part donc toujours éteint,
   // ce qui évite un écart entre le HTML du serveur et celui du navigateur.
   const active = ready && items.some((entry) => entry.productId === item.productId);
@@ -24,7 +29,7 @@ export function WishlistButton({ item, variant = "icon", className }: WishlistBu
     return (
       <button
         type="button"
-        onClick={() => toggleWishlistItem(item)}
+        onClick={() => toggleFavorite(item)}
         aria-pressed={active}
         className={cn(
           "flex items-center justify-center gap-2 rounded-sm border px-4 py-2.5 text-sm font-bold transition-colors",
@@ -43,7 +48,7 @@ export function WishlistButton({ item, variant = "icon", className }: WishlistBu
   return (
     <button
       type="button"
-      onClick={() => toggleWishlistItem(item)}
+      onClick={() => toggleFavorite(item)}
       aria-pressed={active}
       aria-label={label}
       title={label}

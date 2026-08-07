@@ -12,12 +12,18 @@ export interface PriceRange {
   max: number;
 }
 
+/**
+ * Tranches de prix en FCFA, calées sur le catalogue réel : les références vont
+ * d'environ 4 500 à 30 000 FCFA. Les bornes héritées de l'ancien projet
+ * (0-100 €, 100-300 €…) rangeaient l'intégralité du catalogue dans la dernière
+ * tranche — le filtre était donc décoratif.
+ */
 export const PRICE_RANGES: PriceRange[] = [
-  { id: "under100", min: 0, max: 100 },
-  { id: "from100", min: 100, max: 300 },
-  { id: "from300", min: 300, max: 600 },
-  { id: "from600", min: 600, max: 1000 },
-  { id: "over1000", min: 1000, max: Infinity },
+  { id: "under5000", min: 0, max: 5_000 },
+  { id: "from5000", min: 5_000, max: 10_000 },
+  { id: "from10000", min: 10_000, max: 15_000 },
+  { id: "from15000", min: 15_000, max: 25_000 },
+  { id: "over25000", min: 25_000, max: Infinity },
 ];
 
 export const RATING_THRESHOLDS = [4.5, 4, 3];

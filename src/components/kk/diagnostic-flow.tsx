@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import {
   Droplet,
@@ -29,6 +29,7 @@ import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
 import { Petal, BottleMotif } from "./motifs";
+import { PatternBackdrop } from "./pattern-backdrop";
 
 const ICONS: Record<DiagIcon, typeof Droplet> = {
   droplet: Droplet, wind: Wind, smile: Smile, contrast: Contrast, sparkles: Sparkles,
@@ -111,26 +112,35 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   if (phase === "intro") {
     return (
       <MinimalShell>
-        <section className="relative mx-auto flex min-h-[70vh] max-w-2xl flex-col items-center justify-center px-6 py-16 text-center">
-          <Petal className="kk-float pointer-events-none absolute -top-4 right-4 h-24 w-24 text-deep/10" />
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-deep text-primary-foreground">
-            <Sparkles className="h-8 w-8" />
-          </span>
-          <p className="eyebrow mt-6">Diagnostic beauté</p>
-          <h1 className="mt-3 text-4xl text-deep sm:text-5xl">La sélection qui vous choisit</h1>
-          <p className="mx-auto mt-4 max-w-lg text-muted-foreground">
-            5 questions sur votre peau et vos envies. Nous composons une routine de soins
-            parfaitement adaptée, à ajouter au panier en un geste.
-          </p>
-          <button
-            type="button"
-            onClick={() => setPhase("question")}
-            className="group mt-9 inline-flex items-center gap-2 rounded-full bg-deep px-8 py-4 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
-          >
-            Commencer le diagnostic
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
-          <p className="mt-4 text-xs text-muted-foreground">Environ 1 minute · gratuit</p>
+        {/* Le motif habille l'écran d'accueil du diagnostic, pas les questions
+            qui suivent : là, l'attention doit aller aux réponses. */}
+        <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-deep px-6 py-16 text-center text-primary-foreground">
+          <PatternBackdrop align="center" />
+          <Petal className="kk-float pointer-events-none absolute -top-4 right-4 h-24 w-24 text-primary-foreground/10" />
+          <div className="relative mx-auto flex max-w-2xl flex-col items-center">
+            <span className="grid h-16 w-16 place-items-center rounded-full bg-sand text-deep">
+              <Sparkles className="h-8 w-8" />
+            </span>
+            <p className="mt-6 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
+              Diagnostic beauté
+            </p>
+            <h1 className="mt-3 text-4xl sm:text-5xl">La sélection qui vous choisit</h1>
+            <p className="mx-auto mt-4 max-w-lg text-primary-foreground/75">
+              5 questions sur votre peau et vos envies. Nous composons une routine de soins
+              parfaitement adaptée, à ajouter au panier en un geste.
+            </p>
+            {/* Bouton en sable sur fond profond : l'inverse du reste du site,
+                parce qu'ici c'est le fond qui est sombre. */}
+            <button
+              type="button"
+              onClick={() => setPhase("question")}
+              className="group mt-9 inline-flex items-center gap-2 rounded-full bg-sand px-8 py-4 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+            >
+              Commencer le diagnostic
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </button>
+            <p className="mt-4 text-xs text-primary-foreground/60">Environ 1 minute · gratuit</p>
+          </div>
         </section>
       </MinimalShell>
     );

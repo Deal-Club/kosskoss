@@ -10,12 +10,35 @@ import {
   Testimonials,
   TrustRow,
 } from "@/components/kk/home";
-import { getHomeProducts } from "@/server/kk/home";
+import {
+  BrandStrip,
+  HomeCta,
+  HomeFaq,
+  MaisonSection,
+  UniverseCards,
+} from "@/components/kk/home-sections";
+import { getHomeProducts, getHomeTestimonials } from "@/server/kk/home";
+import { getHomeFaq } from "@/server/kk/home-faq";
+import { getShopBrands, getShopNavigation } from "@/server/kk/navigation";
+import { CONTACT } from "@/config/brand";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
 type HomeParams = Promise<{ locale: Locale }>;
+
+/**
+ * Lien WhatsApp de l'appel à l'action. Même source que le bouton flottant et le
+ * pied de page : la ligne dédiée si elle est configurée, sinon le téléphone de
+ * la société. Vide, le bouton ne s'affiche pas.
+ */
+const WHATSAPP_DIGITS =
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || CONTACT.phone.replace(/\D/g, "");
+const WHATSAPP_URL = WHATSAPP_DIGITS
+  ? `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
+      "Bonjour, j'aimerais un conseil pour choisir mes soins.",
+    )}`
+  : undefined;
 
 export async function generateMetadata({ params }: { params: HomeParams }): Promise<Metadata> {
   const { locale } = await params;
@@ -33,9 +56,23 @@ export default async function Home({ params }: { params: HomeParams }) {
 
   // Produits mis en avant, lus en base. Liste vide tolérée : les rails se
   // masquent tant que le catalogue n'est pas peuplé.
-  const products = await getHomeProducts(8);
+  // Avis réels modérés : la section se masque tant qu'il n'y en a aucun.
+  // Univers et marques servent aux sections de navigation et de réassurance ;
+  // ils sont comptés en base, jamais écrits à la main.
+  const [products, testimonials, groups, brands, faq] = await Promise.all([
+    getHomeProducts(8),
+    getHomeTestimonials(3),
+    getShopNavigation(),
+    getShopBrands(),
+    // Les réponses viennent de la page /faq : une seule source, deux affichages.
+    getHomeFaq(locale, 8),
+  ]);
   const selection = products.slice(0, 4);
   const popular = products.slice(4, 8);
+  const productCount = groups.reduce(
+    (sum, group) => sum + group.categories.reduce((n, c) => n + c.productCount, 0),
+    0,
+  );
 
   return (
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
@@ -45,6 +82,9 @@ export default async function Home({ params }: { params: HomeParams }) {
       <main className="flex-1">
         <Hero />
         <SkinTypeStrip />
+        {/* Accès direct aux rayons : sans cette section, la seule porte vers une
+            catégorie précise était le menu de l'en-tête. */}
+        <UniverseCards groups={groups} />
         {selection.length > 0 && (
           <ProductRail
             eyebrow="À découvrir"
@@ -53,6 +93,7 @@ export default async function Home({ params }: { params: HomeParams }) {
             products={selection}
           />
         )}
+        <BrandStrip brands={brands} />
         <DiagnosticPromo />
         {popular.length > 0 && (
           <ProductRail
@@ -62,9 +103,17 @@ export default async function Home({ params }: { params: HomeParams }) {
             products={popular}
           />
         )}
+        <MaisonSection
+          productCount={productCount}
+          brandCount={brands.length}
+          universeCount={groups.length}
+        />
         <EditorialBlock />
-        <Testimonials />
+        <Testimonials testimonials={testimonials} />
         <TrustRow />
+        {/* Les objections se lèvent avant l'appel à l'action, pas après. */}
+        <HomeFaq entries={faq} />
+        <HomeCta whatsappUrl={WHATSAPP_URL} />
       </main>
 
       <SiteFooter />

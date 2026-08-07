@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { LogOut } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
+import { resetFavoritesAfterLogout } from "@/lib/favorites";
 
 /** Déconnexion : la session est fermée côté serveur, pas seulement dans l'onglet. */
 export function AccountLogoutButton({ className }: { className?: string }) {
@@ -19,6 +20,8 @@ export function AccountLogoutButton({ className }: { className?: string }) {
       // Même si l'appel échoue, on renvoie le visiteur vers l'accueil : le
       // cookie sera de toute façon rejeté à la prochaine page protégée.
     }
+    // Les favoris du compte ne restent pas affichés pour la personne suivante.
+    resetFavoritesAfterLogout();
     router.replace("/");
     router.refresh();
   }

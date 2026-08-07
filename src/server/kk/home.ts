@@ -1,12 +1,6 @@
 import { prisma } from "@/server/prisma";
-import type { KKProductView, KKTone, KKBadge } from "@/types/kk";
-
-// Rotation de teintes pour varier les visuels produit sans photo.
-const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
-
-function toBadge(value: string | null): KKBadge {
-  return value === "bestseller" || value === "nouveau" ? value : null;
-}
+import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import type { KKProductView, KKTestimonialView } from "@/types/kk";
 
 /**
  * Produits mis en avant sur l'accueil, lus en base.
@@ -19,18 +13,42 @@ export async function getHomeProducts(limit = 8): Promise<KKProductView[]> {
     where: { active: true },
     orderBy: { createdAt: "asc" },
     take: limit,
-    include: { category: { include: { group: true } } },
+    include: PRODUCT_VIEW_INCLUDE,
   });
 
-  return rows.map((p, index) => ({
-    id: p.id,
-    brand: p.brand,
-    name: p.name,
-    priceFcfa: p.priceCents,
-    oldPriceFcfa: p.oldPriceCents ?? undefined,
-    badge: toBadge(p.badge),
-    tone: TONES[index % TONES.length],
-    image: p.image,
-    href: `/${p.category.group.slug}/${p.category.slug}/${p.slug}`,
-  }));
+  return rows.map(toProductView);
+}
+
+/**
+ * Avis clients affichés sur l'accueil.
+ *
+ * Trois garde-fous, parce que le bloc est titré « Avis clients » et qu'un
+ * visiteur doit pouvoir s'y fier :
+ *   1. `status: "approved"` — seuls les avis passés par la modération sortent ;
+ *   2. note minimale de 4 — l'accueil est une vitrine, la fiche produit porte
+ *      l'intégralité des avis, bons comme mauvais ;
+ *   3. corps d'au moins 40 caractères — un « super » isolé n'apporte rien.
+ *
+ * Renvoie une liste vide tant qu'aucun avis réel n'est publié : la section se
+ * masque alors d'elle-même, comme les rails produits. Aucun texte de repli
+ * n'est inventé.
+ */
+export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[]> {
+  const rows = await prisma.review.findMany({
+    where: { status: "approved", rating: { gte: 4 } },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    include: { product: { select: { brand: true, name: true } } },
+  });
+
+  return rows
+    .filter((r) => r.body.trim().length >= 40)
+    .map((r) => ({
+      id: r.id,
+      quote: r.body.trim(),
+      author: r.authorName,
+      city: r.city ?? undefined,
+      rating: r.rating,
+      productName: `${r.product.brand} ${r.product.name}`,
+    }));
 }

@@ -1,18 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, HelpCircle, Loader2 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
-
-const PAYMENTS = [
-  { key: "orange_money", label: "Orange Money", hint: "OM" },
-  { key: "mtn_momo", label: "MTN MoMo", hint: "MTN" },
-  { key: "carte", label: "Carte bancaire", hint: "VISA" },
-] as const;
+import type { PaymentMethodView } from "@/server/kk/payments";
 
 const ERRORS: Record<string, string> = {
   panier_vide: "Votre panier est vide.",
@@ -24,7 +19,14 @@ const ERRORS: Record<string, string> = {
   json_invalide: "Une erreur est survenue. Réessayez.",
 };
 
-export function CheckoutForm({ locale }: { locale: string }) {
+export function CheckoutForm({
+  locale,
+  payments,
+}: {
+  locale: string;
+  /** Moyens de paiement activés au back-office, lus en base par la page. */
+  payments: PaymentMethodView[];
+}) {
   const router = useRouter();
   const { lines, ready, clear } = useCart();
   const subtotal = cartSubtotalFcfa(lines);
@@ -34,9 +36,11 @@ export function CheckoutForm({ locale }: { locale: string }) {
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
   const [followOrder, setFollowOrder] = useState(true);
-  const [paymentMethod, setPaymentMethod] = useState<(typeof PAYMENTS)[number]["key"]>("orange_money");
+  const [paymentMethod, setPaymentMethod] = useState(payments[0]?.key ?? "");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const selectedPayment = payments.find((entry) => entry.key === paymentMethod);
 
   if (ready && lines.length === 0) {
     return (
@@ -141,8 +145,8 @@ export function CheckoutForm({ locale }: { locale: string }) {
               <span className="grid h-6 w-6 place-items-center rounded-full bg-deep text-xs text-primary-foreground">2</span>
               Mode de paiement
             </h2>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              {PAYMENTS.map((p) => {
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {payments.map((p) => {
                 const active = p.key === paymentMethod;
                 return (
                   <button
@@ -152,15 +156,22 @@ export function CheckoutForm({ locale }: { locale: string }) {
                     aria-pressed={active}
                     className={`rounded-xl border px-4 py-4 text-left transition ${active ? "border-deep bg-sand" : "border-border bg-card hover:border-deep/40"}`}
                   >
-                    <span className="block text-xs font-semibold text-muted-foreground">{p.hint}</span>
+                    <span className="block text-xs font-semibold text-muted-foreground">
+                      {p.badge}
+                    </span>
                     <span className="mt-1 block text-sm font-medium text-deep">{p.label}</span>
                   </button>
                 );
               })}
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Paiement Mobile Money via agrégateur local. Intégration en cours de configuration —
-              votre commande est enregistrée et confirmée ensuite.
+            {/* Le descriptif vient du back-office : c'est là qu'on explique au
+                client comment se règle le moyen qu'il vient de choisir. */}
+            {selectedPayment?.description && (
+              <p className="mt-3 text-xs text-muted-foreground">{selectedPayment.description}</p>
+            )}
+            <p className="mt-2 text-xs text-muted-foreground">
+              Votre commande est enregistrée, puis confirmée avec vous sur WhatsApp pour le
+              paiement et la livraison.
             </p>
           </section>
         </div>

@@ -27,7 +27,7 @@ export interface GatewayOrderContext {
   currency: string;
   email: string;
   locale: "fr" | "en";
-  /** Libellé lisible, ex. « Commande MLC-2026-000123 ». */
+  /** Libellé lisible, ex. « Commande KK-2026-000123 ». */
   description: string;
   /** URL de retour après paiement réussi (page de confirmation). */
   successUrl: string;

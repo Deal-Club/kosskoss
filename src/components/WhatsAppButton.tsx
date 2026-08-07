@@ -12,7 +12,7 @@ const WHATSAPP_NUMBER =
   process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") ||
   COMPANY.phone.replace(/\D/g, "");
 
-const PREFILL = encodeURIComponent("Bonjour, j'ai une question sur une commande de bois.");
+const PREFILL = encodeURIComponent("Bonjour, j'ai une question sur un produit KossKoss Select.");
 
 export function WhatsAppButton() {
   if (!WHATSAPP_NUMBER) return null;

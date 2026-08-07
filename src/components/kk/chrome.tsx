@@ -1,20 +1,22 @@
 import {
-  Search,
   User,
-  Menu,
   Home,
   Sparkles,
   LayoutGrid,
   Heart,
   Phone,
-  ArrowRight,
+  MessageCircle,
   ChevronLeft,
   ShieldCheck,
 } from "lucide-react";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
+import { getShopNavigation } from "@/server/kk/navigation";
 import { Monogram } from "./motifs";
 import { CartButton } from "./cart-button";
+import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
+import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
+import { PatternBackdrop } from "./pattern-backdrop";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -36,12 +38,45 @@ function FacebookIcon({ className }: { className?: string }) {
   );
 }
 
-const NAV = [
-  { label: "Accueil", href: "/", active: true },
-  { label: "Soins du visage", href: "/soins-visage" },
-  { label: "Corps & Cheveux", href: "/corps-cheveux" },
-  { label: "Diagnostic", href: "/diagnostic" },
+/**
+ * Pages d'aide et pages légales du pied de page.
+ *
+ * Écrites ici plutôt qu'en base : ce sont des routes du code, pas du contenu
+ * éditorial. Chaque entrée pointe vers une page qui existe — un lien mort dans
+ * le pied de page d'une boutique en ligne coûte la confiance du visiteur, et
+ * les mentions légales doivent rester atteignables depuis toutes les pages.
+ */
+const FOOTER_HELP = [
+  { label: "Livraison", href: "/livraison" },
+  { label: "Suivi de commande", href: "/compte/commandes" },
+  { label: "Moyens de paiement", href: "/moyens-de-paiement" },
+  { label: "Retours", href: "/retours" },
+  { label: "Contact", href: "/contact" },
+  { label: "FAQ", href: "/faq" },
 ];
+
+const FOOTER_LEGAL = [
+  { label: "Mentions légales", href: "/mentions-legales" },
+  { label: "CGV", href: "/cgv" },
+  { label: "Confidentialité", href: "/confidentialite" },
+  { label: "Droit de rétractation", href: "/retractation" },
+];
+
+const FOOTER_LINK =
+  "text-sm text-footer-foreground/85 transition hover:text-footer-foreground";
+
+/**
+ * Lien WhatsApp du pied de page. Même source que le bouton flottant : la ligne
+ * dédiée si elle est configurée, sinon le téléphone de la société. Vide, le
+ * bloc ne s'affiche pas plutôt que de proposer un lien creux.
+ */
+const WHATSAPP_DIGITS =
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || CONTACT.phone.replace(/\D/g, "");
+const WHATSAPP_LINK = WHATSAPP_DIGITS
+  ? `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
+      "Bonjour, j'ai une question sur un produit KossKoss Select.",
+    )}`
+  : "";
 
 /** Bandeau d'annonce fin — réassurance marché Cameroun. */
 export function AnnouncementBar() {
@@ -66,41 +101,32 @@ function Wordmark({ className = "" }: { className?: string }) {
   );
 }
 
-/** En-tête boutique — sticky, transparent sur crème avec léger flou. */
-export function SiteHeader() {
+/**
+ * En-tête boutique — sticky, transparent sur crème avec léger flou.
+ *
+ * Composant serveur : il lit la navigation en base et la passe aux quelques
+ * éléments interactifs (recherche, menu mobile, lien actif), qui sont les seuls
+ * à traverser la frontière client.
+ */
+export async function SiteHeader() {
+  const groups = await getShopNavigation();
+
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-cream/85 backdrop-blur-md">
       <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:px-6">
         {/* Gauche : recherche (desktop) / menu (mobile) */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Ouvrir le menu"
-            className="grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand lg:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            className="hidden items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm text-muted-foreground transition hover:border-deep/40 hover:text-deep lg:inline-flex"
-          >
-            <Search className="h-4 w-4" />
-            Rechercher
-          </button>
+          <MobileMenu groups={groups} />
+          <SearchAction />
         </div>
 
         {/* Centre : logotype */}
         <Wordmark />
 
-        {/* Droite : compte + panier */}
+        {/* Droite : recherche (mobile) + favoris + compte + panier */}
         <div className="flex items-center justify-end gap-1">
-          <button
-            type="button"
-            aria-label="Rechercher"
-            className="grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand lg:hidden"
-          >
-            <Search className="h-5 w-5" />
-          </button>
+          <SearchAction variant="icon" />
+          <FavoritesLink />
           <Link
             href="/compte"
             aria-label="Mon compte"
@@ -112,26 +138,7 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* Navigation principale (desktop) */}
-      <nav className="hidden border-t border-border/50 lg:block">
-        <ul className="mx-auto flex max-w-7xl items-center justify-center gap-10 px-6 py-3">
-          {NAV.map((item) => (
-            <li key={item.label}>
-              <Link
-                href={item.href}
-                className={`relative text-[0.82rem] font-medium uppercase tracking-[0.14em] transition-colors hover:text-deep ${
-                  item.active ? "text-deep" : "text-muted-foreground"
-                }`}
-              >
-                {item.label}
-                {item.active && (
-                  <span className="absolute -bottom-1.5 left-0 h-px w-full bg-gold" aria-hidden="true" />
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <DesktopNav groups={groups} />
     </header>
   );
 }
@@ -161,13 +168,13 @@ export function MobileTabBar() {
     { label: "Accueil", href: "/", icon: Home, active: true },
     { label: "Boutique", href: "/soins-visage", icon: LayoutGrid },
     { label: "Diagnostic", href: "/diagnostic", icon: Sparkles, primary: true },
-    { label: "Favoris", href: "/favoris", icon: Heart },
+    { label: "Favoris", href: "/favoris", icon: Heart, badge: true },
     { label: "Compte", href: "/compte", icon: User },
   ];
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-cream/95 backdrop-blur-md lg:hidden">
       <ul className="mx-auto flex max-w-md items-end justify-between px-4 pb-[calc(env(safe-area-inset-bottom)+0.4rem)] pt-2">
-        {items.map(({ label, href, icon: Icon, active, primary }) => (
+        {items.map(({ label, href, icon: Icon, active, primary, badge }) => (
           <li key={label}>
             <Link
               href={href}
@@ -180,7 +187,10 @@ export function MobileTabBar() {
                   <Icon className="h-5 w-5" />
                 </span>
               ) : (
-                <Icon className="h-5 w-5" />
+                <span className="relative">
+                  <Icon className="h-5 w-5" />
+                  {badge && <FavoritesTabBadge />}
+                </span>
               )}
               <span className={`text-[0.6rem] font-medium ${primary ? "-mt-2" : ""}`}>{label}</span>
             </Link>
@@ -191,16 +201,29 @@ export function MobileTabBar() {
   );
 }
 
-/** Pied de page — bleu profond, colonnes + newsletter + réseaux. */
-export function SiteFooter() {
-  const columns = [
-    { title: "La Maison", links: ["Notre histoire", "Nos marques", "Le diagnostic", "Boutique"] },
-    { title: "Aide", links: ["Livraison", "Suivi de commande", "Contact", "FAQ"] },
-    { title: "Légal", links: ["Mentions légales", "CGV", "Confidentialité", "Cookies"] },
-  ];
+/**
+ * Pied de page — bleu profond, colonnes de liens réels.
+ *
+ * La colonne « Boutique » suit la navigation lue en base plutôt que des
+ * rubriques figées. Les douze liens « # » qui l'occupaient auparavant menaient
+ * tous au néant : dans une boutique en ligne, un pied de page en trompe-l'œil
+ * coûte la confiance, et les mentions légales doivent rester joignables depuis
+ * n'importe quelle page.
+ *
+ * Le formulaire de newsletter a été retiré : il n'envoyait rien nulle part, et
+ * la boutique n'a volontairement pas de fichier d'adresses (voir
+ * src/server/contacts.ts). À sa place, le canal réellement en service ici —
+ * WhatsApp, déjà utilisé pour confirmer les commandes.
+ */
+export async function SiteFooter() {
+  const groups = await getShopNavigation();
+
   return (
-    <footer className="bg-footer text-footer-foreground">
-      <div className="mx-auto max-w-7xl px-6 py-16">
+    <footer className="relative overflow-hidden bg-footer text-footer-foreground">
+      {/* Motif de marque, présent sur toutes les pages puisque le pied de page
+          l'est : il referme chaque page sur l'identité de la maison. */}
+      <PatternBackdrop align="footer" opacity="opacity-35" />
+      <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div>
             <div className="flex items-center gap-3">
@@ -211,10 +234,24 @@ export function SiteFooter() {
               {BRAND.slogan} Une sélection cosmétique multimarque, pensée pour votre peau.
             </p>
             <div className="mt-6 flex items-center gap-4 text-footer-foreground/80">
-              <a href="#" aria-label="Instagram" className="transition hover:text-footer-foreground">
+              {/* Comptes réels de la charte (@kosskoss_select) : la marque vit
+                  d'abord sur le social, un lien mort y est un aveu d'abandon. */}
+              <a
+                href={`https://instagram.com/${CONTACT.social.instagram}`}
+                target="_blank"
+                rel="noopener noreferrer me"
+                aria-label={`Instagram — @${CONTACT.social.instagram}`}
+                className="transition hover:text-footer-foreground"
+              >
                 <InstagramIcon className="h-5 w-5" />
               </a>
-              <a href="#" aria-label="Facebook" className="transition hover:text-footer-foreground">
+              <a
+                href={`https://facebook.com/${CONTACT.social.facebook}`}
+                target="_blank"
+                rel="noopener noreferrer me"
+                aria-label={`Facebook — ${CONTACT.social.facebook}`}
+                className="transition hover:text-footer-foreground"
+              >
                 <FacebookIcon className="h-5 w-5" />
               </a>
               <span className="h-4 w-px bg-footer-foreground/25" />
@@ -225,50 +262,90 @@ export function SiteFooter() {
             </div>
           </div>
 
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
-                {col.title}
-              </h4>
-              <ul className="mt-4 space-y-3">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-sm text-footer-foreground/85 transition hover:text-footer-foreground">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div>
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
+              Boutique
+            </h4>
+            <ul className="mt-4 space-y-3">
+              {groups.map((group) => (
+                <li key={group.slug}>
+                  <Link href={group.href} className={FOOTER_LINK}>
+                    {group.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/diagnostic" className={FOOTER_LINK}>
+                  Le diagnostic
+                </Link>
+              </li>
+              <li>
+                <Link href="/a-propos" className={FOOTER_LINK}>
+                  Notre maison
+                </Link>
+              </li>
+            </ul>
+          </div>
 
           <div>
             <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
-              Newsletter
+              Aide
+            </h4>
+            <ul className="mt-4 space-y-3">
+              {FOOTER_HELP.map((entry) => (
+                <li key={entry.href}>
+                  <Link href={entry.href} className={FOOTER_LINK}>
+                    {entry.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
+              Une question ?
             </h4>
             <p className="mt-4 text-sm text-footer-foreground/70">
-              Nos nouveautés et conseils beauté, une fois par mois.
+              Conseil produit, suivi de commande, livraison : écrivez-nous sur WhatsApp, on
+              répond dans la journée.
             </p>
-            <form className="mt-4 flex items-center gap-2" aria-label="Inscription à la newsletter">
-              <input
-                type="email"
-                required
-                placeholder="Votre e-mail"
-                className="min-w-0 flex-1 rounded-full border border-footer-foreground/25 bg-transparent px-4 py-2.5 text-sm text-footer-foreground placeholder:text-footer-foreground/50 focus:border-footer-foreground/60 focus:outline-none"
-              />
-              <button
-                type="submit"
-                aria-label="S'inscrire"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sand text-deep transition hover:bg-primary-foreground"
+            {WHATSAPP_LINK && (
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
               >
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </form>
+                <MessageCircle className="h-4 w-4" />
+                Discuter sur WhatsApp
+              </a>
+            )}
+            <Link
+              href="/contact"
+              className="mt-4 block text-sm text-footer-foreground/70 underline underline-offset-4 transition hover:text-footer-foreground"
+            >
+              Toutes nos coordonnées
+            </Link>
           </div>
         </div>
 
-        <div className="mt-14 border-t border-footer-foreground/15 pt-6 text-center text-xs text-footer-foreground/50">
-          © 2026 {BRAND.name}. Tous droits réservés.
+        <div className="mt-14 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
+          <p className="text-xs text-footer-foreground/50">
+            © 2026 {BRAND.name}. Tous droits réservés.
+          </p>
+          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            {FOOTER_LEGAL.map((entry) => (
+              <li key={entry.href}>
+                <Link
+                  href={entry.href}
+                  className="text-xs text-footer-foreground/60 transition hover:text-footer-foreground"
+                >
+                  {entry.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </footer>

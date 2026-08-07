@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { sendAccountRequest } from "@/components/account/request";
+import { syncFavoritesAfterLogin } from "@/lib/favorites";
 import {
   ALERT_ERROR,
   ALERT_SUCCESS,
@@ -52,6 +53,8 @@ export function LoginForm({
       return;
     }
 
+    // Les favoris mis de côté avant la connexion rejoignent le compte.
+    syncFavoritesAfterLogin();
     // La session vient d'être posée côté serveur : il faut refaire le rendu
     // pour que l'en-tête et les pages protégées la voient.
     router.replace(returnPath ?? "/compte");

@@ -113,12 +113,13 @@ model Product {
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 
-  category       Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category       Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   reviews        Review[]
   stockMovements StockMovement[]
   orderItems     OrderItem[]
   campaigns      CampaignProduct[]
   variants       ProductVariant[]
+  favorites      CustomerFavorite[]
 
   @@index([categoryId])
   @@index([brand])
@@ -492,6 +493,32 @@ model Customer {
   orders             Order[]
   passwordResets     CustomerPasswordReset[]
   campaignRecipients CampaignRecipient[]
+  favorites          CustomerFavorite[]
+}
+
+// Produit mis en favori par un client connecté.
+//
+// Tant que le visiteur n'a pas de compte, ses favoris restent dans son
+// navigateur (localStorage). À la connexion, la liste locale est versée ici et
+// la base devient la seule source de vérité : le client retrouve sa sélection
+// sur son téléphone comme sur son ordinateur.
+//
+// Aucun prix n'est recopié : seule la référence du produit est conservée, et la
+// liste est relue au tarif du jour. Mémoriser un produit n'est pas le réserver.
+model CustomerFavorite {
+  id         String   @id @default(cuid())
+  customerId String
+  productId  String
+  createdAt  DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product  Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Un même produit ne figure qu'une fois par compte : c'est la base qui tient
+  // l'invariant, pas l'ordre des requêtes. Deux onglets qui cliquent en même
+  // temps ne peuvent donc pas créer de doublon.
+  @@unique([customerId, productId])
+  @@index([customerId])
 }
 
 // Réinitialisation du mot de passe : seul le SHA-256 du jeton est stocké.

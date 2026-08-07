@@ -1,7 +1,8 @@
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import { SlidersHorizontal, RotateCcw, Sparkles, ArrowRight, Check } from "lucide-react";
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
 import { ProductCard } from "./product-card";
+import { PatternBackdrop } from "./pattern-backdrop";
 
 const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "pertinence", label: "Pertinence" },
@@ -177,12 +178,17 @@ export function CatalogView({
 
   return (
     <>
-      {/* Bandeau */}
-      <section className="bg-sand/60">
-        <div className="mx-auto max-w-7xl px-6 py-14 text-center">
-          <p className="eyebrow">{view.group.label}</p>
-          <h1 className="mt-3 text-4xl text-deep sm:text-5xl">{title}</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+      {/* Bandeau de tête, sur le bleu profond de la charte : c'est là que le
+          tissage bogolan existe vraiment, et le contraste donne du poids au
+          titre de rayon. */}
+      <section className="relative overflow-hidden bg-deep text-primary-foreground">
+        <PatternBackdrop align="center" />
+        <div className="relative mx-auto max-w-7xl px-6 py-16 text-center">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
+            {view.group.label}
+          </p>
+          <h1 className="mt-3 text-4xl sm:text-5xl">{title}</h1>
+          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
             Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement
             évalué pour son efficacité, sa formulation et son respect de la peau.
           </p>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { RecentlyViewedView } from "@/components/RecentlyViewedView";
 
@@ -27,8 +26,9 @@ export default async function RecentlyViewedPage({ params }: { params: PageParam
   const common = await getTranslations("common");
 
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
       <main className="flex-1">
         <div className="border-b border-border bg-white">
           <div className="mx-auto max-w-screen-xl px-3 py-3">
@@ -42,7 +42,8 @@ export default async function RecentlyViewedPage({ params }: { params: PageParam
           <RecentlyViewedView />
         </div>
       </main>
-      <Footer />
-    </>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }

@@ -7,7 +7,7 @@
  * jamais suivre.
  *
  * Rattachement commande ↔ paiement : le lien de paiement est créé avec un objet
- * `order` portant `referenceId = MLC-AAAA-NNNNNN` (et le même numéro en
+ * `order` portant `referenceId = KK-AAAA-NNNNNN` (et le même numéro en
  * `metadata`). Le webhook `payment.updated` ne transporte que l'identifiant de
  * commande Square, on relit donc la commande Square pour retrouver notre numéro.
  *

@@ -10,7 +10,11 @@
  * Le texte est en français, comme la boutique.
  */
 
-const ROUGE = "#e3000e";
+// Bleu Profond et Beige Sable de la charte KossKoss Select. Volontairement
+// recopiés ici plutôt qu'importés de config/brand : cette page doit tenir
+// debout même si le reste de l'application ne se charge pas.
+const BLEU_PROFOND = "#0f3b46";
+const SABLE = "#f3e8dd";
 
 export const PAGE_MAINTENANCE = `<!doctype html>
 <html lang="fr">
@@ -28,7 +32,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: #f5f5f5;
+    background: ${SABLE};
     color: #242424;
     font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
@@ -37,7 +41,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
     width: 100%;
     max-width: 520px;
     background: #ffffff;
-    border-top: 4px solid ${ROUGE};
+    border-top: 4px solid ${BLEU_PROFOND};
     border-radius: 4px;
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
     padding: 48px 40px;
@@ -49,7 +53,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
     letter-spacing: -0.01em;
     margin: 0 0 32px;
   }
-  .marque span { color: ${ROUGE}; }
+  .marque span { color: ${BLEU_PROFOND}; }
   h1 {
     font-size: 26px;
     font-weight: 700;
@@ -67,7 +71,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
     font-size: 14px;
   }
   .contact a {
-    color: ${ROUGE};
+    color: ${BLEU_PROFOND};
     text-decoration: none;
     font-weight: 700;
   }
@@ -80,13 +84,13 @@ export const PAGE_MAINTENANCE = `<!doctype html>
 </head>
 <body>
   <main class="carte">
-    <p class="marque">MLC <span>Bois</span></p>
+    <p class="marque">KOSSKOSS <span>SELECT</span></p>
     <h1>Nous revenons dans un instant</h1>
     <p>La boutique est en cours de maintenance. L'ensemble du catalogue sera de nouveau accessible sous peu.</p>
     <p>Merci de votre patience.</p>
     <p class="contact">
-      Une question ? Écrivez-nous à
-      <a href="mailto:contact@mlc-bois.fr">contact@mlc-bois.fr</a>
+      Une question ? Appelez-nous au
+      <a href="tel:+237658013646">+237 658 01 36 46</a>
     </p>
   </main>
 </body>

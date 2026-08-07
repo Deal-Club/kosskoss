@@ -42,9 +42,11 @@ export default async function LoginPage({
           <div className="mt-8">
             <AccountLogin returnTo={suite} />
           </div>
-          <p className="mx-auto mt-6 max-w-sm text-center text-sm text-muted-foreground">
-            Pas encore de compte ? Il est créé automatiquement lors de votre première commande, en
-            cochant « Je veux suivre ma commande ».
+          {/* Le compte n'a jamais été une condition pour commander : le tunnel
+              d'achat reste ouvert aux visiteurs (minimisation, art. 5 § 1 c RGPD). */}
+          <p className="mx-auto mt-8 max-w-sm border-t border-border pt-6 text-center text-sm text-muted-foreground">
+            Un compte n&rsquo;est pas nécessaire pour commander. Il sert à suivre vos commandes, à
+            conserver vos adresses et à retrouver vos favoris sur tous vos appareils.
           </p>
         </section>
       </main>

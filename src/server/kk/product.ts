@@ -1,11 +1,6 @@
 import { prisma } from "@/server/prisma";
-import type { KKProductView, KKTone, KKBadge } from "@/types/kk";
-
-const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
-
-function toBadge(value: string | null): KKBadge {
-  return value === "bestseller" || value === "nouveau" ? value : null;
-}
+import { PRODUCT_VIEW_INCLUDE, toBadge, toProductView } from "./product-view";
+import type { KKProductView, KKBadge } from "@/types/kk";
 
 /** Les champs `bullets`/`images` sont des String JSON (défaut "[]"). */
 function parseStringArray(value: string | null): string[] {
@@ -100,18 +95,8 @@ export async function getRelatedProducts(
 ): Promise<KKProductView[]> {
   const rows = await prisma.product.findMany({
     where: { active: true, category: { slug: categorySlug }, id: { not: excludeId } },
-    include: { category: { include: { group: true } } },
+    include: PRODUCT_VIEW_INCLUDE,
     take: limit,
   });
-  return rows.map((p, index) => ({
-    id: p.id,
-    brand: p.brand,
-    name: p.name,
-    priceFcfa: p.priceCents,
-    oldPriceFcfa: p.oldPriceCents ?? undefined,
-    badge: toBadge(p.badge),
-    tone: TONES[index % TONES.length],
-    image: p.image,
-    href: `/${p.category.group.slug}/${p.category.slug}/${p.slug}`,
-  }));
+  return rows.map(toProductView);
 }

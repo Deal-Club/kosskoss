@@ -1,6 +1,6 @@
 {
   "common": {
-    "searchPlaceholder": "Beech 33 cm, wood briquettes, pellets …",
+    "searchPlaceholder": "Vitamin C serum, moisturiser, sunscreen …",
     "account": "Account",
     "wishlist": "Wishlist",
     "cart": "Cart",
@@ -10,23 +10,24 @@
     "language": "Language",
     "home": "Home",
     "breadcrumb": "Breadcrumb",
-    "shopName": "MLC Bois",
+    "shopName": "KossKoss Select",
     "groupNames": {
-      "bois-de-chauffage": "Firewood",
-      "equipement": "Stoves"
+      "soins-visage": "Face care",
+      "corps-cheveux": "Body & Hair"
     },
     "categoryNames": {
-      "vrac": "Loose firewood",
-      "palette": "Palletised firewood",
-      "granules": "Wood pellets",
-      "bois-compresse": "Compressed logs",
-      "poele-a-bois": "Wood stoves"
+      "nettoyants": "Cleansers",
+      "serums": "Serums",
+      "hydratants": "Moisturisers",
+      "solaires": "Sun care",
+      "corps": "Body care",
+      "cheveux": "Hair"
     },
     "from": "from"
   },
   "header": {
-    "homeAriaLabel": "MLC Bois – home page",
-    "logoAlt": "MLC Bois",
+    "homeAriaLabel": "KossKoss Select – home page",
+    "logoAlt": "KossKoss Select",
     "search": "Search",
     "lieferzusage": "Delivered anywhere in mainland France",
     "beratung": "Advice & orders",
@@ -34,44 +35,8 @@
     "lieferbanner": "Free delivery from 6 loose m³",
     "anrufenAria": "Call: {nummer}"
   },
-  "hero": {
-    "eyebrow": "Kiln-dried · under 18 % moisture content",
-    "titel": "Wood that burns",
-    "titelAkzent": "the day it arrives.",
-    "beschreibung": "Beech, oak, birch and ash from French forests. 72 hours in the kiln, then straight onto the trailer. You won't stack it for two summers — you'll heat with it the same evening.",
-    "bildAlt": "Split beech logs, neatly stacked in the drying kiln",
-    "belege": {
-      "feuchte": "Moisture content after kiln drying, measured on every batch",
-      "lieferung": "Delivery time in Île-de-France, 3 to 8 days elsewhere in France",
-      "heizwert": "Calorific value of beech per stacked m³"
-    },
-    "ctaCatalogue": "Browse our wood"
-  },
-  "interventions": {
-    "label": "We deliver to",
-    "srListe": "We deliver in particular to {villes}."
-  },
-  "home": {
-    "metaTitle": "MLC Bois | Kiln-dried firewood, delivered within 48 hours",
-    "metaDescription": "Beech, oak, birch and ash in 25, 33 and 50 cm. Under 18 % moisture content, measurement record with every delivery. Delivered anywhere in mainland France.",
-    "bestsellerEyebrow": "Most ordered",
-    "bestseller": "What's going out this week",
-    "bestsellerCta": "Full range"
-  },
-  "trust": {
-    "feuchte": "Every batch measured before it leaves",
-    "lieferung": "Anywhere in mainland France, 48 h in Île-de-France",
-    "laengen": "Three log lengths, split and ready to burn",
-    "herkunft": "Wood from French forests, PEFC certified"
-  },
-  "group": {
-    "metaTitle": "{label} | MLC Bois",
-    "metaDescription": "Every category in the {label} range at MLC Bois: kiln-dried wood, clear prices and fast delivery.",
-    "intro": "Every category in the {label} range at a glance.",
-    "productCount": "{count, plural, =0 {No items yet} one {# item} other {# items}}"
-  },
   "category": {
-    "metaTitle": "{label} | MLC Bois",
+    "metaTitle": "{label} | KossKoss Select",
     "productsCount": "<b>{filtered}</b> of {total} products",
     "sortBy": "Sort by",
     "sortRelevance": "Relevance",
@@ -91,13 +56,13 @@
     "filterMinStars": "{rating} stars and up",
     "filterInStockOnly": "In stock only",
     "priceRanges": {
-      "under100": "Up to €100",
-      "from100": "€100 - €300",
-      "from300": "€300 - €600",
-      "from600": "€600 - €1,000",
-      "over1000": "Over €1,000"
+      "under5000": "Under 5,000 FCFA",
+      "from5000": "5,000 – 10,000 FCFA",
+      "from10000": "10,000 – 15,000 FCFA",
+      "from15000": "15,000 – 25,000 FCFA",
+      "over25000": "Over 25,000 FCFA"
     },
-    "guideTitle": "{label} at MLC Bois",
+    "guideTitle": "{label} at KossKoss Select",
     "guideDiscover": "Discover {label}",
     "guideAdvice": "Ask for advice"
   },
@@ -110,7 +75,7 @@
     "ratingOf": "{rating} out of 5",
     "reviewCount": "{count, plural, one {# review} other {# reviews}}",
     "paymentTitle": "Secure payment methods",
-    "metaTitle": "{name} | MLC Bois",
+    "metaTitle": "{name} | KossKoss Select",
     "onRequest": "On request",
     "originalPrice": "Original price",
     "vatNote": "Price excludes service and delivery costs",
@@ -126,8 +91,7 @@
     "galleryLabel": "More product views",
     "galleryView": "Show view {index} of {total}",
     "chooseVolume": "Choose a volume",
-    "fromPrice": "from",
-    "perStere": "per stère"
+    "fromPrice": "from"
   },
   "reviews": {
     "title": "Customer reviews",
@@ -170,8 +134,8 @@
     }
   },
   "footer": {
-    "logoAlt": "MLC Bois",
-    "homeAriaLabel": "MLC Bois – home page",
+    "logoAlt": "KossKoss Select",
+    "homeAriaLabel": "KossKoss Select – home page",
     "deliveryTitle": "Standard delivery: free (3-5 business days)",
     "deliveryDetail": "Express delivery: €60 (24-48 hrs)",
     "warrantyTitle": "Under 18 % moisture content",
@@ -194,12 +158,12 @@
     "linkPrivacy": "Privacy",
     "linkTerms": "Terms & conditions",
     "linkCookies": "Cookie settings",
-    "copyright": "© {year} MLC Bois.",
+    "copyright": "© {year} KossKoss Select.",
     "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm"
   },
   "cart": {
     "title": "Cart",
-    "metaTitle": "Cart | MLC Bois",
+    "metaTitle": "Cart | KossKoss Select",
     "addToCart": "Add to cart",
     "buyNow": "Buy now",
     "added": "Added",
@@ -210,7 +174,7 @@
     "indicatorWithItems": "Cart: {count, plural, one {# item} other {# items}}, {total}",
     "itemCount": "{count, plural, one {# item} other {# items}}",
     "emptyTitle": "Your cart is empty",
-    "emptyText": "Browse our firewood and solid fuels, and drop what interests you here.",
+    "emptyText": "Browse the selection and drop the products you like in here.",
     "emptyCta": "View the range",
     "columnProduct": "Item",
     "columnUnitPrice": "Unit price",
@@ -243,7 +207,7 @@
     "campaignFreeShipping": "Free delivery through your offer"
   },
   "checkout": {
-    "metaTitle": "Checkout | MLC Bois",
+    "metaTitle": "Checkout | KossKoss Select",
     "title": "Checkout",
     "backToCart": "Back to cart",
     "emptyTitle": "Your cart is empty",
@@ -347,7 +311,7 @@
       "invalid_quantity": "Please choose a quantity between 1 and 20 per item."
     },
     "confirmation": {
-      "metaTitle": "Order confirmation {orderNumber} | MLC Bois",
+      "metaTitle": "Order confirmation {orderNumber} | KossKoss Select",
       "title": "Thank you for your order",
       "subtitle": "We have received your order.",
       "orderNumber": "Order number",
@@ -604,178 +568,12 @@
     "validUntil": "Valid until {date}",
     "legalNote": "The promotional prices shown are valid until {date} and are applied automatically in the cart. After that, the regular price applies again. Prices exclude delivery costs."
   },
-  "sortiment": {
-    "eyebrow": "Range",
-    "titel": "Five aisles, one level of dryness",
-    "einleitung": "Split logs loose or on pallets, pellets, compressed logs and stoves. All kiln-dried, shipped from our Saint-Denis depot to anywhere in mainland France.",
-    "artikel": "{anzahl} items",
-    "beschreibung": {
-      "vrac": "Delivered in a large crate and tipped at your door. Best price per cubic metre.",
-      "palette": "Stacked and strapped on a pallet, set down on the ground. Nothing to stack in a hurry.",
-      "granules": "ENplus A1 certified, for pellet stoves and boilers.",
-      "bois-compresse": "A third of the space, embers through the night.",
-      "poele-a-bois": "Log and pellet stoves, chosen for efficiency and spare-part availability."
-    }
-  },
-  "feuchte": {
-    "eyebrow": "Moisture content",
-    "titel": "Wet wood costs you half the heat",
-    "einleitung": "A kilogram of wood always holds the same energy. What decides how much of it reaches the room is the water inside: it has to evaporate first, and that evaporation consumes heat which then warms nobody.",
-    "bildAlt": "Logs burning in a wood stove",
-    "grenzwert": "France Bois Bûche label threshold (class H1)",
-    "nutzbar": "Usable:",
-    "stufen": {
-      "frisch": {
-        "titel": "Freshly felled",
-        "text": "Straight out of the forest. It smokes, sooties up the glass — and simply must not be burned in that state."
-      },
-      "luft": {
-        "titel": "Two years air-dried",
-        "text": "Under cover, ventilated, stacked away from the wall. After two summers, that is the realistic best case."
-      },
-      "kammer": {
-        "titel": "Our wood, kiln-dried",
-        "text": "72 hours at 75 °C. We measure every batch and enclose the record with the delivery."
-      }
-    },
-    "fussnote": "The France Bois Bûche label and standard NF EN ISO 17225-5 class wood at or below 20 % moisture content as H1. Air-dried wood reaches that figure after roughly two summers; kiln-dried wood leaves production that way. A moisture meter costs under €20 and settles any argument — measure on a freshly split log, never on the outer face."
-  },
-  "holzarten": {
-    "eyebrow": "Calorific values",
-    "titel": "Which wood for which appliance",
-    "einleitung": "The figures are for wood at 20 % moisture content, in kilowatt-hours per stacked cubic metre. Spruce is in the table even though we only sell it as kindling: its place is at the start of a fire, not in the sustained load.",
-    "spalten": {
-      "holz": "Species",
-      "heizwert": "Calorific value",
-      "dichte": "Weight",
-      "glut": "Ember life",
-      "eignung": "Suited to"
-    },
-    "namen": {
-      "hainbuche": "Hornbeam",
-      "buche": "Beech",
-      "eiche": "Oak",
-      "esche": "Ash",
-      "birke": "Birch",
-      "fichte": "Spruce"
-    },
-    "eignung": {
-      "hainbuche": "Masonry heater, long heating evenings",
-      "buche": "Log stove, the all-rounder",
-      "eiche": "Masonry heater, continuous burn",
-      "esche": "Stove with a viewing window",
-      "birke": "Open fireplace, fire bowl",
-      "fichte": "Lighting the fire only"
-    },
-    "glutAria": "Ember life {wert} out of 5",
-    "fussnote": "Source: calorific value tables from the French chambers of agriculture, commercially rounded. 1 stacked cubic metre equals roughly 1.4 loose cubic metres."
-  },
-  "lieferung": {
-    "eyebrow": "Delivery",
-    "titel": "From the depot to your driveway",
-    "einleitung": "We deliver anywhere in mainland France. In Île-de-France on our own trailer, elsewhere on a pallet by freight carrier — either way you are told before we come.",
-    "schritte": {
-      "bestellung": {
-        "titel": "Order",
-        "text": "Choose the wood type, the log length or pellets, and the quantity, then confirm your order"
-      },
-      "termin": {
-        "titel": "Slot",
-        "text": "We call the day before and give you a two-hour window. You don't have to keep a whole day free."
-      },
-      "abladen": {
-        "titel": "Unloading",
-        "text": "Kerbside unloading is included in the price. Stacking in a yard, cellar or garage costs €35 per loose cubic metre."
-      }
-    },
-    "tabelle": {
-      "zone": "Zone",
-      "plz": "Postcode",
-      "dauer": "Lead time",
-      "kosten": "Cost"
-    },
-    "zonen": {
-      "a": {
-        "name": "Zone A",
-        "gebiet": "Paris and inner suburbs (75, 92, 93, 94)"
-      },
-      "b": {
-        "name": "Zone B",
-        "gebiet": "Outer Île-de-France, Oise and Eure-et-Loir (77, 78, 91, 95, 60, 28)"
-      },
-      "c": {
-        "name": "Zone C",
-        "gebiet": "Rest of mainland France, by freight carrier"
-      }
-    },
-    "freiHinweis": "From 6 loose m³ delivery is free in zones A and B. Zone C covers the rest of the country: it ships on a pallet by freight carrier, who does not unload."
-  },
-  "stimmen": {
-    "eyebrow": "Customer voices",
-    "titel": "What's left after the first winter",
-    "basis": "Average across {anzahl} rated items",
-    "sterneAria": "{wert} out of 5 stars",
-    "kunden": {
-      "frank": {
-        "name": "Franck D.",
-        "ort": "Vincennes",
-        "kauf": "Beech 33 cm, pallet",
-        "note": "5",
-        "text": "Delivered Tuesday morning, the announced window was kept. I measured it again myself: 15.8 %. The wood catches on the first firelighter, without hissing."
-      },
-      "annika": {
-        "name": "Annie S.",
-        "ort": "Melun",
-        "kauf": "Mixed hardwood 25 cm",
-        "note": "4",
-        "text": "Good value, but the logs vary in thickness — I had to re-split a few for my small stove. Next time I'll take pure beech in 25 cm."
-      },
-      "jochen": {
-        "name": "Joachim R.",
-        "ort": "Rambouillet",
-        "kauf": "Wood briquettes, 960 kg",
-        "note": "5",
-        "text": "The pallet arrived a week later than first stated. On the other hand they called ahead and adjusted the price without my having to ask."
-      }
-    }
-  },
   "recherche": {
-    "metaTitle": "Results for “{query}” | MLC Bois",
+    "metaTitle": "Results for “{query}” | KossKoss Select",
     "breadcrumb": "Search results",
     "titre": "Results for “{query}”",
     "resultats": "{count, plural, =0 {No results} one {# result} other {# results}}",
     "vide": "Enter a search term to get started — a species, a length or a brand."
-  },
-  "faq": {
-    "eyebrow": "Frequently asked questions",
-    "titel": "What buyers want to know beforehand",
-    "einleitung": "If your question is not here, give us a call. Monday to Friday 8am to 5pm and Saturday 9am to 1pm, the person who picks up has delivered the wood themselves.",
-    "fragen": {
-      "srm": {
-        "frage": "What is the difference between a loose cubic metre, a stacked cubic metre and a solid cubic metre?",
-        "antwort": "A loose cubic metre is a cubic metre of wood tipped in loose, just as it falls out of the bin. Neatly stacked, the same quantity comes to roughly 0.7 stacked cubic metres. Take out all the air between the logs and about 0.4 solid cubic metres of actual wood remains. We sell by the loose cubic metre, because that is the quantity that actually arrives at your place."
-      },
-      "trocken": {
-        "frage": "How do I know the wood is really dry?",
-        "antwort": "By the sound and the cracks: dry logs ring bright when you knock two together, and show star-shaped cracks on the end grain. Only measuring is certain. Push the moisture meter into a freshly split log, not into the outer face — on the outside, even wet wood reads dry. Our measurement record comes with every delivery."
-      },
-      "lagern": {
-        "frage": "How do I store the wood after delivery?",
-        "antwort": "Kiln-dried wood no longer needs to dry, but it must not get wet again. Under cover, away from the wall and not directly on the ground — a pallet underneath is enough. In a closed cellar without ventilation, wood draws moisture from the air and is back above 20 % within a year."
-      },
-      "restaurant": {
-        "frage": "Do you also deliver to restaurants and bakeries?",
-        "antwort": "Yes. For wood-fired ovens and grill restaurants we supply beech in 25 and 33 cm at under 15 % moisture content, on weekly call-off if wanted. From three pallets a month a separate tiered price applies. Write to us via the contact form and we'll reply the same working day."
-      },
-      "livraison": {
-        "frage": "How much does delivery cost, and how long does it take?",
-        "antwort": "Standard delivery is free, with no minimum order, within 3 to 5 working days. Express delivery costs €60 and arrives within 24 to 48 hours. We deliver anywhere in France and to selected towns in Belgium: in France on our own trailer, elsewhere on a pallet by freight carrier. Either way, you are told before we come."
-      },
-      "abladen": {
-        "frage": "Where exactly is the wood left?",
-        "antwort": "Kerbside unloading is included in the price. We carry pallet trucks, so pallets can be taken through to your garage or storage bay. Tell us about a narrow entrance, a low gate or an enclosed courtyard when you order and we will bring the right vehicle."
-      }
-    }
   },
   "exitIntent": {
     "title": "Before you go…",

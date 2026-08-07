@@ -3,14 +3,15 @@ import { prisma } from "@/server/prisma";
 import { hashPassword } from "@/lib/password";
 import { openCustomerSession } from "@/server/customerSession";
 import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/emails";
+import { resolvePaymentMethod } from "@/server/kk/payments";
 
-export type KKPaymentMethod = "orange_money" | "mtn_momo" | "carte";
-
-const PAYMENT_LABELS: Record<KKPaymentMethod, string> = {
-  orange_money: "Orange Money",
-  mtn_momo: "MTN Mobile Money",
-  carte: "Carte bancaire",
-};
+/**
+ * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
+ * PaymentMethod). Volontairement une chaîne libre et non une union figée : la
+ * liste est administrable, et le contrôle se fait contre la base — voir
+ * `resolvePaymentMethod`.
+ */
+export type KKPaymentMethod = string;
 
 export type CheckoutItemInput = { productId: string; variantId?: string; quantity: number };
 export type CheckoutInput = {
@@ -44,7 +45,10 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   if (!input.fullName?.trim() || !isValidEmail(input.email ?? "") || !input.phone?.trim() || !input.location?.trim()) {
     return { ok: false, error: "champs_invalides" };
   }
-  if (!(input.paymentMethod in PAYMENT_LABELS)) {
+  // Le moyen de paiement est revalidé contre la base : une clé désactivée
+  // depuis le back-office, ou fabriquée par le navigateur, est refusée ici.
+  const payment = await resolvePaymentMethod(input.paymentMethod);
+  if (!payment) {
     return { ok: false, error: "paiement_invalide" };
   }
 
@@ -166,8 +170,10 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         billingPostalCode: "",
         billingCity: input.location.trim(),
         billingCountry: "CM",
-        paymentMethodKey: input.paymentMethod,
-        paymentMethodLabel: PAYMENT_LABELS[input.paymentMethod],
+        paymentMethodKey: payment.key,
+        // Libellé figé sur la commande : le renommer au back-office ne doit pas
+        // réécrire ce qui a été présenté au client le jour de l'achat.
+        paymentMethodLabel: payment.label,
         shippingMethodKey: "whatsapp",
         shippingMethodLabel: "Livraison coordonnée via WhatsApp",
         // Statuts KossKoss (voir docs/13). Le paiement Mobile Money reste à

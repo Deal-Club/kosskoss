@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
+import Image from "next/image";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
@@ -68,14 +69,38 @@ export function CartDrawerKK() {
                 const key = `${line.productId}:${line.variantId ?? ""}`;
                 return (
                   <li key={key} className="flex gap-4 py-5">
-                    <div className="grid h-20 w-16 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]">
-                      <BottleMotif className="h-3/5 text-deep/70" />
-                    </div>
+                    {/* La photo du produit, pas un motif : le client doit
+                        reconnaître d'un coup d'œil ce qu'il vient d'ajouter.
+                        Le motif ne sert que de repli quand la fiche n'a pas
+                        encore d'image. */}
+                    <Link
+                      href={line.path || "#"}
+                      onClick={closeDrawer}
+                      className="relative grid h-20 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
+                    >
+                      {line.image ? (
+                        <Image
+                          src={line.image}
+                          alt={line.name}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
+                      ) : (
+                        <BottleMotif className="h-3/5 text-deep/70" />
+                      )}
+                    </Link>
                     <div className="flex flex-1 flex-col">
                       <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                         {line.brand}
                       </p>
-                      <p className="text-sm font-medium text-foreground">{line.name}</p>
+                      <Link
+                        href={line.path || "#"}
+                        onClick={closeDrawer}
+                        className="text-sm font-medium text-foreground transition hover:text-deep"
+                      >
+                        {line.name}
+                      </Link>
                       {line.variantLabel && (
                         <p className="text-xs text-muted-foreground">{line.variantLabel}</p>
                       )}

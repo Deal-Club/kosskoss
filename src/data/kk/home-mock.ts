@@ -10,6 +10,10 @@
 
 import type { KKProductView } from "@/types/kk";
 
+// Aucune de ces vignettes ne porte de `href` : sans fiche produit derrière, le
+// bouton d'ajout rapide et le cœur des favoris restent inertes sur /preview.
+// C'est voulu — la page sert à regarder le rendu, pas à remplir un panier avec
+// des identifiants qui n'existent pas en base.
 export const MOCK_SELECTION: KKProductView[] = [
   { id: "p1", brand: "Atlas Skincare", name: "Sérum Éclat Nocturne", priceFcfa: 18500, badge: "bestseller", tone: "clay" },
   { id: "p2", brand: "KossKoss Select", name: "Crème Riche Hydratation", priceFcfa: 13500, badge: "nouveau", tone: "sand" },
@@ -31,29 +35,16 @@ export const MOCK_SKIN_TYPES = [
   { key: "sensible", label: "Sensible" },
 ] as const;
 
-export const MOCK_TESTIMONIALS = [
-  {
-    id: "t1",
-    quote:
-      "Le diagnostic m'a proposé exactement ce qu'il fallait pour ma peau sensible. Livraison rapide à Douala.",
-    author: "Mariam N.",
-    city: "Douala",
-    rating: 5,
-  },
-  {
-    id: "t2",
-    quote:
-      "Enfin une sélection à laquelle je peux faire confiance. Paiement Orange Money en deux clics.",
-    author: "Aïcha B.",
-    city: "Yaoundé",
-    rating: 5,
-  },
-  {
-    id: "t3",
-    quote:
-      "Des marques que je ne trouvais nulle part ailleurs, et un vrai suivi après l'achat.",
-    author: "Laure T.",
-    city: "Bafoussam",
-    rating: 4,
-  },
-];
+/*
+ * Il n'y a volontairement PAS de témoignages de démonstration ici.
+ *
+ * Trois avis fictifs signés « Mariam N., Douala », « Aïcha B., Yaoundé » et
+ * « Laure T., Bafoussam » étaient auparavant affichés sur l'accueil sous le
+ * titre « Avis vérifiés ». Des avis fabriqués présentés comme authentiques
+ * ruinent le pilier « tiers de confiance » et constituent une pratique
+ * commerciale trompeuse.
+ *
+ * L'accueil lit désormais les vrais avis modérés via
+ * `getHomeTestimonials()` (src/server/kk/home.ts) et masque la section tant
+ * qu'il n'y en a aucun. Ne pas réintroduire de faux avis ici.
+ */

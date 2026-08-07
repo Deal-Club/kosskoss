@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus, ShoppingBag, Check, Heart } from "lucide-react";
+import { Plus, Minus, ShoppingBag, Check } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import type { KKProductDetail } from "@/server/kk/product";
+import { FavoriteHeart } from "./product-actions";
 
 export function AddToCart({ product }: { product: KKProductDetail }) {
   const { add, openDrawer } = useCart();
@@ -34,6 +35,8 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
       qty,
     );
     setAdded(true);
+    // Même geste que depuis une vignette : le tiroir s'ouvre et montre le panier.
+    openDrawer();
     window.setTimeout(() => setAdded(false), 2600);
   }
 
@@ -113,23 +116,30 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           {outOfStock ? "Indisponible" : "Ajouter au panier"}
         </button>
 
-        <button
-          type="button"
-          aria-label="Ajouter aux favoris"
-          className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-border text-deep transition hover:border-deep/50 hover:bg-sand"
-        >
-          <Heart className="h-5 w-5" />
-        </button>
+        <FavoriteHeart
+          size="round"
+          product={{
+            id: product.id,
+            slug: product.slug,
+            brand: product.brand,
+            name: product.name,
+            priceFcfa: product.priceFcfa,
+            oldPriceFcfa: product.oldPriceFcfa,
+            image: product.image,
+            href: product.href,
+            stock: product.stock,
+            hasVariants: product.variants.length > 0,
+          }}
+        />
       </div>
 
       {/* Confirmation accessible */}
       <p
         role="status"
         aria-live="polite"
-        className={`mt-3 flex items-center gap-2 text-sm text-forest transition ${
+        className={`mt-3 flex items-center gap-2 text-sm text-deep transition ${
           added ? "opacity-100" : "opacity-0"
         }`}
-        style={{ color: "var(--deep)" }}
       >
         {added && (
           <>

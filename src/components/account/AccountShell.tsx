@@ -1,8 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { LayoutDashboard, MapPin, Receipt, ShieldCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { AccountLogoutButton } from "@/components/account/AccountLogoutButton";
 
@@ -38,10 +37,11 @@ export async function AccountShell({
   ];
 
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
       <main className="flex-1 bg-muted/40">
-        <div className="border-b border-border bg-white">
+        <div className="border-b border-border bg-card">
           <div className="mx-auto max-w-screen-xl px-3 py-3">
             <Breadcrumb
               items={
@@ -92,8 +92,9 @@ export async function AccountShell({
           </div>
         </div>
       </main>
-      <Footer />
-    </>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }
 
@@ -115,8 +116,9 @@ export async function AccountAuthShell({
   const t = await getTranslations({ locale, namespace: "account" });
 
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
       <main className="flex-1 bg-muted/40">
         <div className="mx-auto max-w-screen-sm px-3 py-10">
           <div className="rounded-sm border border-border bg-white p-6 sm:p-8">
@@ -133,7 +135,8 @@ export async function AccountAuthShell({
           </p>
         </div>
       </main>
-      <Footer />
-    </>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }

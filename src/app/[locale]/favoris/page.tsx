@@ -1,48 +1,48 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { Breadcrumb } from "@/components/Breadcrumb";
-import { WishlistView } from "@/components/wishlist/WishlistView";
+import { setRequestLocale } from "next-intl/server";
+import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { FavoritesView } from "@/components/kk/favorites-view";
+import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
+import type { Locale } from "@/i18n/routing";
 
-type PageParams = Promise<{ locale: string }>;
+type Params = Promise<{ locale: Locale }>;
 
-export async function generateMetadata({ params }: { params: PageParams }): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "wishlist" });
+export const metadata: Metadata = {
+  title: "Mes favoris — KossKoss Select",
+  description: "Les produits que vous avez mis de côté.",
+  // Liste personnelle : rien à indexer.
+  robots: { index: false, follow: true },
+};
 
-  return {
-    title: `${t("title")} | KossKoss Select`,
-    description: t("emptyText"),
-    // La liste vit dans le navigateur : rien à indexer.
-    robots: { index: false, follow: true },
-  };
-}
-
-export default async function WishlistPage({ params }: { params: PageParams }) {
+export default async function FavoritesPage({ params }: { params: Params }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("wishlist");
-  const common = await getTranslations("common");
-
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
       <main className="flex-1">
-        <div className="border-b border-border bg-white">
-          <div className="mx-auto max-w-screen-xl px-3 py-3">
-            <Breadcrumb items={[{ label: common("home"), href: "/" }, { label: t("title") }]} />
+        {/* Bandeau de tête, au motif de la marque comme les pages boutique. */}
+        <section className="relative overflow-hidden bg-deep text-primary-foreground">
+          <PatternBackdrop align="center" />
+          <div className="relative mx-auto max-w-4xl px-6 py-14 text-center">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
+              Ma sélection
+            </p>
+            <h1 className="mt-3 text-3xl sm:text-4xl">Mes favoris</h1>
+            <p className="mx-auto mt-3 max-w-xl text-primary-foreground/75">
+              Les produits que vous avez mis de côté, prêts à passer au panier.
+            </p>
           </div>
-        </div>
+        </section>
 
-        <div className="mx-auto max-w-screen-xl px-3 py-6">
-          <h1 className="mb-1 text-2xl font-black text-foreground">{t("title")}</h1>
-          <p className="mb-5 text-sm text-muted-foreground">{t("intro")}</p>
-          <WishlistView />
-        </div>
+        <section className="mx-auto max-w-4xl px-6 py-10">
+          <FavoritesView />
+        </section>
       </main>
-      <Footer />
-    </>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }

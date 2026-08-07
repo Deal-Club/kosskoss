@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
-import { Package, Sparkles, ChevronRight } from "lucide-react";
+import { Package, Sparkles, ChevronRight, Heart, MapPin, ShieldCheck } from "lucide-react";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
 import { AccountLogout } from "@/components/kk/account";
 import { requireCustomer } from "@/server/customerSession";
@@ -42,13 +42,25 @@ export default async function AccountPage({ params }: { params: Params }) {
             <AccountLogout />
           </div>
 
+          {/* Raccourcis de l'espace client. Les favoris y figurent parce qu'une
+              fois connecté, la sélection est enregistrée sur le compte : elle
+              doit être joignable depuis le tableau de bord et pas seulement
+              depuis l'en-tête. */}
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link
-              href="/diagnostic"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-deep transition hover:border-deep/40"
-            >
-              <Sparkles className="h-4 w-4" /> Refaire mon diagnostic
-            </Link>
+            {[
+              { href: "/favoris", label: "Mes favoris", icon: Heart },
+              { href: "/compte/adresses", label: "Mes adresses", icon: MapPin },
+              { href: "/compte/informations", label: "Mes informations", icon: ShieldCheck },
+              { href: "/diagnostic", label: "Refaire mon diagnostic", icon: Sparkles },
+            ].map(({ href, label, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-deep transition hover:border-deep/40 hover:bg-sand/50"
+              >
+                <Icon className="h-4 w-4" /> {label}
+              </Link>
+            ))}
           </div>
 
           <h2 className="mt-10 flex items-center gap-2 text-lg text-deep">

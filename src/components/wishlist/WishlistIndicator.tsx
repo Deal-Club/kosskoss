@@ -3,13 +3,13 @@
 import { useTranslations } from "next-intl";
 import { Heart } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { useWishlist } from "@/lib/wishlist";
+import { useFavorites } from "@/lib/favorites";
 
 /** Icône du header avec le nombre d'articles mémorisés. */
 export function WishlistIndicator({ className }: { className?: string }) {
   const t = useTranslations("wishlist");
   const common = useTranslations("common");
-  const { count, ready } = useWishlist();
+  const { count, ready } = useFavorites();
   // Avant hydratation le compteur reste masqué : le serveur ignore le contenu
   // du navigateur et afficherait sinon un chiffre faux.
   const visible = ready ? count : 0;

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { LocalizedLink as Link } from "./localized-link";
 import { Plus, Minus, Trash2, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";

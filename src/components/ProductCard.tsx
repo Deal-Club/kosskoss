@@ -26,6 +26,10 @@ export function ProductCard({ product }: { product: Product }) {
             image: product.image,
             path: product.href,
             priceCents: product.priceCents ?? 0,
+            stock: product.stock ?? (product.inStock === false ? 0 : 1),
+            // Cette grille ne connaît pas les contenances : l'ajout au panier
+            // depuis /favoris passera par la fiche, ce qui reste correct.
+            hasVariants: false,
           }}
         />
       )}

@@ -1,12 +1,7 @@
 import { prisma } from "@/server/prisma";
 import type { Prisma } from "@/generated/prisma/client";
-import type { KKProductView, KKTone, KKBadge } from "@/types/kk";
-
-const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
-
-function toBadge(value: string | null): KKBadge {
-  return value === "bestseller" || value === "nouveau" ? value : null;
-}
+import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import type { KKProductView } from "@/types/kk";
 
 export type CatalogSort = "pertinence" | "prix-asc" | "prix-desc" | "nouveautes";
 
@@ -72,7 +67,7 @@ export async function getCatalog(opts: {
   const [rows, brandRows, counts] = await Promise.all([
     prisma.product.findMany({
       where,
-      include: { category: { include: { group: true } } },
+      include: PRODUCT_VIEW_INCLUDE,
       orderBy: orderByFor(opts.sort ?? "pertinence"),
     }),
     // Marques disponibles dans la portée, indépendamment du filtre courant.
@@ -101,17 +96,7 @@ export async function getCatalog(opts: {
       count: countByCategoryId.get(c.id) ?? 0,
     })),
     brands: brandRows.map((b) => b.brand),
-    products: rows.map((p, index) => ({
-      id: p.id,
-      brand: p.brand,
-      name: p.name,
-      priceFcfa: p.priceCents,
-      oldPriceFcfa: p.oldPriceCents ?? undefined,
-      badge: toBadge(p.badge),
-      tone: TONES[index % TONES.length],
-      image: p.image,
-      href: `/${p.category.group.slug}/${p.category.slug}/${p.slug}`,
-    })),
+    products: rows.map(toProductView),
     total: rows.length,
   };
 }

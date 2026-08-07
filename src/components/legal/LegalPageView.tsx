@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+// Chrome KossKoss, comme le reste de la boutique. Ces pages affichaient encore
+// l'en-tête hérité de MLC Bois (ancienne activité bois de chauffage) : deux
+// identités visuelles pour un même site, et le nom d'une autre marque en clair
+// sur douze pages.
+import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { RichText } from "@/components/RichText";
 import { findLegalPage } from "@/server/legalPages";
@@ -136,10 +139,11 @@ export async function LegalPageView({ slug, locale }: { slug: LegalSlug; locale:
   const home = locale === "en" ? "Home" : "Accueil";
 
   return (
-    <>
-      <Header />
+    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <AnnouncementBar />
+      <SiteHeader />
       <main className="flex-1">
-        <div className="border-b border-border bg-white">
+        <div className="border-b border-border bg-card">
           <div className="mx-auto max-w-screen-xl px-3 py-3">
             <Breadcrumb items={[{ label: home, href: "/" }, { label: page.title }]} />
           </div>
@@ -147,7 +151,8 @@ export async function LegalPageView({ slug, locale }: { slug: LegalSlug; locale:
 
         <LegalPageArticle page={page} locale={locale} />
       </main>
-      <Footer />
-    </>
+      <SiteFooter />
+      <MobileTabBar />
+    </div>
   );
 }

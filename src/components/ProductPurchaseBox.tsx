@@ -131,6 +131,8 @@ export function ProductPurchaseBox({ product }: { product: Product }) {
             image: product.image,
             path: product.href,
             priceCents: product.priceCents ?? 0,
+            stock: product.stock ?? 0,
+            hasVariants: (product.variants?.length ?? 0) > 0,
           }}
         />
       )}

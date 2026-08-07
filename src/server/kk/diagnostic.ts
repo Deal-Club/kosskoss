@@ -1,12 +1,7 @@
 import { prisma } from "@/server/prisma";
 import { aggregateProfileFromAnswers } from "./diagnostic-data";
-import type { KKProductView, KKTone, KKBadge } from "@/types/kk";
-
-const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
-
-function toBadge(value: string | null): KKBadge {
-  return value === "bestseller" || value === "nouveau" ? value : null;
-}
+import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import type { KKProductView } from "@/types/kk";
 
 function parseTags(value: string | null): string[] {
   if (!value) return [];
@@ -54,7 +49,7 @@ export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResul
 
   const rows = await prisma.product.findMany({
     where: { active: true, stock: { gt: 0 }, category: { group: { slug: "soins-visage" } } },
-    include: { category: { include: { group: true } } },
+    include: PRODUCT_VIEW_INCLUDE,
   });
 
   const preferCheap = (tags.budget_eco ?? 0) > (tags.premium ?? 0);
@@ -83,17 +78,7 @@ export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResul
       key: step.key,
       label: step.label,
       why: best.shortDescription ?? "",
-      product: {
-        id: best.id,
-        brand: best.brand,
-        name: best.name,
-        priceFcfa: best.priceCents,
-        oldPriceFcfa: best.oldPriceCents ?? undefined,
-        badge: toBadge(best.badge),
-        tone: TONES[i % TONES.length],
-        image: best.image,
-        href: `/${best.category.group.slug}/${best.category.slug}/${best.slug}`,
-      },
+      product: toProductView(best, i),
     });
   });
 

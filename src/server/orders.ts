@@ -325,13 +325,18 @@ export async function countOpenOrders(): Promise<number> {
 const ORDER_NUMBER_BASE = 14_678;
 
 /**
- * Numéro lisible « MLC-AAAA-NNNNNN », séquentiel par année civile.
+ * Numéro lisible « KK-AAAA-NNNNNN », séquentiel par année civile.
  * L'unicité réelle est garantie par la contrainte en base ; la boucle d'appel
  * réessaie en cas de collision entre deux commandes simultanées.
+ *
+ * Le préfixe était « MLC- », hérité de l'ancienne activité de bois de chauffage :
+ * il apparaissait en clair sur la confirmation de commande, la facture et le
+ * libellé de paiement. Les commandes déjà émises gardent leur ancien numéro —
+ * la recherche par numéro les retrouve, le préfixe n'entre pas dans le compteur.
  */
 async function nextOrderNumber(): Promise<string> {
   const year = new Date().getFullYear();
-  const prefix = `MLC-${year}-`;
+  const prefix = `KK-${year}-`;
   const last = await prisma.order.findFirst({
     where: { orderNumber: { startsWith: prefix } },
     orderBy: { orderNumber: "desc" },

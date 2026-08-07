@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { Plus } from "lucide-react";
 import { formatFcfa } from "@/lib/kk/format";
 import type { KKProductView, KKTone } from "@/types/kk";
 import { BottleMotif } from "./motifs";
+import { FavoriteHeart, QuickAddButton } from "./product-actions";
 
 const TONE: Record<KKTone, string> = {
   sand: "from-[#f7eee2] to-[#e7d3bd]",
@@ -53,13 +53,10 @@ export function ProductCard({ product }: { product: KKProductView }) {
           )}
         </a>
 
-        <button
-          type="button"
-          aria-label={`Ajouter ${product.name} au panier`}
-          className="absolute bottom-3 right-3 grid h-11 w-11 place-items-center rounded-full bg-deep text-primary-foreground shadow-lg shadow-deep/20 transition duration-300 hover:scale-105 focus-visible:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card motion-safe:translate-y-2 motion-safe:opacity-0 motion-safe:group-hover:translate-y-0 motion-safe:group-hover:opacity-100 motion-safe:group-focus-within:translate-y-0 motion-safe:group-focus-within:opacity-100"
-        >
-          <Plus className="h-5 w-5" strokeWidth={2} />
-        </button>
+        {/* Les deux pastilles sont posées hors du lien : cliquer sur le cœur ou
+            sur le « + » ne doit pas ouvrir la fiche produit. */}
+        <FavoriteHeart product={product} className="absolute right-3 top-3" />
+        <QuickAddButton product={product} />
       </div>
 
       <a href={href} className="mt-4 flex flex-1 flex-col focus-visible:outline-none">

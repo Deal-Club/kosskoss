@@ -58,6 +58,10 @@ export const QUESTIONS: DiagQuestion[] = [
     subtitle: "Nous prioriserons les soins qui la ciblent.",
     answers: [
       { id: "concern_imperfections", label: "Imperfections & boutons", description: "Points noirs, brillance, petits boutons.", icon: "sparkles", tags: { imperfections: 3, matifiant: 1, peau_grasse: 1 }, chip: "Tendance imperfections" },
+      // Préoccupation n°1 des peaux riches en mélanine : la moindre inflammation
+      // (bouton, piqûre, rasage) laisse une marque sombre qui persiste des mois.
+      // Elle manquait au questionnaire, qui n'adressait que des sujets universels.
+      { id: "concern_taches", label: "Taches & marques", description: "Traces sombres laissées par les boutons, le rasage ou le soleil.", icon: "contrast", tags: { taches: 3, eclat: 2, imperfections: 1 }, chip: "Taches & hyperpigmentation" },
       { id: "concern_eclat", label: "Manque d'éclat", description: "Teint terne, irrégulier.", icon: "sun", tags: { eclat: 3, anti_age: 1 }, chip: "Éclat" },
       { id: "concern_age", label: "Rides & fermeté", description: "Premiers signes de l'âge.", icon: "clock", tags: { anti_age: 3, eclat: 1 }, chip: "Anti-âge" },
       { id: "concern_hydratation", label: "Déshydratation", description: "Tiraillements, peau qui pèle.", icon: "droplet", tags: { hydratation: 3, peau_seche: 1 }, chip: "Hydratation" },

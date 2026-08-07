@@ -1,6 +1,6 @@
 {
   "common": {
-    "searchPlaceholder": "Hêtre 33 cm, bûches densifiées, granulés …",
+    "searchPlaceholder": "Sérum vitamine C, crème hydratante, protection solaire …",
     "account": "Compte",
     "wishlist": "Favoris",
     "cart": "Panier",
@@ -10,23 +10,24 @@
     "language": "Langue",
     "home": "Accueil",
     "breadcrumb": "Fil d'Ariane",
-    "shopName": "MLC Bois",
+    "shopName": "KossKoss Select",
     "groupNames": {
-      "bois-de-chauffage": "Bois de chauffage",
-      "equipement": "Poêles"
+      "soins-visage": "Soins du visage",
+      "corps-cheveux": "Corps & Cheveux"
     },
     "categoryNames": {
-      "vrac": "Bois de chauffage en vrac",
-      "palette": "Bois de chauffage sur palette",
-      "granules": "Granulés de bois",
-      "bois-compresse": "Bois compressé",
-      "poele-a-bois": "Poêle à bois"
+      "nettoyants": "Nettoyants",
+      "serums": "Sérums",
+      "hydratants": "Hydratants",
+      "solaires": "Solaires",
+      "corps": "Soins du corps",
+      "cheveux": "Cheveux"
     },
     "from": "dès"
   },
   "header": {
-    "homeAriaLabel": "MLC Bois – page d'accueil",
-    "logoAlt": "MLC Bois",
+    "homeAriaLabel": "KossKoss Select – page d'accueil",
+    "logoAlt": "KossKoss Select",
     "search": "Rechercher",
     "lieferzusage": "Livraison partout en France métropolitaine",
     "beratung": "Conseil & commande",
@@ -34,44 +35,8 @@
     "lieferbanner": "Livraison offerte dès 6 MAP",
     "anrufenAria": "Appeler le {nummer}"
   },
-  "hero": {
-    "eyebrow": "Séché en séchoir · humidité sur brut inférieure à 18 %",
-    "titel": "Du bois qui brûle",
-    "titelAkzent": "dès qu'il arrive.",
-    "beschreibung": "Hêtre, chêne, bouleau et frêne issus de forêts françaises. 72 heures en séchoir, puis directement sur la remorque. Vous ne le stockez pas deux étés : vous chauffez le soir même.",
-    "bildAlt": "Bûches de hêtre fendues, rangées dans le séchoir",
-    "belege": {
-      "feuchte": "Humidité sur brut après séchage, mesurée sur chaque lot",
-      "lieferung": "Délai en Île-de-France, 3 à 8 jours dans le reste de la France",
-      "heizwert": "Pouvoir calorifique du hêtre par stère"
-    },
-    "ctaCatalogue": "Voir nos bois"
-  },
-  "interventions": {
-    "label": "Nous livrons à",
-    "srListe": "Nous livrons notamment à {villes}."
-  },
-  "home": {
-    "metaTitle": "MLC Bois | Bois de chauffage séché en séchoir, livré en 48 heures",
-    "metaDescription": "Hêtre, chêne, bouleau et frêne en 25, 33 et 50 cm. Humidité sur brut inférieure à 18 %, relevé de mesure joint à chaque livraison. Livraison partout en France métropolitaine.",
-    "bestsellerEyebrow": "Les plus commandés",
-    "bestseller": "Ce qui part cette semaine",
-    "bestsellerCta": "Tout le catalogue"
-  },
-  "trust": {
-    "feuchte": "Chaque lot mesuré avant le départ",
-    "lieferung": "Partout en France métropolitaine, 48 h en Île-de-France",
-    "laengen": "Trois longueurs de bûche, fendues et prêtes à brûler",
-    "herkunft": "Bois issu de forêts françaises, certifié PEFC"
-  },
-  "group": {
-    "metaTitle": "{label} | MLC Bois",
-    "metaDescription": "Toutes les catégories de l'univers {label} chez MLC Bois : bois séché en séchoir, prix clairs et livraison rapide.",
-    "intro": "Toutes les catégories de l'univers {label} en un coup d'œil.",
-    "productCount": "{count, plural, =0 {Aucun article pour l'instant} one {# article} other {# articles}}"
-  },
   "category": {
-    "metaTitle": "{label} | MLC Bois",
+    "metaTitle": "{label} | KossKoss Select",
     "productsCount": "<b>{filtered}</b> produits sur {total}",
     "sortBy": "Trier par",
     "sortRelevance": "Pertinence",
@@ -91,13 +56,13 @@
     "filterMinStars": "à partir de {rating} étoiles",
     "filterInStockOnly": "Disponible immédiatement uniquement",
     "priceRanges": {
-      "under100": "Jusqu'à 100 €",
-      "from100": "100 € - 300 €",
-      "from300": "300 € - 600 €",
-      "from600": "600 € - 1 000 €",
-      "over1000": "Plus de 1 000 €"
+      "under5000": "Moins de 5 000 FCFA",
+      "from5000": "5 000 – 10 000 FCFA",
+      "from10000": "10 000 – 15 000 FCFA",
+      "from15000": "15 000 – 25 000 FCFA",
+      "over25000": "Plus de 25 000 FCFA"
     },
-    "guideTitle": "{label} chez MLC Bois",
+    "guideTitle": "{label} chez KossKoss Select",
     "guideDiscover": "Découvrir {label}",
     "guideAdvice": "Demander conseil"
   },
@@ -110,7 +75,7 @@
     "ratingOf": "{rating} sur 5",
     "reviewCount": "{count, plural, one {# avis} other {# avis}}",
     "paymentTitle": "Moyens de paiement sécurisés",
-    "metaTitle": "{name} | MLC Bois",
+    "metaTitle": "{name} | KossKoss Select",
     "onRequest": "Sur demande",
     "originalPrice": "Prix d'origine",
     "vatNote": "Prix hors service et frais de livraison",
@@ -126,8 +91,7 @@
     "galleryLabel": "Autres vues du produit",
     "galleryView": "Afficher la vue {index} sur {total}",
     "chooseVolume": "Choisissez un volume",
-    "fromPrice": "à partir de",
-    "perStere": "le stère"
+    "fromPrice": "à partir de"
   },
   "reviews": {
     "title": "Avis clients",
@@ -170,8 +134,8 @@
     }
   },
   "footer": {
-    "logoAlt": "MLC Bois",
-    "homeAriaLabel": "MLC Bois – page d'accueil",
+    "logoAlt": "KossKoss Select",
+    "homeAriaLabel": "KossKoss Select – page d'accueil",
     "deliveryTitle": "Livraison standard : gratuite (3-5 jours ouvrables)",
     "deliveryDetail": "Livraison express : 60 € (24-48 h)",
     "warrantyTitle": "Humidité sur brut inférieure à 18 %",
@@ -194,12 +158,12 @@
     "linkPrivacy": "Confidentialité",
     "linkTerms": "CGV",
     "linkCookies": "Préférences cookies",
-    "copyright": "© {year} MLC Bois.",
+    "copyright": "© {year} KossKoss Select.",
     "oeffnung": "Du lundi au vendredi 8h–17h · Samedi 9h–13h"
   },
   "cart": {
     "title": "Panier",
-    "metaTitle": "Panier | MLC Bois",
+    "metaTitle": "Panier | KossKoss Select",
     "addToCart": "Ajouter au panier",
     "buyNow": "Acheter maintenant",
     "added": "Ajouté",
@@ -210,7 +174,7 @@
     "indicatorWithItems": "Panier : {count, plural, one {# article} other {# articles}}, {total}",
     "itemCount": "{count, plural, one {# article} other {# articles}}",
     "emptyTitle": "Votre panier est vide",
-    "emptyText": "Parcourez notre bois de chauffage et nos combustibles, et déposez ici ce qui vous intéresse.",
+    "emptyText": "Parcourez la sélection et déposez ici les soins qui vous intéressent.",
     "emptyCta": "Voir le catalogue",
     "columnProduct": "Article",
     "columnUnitPrice": "Prix unitaire",
@@ -243,7 +207,7 @@
     "campaignFreeShipping": "Livraison offerte grâce à votre offre"
   },
   "checkout": {
-    "metaTitle": "Commande | MLC Bois",
+    "metaTitle": "Commande | KossKoss Select",
     "title": "Commande",
     "backToCart": "Retour au panier",
     "emptyTitle": "Votre panier est vide",
@@ -347,7 +311,7 @@
       "invalid_quantity": "Merci de choisir une quantité entre 1 et 20 par article."
     },
     "confirmation": {
-      "metaTitle": "Confirmation de commande {orderNumber} | MLC Bois",
+      "metaTitle": "Confirmation de commande {orderNumber} | KossKoss Select",
       "title": "Merci pour votre commande",
       "subtitle": "Nous avons bien reçu votre commande.",
       "orderNumber": "Numéro de commande",
@@ -604,178 +568,12 @@
     "validUntil": "Valable jusqu'au {date}",
     "legalNote": "Les prix promotionnels indiqués sont valables jusqu'au {date} et sont appliqués automatiquement dans le panier. Au-delà, le prix habituel s'applique de nouveau. Prix hors frais de livraison."
   },
-  "sortiment": {
-    "eyebrow": "Catalogue",
-    "titel": "Cinq rayons, un seul degré de séchage",
-    "einleitung": "Du bois bûche en vrac ou sur palette, des granulés, du bois compressé et des poêles. Tout est séché en séchoir et part de notre dépôt de Saint-Denis vers toute la France métropolitaine.",
-    "artikel": "{anzahl} articles",
-    "beschreibung": {
-      "vrac": "Livré en grande caisse et déversé chez vous. Le meilleur prix au mètre cube apparent.",
-      "palette": "Rangé et cerclé sur palette, déposé au sol. Rien à empiler dans l'urgence.",
-      "granules": "Certifiés ENplus A1, pour poêle et chaudière à granulés.",
-      "bois-compresse": "Un tiers de la place, des braises qui tiennent la nuit.",
-      "poele-a-bois": "Poêles à bûches et à granulés, choisis pour leur rendement et leurs pièces détachées."
-    }
-  },
-  "feuchte": {
-    "eyebrow": "Humidité sur brut",
-    "titel": "Un bois humide vous coûte la moitié de la chaleur",
-    "einleitung": "Un kilo de bois contient toujours la même énergie. Ce qui décide de la part qui arrive réellement dans la pièce, c'est l'eau qu'il contient : elle doit d'abord s'évaporer, et cette évaporation consomme une chaleur qui ne réchauffe plus personne.",
-    "bildAlt": "Bûches en train de brûler dans un poêle à bois",
-    "grenzwert": "Seuil du label France Bois Bûche (classe H1)",
-    "nutzbar": "Utilisable :",
-    "stufen": {
-      "frisch": {
-        "titel": "Fraîchement abattu",
-        "text": "Sorti de la forêt. Il fume, encrasse la vitre — et ne doit tout simplement pas être brûlé dans cet état."
-      },
-      "luft": {
-        "titel": "Deux ans de séchage à l'air",
-        "text": "Sous abri, ventilé, empilé à distance du mur. Après deux étés, c'est le meilleur résultat réaliste."
-      },
-      "kammer": {
-        "titel": "Notre bois, séché en séchoir",
-        "text": "72 heures à 75 °C. Nous mesurons chaque lot et joignons le relevé à la livraison."
-      }
-    },
-    "fussnote": "Le label France Bois Bûche et la norme NF EN ISO 17225-5 classent en H1 le bois dont l'humidité sur brut ne dépasse pas 20 %. Le bois séché à l'air atteint cette valeur après environ deux étés ; le bois séché en séchoir sort ainsi de production. Un humidimètre coûte moins de 20 € et met fin à toute discussion — mesurez sur une bûche fraîchement fendue, jamais sur la face extérieure."
-  },
-  "holzarten": {
-    "eyebrow": "Pouvoirs calorifiques",
-    "titel": "Quel bois pour quel appareil",
-    "einleitung": "Les valeurs correspondent à un bois à 20 % d'humidité sur brut, en kilowattheures par stère. L'épicéa figure dans le tableau bien que nous ne le vendions qu'en petit bois d'allumage : sa place est au démarrage du feu, pas dans la charge de fond.",
-    "spalten": {
-      "holz": "Type de bois",
-      "heizwert": "Pouvoir calorifique",
-      "dichte": "Poids",
-      "glut": "Tenue des braises",
-      "eignung": "Adapté à"
-    },
-    "namen": {
-      "hainbuche": "Charme",
-      "buche": "Hêtre",
-      "eiche": "Chêne",
-      "esche": "Frêne",
-      "birke": "Bouleau",
-      "fichte": "Épicéa"
-    },
-    "eignung": {
-      "hainbuche": "Poêle de masse, longues soirées de chauffe",
-      "buche": "Poêle à bûches, le polyvalent",
-      "eiche": "Poêle de masse, feu continu",
-      "esche": "Poêle à vitre panoramique",
-      "birke": "Cheminée ouverte, brasero",
-      "fichte": "Uniquement pour allumer"
-    },
-    "glutAria": "Tenue des braises {wert} sur 5",
-    "fussnote": "Source : tables de pouvoir calorifique des chambres d'agriculture, arrondies commercialement. 1 stère correspond à environ 1,4 mètre cube apparent en vrac."
-  },
-  "lieferung": {
-    "eyebrow": "Livraison",
-    "titel": "Du dépôt jusque devant chez vous",
-    "einleitung": "Nous livrons partout en France et dans certaines villes de Belgique. En France avec notre propre remorque, ailleurs sur palette par transporteur — dans les deux cas vous êtes prévenu avant le passage.",
-    "schritte": {
-      "bestellung": {
-        "titel": "Commande",
-        "text": "Choisissez le type de bois, la longueur de bûche ou le pellet et la quantité puis validez votre commande"
-      },
-      "termin": {
-        "titel": "Créneau",
-        "text": "Nous appelons la veille et annonçons un créneau de deux heures. Vous n'avez pas à bloquer votre journée."
-      },
-      "abladen": {
-        "titel": "Déchargement",
-        "text": "Le déchargement en bord de voirie est compris dans le prix. Nous disposons des transpalettes pour transporter les palettes jusqu'à votre garage ou parking de stockage."
-      }
-    },
-    "tabelle": {
-      "zone": "Zone",
-      "plz": "Code postal",
-      "dauer": "Délai",
-      "kosten": "Tarif"
-    },
-    "zonen": {
-      "a": {
-        "name": "Zone A",
-        "gebiet": "Paris et petite couronne (75, 92, 93, 94)"
-      },
-      "b": {
-        "name": "Zone B",
-        "gebiet": "Grande couronne, Oise et Eure-et-Loir (77, 78, 91, 95, 60, 28)"
-      },
-      "c": {
-        "name": "Zone C",
-        "gebiet": "Reste de la France métropolitaine, par transporteur"
-      }
-    },
-    "freiHinweis": "À partir de 6 MAP, la livraison est offerte en zones A et B. La zone C couvre le reste du pays : elle part sur palette par transporteur, qui n'assure pas le déchargement."
-  },
-  "stimmen": {
-    "eyebrow": "Avis clients",
-    "titel": "Ce qu'il en reste après le premier hiver",
-    "basis": "Moyenne sur {anzahl} articles notés",
-    "sterneAria": "{wert} étoiles sur 5",
-    "kunden": {
-      "frank": {
-        "name": "Franck D.",
-        "ort": "Vincennes",
-        "kauf": "Hêtre 33 cm, palette",
-        "note": "5",
-        "text": "Livré le mardi matin, le créneau annoncé a été tenu et le bois prend au premier allume-feu, sans siffler."
-      },
-      "annika": {
-        "name": "Annie S.",
-        "ort": "Melun",
-        "kauf": "Mélange feuillus 25 cm",
-        "note": "4",
-        "text": "Le rapport qualité-prix est là, mais les bûches sont d'épaisseur inégale — j'ai dû en refendre quelques-unes pour mon petit poêle. La prochaine fois je prendrai du hêtre pur en 25 cm."
-      },
-      "jochen": {
-        "name": "Joachim R.",
-        "ort": "Rambouillet",
-        "kauf": "Bûches densifiées, 960 kg",
-        "note": "5",
-        "text": "La palette est arrivée une semaine après la date annoncée. En revanche on m'a prévenu avant et le prix a été ajusté sans que j'ai à le demander."
-      }
-    }
-  },
   "recherche": {
-    "metaTitle": "Résultats pour « {query} » | MLC Bois",
+    "metaTitle": "Résultats pour « {query} » | KossKoss Select",
     "breadcrumb": "Résultats de recherche",
     "titre": "Résultats pour « {query} »",
     "resultats": "{count, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}",
     "vide": "Saisissez un terme pour lancer une recherche — une essence, une longueur ou une marque."
-  },
-  "faq": {
-    "eyebrow": "Questions fréquentes",
-    "titel": "Ce que les acheteurs veulent savoir avant",
-    "einleitung": "Si votre question ne figure pas ici, appelez-nous. Du lundi au vendredi de 8h à 17h et le samedi de 9h à 13h, la personne qui décroche a elle-même livré le bois.",
-    "fragen": {
-      "srm": {
-        "frage": "Quelle différence entre le mètre cube apparent, le stère et le mètre cube réel ?",
-        "antwort": "Un mètre cube apparent (MAP) est un mètre cube de bois versé en vrac, tel qu'il tombe de la benne. Rangé proprement, le même volume donne environ 0,7 stère. Si l'on retire tout l'air entre les bûches, il reste à peu près 0,4 mètre cube de bois réel. Nous vendons au mètre cube apparent, parce que c'est la quantité qui arrive réellement chez vous."
-      },
-      "trocken": {
-        "frage": "Comment savoir si le bois est vraiment sec ?",
-        "antwort": "Au son et aux fentes : les bûches sèches sonnent clair quand on en frappe deux l'une contre l'autre, et présentent des fentes en étoile sur la coupe. Seule la mesure est fiable. Enfoncez l'humidimètre dans une bûche fraîchement fendue, pas sur la face extérieure — à l'extérieur, même un bois humide paraît sec. Notre relevé de mesure est joint à chaque livraison."
-      },
-      "lagern": {
-        "frage": "Comment stocker le bois après la livraison ?",
-        "antwort": "Le bois séché en séchoir n'a plus besoin de sécher, mais il ne doit pas se réhumidifier. Sous abri, à distance du mur et pas à même le sol — une palette dessous suffit. Dans une cave fermée et sans ventilation, le bois reprend l'humidité de l'air et repasse au-dessus de 20 % en un an."
-      },
-      "restaurant": {
-        "frage": "Livrez-vous aussi les restaurants et les boulangeries ?",
-        "antwort": "Oui. Pour les fours à bois et les restaurants de grillades, nous proposons du hêtre en 25 et 33 cm à moins de 15 % d'humidité sur brut, en réapprovisionnement hebdomadaire sur demande. À partir de trois palettes par mois, un tarif dégressif s'applique. Écrivez-nous via le formulaire de contact, nous répondons le jour ouvré même."
-      },
-      "livraison": {
-        "frage": "Combien coûte la livraison et sous quel délai ?",
-        "antwort": "La livraison standard est offerte, sans minimum de commande, sous 3 à 5 jours ouvrés. La livraison express est facturée 60 € et intervient sous 24 à 48 heures. Nous livrons partout en France et dans certaines villes de Belgique : en France avec notre propre remorque, ailleurs sur palette par transporteur. Dans les deux cas, vous êtes prévenu avant le passage."
-      },
-      "abladen": {
-        "frage": "Où le bois est-il déposé exactement ?",
-        "antwort": "Le déchargement en bord de voirie est compris dans le prix. Nous disposons de transpalettes pour amener les palettes jusqu'à votre garage ou votre parking de stockage. Signalez un accès étroit, un portail bas ou une cour fermée au moment de la commande : nous adaptons le véhicule."
-      }
-    }
   },
   "exitIntent": {
     "title": "Avant de partir…",
