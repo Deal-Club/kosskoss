@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { LocalizedLink as Link } from "./localized-link";
 import { usePathname } from "next/navigation";
 import { Search, Menu, X, ChevronRight, Heart, User, Sparkles, Package } from "lucide-react";
@@ -171,8 +172,16 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
         <Menu className="h-5 w-5" />
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+      {/* Monté dans <body> et non sur place.
+          L'en-tête porte `backdrop-blur`, et un `backdrop-filter` devient le
+          référentiel des positions `fixed` de ses descendants : le panneau se
+          calait donc sur la hauteur de l'en-tête (72 px) au lieu de l'écran,
+          et son contenu était tronqué juste sous le logotype. */}
+      {/* Pas de garde « monté » nécessaire : `open` est faux au rendu serveur
+          et ne passe à vrai que sur un clic, donc côté client uniquement. */}
+      {open &&
+        createPortal(
+          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <button
             type="button"
             aria-label="Fermer le menu"
@@ -251,8 +260,9 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
               </ul>
             </div>
           </nav>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

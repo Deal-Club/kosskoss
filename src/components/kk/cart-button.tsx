@@ -3,6 +3,7 @@
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { cartItemCount } from "@/lib/kk/cart-totals";
+import { CIBLE_PANIER } from "@/lib/kk/fly-to-cart";
 
 export function CartButton() {
   const { lines, openDrawer, ready } = useCart();
@@ -12,6 +13,9 @@ export function CartButton() {
       type="button"
       onClick={openDrawer}
       aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+      // Cible du vol : la copie du produit converge vers le centre de ce
+      // bouton, qui pulse à l'arrivée. Voir src/lib/kk/fly-to-cart.ts.
+      {...{ [CIBLE_PANIER]: "" }}
       className="relative grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand"
     >
       <ShoppingBag className="h-5 w-5" />

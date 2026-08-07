@@ -8,6 +8,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
 import { BottleMotif } from "./motifs";
+import { CartSuggestions } from "./cart-suggestions";
 
 export function CartDrawerKK() {
   const { lines, ready, drawerOpen, closeDrawer, setQuantity, remove } = useCart();
@@ -141,6 +142,11 @@ export function CartDrawerKK() {
                 );
               })}
             </ul>
+
+            {/* Les suggestions se placent entre la liste et le total : après ce
+                que le client a choisi, avant qu'il ne se décide à payer. Plus
+                bas, sous le bouton « Commander », personne ne les verrait. */}
+            <CartSuggestions />
 
             <footer className="border-t border-border px-6 py-5">
               <div className="flex items-center justify-between">

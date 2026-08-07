@@ -5,6 +5,7 @@ import { Plus, Minus, ShoppingBag, Check } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import type { KKProductDetail } from "@/server/kk/product";
+import { volVersPanier } from "@/lib/kk/fly-to-cart";
 import { FavoriteHeart } from "./product-actions";
 
 export function AddToCart({ product }: { product: KKProductDetail }) {
@@ -18,7 +19,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   const oldPriceFcfa = variant?.oldPriceFcfa ?? product.oldPriceFcfa;
   const outOfStock = product.stock <= 0;
 
-  function handleAdd() {
+  async function handleAdd() {
     add(
       {
         productId: product.id,
@@ -35,9 +36,13 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
       qty,
     );
     setAdded(true);
-    // Même geste que depuis une vignette : le tiroir s'ouvre et montre le panier.
-    openDrawer();
     window.setTimeout(() => setAdded(false), 2600);
+
+    // Même geste que depuis une vignette. Le vol part de la galerie de la
+    // fiche, repérée par son attribut : sur cette page, le bouton n'est pas
+    // dans le même bloc que la photo.
+    await volVersPanier(document.querySelector<HTMLElement>("[data-visuel-produit]"));
+    openDrawer();
   }
 
   return (
@@ -106,14 +111,23 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           </button>
         </div>
 
+        {/* Sur mobile, l'icône seule.
+            « Ajouter au panier » ne tenait pas sur la largeur restante à côté
+            du sélecteur de quantité et du cœur : le texte se cassait sur trois
+            lignes et le bouton devenait un disque démesuré. Le libellé revient
+            dès qu'il y a la place, et `aria-label` le porte en permanence pour
+            les lecteurs d'écran.
+            « Indisponible » reste écrit à toutes les tailles : un bouton grisé
+            sans un mot n'explique pas pourquoi il ne répond pas. */}
         <button
           type="button"
           onClick={handleAdd}
           disabled={outOfStock}
-          className="kk-fill group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label={outOfStock ? "Produit indisponible" : "Ajouter au panier"}
+          className="kk-fill group inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50 sm:px-7"
         >
-          <ShoppingBag className="h-4 w-4" />
-          {outOfStock ? "Indisponible" : "Ajouter au panier"}
+          <ShoppingBag className="h-4 w-4 shrink-0" />
+          {outOfStock ? "Indisponible" : <span className="hidden sm:inline">Ajouter au panier</span>}
         </button>
 
         <FavoriteHeart

@@ -42,7 +42,10 @@ function Gallery({ product }: { product: KKProductDetail }) {
   const hasImage = typeof product.image === "string" && product.image.length > 0;
   return (
     <div className="grid gap-4">
-      <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]">
+      <div
+        data-visuel-produit
+        className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
+      >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.5),transparent_55%)]" />
         {hasImage ? (
           <Image src={product.image as string} alt={product.name} fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />

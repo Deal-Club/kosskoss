@@ -54,7 +54,7 @@ export function BrandLoader({
       // sans voler le focus. Le texte visible sert aux deux publics.
       role="status"
       aria-live="polite"
-      className="kkl-screen grid min-h-screen place-items-center bg-cream px-6"
+      className="kkl-screen fixed inset-0 z-50 grid place-items-center bg-cream px-6"
     >
       <div className="flex flex-col items-center">
         {/* L'onde part du centre du sigle : posée derrière lui, à la même

@@ -5,6 +5,7 @@ import { LocalizedLink as Link } from "./localized-link";
 import { Plus, Check, Heart, ChevronRight } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { toggleFavorite, useFavorites, type FavoriteItem } from "@/lib/favorites";
+import { volVersPanier } from "@/lib/kk/fly-to-cart";
 import type { CartLine } from "@/lib/cart";
 import type { KKProductView } from "@/types/kk";
 
@@ -123,11 +124,23 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
     );
   }
 
-  function handleAdd() {
+  /**
+   * Trois temps, dans cet ordre : la ligne entre au panier, la photo s'envole
+   * vers l'icône, le tiroir s'ouvre.
+   *
+   * L'ajout d'abord — le panier doit être juste même si l'onglet passe en
+   * arrière-plan pendant le vol et que l'animation est suspendue. L'ouverture
+   * en dernier : le tiroir couvre la droite de l'écran, il masquerait la fin de
+   * la trajectoire s'il s'ouvrait avant.
+   */
+  async function handleAdd(event: React.MouseEvent<HTMLButtonElement>) {
     add(toCartLine(product), 1);
     setAdded(true);
-    openDrawer();
     window.setTimeout(() => setAdded(false), 1800);
+
+    // `closest("article")` : la vignette entière, dont l'image sera clonée.
+    await volVersPanier(event.currentTarget.closest("article"));
+    openDrawer();
   }
 
   return (
