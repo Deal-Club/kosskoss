@@ -35,6 +35,11 @@ tsconfig.tsbuildinfo
 /public/uploads/*
 !/public/uploads/.gitkeep
 
+# Originaux bruts des visuels produits (source ~100 Mo, non versionnée) : les
+# images du catalogue sont générées, compressées et servies depuis
+# public/images/products/ via scripts/fetch-kk-images.mjs.
+/assets/
+
 # Notes de travail personnelles
 /texte
 
