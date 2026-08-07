@@ -297,6 +297,16 @@ export function MaisonSection({
  * JavaScript, pas d'état à hydrater, et le repli reste accessible au clavier
  * comme aux lecteurs d'écran.
  */
+/**
+ * Répartit les questions en deux colonnes, dans l'ordre de lecture : la
+ * première moitié à gauche, la seconde à droite. On lit donc chaque colonne de
+ * haut en bas, et non en zigzag comme le ferait une grille.
+ */
+function COLONNES(entries: HomeFaqEntry[]): HomeFaqEntry[][] {
+  const milieu = Math.ceil(entries.length / 2);
+  return [entries.slice(0, milieu), entries.slice(milieu)].filter((c) => c.length > 0);
+}
+
 export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
   if (entries.length === 0) return null;
 
@@ -316,21 +326,34 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
         </Link>
       </div>
 
-      <div className="kk-enter-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {entries.map((entry) => (
-          <details
-            key={entry.question}
-            className="kk-lift group rounded-2xl border border-border/70 bg-card p-5"
-          >
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-medium text-deep [&::-webkit-details-marker]:hidden">
-              {entry.question}
-              <Plus
-                className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-45"
-                aria-hidden="true"
-              />
-            </summary>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{entry.answer}</p>
-          </details>
+      {/* Deux colonnes INDÉPENDANTES, quatre questions chacune — et non une
+          grille de huit cellules.
+
+          En grille, toutes les cellules d'une même rangée partagent leur
+          hauteur : déplier une question étirait ses voisines, qui semblaient
+          s'ouvrir en même temps. Ici chaque colonne est une pile autonome, donc
+          déplier une question ne pousse que celles qui sont sous elle, dans sa
+          seule colonne. `items-start` empêche par ailleurs la colonne courte de
+          s'aligner sur la longue. */}
+      <div className="kk-enter-stagger grid items-start gap-x-6 gap-y-4 md:grid-cols-2">
+        {COLONNES(entries).map((colonne, index) => (
+          <div key={index} className="flex flex-col gap-4">
+            {colonne.map((entry) => (
+              <details
+                key={entry.question}
+                className="kk-lift group rounded-2xl border border-border/70 bg-card p-5"
+              >
+                <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-medium text-deep [&::-webkit-details-marker]:hidden">
+                  {entry.question}
+                  <Plus
+                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-45"
+                    aria-hidden="true"
+                  />
+                </summary>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{entry.answer}</p>
+              </details>
+            ))}
+          </div>
         ))}
       </div>
     </section>

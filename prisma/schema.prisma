@@ -288,6 +288,13 @@ model Order {
   shippingCents  Int
   taxCents       Int
   totalCents     Int
+
+  // Code promo appliqué, recopié tel qu'il a été saisi et validé. Comme les
+  // libellés produits, il est figé sur la commande : renommer ou supprimer le
+  // coupon au back-office ne doit pas réécrire une commande déjà passée.
+  couponCode     String @default("")
+  // Remise accordée, en centimes, déjà déduite de `totalCents`.
+  discountCents  Int    @default(0)
   // Taux de TVA appliqué, en points de pourcentage (10 pour le bois de chauffage domestique)
   taxRatePercent Int    @default(19)
   currency       String @default("EUR")

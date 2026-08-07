@@ -21,7 +21,10 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <Flourish className="pointer-events-none absolute -left-16 top-24 hidden h-40 w-[28rem] text-gold/40 lg:block" />
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2 lg:gap-16 lg:py-24">
+      {/* Respiration dissymétrique : peu d'air en haut, où le bandeau et la
+          navigation en donnent déjà, davantage en bas pour détacher le hero de
+          la section suivante. */}
+      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 pb-16 pt-6 lg:grid-cols-2 lg:gap-16 lg:pb-24 lg:pt-10">
         <div className="max-w-xl">
           <p className="eyebrow kk-rise flex items-center gap-2" style={{ "--d": "0ms" } as React.CSSProperties}>
             <span className="h-px w-8 bg-gold" /> Concept-store beauté · Afrique centrale
@@ -62,31 +65,26 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Visuel hero — produit réel du catalogue.
-            Nubiance HRB-3 : un correcteur d'hyperpigmentation, d'une marque
-            formulée pour les peaux noires et métissées. C'est le sujet même du
-            positionnement, et la préoccupation que le diagnostic met en avant.
-            `object-contain` sur fond sable plutôt que `object-cover` : les
-            photos du catalogue sont carrées et détourées sur blanc, un cadrage
-            plein couperait le flacon. */}
+        {/* Visuel hero — image d'ambiance plutôt qu'un packshot : le geste de
+            soin sur une peau riche en mélanine dit le positionnement de la
+            maison, là où un flacon isolé ne montrait qu'une référence.
+            Cadrage plein (`object-cover`) : la photo est composée au format
+            4/5 du gabarit, elle n'a pas besoin de marge.
+            `priority` : c'est le plus grand visuel au-dessus de la ligne de
+            flottaison, donc celui que le navigateur doit chercher en premier. */}
         <div
           className="kk-rise relative mx-auto w-full max-w-md"
           style={{ "--d": "200ms" } as React.CSSProperties}
         >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-sand shadow-2xl shadow-deep/15">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-deep shadow-2xl shadow-deep/15">
             <Image
-              src="/images/products/NUB-HRB-JOU-50.jpg"
-              alt="Nubiance HRB-3, soin jour correcteur d'hyperpigmentation"
+              src="/images/editorial/hero-soin.webp"
+              alt="Application d'un sérum du bout des doigts sur une peau riche en mélanine"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-contain p-8"
+              className="object-cover"
               priority
             />
-            {/* À droite : le sigle occupe le coin bas-gauche et, depuis qu'il
-                est plein, il recouvrait cette pastille. */}
-            <span className="absolute bottom-5 right-5 rounded-full bg-cream/90 px-4 py-2 text-xs font-semibold text-deep shadow-sm">
-              Diagnostic en 2 min
-            </span>
           </div>
           <Petal className="kk-float absolute -right-6 -top-6 h-24 w-24 text-deep/90" />
           <div className="absolute -bottom-5 -left-5 grid h-20 w-20 place-items-center rounded-2xl bg-cream shadow-xl">
@@ -174,7 +172,32 @@ export function DiagnosticPromo() {
   return (
     <section className="mx-auto max-w-7xl px-6 py-12">
       <div className="kk-enter relative overflow-hidden rounded-[2rem] bg-sand px-8 py-12 sm:px-14 sm:py-16">
-        <div className="grid items-center gap-8 md:grid-cols-[1.5fr_1fr]">
+        {/* Visuel de section. Il n'apparaît qu'à partir de `md` : en dessous,
+            la bannière devient étroite et haute, le cadrage `cover` ne
+            retiendrait que le visage et le texte passerait par-dessus. Le fond
+            sable seul y suffit.
+            `alt` vide et `aria-hidden` : l'image illustre un propos que le
+            titre et le paragraphe énoncent déjà — l'annoncer une seconde fois
+            n'apprendrait rien à qui écoute la page. */}
+        <Image
+          src="/images/editorial/diagnostic-bandeau.webp"
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="(max-width: 768px) 0px, 1280px"
+          className="hidden object-cover object-right md:block"
+        />
+        {/* Dégradé sable : il garantit le contraste du texte quelle que soit la
+            largeur, le recadrage faisant glisser le sujet d'un écran à l'autre.
+            Il est plein jusqu'à 30 % — la colonne de texte s'arrête à 45 % —
+            puis s'efface avant 60 %, là où le sujet commence. Un voile qui
+            court plus loin ternit la photo qu'il est censé mettre en valeur. */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 hidden bg-gradient-to-r from-sand from-30% to-transparent to-60% md:block"
+        />
+
+        <div className="relative grid items-center gap-8 md:grid-cols-[1.5fr_1fr]">
           <div className="max-w-lg">
             <p className="eyebrow">Diagnostic beauté</p>
             <h2 className="mt-3 text-3xl text-deep sm:text-4xl">
@@ -193,10 +216,12 @@ export function DiagnosticPromo() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="relative hidden justify-center md:flex">
-            <Petal className="kk-float h-52 w-52 text-deep" />
-          </div>
+          {/* Colonne de droite laissée vide : c'est là que le sujet de la
+              photo se place. Le pétale décoratif qui l'occupait ferait doublon
+              avec les botaniques de l'image. */}
+          <div aria-hidden="true" />
         </div>
+        {/* Sur mobile, l'image est masquée : ce pétale reste le seul ornement. */}
         <Petal className="pointer-events-none absolute -bottom-16 -right-10 h-56 w-56 text-deep/5 md:hidden" />
       </div>
     </section>
@@ -209,15 +234,17 @@ export function EditorialBlock() {
   return (
     <section className="kk-enter mx-auto max-w-7xl px-6 py-16">
       <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Même parti pris que le hero : photo produit réelle, posée sur sable
-            et non recadrée. */}
-        <div className="relative order-last aspect-[5/4] overflow-hidden rounded-[2rem] bg-sand lg:order-first">
+        {/* Nature morte plutôt qu'un packshot : la section parle de méthode et
+            de tri — « nous filtrons l'offre plutôt que de l'empiler ». Trois
+            flacons largement espacés portent ce propos ; une étagère pleine
+            dirait l'inverse du texte qu'elle accompagne. */}
+        <div className="kk-lift relative order-last aspect-[5/4] overflow-hidden rounded-[2rem] bg-deep lg:order-first">
           <Image
-            src="/images/products/BOJ-GLO-SER-30.jpg"
-            alt="Beauty of Joseon, sérum éclat propolis et niacinamide"
+            src="/images/editorial/exigence-nature-morte.webp"
+            alt="Trois flacons de soin posés en lumière rasante, largement espacés"
             fill
             sizes="(max-width: 1024px) 100vw, 45vw"
-            className="object-contain p-10"
+            className="object-cover"
           />
         </div>
         <div className="max-w-xl">
