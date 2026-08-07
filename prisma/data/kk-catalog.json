@@ -1,0 +1,1742 @@
+{
+  "groups": [
+    {
+      "slug": "soins-visage",
+      "label": "Soins du visage",
+      "labelEn": "Facial care"
+    },
+    {
+      "slug": "corps-hygiene",
+      "label": "Corps & Hygiène",
+      "labelEn": "Body & Hygiene"
+    },
+    {
+      "slug": "homme",
+      "label": "Homme",
+      "labelEn": "Men"
+    }
+  ],
+  "categories": [
+    {
+      "slug": "nettoyants",
+      "group": "soins-visage",
+      "label": "Nettoyants",
+      "labelEn": "Cleansers"
+    },
+    {
+      "slug": "toniques",
+      "group": "soins-visage",
+      "label": "Toniques",
+      "labelEn": "Toners"
+    },
+    {
+      "slug": "traitements",
+      "group": "soins-visage",
+      "label": "Sérums & Traitements",
+      "labelEn": "Serums & Treatments"
+    },
+    {
+      "slug": "hydratants",
+      "group": "soins-visage",
+      "label": "Hydratants",
+      "labelEn": "Moisturizers"
+    },
+    {
+      "slug": "solaires",
+      "group": "soins-visage",
+      "label": "Solaires",
+      "labelEn": "Sun care"
+    },
+    {
+      "slug": "corps",
+      "group": "corps-hygiene",
+      "label": "Soins du corps",
+      "labelEn": "Body care"
+    },
+    {
+      "slug": "hygiene",
+      "group": "corps-hygiene",
+      "label": "Hygiène",
+      "labelEn": "Hygiene"
+    },
+    {
+      "slug": "homme",
+      "group": "homme",
+      "label": "Homme",
+      "labelEn": "Men"
+    }
+  ],
+  "products": [
+    {
+      "slug": "beauty-of-joseon-huile-demaquillante-au-ginseng",
+      "sku": "BOJ-GIN-CLE-210",
+      "category": "nettoyants",
+      "brand": "Beauty of Joseon",
+      "name": "Huile démaquillante au ginseng",
+      "priceFcfa": 20500,
+      "short": "Dissout le gras, SPF et maquillage",
+      "desc": "Toutes peaux, même sensibles — visage. Cible : Démaquiller maquillage, SPF et excès de sébum. Dissout maquillage, écrans solaires et impuretés. A Base d'huiles végétales et extrait de ginseng qui nettoie en profondeur. Préserve l'hydratation, laisse la peau douce sans film gras. Conseil d'utilisation : Le soir sur peau sèche, masser 1 à 2 pompes puis émulsionner avec un peu d'eau et rincer.",
+      "bullets": [
+        "Dissout maquillage, écrans solaires et impuretés",
+        "A Base d'huiles végétales et extrait de ginseng qui nettoie en profondeur",
+        "Préserve l'hydratation, laisse la peau douce sans film gras",
+        "Contenance : 210 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "matifiant",
+        "hydratation",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-lotion-tonique-eclat-lait-de-riz",
+      "sku": "BOJ-GLO-MIL-150",
+      "category": "toniques",
+      "brand": "Beauty of Joseon",
+      "name": "Lotion tonique éclat lait de riz",
+      "priceFcfa": 19500,
+      "short": "Hydrate et unifie le teint",
+      "desc": "Toutes peaux, surtout ternes ou déshydratées — visage. Cible : Manque d'éclat et déshydratation. Tonique lacté aux extraits de riz qui hydrate. Acide hyaluronique pour lisser et repulper. Aide à renforcer la barrière cutanée. Conseil d'utilisation : Après le nettoyage, matin et soir, appliquer sur le visage avant le sérum.",
+      "bullets": [
+        "Tonique lacté aux extraits de riz qui hydrate",
+        "Acide hyaluronique pour lisser et repulper",
+        "Aide à renforcer la barrière cutanée",
+        "Contenance : 150 ml",
+        "Idéal pour : Tous / Sec"
+      ],
+      "tags": [
+        "toner",
+        "peau_seche",
+        "eclat",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-serum-eclat-propolis-niacinamide",
+      "sku": "BOJ-GLO-SER-30",
+      "category": "traitements",
+      "brand": "Beauty of Joseon",
+      "name": "Sérum éclat Propolis + Niacinamide",
+      "priceFcfa": 18500,
+      "short": "Anti-inflammatoire et \"Glow\"",
+      "desc": "Peaux mixtes à grasses ou à imperfections — visage. Cible : Rougeurs, pores visibles, excès de sébum. Propolis qui apaise et renforce la peau. Niacinamide qui régule le sébum et homogénéise le teint. Texture légère non collante. Conseil d'utilisation : Appliquer 2 à 3 gouttes matin et ou soir sur peau propre avant la crème.",
+      "bullets": [
+        "Propolis qui apaise et renforce la peau",
+        "Niacinamide qui régule le sébum et homogénéise le teint",
+        "Texture légère non collante",
+        "Contenance : 30 ml",
+        "Idéal pour : Mixte / Grasse"
+      ],
+      "tags": [
+        "traitement",
+        "peau_grasse",
+        "peau_mixte",
+        "eclat",
+        "matifiant",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-baume-demaquillant-eclat",
+      "sku": "BOJ-RAD-BAL-100",
+      "category": "nettoyants",
+      "brand": "Beauty of Joseon",
+      "name": "Baume démaquillant éclat",
+      "priceFcfa": 17500,
+      "short": "Nettoyage profond et éclat",
+      "desc": "Toutes peaux — visage. Cible : Maquillage, crème solaire, excès de sébum et impuretés. Fait fondre maquillage, SPF et sébum en douceur. Aide à illuminer le teint et maintenir l’hydratation. Texture souple qui se rince facilement, sans laisser de film gras. Conseil d'utilisation : Le soir, appliquer une noisette sur visage sec et masser jusqu’à ce qu’il fonde. Ajouter un peu d’eau tiède, puis rincer abondamment. Poursuivre avec un nettoyant moussant pour un double nettoyage complet.",
+      "bullets": [
+        "Fait fondre maquillage, SPF et sébum en douceur",
+        "Aide à illuminer le teint et maintenir l’hydratation",
+        "Texture souple qui se rince facilement, sans laisser de film gras",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "eclat",
+        "matifiant",
+        "hydratation",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-serum-riz-alpha-arbutine",
+      "sku": "BOJ-INT-SER-30",
+      "category": "traitements",
+      "brand": "Beauty of Joseon",
+      "name": "Sérum riz + alpha-arbutine",
+      "priceFcfa": 17500,
+      "short": "Correction des taches pigmentaires",
+      "desc": "Toutes peaux — visage. Cible : Teint terne, taches, irrégularités du teint. Sérum illuminateur à l’alpha-arbutine et  son de riz. Cible l’aspect des taches et du teint irrégulier pour plus d’éclat. Texture légère adaptée à l’usage quotidien. Conseil d'utilisation : Appliquer 2–3 gouttes matin et/ou soir après le tonique, avant la crème.",
+      "bullets": [
+        "Sérum illuminateur à l’alpha-arbutine et  son de riz",
+        "Cible l’aspect des taches et du teint irrégulier pour plus d’éclat",
+        "Texture légère adaptée à l’usage quotidien",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-nettoyant-prune-verte",
+      "sku": "BOJ-PRU-CLE-100",
+      "category": "nettoyants",
+      "brand": "Beauty of Joseon",
+      "name": "Nettoyant prune verte",
+      "priceFcfa": 14500,
+      "short": "Rafraîchit et exfolie doucement",
+      "desc": "Toutes peaux — visage. Cible : Nettoyer sans décaper, inconfort post-nettoyage. Nettoyant doux au pH équilibré, avec extraits de prune et de haricot mungo. Nettoie en profondeur et rafraîchit tout en soutenant la barrière d’hydratation. Conçu pour un usage quotidien. Conseil d'utilisation : Sur peau humide, faire mousser, masser puis rincer. Matin et/ou soir.",
+      "bullets": [
+        "Nettoyant doux au pH équilibré, avec extraits de prune et de haricot mungo",
+        "Nettoie en profondeur et rafraîchit tout en soutenant la barrière d’hydratation",
+        "Conçu pour un usage quotidien",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-creme-solaire-riz-probiotiques",
+      "sku": "BOJ-SUN-PRO-50",
+      "category": "solaires",
+      "brand": "Beauty of Joseon",
+      "name": "Crème solaire riz + probiotiques",
+      "priceFcfa": 18500,
+      "short": "Protection UV sans traces blanches",
+      "desc": "Toutes peaux — visage. Cible : Protection UV quotidienne, inconfort / film blanc. Écran solaire à texture légère. Infusé avec 30% d’extrait de riz et extraits de grains fermentés pour hydrater et apaiser. Absorption rapide, fini lumineux, sans trace blanche selon la marque. Conseil d'utilisation : Appliquer généreusement en dernière étape le matin. Renouveler toutes les 2 heures en exposition.",
+      "bullets": [
+        "Écran solaire à texture légère",
+        "Infusé avec 30% d’extrait de riz et extraits de grains fermentés pour hydrater et apaiser",
+        "Absorption rapide, fini lumineux, sans trace blanche selon la marque",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "solaire",
+        "eclat",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-serum-apaisant-the-vert-panthenol",
+      "sku": "BOJ-APA-SER-30",
+      "category": "traitements",
+      "brand": "Beauty of Joseon",
+      "name": "Sérum apaisant thé vert + panthénol",
+      "priceFcfa": 17500,
+      "short": "Calme les rougeurs et hydrate",
+      "desc": "Peaux sensibles / irritées — visage. Cible : Rougeurs, inconfort, barrière fragilisée. Sérum aqueux qui aide à apaiser et rafraîchir la peau. Complexe Green Tea-HA pour hydrater en profondeur. Panthénol pour limiter la perte en eau et soutenir la barrière. Conseil d'utilisation : Appliquer matin et/ou soir après le tonique, puis crème.",
+      "bullets": [
+        "Sérum aqueux qui aide à apaiser et rafraîchir la peau",
+        "Complexe Green Tea-HA pour hydrater en profondeur",
+        "Panthénol pour limiter la perte en eau et soutenir la barrière",
+        "Contenance : 30 ml",
+        "Idéal pour : Sensible"
+      ],
+      "tags": [
+        "traitement",
+        "peau_sensible",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "beauty-of-joseon-gel-hydratant-haricot-rouge",
+      "sku": "BOJ-RED-GEL-100",
+      "category": "hydratants",
+      "brand": "Beauty of Joseon",
+      "name": "Gel hydratant haricot rouge",
+      "priceFcfa": 18500,
+      "short": "Hydrate sans brillance",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Hydrater sans brillance, équilibre du sébum. Gel hydratant léger formulé avec haricot rouge et peptides. Aide à maintenir un niveau de sébum optimal selon la marque. Apporte rebond et hydratation sans lourdeur. Conseil d'utilisation : Appliquer matin et/ou soir en dernière étape, ou avant SPF le matin.",
+      "bullets": [
+        "Gel hydratant léger formulé avec haricot rouge et peptides",
+        "Aide à maintenir un niveau de sébum optimal selon la marque",
+        "Apporte rebond et hydratation sans lourdeur",
+        "Contenance : 100 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant",
+        "anti_age"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "anua-mousse-nettoyante-heartleaf",
+      "sku": "ANU-HEA-MOU-150",
+      "category": "nettoyants",
+      "brand": "Anua",
+      "name": "Mousse nettoyante Heartleaf",
+      "priceFcfa": 16000,
+      "short": "Purifie les pores en profondeur",
+      "desc": "Toutes peaux — visage. Cible : Pores encombrés, excès de sébum, texture. Mousse nettoyante à l’extrait de Heartleaf pour un nettoyage en profondeur. Conçue pour nettoyer les pores et exfolier en douceur les cellules mortes. Nettoyage non décapant, apaisant selon la marque. Conseil d'utilisation : Sur peau humide, faire mousser, masser puis rincer. Matin et/ou soir.",
+      "bullets": [
+        "Mousse nettoyante à l’extrait de Heartleaf pour un nettoyage en profondeur",
+        "Conçue pour nettoyer les pores et exfolier en douceur les cellules mortes",
+        "Nettoyage non décapant, apaisant selon la marque",
+        "Contenance : 150 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "anua-lotion-tonique-heartleaf-77",
+      "sku": "ANU-HEA-TON-150",
+      "category": "toniques",
+      "brand": "Anua",
+      "name": "Lotion tonique Heartleaf 77 %",
+      "priceFcfa": 18000,
+      "short": "Apaise et réduit les irritations",
+      "desc": "Toutes peaux, particulièrement sensibles — visage. Cible : Rougeurs, inconfort, déséquilibre de pH. Tonique formulé avec 77% d’extrait de Heartleaf. Aide à apaiser, hydrater et équilibrer le pH. Test de la marque: baisse de la température cutanée après 1 utilisation. Conseil d'utilisation : Après le nettoyage, appliquer au coton ou aux mains. Matin et/ou soir.",
+      "bullets": [
+        "Tonique formulé avec 77% d’extrait de Heartleaf",
+        "Aide à apaiser, hydrater et équilibrer le pH",
+        "Test de la marque: baisse de la température cutanée après 1 utilisation",
+        "Contenance : 150 ml",
+        "Idéal pour : Sensible / Tous"
+      ],
+      "tags": [
+        "toner",
+        "peau_sensible",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "anua-serum-niacinamide-10-txa-4",
+      "sku": "ANU-NIA-TXA-30",
+      "category": "traitements",
+      "brand": "Anua",
+      "name": "Sérum Niacinamide 10 % + TXA 4 %",
+      "priceFcfa": 29500,
+      "short": "Anti-taches puissant (Eclat)",
+      "desc": "Toutes peaux — visage. Cible : Taches, teint terne, manque de clarté. Sérum correcteur avec 10% niacinamide + 4% acide tranexamique (TXA) selon la marque. Aide à améliorer l’apparence de la clarté et l’équilibre de la peau. Conseil marque: utiliser matin et soir; SPF en journée. Conseil d'utilisation : Appliquer quelques gouttes sur zones concernées, tapoter. Augmenter progressivement si besoin. Matin et nuit, puis SPF en journée.",
+      "bullets": [
+        "Sérum correcteur avec 10% niacinamide + 4% acide tranexamique (TXA) selon la marque",
+        "Aide à améliorer l’apparence de la clarté et l’équilibre de la peau",
+        "Conseil marque: utiliser matin et soir; SPF en journée",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "anua-serum-peche-70-niacinamide",
+      "sku": "ANU-PEC-SER-30",
+      "category": "traitements",
+      "brand": "Anua",
+      "name": "Sérum pêche 70 % niacinamide",
+      "priceFcfa": 25900,
+      "short": "Lisse le grain de peau et illumine",
+      "desc": "Toutes peaux — visage. Cible : Teint terne, manque d’éclat, irrégularités. Sérum illuminateur « Peach 70% » pour un glow quotidien selon la marque. Aide à unifier et à illuminer le teint en douceur. Texture légère adaptée à un usage quotidien. Conseil d'utilisation : Appliquer matin et/ou soir après le tonique, avant la crème. SPF en journée.",
+      "bullets": [
+        "Sérum illuminateur « Peach 70% » pour un glow quotidien selon la marque",
+        "Aide à unifier et à illuminer le teint en douceur",
+        "Texture légère adaptée à un usage quotidien",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "axis-y-serum-eclat-correcteur-de-taches",
+      "sku": "AXS-ECL-SER-50",
+      "category": "traitements",
+      "brand": "Axis-Y",
+      "name": "Sérum éclat correcteur de taches",
+      "priceFcfa": 17500,
+      "short": "Estompe les cicatrices d'acné",
+      "desc": "Toutes peaux — visage. Cible : Taches, teint irrégulier, manque d’éclat. Formule clinique visant à améliorer l’apparence des taches et du teint irrégulier. Actif clé mis en avant: 5% niacinamide + squalane d’origine végétale. Assez doux pour un usage quotidien selon la marque. Conseil d'utilisation : Appliquer sur peau propre, puis crème. Utiliser matin et/ou soir; SPF recommandé le jour.",
+      "bullets": [
+        "Formule clinique visant à améliorer l’apparence des taches et du teint irrégulier",
+        "Actif clé mis en avant: 5% niacinamide + squalane d’origine végétale",
+        "Assez doux pour un usage quotidien selon la marque",
+        "Contenance : 50 ml",
+        "Idéal pour : Mixte / Grasse"
+      ],
+      "tags": [
+        "traitement",
+        "peau_grasse",
+        "peau_mixte",
+        "eclat",
+        "imperfections"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "axis-y-lotion-tonique-eclat-correctrice",
+      "sku": "AXS-ECL-TON-125",
+      "category": "toniques",
+      "brand": "Axis-Y",
+      "name": "Lotion tonique éclat correctrice",
+      "priceFcfa": 17500,
+      "short": "Prépare la peau et unifie",
+      "desc": "Toutes peaux — visage. Cible : Teint terne, inconfort post-nettoyage, préparation des soins. Tonique hydratant qui prépare, apaise et aide à illuminer. Redonne confort et hydrate dès l’application. Aide à améliorer le ton et la clarté du teint selon la marque. Conseil d'utilisation : Après nettoyage, appliquer au coton ou aux mains, puis sérum/crème.",
+      "bullets": [
+        "Tonique hydratant qui prépare, apaise et aide à illuminer",
+        "Redonne confort et hydrate dès l’application",
+        "Aide à améliorer le ton et la clarté du teint selon la marque",
+        "Contenance : 125 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "toner",
+        "eclat",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "axis-y-spot-the-difference",
+      "sku": "AXS-SPO-DIF-15",
+      "category": "traitements",
+      "brand": "Axis-Y",
+      "name": "Spot The Difference",
+      "priceFcfa": 13900,
+      "short": "Soin ciblé sur les boutons actifs",
+      "desc": "Peaux acnéiques, grasses ou sensibles — zones ciblées. Cible : Boutons actifs, rougeurs localisées. Gel léger pour soulager les poussées et imperfections. Infusé de capsules de céramides hydratantes pour soutenir la barrière. Sans alcool selon la marque. Conseil d'utilisation : Appliquer localement sur imperfections, 1 à 2 fois par jour selon besoin.",
+      "bullets": [
+        "Gel léger pour soulager les poussées et imperfections",
+        "Infusé de capsules de céramides hydratantes pour soutenir la barrière",
+        "Sans alcool selon la marque",
+        "Contenance : 15 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "traitement",
+        "peau_grasse",
+        "peau_mixte",
+        "imperfections",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "axis-y-sunday-morning-mousse-nettoyante",
+      "sku": "AXS-SUN-MOU-120",
+      "category": "nettoyants",
+      "brand": "Axis-Y",
+      "name": "Sunday Morning Mousse nettoyante",
+      "priceFcfa": 14500,
+      "short": "Nettoyage doux pH équilibré",
+      "desc": "Toutes peaux — visage. Cible : Impuretés, excès de sébum, nettoyage non agressif. Mousse nettoyante pH 5,5 conçue pour nettoyer en profondeur sans décaper. Technologie Aquaxyl pour aider à maintenir l’hydratation et l’équilibre. Sensation de peau propre mais hydratée selon la marque. Conseil d'utilisation : Sur peau humide, faire mousser, masser puis rincer. Matin et/ou soir.",
+      "bullets": [
+        "Mousse nettoyante pH 5,5 conçue pour nettoyer en profondeur sans décaper",
+        "Technologie Aquaxyl pour aider à maintenir l’hydratation et l’équilibre",
+        "Sensation de peau propre mais hydratée selon la marque",
+        "Contenance : 120 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "matifiant",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-act-5-creme-anti-imperfections",
+      "sku": "NUB-ACT-CRM-30",
+      "category": "traitements",
+      "brand": "Nubiance",
+      "name": "ACT-5 Crème anti-imperfections",
+      "priceFcfa": 16500,
+      "short": "Traite acné et points noirs",
+      "desc": "Peaux mixtes à grasses, à imperfections — visage. Cible : Boutons, points noirs, excès de sébum, marques. Aide à prévenir l’apparition des boutons et à réduire les imperfections. Contribue à réguler le sébum et à lisser le grain de peau. Soin utilisable matin et/ou soir. Conseil d'utilisation : Appliquer sur peau propre, sur l’ensemble du visage ou en zones ciblées. Utiliser quotidiennement matin et/ou soir.",
+      "bullets": [
+        "Aide à prévenir l’apparition des boutons et à réduire les imperfections",
+        "Contribue à réguler le sébum et à lisser le grain de peau",
+        "Soin utilisable matin et/ou soir",
+        "Contenance : 30 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "traitement",
+        "peau_grasse",
+        "peau_mixte",
+        "imperfections",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-cleanactyl-gel-nettoyant",
+      "sku": "NUB-CLE-GEL-200",
+      "category": "nettoyants",
+      "brand": "Nubiance",
+      "name": "Cleanactyl Gel nettoyant",
+      "priceFcfa": 16500,
+      "short": "Purifie les peaux à imperfections",
+      "desc": "Peaux mixtes à grasses, à tendance acnéique — visage. Cible : Impuretés, excès de sébum, pores encombrés. Gel nettoyant sans savon à pH neutre conçu pour purifier. Nettoie intensément tout en préservant l’équilibre naturel de la peau. Mousse légèrement, laisse le teint plus net. Conseil d'utilisation : Sur peau humidifiée, faire mousser par mouvements circulaires puis rincer abondamment. Matin et/ou soir.",
+      "bullets": [
+        "Gel nettoyant sans savon à pH neutre conçu pour purifier",
+        "Nettoie intensément tout en préservant l’équilibre naturel de la peau",
+        "Mousse légèrement, laisse le teint plus net",
+        "Contenance : 200 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_grasse",
+        "peau_mixte",
+        "eclat",
+        "imperfections",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-hrb-3-soin-jour-anti-taches",
+      "sku": "NUB-HRB-JOU-50",
+      "category": "traitements",
+      "brand": "Nubiance",
+      "name": "HRB-3 Soin Jour anti-taches",
+      "priceFcfa": 18000,
+      "short": "Protège et unifie (Jour)",
+      "desc": "Peaux concernées par l’hyperpigmentation — visage & cou. Cible : Taches pigmentaires (mélasma, marques post-inflammatoires), prévention récidive. Soin de jour anti-taches avec protection solaire. Aide à corriger les taches dès le matin et à unifier le teint. Protège des UVA/UVB, facteurs aggravants de l’hyperpigmentation. Conseil d'utilisation : Le matin, appliquer uniformément sur visage et cou sur peau propre. Renouveler en cas d’exposition prolongée. Éviter le contour des yeux.",
+      "bullets": [
+        "Soin de jour anti-taches avec protection solaire",
+        "Aide à corriger les taches dès le matin et à unifier le teint",
+        "Protège des UVA/UVB, facteurs aggravants de l’hyperpigmentation",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-hrb-3-serum-eclat-aux-aha",
+      "sku": "NUB-HRB-SER-30",
+      "category": "traitements",
+      "brand": "Nubiance",
+      "name": "HRB-3 Sérum Éclat aux AHA",
+      "priceFcfa": 20900,
+      "short": "Exfolie et booste l'anti-taches",
+      "desc": "Peaux hyperpigmentée — visage & décolleté. Cible : Taches pigmentaires et teint irrégulier. Sérum exfoliant aux AHA visant à prévenir et corriger les taches pigmentaires. Aide à réguler la mélanine et à favoriser le renouvellement cellulaire. Usage conseillé le soir (AHA photosensibilisants selon la marque). Conseil d'utilisation : Le soir, appliquer localement sur les taches et zones hyperpigmentées. Utiliser un SPF le lendemain. Ne pas multiplier les sérums actifs en même temps.",
+      "bullets": [
+        "Sérum exfoliant aux AHA visant à prévenir et corriger les taches pigmentaires",
+        "Aide à réguler la mélanine et à favoriser le renouvellement cellulaire",
+        "Usage conseillé le soir (AHA photosensibilisants selon la marque)",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "apaisant",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-hrb-3-creme-eclat-anti-taches",
+      "sku": "NUB-HRB-CRM-50",
+      "category": "traitements",
+      "brand": "Nubiance",
+      "name": "HRB-3 Crème éclat Anti-taches",
+      "priceFcfa": 26900,
+      "short": "Répare et unifie (Nuit)",
+      "desc": "Toutes peaux, même sensibles — visage. Cible : Hyperpigmentation, teint terne, irrégularités. Soin correcteur d’hyperpigmentation visant à estomper tous types de taches. Aide à améliorer l’éclat et l’homogénéité du teint. Hydrate en douceur, sans parfum selon la marque. Conseil d'utilisation : Appliquer matin et/ou soir sur visage et cou, sur peau propre, après le sérum.",
+      "bullets": [
+        "Soin correcteur d’hyperpigmentation visant à estomper tous types de taches",
+        "Aide à améliorer l’éclat et l’homogénéité du teint",
+        "Hydrate en douceur, sans parfum selon la marque",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-serum-hydratation-intense",
+      "sku": "NUB-HYD-SER-30",
+      "category": "traitements",
+      "brand": "Nubiance",
+      "name": "Sérum Hydratation Intense",
+      "priceFcfa": 20900,
+      "short": "Hydrate les couches profondes",
+      "desc": "Toutes peaux, même sensibles — visage. Cible : Déshydratation, tiraillements, barrière fragilisée. Concentration élevée d’acides hyaluroniques pour hydrater en profondeur. Aide à renforcer durablement la barrière cutanée et apaise les tiraillements. Texture légère, sans parfum selon la marque. Conseil d'utilisation : Appliquer matin et/ou soir sur peau propre avant la crème.",
+      "bullets": [
+        "Concentration élevée d’acides hyaluroniques pour hydrater en profondeur",
+        "Aide à renforcer durablement la barrière cutanée et apaise les tiraillements",
+        "Texture légère, sans parfum selon la marque",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous / Sec"
+      ],
+      "tags": [
+        "traitement",
+        "peau_seche",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-micelliance-eau-micellaire",
+      "sku": "NUB-MIC-EAU-500",
+      "category": "nettoyants",
+      "brand": "Nubiance",
+      "name": "Micelliance Eau Micellaire",
+      "priceFcfa": 13900,
+      "short": "Démaquille les peaux sensibles",
+      "desc": "Toutes peaux, même sensibles — visage & yeux. Cible : Démaquillage, impuretés, confort des peaux réactives. Démaquille en douceur visage et yeux. Formule sans alcool, sans parfum et sans colorant selon la marque. Tonifie et apaise, confort immédiat. Conseil d'utilisation : Appliquer au coton sur visage et yeux. Renouveler jusqu’à coton propre. Rincer si sensation de sécheresse.",
+      "bullets": [
+        "Démaquille en douceur visage et yeux",
+        "Formule sans alcool, sans parfum et sans colorant selon la marque",
+        "Tonifie et apaise, confort immédiat",
+        "Contenance : 500 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-baume-corps-hydratant",
+      "sku": "NUB-BAU-COR-450",
+      "category": "corps",
+      "brand": "Nubiance",
+      "name": "Baume Corps Hydratant",
+      "priceFcfa": 21900,
+      "short": "Nourrit intensément le corps",
+      "desc": "Peaux sèches et sensibles — corps (famille dès 3 ans selon la marque). Cible : Sécheresse, tiraillements, inconfort. Hydratation continue 48h selon la marque et nutrition intense. Renforce la barrière cutanée, apaise les tiraillements. Texture fondante non grasse ni collante. Conseil d'utilisation : Appliquer 1 à 2 fois par jour sur peau propre, en insistant sur les zones sèches.",
+      "bullets": [
+        "Hydratation continue 48h selon la marque et nutrition intense",
+        "Renforce la barrière cutanée, apaise les tiraillements",
+        "Texture fondante non grasse ni collante",
+        "Contenance : 450 ml",
+        "Idéal pour : Sec / Très sec"
+      ],
+      "tags": [
+        "corps",
+        "peau_seche",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "nubiance-lait-corps-unifiant-hydratant",
+      "sku": "NUB-LAI-COR-500",
+      "category": "corps",
+      "brand": "Nubiance",
+      "name": "Lait Corps Unifiant & Hydratant",
+      "priceFcfa": 26900,
+      "short": "Unifie le teint du corps",
+      "desc": "Peaux noires, mates et métissées — corps. Cible : Taches et zones hyperpigmentées (bras, jambes, dos, ventre). Hydrate et aide à corriger les taches localisées sur le corps. Formule sans hydroquinone selon la marque. Peau plus uniforme, douce et lumineuse. Conseil d'utilisation : Après la douche, appliquer sur peau sèche en mouvements circulaires sur l’ensemble du corps en insistant sur les taches.",
+      "bullets": [
+        "Hydrate et aide à corriger les taches localisées sur le corps",
+        "Formule sans hydroquinone selon la marque",
+        "Peau plus uniforme, douce et lumineuse",
+        "Contenance : 500 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "eclat",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-lotion-clarifiante-2",
+      "sku": "CLI-CLA-LO2-200",
+      "category": "toniques",
+      "brand": "Clinique",
+      "name": "Lotion Clarifiante 2",
+      "priceFcfa": 24900,
+      "short": "Exfoliation douce (peaux mixtes)",
+      "desc": "Peaux sujettes à imperfections — visage. Cible : Excès de sébum, brillance, pores obstrués / imperfections. Exfoliant liquide à base d’acide salicylique (BHA). Aide à réduire l’excès de sébum et la brillance, effet matifiant. Sans parfum, testé dermatologiquement / allergie selon Clinique. Conseil d'utilisation : Après nettoyage, appliquer au coton 1 à 2 fois par jour selon tolérance. Éviter le contour des yeux. Utiliser un SPF en journée.",
+      "bullets": [
+        "Exfoliant liquide à base d’acide salicylique (BHA)",
+        "Aide à réduire l’excès de sébum et la brillance, effet matifiant",
+        "Sans parfum, testé dermatologiquement / allergie selon Clinique",
+        "Contenance : 200 ml",
+        "Idéal pour : Mixte"
+      ],
+      "tags": [
+        "toner",
+        "peau_mixte",
+        "imperfections",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-dramatically-different-gel",
+      "sku": "CLI-DRA-GEL-50",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Dramatically Different Gel",
+      "priceFcfa": 24500,
+      "short": "Hydratation légère non grasse",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Manque d'hydratation avec brillance. Gel hydratant sans huile qui apporte de l'eau sans gras. Renforce la barrière cutanée. Laisse un fini frais et non collant. Conseil d'utilisation : Appliquer matin et ou soir sur le visage après la lotion clarifiante.",
+      "bullets": [
+        "Gel hydratant sans huile qui apporte de l'eau sans gras",
+        "Renforce la barrière cutanée",
+        "Laisse un fini frais et non collant",
+        "Contenance : 50 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-dramatically-different-gel-125ml",
+      "sku": "CLI-DRA-GEL-125",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Dramatically Different Gel (125ml)",
+      "priceFcfa": 40000,
+      "short": "Format économique hydratation",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Manque d'hydratation avec brillance. Gel hydratant sans huile qui apporte de l'eau sans gras. Renforce la barrière cutanée. Laisse un fini frais et non collant. Conseil d'utilisation : Appliquer matin et ou soir sur le visage après la lotion clarifiante.",
+      "bullets": [
+        "Gel hydratant sans huile qui apporte de l'eau sans gras",
+        "Renforce la barrière cutanée",
+        "Laisse un fini frais et non collant",
+        "Contenance : 125 ml",
+        "Idéal pour : Grasse / Mixte"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant",
+        "apaisant",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-gommage-exfoliant",
+      "sku": "CLI-EXF-SCR-100",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "Gommage exfoliant",
+      "priceFcfa": 27500,
+      "short": "Désincruste les pores",
+      "desc": "Peaux grasses — visage. Cible : Pores bouchés, grain irrégulier, excès de sébum. Gommage mécanique à grains qui désincruste les pores. Élimine les cellules mortes en surface. Affiche une peau plus lisse et plus nette. Conseil d'utilisation : Utiliser 2 à 3 fois par semaine sur peau humide, masser doucement puis rincer.",
+      "bullets": [
+        "Gommage mécanique à grains qui désincruste les pores",
+        "Élimine les cellules mortes en surface",
+        "Affiche une peau plus lisse et plus nette",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-savon-visage-liquide-doux",
+      "sku": "CLI-LIQ-SOA-200",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "Savon visage liquide Doux",
+      "priceFcfa": 21900,
+      "short": "Nettoie sans dessécher",
+      "desc": "Peaux sèches à mixtes — visage. Cible : Nettoyer sans dessécher. Base lavante douce qui élimine impuretés et excès de sébum. Respecte l'équilibre cutané. Première étape du système 3 Temps. Conseil d'utilisation : Matin et soir, faire mousser sur peau humide puis rincer.",
+      "bullets": [
+        "Base lavante douce qui élimine impuretés et excès de sébum",
+        "Respecte l'équilibre cutané",
+        "Première étape du système 3 Temps",
+        "Contenance : 200 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-moisture-surge-100h",
+      "sku": "CLI-MOI-SUR-50",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Moisture Surge 100H",
+      "priceFcfa": 29900,
+      "short": "Hydratation continue (Gel-Crème)",
+      "desc": "Toutes peaux — visage. Cible : Déshydratation et manque de rebond. Gel crème à l'aloe bio-fermenté et acide hyaluronique. Hydrate jusqu'à 100 heures selon la marque. Repulpe la peau et lisse les ridules de déshydratation. Conseil d'utilisation : Appliquer matin et ou soir ou en masque épais 5 minutes.",
+      "bullets": [
+        "Gel crème à l'aloe bio-fermenté et acide hyaluronique",
+        "Hydrate jusqu'à 100 heures selon la marque",
+        "Repulpe la peau et lisse les ridules de déshydratation",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "hydratation",
+        "anti_age"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-masque-hydratant-nuit",
+      "sku": "CLI-MOI-MSK-100",
+      "category": "traitements",
+      "brand": "Clinique",
+      "name": "Masque Hydratant nuit",
+      "priceFcfa": 34500,
+      "short": "Récupération nocturne intense",
+      "desc": "Toutes peaux déshydratées — visage. Cible : Manque d'hydratation nocturne. Masque de nuit crème qui enveloppe la peau. Aide à reconstituer les réserves en eau pendant le sommeil. Au réveil la peau paraît rebondie et reposée. Conseil d'utilisation : Appliquer en couche fine le soir et laisser agir toute la nuit.",
+      "bullets": [
+        "Masque de nuit crème qui enveloppe la peau",
+        "Aide à reconstituer les réserves en eau pendant le sommeil",
+        "Au réveil la peau paraît rebondie et reposée",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous / Sec"
+      ],
+      "tags": [
+        "traitement",
+        "peau_seche",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-smart-clinical-repair-serum",
+      "sku": "CLI-SMA-SER-30",
+      "category": "traitements",
+      "brand": "Clinique",
+      "name": "Smart Clinical Repair Sérum",
+      "priceFcfa": 70000,
+      "short": "Corrige rides et ridules",
+      "desc": "Toutes peaux — visage. Cible : Rides installées, perte de fermeté. Sérum concentré en peptides et actifs resurfaçants. Lisse visiblement rides et ridules. Améliore la fermeté et l'aspect général de la peau. Conseil d'utilisation : Appliquer matin et soir avant la crème hydratante.",
+      "bullets": [
+        "Sérum concentré en peptides et actifs resurfaçants",
+        "Lisse visiblement rides et ridules",
+        "Améliore la fermeté et l'aspect général de la peau",
+        "Contenance : 30 ml",
+        "Idéal pour : Mature"
+      ],
+      "tags": [
+        "traitement",
+        "anti_age",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-sun-smart-visage-spf40",
+      "sku": "CLI-SUN-SPF-50",
+      "category": "solaires",
+      "brand": "Clinique",
+      "name": "Sun Smart Visage SPF40",
+      "priceFcfa": 24500,
+      "short": "Protection solaire quotidienne",
+      "desc": "Toutes peaux — visage. Cible : Protection solaire quotidienne. Crème visage à large spectre SPF 40. Texture légère, non grasse. Convient à un usage quotidien. Conseil d'utilisation : Appliquer généreusement en dernière étape de soin avant l'exposition.",
+      "bullets": [
+        "Crème visage à large spectre SPF 40",
+        "Texture légère, non grasse",
+        "Convient à un usage quotidien",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-take-the-day-off-yeux-levres",
+      "sku": "CLI-TAK-OFF-125",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "Take The Day Off Yeux/Lèvres",
+      "priceFcfa": 22500,
+      "short": "Démaquillant biphasé puissant",
+      "desc": "Toutes peaux — yeux et lèvres. Cible : Maquillage longue tenue et waterproof. Formule biphasée qui dissout le maquillage sans frotter. Respecte la zone fragile des yeux. Convient aux porteurs de lentilles. Conseil d'utilisation : Agiter, imbiber un coton, laisser poser quelques secondes puis essuyer.",
+      "bullets": [
+        "Formule biphasée qui dissout le maquillage sans frotter",
+        "Respecte la zone fragile des yeux",
+        "Convient aux porteurs de lentilles",
+        "Contenance : 125 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-anti-blemish-lotion-clarifiante",
+      "sku": "CLI-ABS-LOT-200",
+      "category": "toniques",
+      "brand": "Clinique",
+      "name": "Anti-Blemish Lotion Clarifiante",
+      "priceFcfa": 23900,
+      "short": "Assèche les imperfections",
+      "desc": "Peaux sèches à mixtes — visage. Cible : Cellules mortes, teint terne, pores obstrués. Lotion exfoliante liquide qui retire les cellules mortes. Lisse le grain de peau et ravive l'éclat. Prépare la peau à mieux absorber les soins. Conseil d'utilisation : Matin et soir, passer sur le visage avec un coton, sans rincer.",
+      "bullets": [
+        "Lotion exfoliante liquide qui retire les cellules mortes",
+        "Lisse le grain de peau et ravive l'éclat",
+        "Prépare la peau à mieux absorber les soins",
+        "Contenance : 200 ml",
+        "Idéal pour : Grasse / Acné"
+      ],
+      "tags": [
+        "toner",
+        "peau_grasse",
+        "imperfections",
+        "eclat"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-anti-blemish-mousse-nettoyante",
+      "sku": "CLI-ABS-MOU-125",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "Anti-Blemish Mousse Nettoyante",
+      "priceFcfa": 24500,
+      "short": "Nettoyage traitant anti-acné",
+      "desc": "Peaux sujettes à l’acné — visage. Cible : Boutons, pores encombrés, excès de sébum. Nettoyant moussant avec 1,5% d’acide salicylique. Aide à nettoyer et à prévenir les imperfections, désincruste les pores. Sans parfum, testé dermatologiquement / allergie selon Clinique. Conseil d'utilisation : Matin et/ou soir sur peau humide, faire mousser, masser puis rincer.",
+      "bullets": [
+        "Nettoyant moussant avec 1,5% d’acide salicylique",
+        "Aide à nettoyer et à prévenir les imperfections, désincruste les pores",
+        "Sans parfum, testé dermatologiquement / allergie selon Clinique",
+        "Contenance : 125 ml",
+        "Idéal pour : Grasse / Acné"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_grasse",
+        "imperfections",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-all-about-clean-savon-tonique",
+      "sku": "CLI-AAC-SOA-200",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "All About Clean Savon Tonique",
+      "priceFcfa": 23500,
+      "short": "Purifie et tonifie",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Nettoyage quotidien sans dessécher, excès de sébum. Nettoyant liquide conçu pour rincer rapidement et nettoyer en douceur. Aide à laisser la peau fraîche, confortable, non desséchée. Sans parfum, testé dermato/ophtalmo / allergie selon Clinique. Conseil d'utilisation : Matin et soir sur peau humide, faire mousser, masser puis rincer.",
+      "bullets": [
+        "Nettoyant liquide conçu pour rincer rapidement et nettoyer en douceur",
+        "Aide à laisser la peau fraîche, confortable, non desséchée",
+        "Sans parfum, testé dermato/ophtalmo / allergie selon Clinique",
+        "Contenance : 200 ml",
+        "Idéal pour : Mixte / Grasse"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-deodorant-roll-on",
+      "sku": "CLI-MEN-DEO-75",
+      "category": "homme",
+      "brand": "Clinique",
+      "name": "Déodorant roll-on",
+      "priceFcfa": 21900,
+      "short": "Anti-transpirant haute efficacité",
+      "desc": "Toutes peaux — aisselles. Cible : Transpiration et odeurs. Contrôle la transpiration tout au long de la journée. Formule douce, sans parfum. Convient aux peaux sensibles. Conseil d'utilisation : Appliquer sur peau propre et sèche, laisser sécher avant de s'habiller.",
+      "bullets": [
+        "Contrôle la transpiration tout au long de la journée",
+        "Formule douce, sans parfum",
+        "Convient aux peaux sensibles",
+        "Contenance : 75 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "homme",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-lotion-hydratante",
+      "sku": "CLI-MEN-LOT-100",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Lotion Hydratante",
+      "priceFcfa": 32500,
+      "short": "Hydratant quotidien basique",
+      "desc": "Peaux normales à sèches — visage. Cible : Déshydratation et feu du rasoir. Fluide hydratant léger qui apaise immédiatement. Réduit les tiraillements après le rasage. Laisse la peau souple et confortable. Conseil d'utilisation : Appliquer matin et ou soir, après le rasage ou sur peau propre.",
+      "bullets": [
+        "Fluide hydratant léger qui apaise immédiatement",
+        "Réduit les tiraillements après le rasage",
+        "Laisse la peau souple et confortable",
+        "Contenance : 100 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "hydratation",
+        "homme",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-nettoyant-visage-anti-brillance",
+      "sku": "CLI-MEN-WAS-200",
+      "category": "nettoyants",
+      "brand": "Clinique",
+      "name": "Nettoyant visage anti-brillance",
+      "priceFcfa": 24500,
+      "short": "Contrôle le sébum de l'homme",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Excès de sébum, brillance, impuretés. Gel nettoyant qui élimine sébum et saletés en profondeur. Prépare la peau au rasage. Apporte une sensation de fraîcheur. Conseil d'utilisation : Utiliser matin et soir sur peau humide puis rincer abondamment.",
+      "bullets": [
+        "Gel nettoyant qui élimine sébum et saletés en profondeur",
+        "Prépare la peau au rasage",
+        "Apporte une sensation de fraîcheur",
+        "Contenance : 200 ml",
+        "Idéal pour : Homme / Gras"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_grasse",
+        "homme",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-creme-regulatrice-de-sebum",
+      "sku": "CLI-MEN-MOI-100",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Crème régulatrice de sébum",
+      "priceFcfa": 34900,
+      "short": "Matifie toute la journée",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Hydratation sans brillance. Fluide léger qui hydrate sans graisser. Aide à contrôler la brillance au fil de la journée. Laisse la peau nette et confortable. Conseil d'utilisation : Appliquer matin et ou soir sur visage propre.",
+      "bullets": [
+        "Fluide léger qui hydrate sans graisser",
+        "Aide à contrôler la brillance au fil de la journée",
+        "Laisse la peau nette et confortable",
+        "Contenance : 100 ml",
+        "Idéal pour : Homme / Gras"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_grasse",
+        "homme",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clinique-creme-hydratante-anti-age",
+      "sku": "CLI-MEN-AGE-100",
+      "category": "hydratants",
+      "brand": "Clinique",
+      "name": "Crème hydratante anti-âge",
+      "priceFcfa": 45900,
+      "short": "Prévient les signes de l'âge",
+      "desc": "Peaux masculines — visage. Cible : Premiers signes de l'âge, rides et perte de tonus. Hydratant anti-âge qui nourrit la peau. Aide à lisser ridules et améliorer la fermeté. Protège des agressions externes. Conseil d'utilisation : Appliquer matin et ou soir sur visage et cou.",
+      "bullets": [
+        "Hydratant anti-âge qui nourrit la peau",
+        "Aide à lisser ridules et améliorer la fermeté",
+        "Protège des agressions externes",
+        "Contenance : 100 ml",
+        "Idéal pour : Homme / Mature"
+      ],
+      "tags": [
+        "hydratation",
+        "anti_age",
+        "homme",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-doux-nettoyant-gommant-express",
+      "sku": "CLA-DOU-GOM-125",
+      "category": "nettoyants",
+      "brand": "Clarins",
+      "name": "Doux Nettoyant Gommant Express",
+      "priceFcfa": 28900,
+      "short": "Nettoie et exfolie en 1 étape",
+      "desc": "Toutes peaux — visage. Cible : Teint terne, cellules mortes, grain irrégulier. Nettoyant 2 en 1 avec microbilles exfoliantes douces. Extraits d'orange pour raviver l'éclat. Peau plus lisse et plus lumineuse. Conseil d'utilisation : Utiliser 2 à 3 fois par semaine sur peau humide, masser en évitant le contour des yeux puis rincer.",
+      "bullets": [
+        "Nettoyant 2 en 1 avec microbilles exfoliantes douces",
+        "Extraits d'orange pour raviver l'éclat",
+        "Peau plus lisse et plus lumineuse",
+        "Contenance : 125 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "eclat"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-huile-tonic-corps",
+      "sku": "CLA-HUI-TON-100",
+      "category": "corps",
+      "brand": "Clarins",
+      "name": "Huile Tonic Corps",
+      "priceFcfa": 54900,
+      "short": "Fermeté et tonus de la peau",
+      "desc": "Tous types de peau — corps. Cible : Manque de fermeté et perte d'élasticité. Huile 100 pour cent extraits de plantes tonifiants. Huile de noisette nourrissante qui maintient l'hydratation. Aide à prévenir l'apparition de vergetures. Conseil d'utilisation : Sur peau légèrement humide après la douche, masser en mouvements ascendants sur les zones à raffermir.",
+      "bullets": [
+        "Huile 100 pour cent extraits de plantes tonifiants",
+        "Huile de noisette nourrissante qui maintient l'hydratation",
+        "Aide à prévenir l'apparition de vergetures",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "hydratation",
+        "anti_age",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-lait-corps-hydratant-velours",
+      "sku": "CLA-COR-VEL-400",
+      "category": "corps",
+      "brand": "Clarins",
+      "name": "Lait Corps Hydratant Velours",
+      "priceFcfa": 28500,
+      "short": "Hydratation satinée corps",
+      "desc": "Peaux sèches à très sèches — corps. Cible : Sécheresse, rugosités, manque de confort. Lait riche en beurre de karité et extraits végétaux. Hydrate intensément et laisse la peau veloutée. Peau douce et souple sans film gras. Conseil d'utilisation : Appliquer chaque jour sur l'ensemble du corps, de préférence après la douche.",
+      "bullets": [
+        "Lait riche en beurre de karité et extraits végétaux",
+        "Hydrate intensément et laisse la peau veloutée",
+        "Peau douce et souple sans film gras",
+        "Contenance : 400 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-lait-demaquillant-velours",
+      "sku": "CLA-LAI-DEM-200",
+      "category": "nettoyants",
+      "brand": "Clarins",
+      "name": "Lait Démaquillant Velours",
+      "priceFcfa": 24900,
+      "short": "Démaquillage confort",
+      "desc": "Peaux normales à sèches — visage. Cible : Démaquillage et pollution, inconfort. Lait démaquillant doux aux extraits d'herbes alpines. Dissout maquillage et impuretés tout en apaisant. Préserve le film hydrolipidique. Conseil d'utilisation : Matin et ou soir, appliquer et masser puis retirer avec un coton ou rincer selon préférence.",
+      "bullets": [
+        "Lait démaquillant doux aux extraits d'herbes alpines",
+        "Dissout maquillage et impuretés tout en apaisant",
+        "Préserve le film hydrolipidique",
+        "Contenance : 200 ml",
+        "Idéal pour : Sec / Sensible"
+      ],
+      "tags": [
+        "nettoyage",
+        "peau_seche",
+        "peau_sensible",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-lotion-tonique-purifiante",
+      "sku": "CLA-LOT-PUR-200",
+      "category": "toniques",
+      "brand": "Clarins",
+      "name": "Lotion tonique purifiante",
+      "priceFcfa": 24500,
+      "short": "Resserre les pores",
+      "desc": "Peaux mixtes à grasses — visage. Cible : Excès de sébum, pores dilatés, brillance. Lotion sans alcool à la reine des prés et hamamélis. Aide à resserrer les pores et à affiner le grain de peau. Apporte un effet légèrement matifiant. Conseil d'utilisation : Appliquer matin et ou soir après le nettoyage, sur coton ou directement avec les mains.",
+      "bullets": [
+        "Lotion sans alcool à la reine des prés et hamamélis",
+        "Aide à resserrer les pores et à affiner le grain de peau",
+        "Apporte un effet légèrement matifiant",
+        "Contenance : 200 ml",
+        "Idéal pour : Mixte / Grasse"
+      ],
+      "tags": [
+        "toner",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "clarins-my-clarins-creme-mains",
+      "sku": "CLA-MYC-HAN-30",
+      "category": "corps",
+      "brand": "Clarins",
+      "name": "My Clarins Crème mains",
+      "priceFcfa": 7000,
+      "short": "Hydratation nomade mains",
+      "desc": "Toutes peaux — mains. Cible : Mains sèches ou agressées par les lavages. 8 mini crèmes mains aux parfums variés. Formules nourrissantes qui adoucissent et protègent. Formats nomades à garder sur soi ou à offrir. Conseil d'utilisation : Appliquer une petite noisette sur les mains aussi souvent que nécessaire.",
+      "bullets": [
+        "8 mini crèmes mains aux parfums variés",
+        "Formules nourrissantes qui adoucissent et protègent",
+        "Formats nomades à garder sur soi ou à offrir",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "hydratation",
+        "budget_eco"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "biotherm-aquasource-creme-hydratante",
+      "sku": "BIO-AQU-CRM-50",
+      "category": "hydratants",
+      "brand": "Biotherm",
+      "name": "Aquasource Crème hydratante",
+      "priceFcfa": 31000,
+      "short": "Hydratation intense régénérante",
+      "desc": "Peaux normales à mixtes — visage. Cible : Déshydratation et tiraillements. Life Plankton et actifs hydratants pour une hydratation continue. Texture gel fraîche et non grasse. Teint plus lumineux et peau rebondie. Conseil d'utilisation : Appliquer matin et ou soir sur visage et cou après le sérum.",
+      "bullets": [
+        "Life Plankton et actifs hydratants pour une hydratation continue",
+        "Texture gel fraîche et non grasse",
+        "Teint plus lumineux et peau rebondie",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous / Sec"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_seche",
+        "eclat"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "biotherm-blue-retinol-serum-nuit",
+      "sku": "BIO-BLU-RET-30",
+      "category": "traitements",
+      "brand": "Biotherm",
+      "name": "Blue Retinol Serum Nuit",
+      "priceFcfa": 76500,
+      "short": "Anti-âge puissant (Rétinol)",
+      "desc": "Toutes peaux habituées au rétinol — visage. Cible : Rides, taches, texture irrégulière. Association de rétinol pur et Life Plankton qui stimule le renouvellement cellulaire. Lisse rides et ridules au fil des semaines. Contribue à unifier le teint. Conseil d'utilisation : Le soir uniquement, 2 à 3 gouttes sur peau sèche, commencer 2 à 3 fois par semaine et toujours utiliser un SPF le lendemain.",
+      "bullets": [
+        "Association de rétinol pur et Life Plankton qui stimule le renouvellement cellulaire",
+        "Lisse rides et ridules au fil des semaines",
+        "Contribue à unifier le teint",
+        "Contenance : 30 ml",
+        "Idéal pour : Mature"
+      ],
+      "tags": [
+        "traitement",
+        "anti_age",
+        "eclat",
+        "solaire",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "biotherm-aquapower-72h",
+      "sku": "BIO-HOM-AQU-50",
+      "category": "hydratants",
+      "brand": "Biotherm",
+      "name": "Aquapower 72h",
+      "priceFcfa": 34900,
+      "short": "Hydratation ultra-fraîche",
+      "desc": "Peaux masculines normales à déshydratées — visage. Cible : Déshydratation, tiraillements, manque de confort. Gel frais qui hydrate intensément et durablement. Apaise immédiatement après le rasage. Laisse la peau énergisée et souple. Conseil d'utilisation : Appliquer matin et ou soir sur visage propre, idéalement après le rasage.",
+      "bullets": [
+        "Gel frais qui hydrate intensément et durablement",
+        "Apaise immédiatement après le rasage",
+        "Laisse la peau énergisée et souple",
+        "Contenance : 50 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "hydratation",
+        "homme",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-crio-taping-anticellulite",
+      "sku": "COL-CRI-TAP",
+      "category": "corps",
+      "brand": "Collistar",
+      "name": "Crio-Taping Anticellulite",
+      "priceFcfa": 36900,
+      "short": "Raffermissant et anti-capitons",
+      "desc": "Zones à cellulite — cuisses, fesses, hanches. Cible : Aspect peau d'orange et jambes lourdes. Bandes auto-adhésives imbibées d'actifs drainants. Effet froid pour stimuler la microcirculation. Lisse visiblement l'aspect de la peau. Conseil d'utilisation : Appliquer les bandes sur les zones concernées en suivant le protocole Collistar.",
+      "bullets": [
+        "Bandes auto-adhésives imbibées d'actifs drainants",
+        "Effet froid pour stimuler la microcirculation",
+        "Lisse visiblement l'aspect de la peau",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-lait-corps-hydratation-intense",
+      "sku": "COL-COR-MOI-400",
+      "category": "corps",
+      "brand": "Collistar",
+      "name": "Lait Corps Hydratation Intense",
+      "priceFcfa": 21000,
+      "short": "Confort longue durée",
+      "desc": "Peaux normales à sèches — corps. Cible : Sécheresse et manque de souplesse. Lait fluide riche en acide hyaluronique et huiles émollientes. Hydrate en profondeur et lisse la peau. Laisse un fini satiné. Conseil d'utilisation : Appliquer quotidiennement sur le corps, surtout après la douche.",
+      "bullets": [
+        "Lait fluide riche en acide hyaluronique et huiles émollientes",
+        "Hydrate en profondeur et lisse la peau",
+        "Laisse un fini satiné",
+        "Contenance : 400 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "hydratation"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-huile-douche-raffermissante",
+      "sku": "COL-MAX-RAS-400",
+      "category": "hygiene",
+      "brand": "Collistar",
+      "name": "Huile Douche Raffermissante",
+      "priceFcfa": 23900,
+      "short": "Nettoie et tonifie sous la douche",
+      "desc": "Tous types de peau — corps. Cible : Nettoyage sous la douche avec confort. Huile de douche qui nettoie en douceur. Enrichie en huiles végétales nourrissantes. Laisse la peau souple et légèrement tonifiée. Conseil d'utilisation : Utiliser comme un gel douche sur peau mouillée puis rincer.",
+      "bullets": [
+        "Huile de douche qui nettoie en douceur",
+        "Enrichie en huiles végétales nourrissantes",
+        "Laisse la peau souple et légèrement tonifiée",
+        "Contenance : 400 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "hygiene"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-creme-visage-anti-age",
+      "sku": "COL-MEN-AGE-50",
+      "category": "hydratants",
+      "brand": "Collistar",
+      "name": "Crème Visage Anti-Âge",
+      "priceFcfa": 33500,
+      "short": "Réduit les rides masculines",
+      "desc": "Peaux masculines — visage. Cible : Rides, fatigue, perte de tonus. Crème anti-âge spécifique homme. Redonne énergie et éclat au teint. Texture fraîche, non grasse. Conseil d'utilisation : Appliquer matin et ou soir sur visage et cou.",
+      "bullets": [
+        "Crème anti-âge spécifique homme",
+        "Redonne énergie et éclat au teint",
+        "Texture fraîche, non grasse",
+        "Contenance : 50 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "hydratation",
+        "homme",
+        "eclat",
+        "anti_age"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-creme-hydratante-24-h",
+      "sku": "COL-HOM-MOI-80",
+      "category": "hydratants",
+      "brand": "Collistar",
+      "name": "Crème Hydratante 24 h",
+      "priceFcfa": 26900,
+      "short": "Protection et confort",
+      "desc": "Peaux masculines — visage et contour des yeux. Cible : Manque d'hydratation et signes de fatigue. Soin 2 en 1 pour visage et zone du regard. Hydrate jusqu'à 24 heures. Réduit l'apparence des signes de fatigue. Conseil d'utilisation : Appliquer matin et ou soir sur visage et contour des yeux.",
+      "bullets": [
+        "Soin 2 en 1 pour visage et zone du regard",
+        "Hydrate jusqu'à 24 heures",
+        "Réduit l'apparence des signes de fatigue",
+        "Contenance : 50 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "hydratation",
+        "homme"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "collistar-vetiver-forte-gel-douche",
+      "sku": "COL-VET-SHA-250",
+      "category": "hygiene",
+      "brand": "Collistar",
+      "name": "Vetiver Forte Gel Douche",
+      "priceFcfa": 17500,
+      "short": "Lavant corps et cheveux parfumé",
+      "desc": "Peau et cheveux — homme. Cible : Nettoyage rapide sous la douche. Gel 2 en 1 corps et cheveux. Nettoie sans dessécher. Parfum vétiver intense et boisé. Conseil d'utilisation : Utiliser sur corps et cheveux mouillés puis rincer.",
+      "bullets": [
+        "Gel 2 en 1 corps et cheveux",
+        "Nettoie sans dessécher",
+        "Parfum vétiver intense et boisé",
+        "Contenance : 250 ml",
+        "Idéal pour : Homme"
+      ],
+      "tags": [
+        "hygiene",
+        "homme"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "dr-jart-ceramidin-creme-barriere",
+      "sku": "DRJ-CER-CRM-50",
+      "category": "hydratants",
+      "brand": "Dr.Jart+",
+      "name": "Ceramidin Crème barrière",
+      "priceFcfa": 42900,
+      "short": "Répare la barrière protectrice",
+      "desc": "Peaux sèches et sensibles — visage. Cible : Barrière cutanée fragilisée, sécheresse. Crème riche aux céramides qui renforce la barrière. Nourrit intensément et réduit les tiraillements. Aide à diminuer les rougeurs liées à la sécheresse. Conseil d'utilisation : Appliquer matin et ou soir en dernière étape de soin.",
+      "bullets": [
+        "Crème riche aux céramides qui renforce la barrière",
+        "Nourrit intensément et réduit les tiraillements",
+        "Aide à diminuer les rougeurs liées à la sécheresse",
+        "Contenance : 50 ml",
+        "Idéal pour : Sec / Sensible"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_seche",
+        "peau_sensible",
+        "apaisant",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "dr-jart-ceramidin-lotion-barriere",
+      "sku": "DRJ-CER-LOT-50",
+      "category": "hydratants",
+      "brand": "Dr.Jart+",
+      "name": "Ceramidin Lotion barrière",
+      "priceFcfa": 36500,
+      "short": "Texture légère réparatrice",
+      "desc": "Tous types de peau — visage. Cible : Déshydratation et inconfort léger. Lait fluide aux céramides, panthénol et glycérine. Hydrate durablement tout en restant léger. Laisse la peau souple et rebondie. Conseil d'utilisation : Appliquer matin et ou soir seul ou sous une crème.",
+      "bullets": [
+        "Lait fluide aux céramides, panthénol et glycérine",
+        "Hydrate durablement tout en restant léger",
+        "Laisse la peau souple et rebondie",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous / Mixte"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_mixte",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "dr-jart-cicapair-creme-correctrice",
+      "sku": "DRJ-CIC-COR-30",
+      "category": "traitements",
+      "brand": "Dr.Jart+",
+      "name": "Cicapair Crème Correctrice",
+      "priceFcfa": 27500,
+      "short": "Camoufle rougeurs et protège",
+      "desc": "Peaux sensibles à rougeurs — visage. Cible : Rougeurs diffuses, teint irrégulier. Crème verte qui se transforme en beige pour neutraliser les rougeurs. Centella asiatica pour apaiser et protéger la barrière. Protection SPF 30 pour usage quotidien. Conseil d'utilisation : Appliquer en fin de routine sur le visage, du centre vers l'extérieur.",
+      "bullets": [
+        "Crème verte qui se transforme en beige pour neutraliser les rougeurs",
+        "Centella asiatica pour apaiser et protéger la barrière",
+        "Protection SPF 30 pour usage quotidien",
+        "Contenance : 30 ml",
+        "Idéal pour : Sensible"
+      ],
+      "tags": [
+        "traitement",
+        "peau_sensible",
+        "eclat",
+        "apaisant",
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "dr-jart-pore-remedy-serum-pha",
+      "sku": "DRJ-POR-SER-30",
+      "category": "traitements",
+      "brand": "Dr.Jart+",
+      "name": "Pore Remedy Sérum PHA",
+      "priceFcfa": 36500,
+      "short": "Exfoliation douce des pores",
+      "desc": "Peaux mixtes à grasses, même sensibles — visage. Cible : Pores visibles, points noirs, texture irrégulière. Sérum exfoliant aux PHA pour une action douce en surface. Aide à réduire points noirs et excès de sébum. Panthénol et autres actifs apaisants pour limiter les irritations. Conseil d'utilisation : Le soir, 2 à 3 fois par semaine, appliquer quelques gouttes sur peau propre.",
+      "bullets": [
+        "Sérum exfoliant aux PHA pour une action douce en surface",
+        "Aide à réduire points noirs et excès de sébum",
+        "Panthénol et autres actifs apaisants pour limiter les irritations",
+        "Contenance : 30 ml",
+        "Idéal pour : Mixte / Grasse"
+      ],
+      "tags": [
+        "traitement",
+        "peau_grasse",
+        "peau_mixte",
+        "matifiant",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "dr-jart-vital-hydra-solution-masque",
+      "sku": "DRJ-VIT-MSK-75",
+      "category": "traitements",
+      "brand": "Dr.Jart+",
+      "name": "Vital Hydra Solution Masque",
+      "priceFcfa": 29500,
+      "short": "Masque repulpant immédiat",
+      "desc": "Peaux déshydratées — visage. Cible : Manque d'eau, tiraillements, teint terne. Masque de nuit qui recharge la peau en hydratation. Renforce la barrière pour limiter la perte en eau. Peau repulpée et lissée au réveil. Conseil d'utilisation : Appliquer en couche fine en dernière étape de la routine, laisser poser toute la nuit.",
+      "bullets": [
+        "Masque de nuit qui recharge la peau en hydratation",
+        "Renforce la barrière pour limiter la perte en eau",
+        "Peau repulpée et lissée au réveil",
+        "Contenance : 75 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "hydratation",
+        "apaisant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "drunk-elephant-b-goldi-gouttes-lumineuses",
+      "sku": "DE-BGO-DRO-30",
+      "category": "traitements",
+      "brand": "Drunk Elephant",
+      "name": "B-Goldi Gouttes lumineuses",
+      "priceFcfa": 48500,
+      "short": "Éclat \"champagne\" et barrière",
+      "desc": "Toutes peaux, surtout teint terne — visage. Cible : Taches légères et manque d'éclat. Gouttes illuminatrices avec niacinamide et antioxydants. Aident à unifier le teint et à estomper les irrégularités. Pigments dorés pour un glow immédiat. Conseil d'utilisation : Mélanger 1 goutte à la crème ou au sérum puis appliquer sur le visage.",
+      "bullets": [
+        "Gouttes illuminatrices avec niacinamide et antioxydants",
+        "Aident à unifier le teint et à estomper les irrégularités",
+        "Pigments dorés pour un glow immédiat",
+        "Contenance : 30 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "traitement",
+        "eclat",
+        "apaisant",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "drunk-elephant-beste-n-9-gel-nettoyant",
+      "sku": "DE-BES-CLE-60",
+      "category": "nettoyants",
+      "brand": "Drunk Elephant",
+      "name": "Beste N°.9 Gel nettoyant",
+      "priceFcfa": 22000,
+      "short": "Élimine impuretés et pollution",
+      "desc": "Toutes peaux — visage. Cible : Impuretés, maquillage léger, excès de sébum. Gel nettoyant jelly aux tensioactifs doux. Élimine maquillage léger et pollution sans décaper. Laisse la peau propre et confortable. Conseil d'utilisation : Utiliser matin et soir sur peau humide puis rincer.",
+      "bullets": [
+        "Gel nettoyant jelly aux tensioactifs doux",
+        "Élimine maquillage léger et pollution sans décaper",
+        "Laisse la peau propre et confortable",
+        "Contenance : 60 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "nettoyage",
+        "matifiant"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "drunk-elephant-bora-barrier-creme-riche",
+      "sku": "DE-BOR-BAR-50",
+      "category": "hydratants",
+      "brand": "Drunk Elephant",
+      "name": "Bora Barrier Crème riche",
+      "priceFcfa": 85900,
+      "short": "Réparation intense peaux fragiles",
+      "desc": "Peaux sèches ou sensibilisées — visage. Cible : Barrière abîmée, tiraillements, rougeurs. Crème riche avec beurres et lipides réparateurs. Apporte une hydratation longue durée. Restaure le confort des peaux fragilisées. Conseil d'utilisation : Appliquer matin et ou soir en dernière étape.",
+      "bullets": [
+        "Crème riche avec beurres et lipides réparateurs",
+        "Apporte une hydratation longue durée",
+        "Restaure le confort des peaux fragilisées",
+        "Contenance : 50 ml",
+        "Idéal pour : Très sec"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_seche",
+        "apaisant",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "drunk-elephant-lala-retro-creme-fouettee",
+      "sku": "DE-LAL-RET-50",
+      "category": "hydratants",
+      "brand": "Drunk Elephant",
+      "name": "Lala Retro Crème fouettée",
+      "priceFcfa": 78500,
+      "short": "Hydratation riche et apaisante",
+      "desc": "Peaux normales à sèches — visage. Cible : Sécheresse et perte de souplesse. Crème fouettée aux huiles africaines et céramides. Renforce la barrière et nourrit en profondeur. Apporte éclat et confort. Conseil d'utilisation : Appliquer matin et ou soir sur visage et cou.",
+      "bullets": [
+        "Crème fouettée aux huiles africaines et céramides",
+        "Renforce la barrière et nourrit en profondeur",
+        "Apporte éclat et confort",
+        "Contenance : 50 ml",
+        "Idéal pour : Tous / Sec"
+      ],
+      "tags": [
+        "hydratation",
+        "peau_seche",
+        "eclat",
+        "apaisant",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "drunk-elephant-virgin-marula-huile-de-luxe",
+      "sku": "DE-VIR-OIL-30",
+      "category": "traitements",
+      "brand": "Drunk Elephant",
+      "name": "Virgin Marula Huile de luxe",
+      "priceFcfa": 84500,
+      "short": "Nutrition et antioxydant pur",
+      "desc": "Toutes peaux, surtout sèches — visage. Cible : Déshydratation, teint terne, manque d'élasticité. Huile 100 pour cent marula vierge riche en omégas et antioxydants. Nourrit et lisse la peau. Améliore l'éclat et la souplesse. Conseil d'utilisation : Déposer 2 à 3 gouttes sur le visage et le cou, seule ou mélangée à la crème.",
+      "bullets": [
+        "Huile 100 pour cent marula vierge riche en omégas et antioxydants",
+        "Nourrit et lisse la peau",
+        "Améliore l'éclat et la souplesse",
+        "Contenance : 30 ml",
+        "Idéal pour : Sec / Mature"
+      ],
+      "tags": [
+        "traitement",
+        "peau_seche",
+        "anti_age",
+        "eclat",
+        "hydratation",
+        "premium"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "lancaster-sun-beauty-lait-corps-spf50",
+      "sku": "LAN-SUN-MIL-100",
+      "category": "solaires",
+      "brand": "Lancaster",
+      "name": "Sun Beauty Lait Corps SPF50",
+      "priceFcfa": 21900,
+      "short": "Haute protection solaire corps",
+      "desc": "Toutes peaux — corps. Cible : Exposition solaire intense, risque de coups de soleil. Lait solaire léger à SPF 50 et Full Light Technology. Protège des UVA, UVB et autres rayonnements. Tan Activator Complex pour un bronzage doré plus rapide. Conseil d'utilisation : Appliquer généreusement sur le corps avant l'exposition et renouveler régulièrement.",
+      "bullets": [
+        "Lait solaire léger à SPF 50 et Full Light Technology",
+        "Protège des UVA, UVB et autres rayonnements",
+        "Tan Activator Complex pour un bronzage doré plus rapide",
+        "Contenance : 100 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "solaire"
+      ],
+      "matchedDescription": true
+    },
+    {
+      "slug": "sol-de-janeiro-brazilian-bum-bum-cream",
+      "sku": "SDJ-BUM-BUM-75",
+      "category": "corps",
+      "brand": "Sol de Janeiro",
+      "name": "Brazilian Bum Bum Cream",
+      "priceFcfa": 26500,
+      "short": "Raffermit et parfume le corps",
+      "desc": "Toutes peaux — corps. Cible : Manque de fermeté, sécheresse, aspect irrégulier. Crème corps culte enrichie en extrait de guaraná et beurre de cupuaçu. Nourrit, lisse et aide à raffermir visiblement la peau. Parfum iconique Cheirosa 62 aux notes de pistache et caramel salé. Conseil d'utilisation : Appliquer en massages circulaires sur fessier, cuisses, ventre et bras tous les jours.",
+      "bullets": [
+        "Crème corps culte enrichie en extrait de guaraná et beurre de cupuaçu",
+        "Nourrit, lisse et aide à raffermir visiblement la peau",
+        "Parfum iconique Cheirosa 62 aux notes de pistache et caramel salé",
+        "Contenance : 75 ml",
+        "Idéal pour : Tous"
+      ],
+      "tags": [
+        "corps",
+        "eclat",
+        "anti_age"
+      ],
+      "matchedDescription": true
+    }
+  ]
+}

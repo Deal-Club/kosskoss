@@ -39,7 +39,8 @@ function FacebookIcon({ className }: { className?: string }) {
 const NAV = [
   { label: "Accueil", href: "/", active: true },
   { label: "Soins du visage", href: "/soins-visage" },
-  { label: "Corps & Cheveux", href: "/corps-cheveux" },
+  { label: "Corps & Hygiène", href: "/corps-hygiene" },
+  { label: "Homme", href: "/homme" },
   { label: "Diagnostic", href: "/diagnostic" },
 ];
 
