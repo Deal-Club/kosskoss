@@ -597,6 +597,34 @@
   transform: scaleX(1);
 }
 
+/* ------------------------------------------------------- Bandeau défilant --
+
+   La piste contient deux copies identiques des messages. Une translation de
+   −50 % amène donc la copie exactement là où l'original commençait : la boucle
+   se referme sans saut, quel que soit le nombre d'annonces et sans mesurer
+   quoi que ce soit en JavaScript.
+
+   La durée arrive de la base par `--kk-defilement` ; le repli de 30 s couvre le
+   cas où le bandeau serait rendu hors de son contexte. */
+@keyframes kk-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.kk-marquee {
+  animation: kk-marquee var(--kk-defilement, 30s) linear infinite;
+}
+
+/* Le défilement s'interrompt au survol : un visiteur qui veut lire une annonce
+   ne devrait pas avoir à la poursuivre. */
+.kk-marquee:hover {
+  animation-play-state: paused;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -619,5 +647,19 @@
   .kk-fill:hover,
   .kk-lift:hover {
     transform: none !important;
+  }
+
+  /* Un texte qui défile sans fin est précisément ce que ce réglage écarte.
+     La piste s'immobilise ; la copie de bouclage, déjà `aria-hidden`, est
+     retirée de l'affichage pour ne pas doubler visuellement les messages. */
+  .kk-marquee {
+    animation: none !important;
+    transform: none !important;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .kk-marquee > [aria-hidden="true"] {
+    display: none;
   }
 }

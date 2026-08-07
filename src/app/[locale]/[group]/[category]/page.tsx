@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
-import { parseBrands, parseSort } from "@/lib/kk/catalog-params";
+import { parseBesoin, parseBrands, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -38,7 +38,8 @@ export default async function CategoryPage({
 
   const brands = parseBrands(sp.marque);
   const sort = parseSort(sp.tri);
-  const view = await getCatalog({ group, category, brands, sort });
+  const besoin = parseBesoin(sp.besoin);
+  const view = await getCatalog({ group, category, brands, besoin, sort });
   if (!view) notFound();
 
   return (
@@ -46,7 +47,14 @@ export default async function CategoryPage({
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
-        <CatalogView view={view} groupSlug={group} currentCategory={category} brands={brands} sort={sort} />
+        <CatalogView
+          view={view}
+          groupSlug={group}
+          currentCategory={category}
+          brands={brands}
+          besoin={besoin}
+          sort={sort}
+        />
       </main>
       <SiteFooter />
       <MobileTabBar />

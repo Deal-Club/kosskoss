@@ -29,12 +29,19 @@ function orderByFor(sort: CatalogSort): Prisma.ProductOrderByWithRelationInput {
 
 /**
  * Vue catalogue pour un univers (et éventuellement une catégorie), avec filtres
- * marque et tri. Renvoie `null` si l'univers (ou la catégorie) n'existe pas.
+ * marque, besoin et tri. Renvoie `null` si l'univers (ou la catégorie) n'existe
+ * pas.
+ *
+ * `besoin` porte sur les étiquettes du Diagnostic Beauté stockées dans
+ * `Product.tags` — un tableau JSON sérialisé. Un `contains` sur la chaîne
+ * suffit : les guillemets encadrant l'étiquette évitent qu'un préfixe en
+ * attrape un autre (« peau_seche » ne matche pas « peau_sechee »).
  */
 export async function getCatalog(opts: {
   group: string;
   category?: string;
   brands?: string[];
+  besoin?: string;
   sort?: CatalogSort;
 }): Promise<CatalogView | null> {
   const group = await prisma.group.findUnique({
@@ -62,6 +69,7 @@ export async function getCatalog(opts: {
   const where: Prisma.ProductWhereInput = {
     ...scope,
     ...(opts.brands && opts.brands.length ? { brand: { in: opts.brands } } : {}),
+    ...(opts.besoin ? { tags: { contains: `"${opts.besoin}"` } } : {}),
   };
 
   const [rows, brandRows, counts] = await Promise.all([

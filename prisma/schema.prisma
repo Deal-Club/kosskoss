@@ -284,10 +284,10 @@ model Order {
   paymentStatus String @default("en_attente")
 
   // Montants en centimes, TTC
-  subtotalCents  Int
-  shippingCents  Int
-  taxCents       Int
-  totalCents     Int
+  subtotalCents Int
+  shippingCents Int
+  taxCents      Int
+  totalCents    Int
 
   // Code promo appliqué, recopié tel qu'il a été saisi et validé. Comme les
   // libellés produits, il est figé sur la commande : renommer ou supprimer le
@@ -340,11 +340,11 @@ model Order {
 }
 
 model OrderItem {
-  id        String  @id @default(cuid())
-  orderId   String
+  id           String  @id @default(cuid())
+  orderId      String
   // Le produit peut disparaître du catalogue ; la ligne de commande reste
   // lisible grâce aux libellés recopiés ci-dessous.
-  productId String?
+  productId    String?
   variantId    String?
   variantLabel String  @default("")
 
@@ -603,14 +603,14 @@ model Setting {
 // dans le layout de la boutique, hors duquel /admin se trouve déjà.
 
 model CodeSnippet {
-  id String @id @default(cuid())
+  id        String   @id @default(cuid())
   // Intitulé libre, pour s'y retrouver dans la liste : « Google Tag Manager »…
-  name String
+  name      String
   // head | bodyStart | bodyEnd
   placement String
   content   String
   // Un fragment naît désactivé : on le colle, on le relit, puis on l'allume.
-  enabled Boolean @default(false)
+  enabled   Boolean  @default(false)
   // Ordre d'insertion à emplacement égal. Il compte : un mode consentement doit
   // s'exécuter avant les balises qu'il gouverne.
   position  Int      @default(0)
@@ -636,7 +636,7 @@ model CodeSnippet {
 
 model LegalContent {
   // Identifiant d'URL de la page : "impressum", "agb", "faq"…
-  slug String
+  slug   String
   // "fr" ou "en" : chaque langue se réécrit indépendamment.
   locale String
 
@@ -831,4 +831,70 @@ model CampaignEvent {
 
   @@index([campaignId, kind])
   @@index([campaignId, createdAt])
+}
+
+// ---- Bandeau d'annonce ----
+
+// Message défilant en haut de la boutique, administrable.
+//
+// Plusieurs lignes actives défilent à la suite : c'est le seul endroit du site
+// où l'on peut annoncer une livraison offerte, un délai exceptionnel ou une
+// opération en cours sans toucher au code. Les réglages d'apparence (couleurs,
+// vitesse, activation) vivent dans `Setting` sous la clé « announcement.config »
+// — ils sont uniques, une table de configuration à une seule ligne n'apporterait
+// rien.
+model Announcement {
+  id        String   @id @default(cuid())
+  message   String
+  // Nom d'une icône lucide-react ; vide = aucune icône devant le message.
+  icon      String   @default("sparkles")
+  active    Boolean  @default(true)
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, position])
+}
+
+// ---- Codes promo ----
+
+// Code de réduction saisi par le client au moment de payer.
+//
+// La remise n'est jamais calculée par le navigateur : le tunnel affiche une
+// estimation, mais `createKossOrder` revalide le code et recalcule le montant
+// à partir de cette table avant d'enregistrer la commande. Un code désactivé,
+// expiré ou épuisé entre l'affichage et la validation est donc refusé au
+// dernier moment, et le client paie le prix plein.
+model Coupon {
+  id   String @id @default(cuid())
+  // Toujours stocké en majuscules sans espaces : la saisie du client est
+  // normalisée avant comparaison, « bienvenue10 » et « BIENVENUE10 » sont le
+  // même code.
+  code String @unique
+
+  // « pourcentage » : `value` est un taux de 1 à 100.
+  // « montant »     : `value` est une somme en FCFA entiers.
+  kind  String @default("pourcentage")
+  value Int
+
+  /// Sous-total minimal exigé pour que le code s'applique, en FCFA. 0 = aucun.
+  minSubtotalCents Int @default(0)
+  /// Plafond de la remise pour un code en pourcentage, en FCFA. 0 = aucun.
+  maxDiscountCents Int @default(0)
+
+  // Fenêtre de validité. Bornes absentes = pas de limite de ce côté.
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  /// Nombre total d'utilisations autorisées, toutes commandes confondues. 0 = illimité.
+  maxUses   Int @default(0)
+  /// Compteur incrémenté à chaque commande validée avec ce code.
+  usedCount Int @default(0)
+
+  active      Boolean  @default(true)
+  description String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active])
 }

@@ -10,8 +10,8 @@ import {
   BadgeCheck,
   MessageCircle,
 } from "lucide-react";
-import { MOCK_SKIN_TYPES } from "@/data/kk/home-mock";
 import type { KKProductView, KKTestimonialView } from "@/types/kk";
+import { TYPES_DE_PEAU, PREOCCUPATIONS, type Besoin } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
 import { Monogram, Petal, Flourish } from "./motifs";
 
@@ -98,24 +98,90 @@ export function Hero() {
 
 /* --------------------------------------------------- Sélection par peau -- */
 
+/** Une entrée de besoin : libellé, précision, et lien vers le rayon filtré. */
+function BesoinCard({ besoin }: { besoin: Besoin }) {
+  return (
+    <li>
+      <Link
+        href={`/soins-visage?besoin=${besoin.tag}`}
+        className="group flex h-full flex-col justify-between gap-3 rounded-2xl border border-border/70 bg-card px-5 py-4 transition-colors hover:border-deep/40 hover:bg-sand/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-deep"
+      >
+        <div>
+          <span className="flex items-center gap-2 text-sm font-semibold text-deep">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold transition-transform duration-300 group-hover:scale-150" />
+            {besoin.label}
+          </span>
+          <span className="mt-1.5 block text-xs leading-relaxed text-muted-foreground">
+            {besoin.hint}
+          </span>
+        </div>
+        <ArrowRight className="h-3.5 w-3.5 self-end text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-deep" />
+      </Link>
+    </li>
+  );
+}
+
+/**
+ * Entrée dans le catalogue par le besoin.
+ *
+ * Chaque pastille menait auparavant au diagnostic, quel que soit le type
+ * choisi : « choisissez selon votre peau » ne choisissait rien. Elles ouvrent
+ * désormais le rayon réellement filtré (`?besoin=`), sur les étiquettes que
+ * portent les produits.
+ *
+ * Deux registres séparés parce qu'ils ne répondent pas à la même question : le
+ * type de peau ne change pas, la préoccupation du moment si. Et pour qui ne
+ * sait pas se situer, le diagnostic reste offert en bas — c'est la porte de
+ * sortie, pas la porte principale.
+ */
 export function SkinTypeStrip() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-6">
-      <div className="kk-enter flex flex-col gap-5 rounded-2xl border border-border/60 bg-card/60 px-6 py-6 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="text-lg text-deep">Choisissez selon votre type de peau</h2>
-        <ul className="flex flex-wrap gap-3">
-          {MOCK_SKIN_TYPES.map((s) => (
-            <li key={s.key}>
-              <Link
-                href="/diagnostic"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-cream px-4 py-2 text-sm font-medium text-deep transition hover:border-deep/50 hover:bg-sand"
-              >
-                <span className="h-2 w-2 rounded-full bg-gold" />
-                {s.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+    <section className="mx-auto max-w-7xl px-6 py-10">
+      <div className="kk-enter overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/50">
+        <div className="grid gap-8 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,2.2fr)] lg:gap-12">
+          <div className="lg:max-w-xs">
+            <p className="eyebrow">Trouver vite</p>
+            <h2 className="mt-2 text-2xl leading-tight text-deep sm:text-[1.75rem]">
+              Votre peau, votre routine
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Dites-nous ce qui vous préoccupe : nous ouvrons le rayon
+              correspondant, déjà trié.
+            </p>
+            <Link
+              href="/diagnostic"
+              className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-deep kk-underline"
+            >
+              <Sparkles className="h-4 w-4 text-gold" />
+              Je ne sais pas, guidez-moi
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Type de peau
+              </p>
+              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {TYPES_DE_PEAU.map((b) => (
+                  <BesoinCard key={b.tag} besoin={b} />
+                ))}
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Préoccupation
+              </p>
+              <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {PREOCCUPATIONS.map((b) => (
+                  <BesoinCard key={b.tag} besoin={b} />
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -13,10 +13,13 @@ import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
 import { getShopNavigation } from "@/server/kk/navigation";
+import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
+import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
 import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
 import { PatternBackdrop } from "./pattern-backdrop";
+import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -84,16 +87,20 @@ const WHATSAPP_LINK = WHATSAPP_DIGITS
     )}`
   : "";
 
-/** Bandeau d'annonce fin — réassurance marché Cameroun. */
-export function AnnouncementBar() {
-  return (
-    <div className="bg-deep text-primary-foreground">
-      <p className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-2 text-center text-[0.7rem] font-medium uppercase tracking-[0.2em]">
-        <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-        Livraison partout au Cameroun
-      </p>
-    </div>
-  );
+/**
+ * Bandeau d'annonce, lu en base.
+ *
+ * Le message était écrit en dur ; il se règle désormais au back-office —
+ * contenu, ordre, couleurs, vitesse et défilement. La lecture se fait ici
+ * plutôt que dans les seize pages qui montent ce bandeau : aucune n'a eu à
+ * changer.
+ *
+ * Sans annonce active en base, rien ne s'affiche. C'est volontaire : un
+ * bandeau vide vaut mieux qu'un message de remplissage que personne n'a écrit.
+ */
+export async function AnnouncementBar() {
+  const [items, config] = await Promise.all([getActiveAnnouncements(), getAnnouncementConfig()]);
+  return <AnnouncementBarView items={items} config={config} />;
 }
 
 function Wordmark({ className = "" }: { className?: string }) {
@@ -346,7 +353,26 @@ export async function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
+        {/* Moyens de paiement, juste au-dessus de la mention légale.
+            C'est la dernière chose que lit un visiteur hésitant : savoir qu'il
+            pourra payer avec ce qu'il a déjà dans son téléphone lève une
+            objection au moment précis où elle se pose. Les marques sont
+            dessinées au trait (voir PaymentIcons), pas reprises des fichiers
+            officiels. */}
+        <div className="mt-14 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-8 sm:flex-row sm:justify-between">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-footer-foreground/50">
+            Paiement accepté
+          </p>
+          <ul className="flex flex-wrap items-center justify-center gap-3">
+            {[VisaMark, OrangeMoneyMark, MoovMoneyMark].map((Mark, i) => (
+              <li key={i} className="transition-transform duration-300 hover:-translate-y-0.5">
+                <Mark />
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mt-8 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-footer-foreground/50">
             © 2026 {BRAND.name}. Tous droits réservés.
           </p>

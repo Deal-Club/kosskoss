@@ -1,6 +1,7 @@
 import { LocalizedLink as Link } from "./localized-link";
-import { SlidersHorizontal, RotateCcw, Sparkles, ArrowRight, Check } from "lucide-react";
+import { SlidersHorizontal, RotateCcw, Sparkles, ArrowRight, Check, X } from "lucide-react";
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
+import { besoinParTag } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
 import { PatternBackdrop } from "./pattern-backdrop";
 
@@ -11,9 +12,15 @@ const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "prix-desc", label: "Prix décroissant" },
 ];
 
-function withParams(basePath: string, brands: string[], sort: CatalogSort): string {
+function withParams(
+  basePath: string,
+  brands: string[],
+  sort: CatalogSort,
+  besoin?: string,
+): string {
   const sp = new URLSearchParams();
   if (brands.length) sp.set("marque", brands.join(","));
+  if (besoin) sp.set("besoin", besoin);
   if (sort !== "pertinence") sp.set("tri", sort);
   const qs = sp.toString();
   return qs ? `${basePath}?${qs}` : basePath;
@@ -24,18 +31,19 @@ type FilterState = {
   groupSlug: string;
   currentCategory?: string;
   brands: string[];
+  besoin?: string;
   sort: CatalogSort;
   basePath: string;
 };
 
-function FiltersPanel({ view, groupSlug, currentCategory, brands, sort, basePath }: FilterState) {
+function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, basePath }: FilterState) {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-deep">
           <SlidersHorizontal className="h-4 w-4" /> Filtres
         </h2>
-        {(brands.length > 0 || sort !== "pertinence") && (
+        {(brands.length > 0 || sort !== "pertinence" || besoin) && (
           <a href={basePath} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-deep">
             <RotateCcw className="h-3 w-3" /> Réinitialiser
           </a>
@@ -156,17 +164,20 @@ export function CatalogView({
   groupSlug,
   currentCategory,
   brands,
+  besoin,
   sort,
 }: {
   view: CatalogView;
   groupSlug: string;
   currentCategory?: string;
   brands: string[];
+  besoin?: string;
   sort: CatalogSort;
 }) {
   const basePath = currentCategory ? `/${groupSlug}/${currentCategory}` : `/${groupSlug}`;
   const title = view.category?.label ?? view.group.label;
-  const filterState: FilterState = { view, groupSlug, currentCategory, brands, sort, basePath };
+  const filterState: FilterState = { view, groupSlug, currentCategory, brands, besoin, sort, basePath };
+  const besoinActif = besoinParTag(besoin);
 
   // Grille : la carte diagnostic s'insère en 3e position.
   const cells: React.ReactNode[] = [];
@@ -192,6 +203,26 @@ export function CatalogView({
             Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement
             évalué pour son efficacité, sa formulation et son respect de la peau.
           </p>
+
+          {/* Filtre par besoin, arrivé depuis l'accueil : sans cette étiquette,
+              le visiteur verrait un rayon amputé sans savoir pourquoi ni
+              comment revenir au complet. La croix lève le filtre. */}
+          {besoinActif && (
+            <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
+              <span className="text-primary-foreground/60">Vous cherchez&nbsp;:</span>
+              <Link
+                href={withParams(basePath, brands, sort)}
+                className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 font-medium text-primary-foreground transition hover:bg-primary-foreground/20"
+              >
+                {besoinActif.label}
+                <X className="h-3.5 w-3.5 opacity-70 transition group-hover:opacity-100" aria-hidden="true" />
+                <span className="sr-only">Retirer ce filtre</span>
+              </Link>
+              <span className="text-primary-foreground/60">
+                {view.total} produit{view.total > 1 ? "s" : ""}
+              </span>
+            </p>
+          )}
         </div>
       </section>
 

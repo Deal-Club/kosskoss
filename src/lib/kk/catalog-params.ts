@@ -1,4 +1,5 @@
 import type { CatalogSort } from "@/server/kk/catalog";
+import { besoinParTag } from "./besoins";
 
 const SORTS = new Set<CatalogSort>(["pertinence", "prix-asc", "prix-desc", "nouveautes"]);
 
@@ -16,4 +17,13 @@ export function parseBrands(value: string | string[] | undefined): string[] {
   return v
     ? v.split(",").map((s) => s.trim()).filter(Boolean)
     : [];
+}
+
+/**
+ * Besoin demandé dans l'URL (`?besoin=taches`). Une valeur inconnue est
+ * ignorée plutôt que de renvoyer une erreur : un lien périmé affiche alors le
+ * catalogue entier, ce qui reste utile.
+ */
+export function parseBesoin(value: string | string[] | undefined): string | undefined {
+  return besoinParTag(one(value))?.tag;
 }

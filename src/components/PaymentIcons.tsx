@@ -78,6 +78,71 @@ export function VisaMark() {
   );
 }
 
+/**
+ * Orange Money — le carré orange de l'opérateur, que tout le monde reconnaît
+ * sur ce marché, et le nom en dessous. Deux lignes plutôt qu'une : « Orange
+ * Money » ne tient pas lisiblement sur 48 px de large.
+ */
+export function OrangeMoneyMark() {
+  return (
+    <Card label="Orange Money">
+      <rect x="18.5" y="4" width="11" height="11" rx="1" fill="#FF7900" />
+      <text
+        x="24"
+        y="23.5"
+        textAnchor="middle"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontSize="6.4"
+        fontWeight="700"
+        fill="#111111"
+      >
+        Orange
+      </text>
+      <text
+        x="24"
+        y="29.5"
+        textAnchor="middle"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontSize="6.4"
+        fontWeight="700"
+        fill="#111111"
+      >
+        Money
+      </text>
+    </Card>
+  );
+}
+
+/** Moov Money — nom posé dans le bleu de l'opérateur, « Money » en orange. */
+export function MoovMoneyMark() {
+  return (
+    <Card label="Moov Money">
+      <text
+        x="24"
+        y="16"
+        textAnchor="middle"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontSize="9"
+        fontWeight="700"
+        fill="#0057A8"
+      >
+        moov
+      </text>
+      <text
+        x="24"
+        y="25.5"
+        textAnchor="middle"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontSize="7"
+        fontWeight="700"
+        fill="#F58220"
+      >
+        Money
+      </text>
+    </Card>
+  );
+}
+
 export function MastercardMark() {
   return (
     <Card label="Mastercard">
