@@ -115,6 +115,13 @@ function benefitTags(text) {
 const assort = readCsv("data/client/assort_marque.csv");
 const descriptions = readCsv("data/client/description_produit.csv");
 
+// Chemins d'images produits (SKU -> /images/products/<sku>.<ext>), générés par
+// scripts/fetch-kk-images.mjs. Optionnel : absent = catalogue sans images.
+let imagePaths = {};
+try {
+  imagePaths = JSON.parse(readFileSync(path.join(ROOT, "data", "client", "image-paths.json"), "utf-8"));
+} catch { /* pas encore d'images */ }
+
 // Index des descriptions par (marque de base normalisée + mots-clés du nom).
 const descIndex = descriptions.map((d) => ({
   brand: norm(baseBrand(d["Marque"])),
@@ -229,6 +236,7 @@ for (const r of assort) {
     desc: longDesc,
     bullets: [...new Set(bullets.map((b) => b.trim()).filter(Boolean))],
     tags: [...tagSet],
+    image: imagePaths[r["SKU"].trim()] || "",
     matchedDescription: Boolean(desc),
   });
 }
@@ -248,6 +256,8 @@ mkdirSync(path.join(ROOT, "prisma", "data"), { recursive: true });
 writeFileSync(path.join(ROOT, "prisma", "data", "kk-catalog.json"), JSON.stringify(out, null, 2) + "\n", "utf-8");
 
 // ---- Rapport ----
+const withImage = products.filter((p) => p.image).length;
+console.log(`Images associées : ${withImage}/${products.length}`);
 const matched = products.filter((p) => p.matchedDescription).length;
 const unusedDesc = descIndex.filter((d) => !d.used);
 console.log(`Produits : ${products.length}`);

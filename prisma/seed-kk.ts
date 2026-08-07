@@ -31,6 +31,7 @@ type CatalogProduct = {
   desc: string;
   bullets: string[];
   tags: string[];
+  image?: string;
 };
 type Catalog = { groups: CatalogGroup[]; categories: CatalogCategory[]; products: CatalogProduct[] };
 
@@ -102,6 +103,7 @@ async function main() {
       bullets: JSON.stringify(p.bullets),
       tags: JSON.stringify(p.tags),
       priceCents: p.priceFcfa,
+      image: p.image ?? "",
       active: true,
     };
     await prisma.product.upsert({
@@ -111,8 +113,6 @@ async function main() {
         ...data,
         slug: p.slug,
         sku: p.sku,
-        // Image ajoutée ultérieurement via le back-office (téléversement).
-        image: "",
         stock: 30,
       },
     });
