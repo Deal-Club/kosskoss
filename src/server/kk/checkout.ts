@@ -4,6 +4,7 @@ import { hashPassword } from "@/lib/password";
 import { openCustomerSession } from "@/server/customerSession";
 import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/emails";
 import { resolvePaymentMethod } from "@/server/kk/payments";
+import { consommerCoupon, validerCoupon } from "@/server/coupons";
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -23,6 +24,8 @@ export type CheckoutInput = {
   followOrder: boolean;
   paymentMethod: KKPaymentMethod;
   locale: string;
+  /** Code promo saisi par le client. Revalidé côté serveur, jamais cru sur parole. */
+  couponCode?: string;
 };
 
 export type CheckoutResult =
@@ -110,6 +113,24 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     });
   }
 
+  // Code promo — revalidé ici, sur le sous-total qu'on vient de recalculer à
+  // partir des prix en base. Le montant de la remise affiché par le tunnel n'est
+  // jamais transmis, et ne serait pas lu : seul ce calcul-ci fait foi.
+  //
+  // Un code refusé (expiré, épuisé, désactivé entre-temps) ne fait pas échouer
+  // la commande : elle passe au prix plein. Bloquer un client au moment de payer
+  // pour un code promotionnel coûte plus cher que la remise elle-même.
+  let couponCode = "";
+  let discountCents = 0;
+  if (input.couponCode) {
+    const resultat = await validerCoupon(input.couponCode, subtotal);
+    if (resultat.ok) {
+      couponCode = resultat.coupon.code;
+      discountCents = resultat.coupon.discountCents;
+    }
+  }
+  const total = Math.max(0, subtotal - discountCents);
+
   const name = input.fullName.trim();
   const space = name.indexOf(" ");
   const firstName = space > 0 ? name.slice(0, space) : name;
@@ -183,7 +204,9 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         subtotalCents: subtotal,
         shippingCents: 0,
         taxCents: 0,
-        totalCents: subtotal,
+        totalCents: total,
+        couponCode,
+        discountCents,
         taxRatePercent: 0,
         currency: "XAF",
         customerNote: input.followOrder ? "Client a demandé le suivi de commande." : "",
@@ -211,7 +234,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     firstName,
     orderNumber,
     items: orderItems,
-    totalFcfa: subtotal,
+    totalFcfa: total,
   });
   if (account === "created" && tempPassword) {
     await sendAccountAccessEmail(emailNorm, firstName, tempPassword);

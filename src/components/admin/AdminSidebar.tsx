@@ -7,8 +7,9 @@ import {
   Code2,
   CreditCard,
   FileText,
-  LayoutDashboard,
   Layers,
+  LayoutDashboard,
+  Megaphone,
   Menu,
   Package,
   Plug,
@@ -18,6 +19,7 @@ import {
   Star,
   Store,
   Tags,
+  Ticket,
   Users,
   Warehouse,
   X,
@@ -82,6 +84,8 @@ export function AdminSidebar({
         // ouverte. Les écrans existent toujours et restent joignables par leur
         // adresse (/admin/campaigns) ; seule l'entrée du menu disparaît.
         { label: "Moyens de paiement", href: "/admin/payments", icon: CreditCard },
+        { label: "Codes promo", href: "/admin/coupons", icon: Ticket },
+        { label: "Bandeau d'annonce", href: "/admin/announcements", icon: Megaphone },
         { label: "Google Merchant", href: "/admin/merchant", icon: ShoppingBag },
         { label: "Intégrations", href: "/admin/integrations", icon: Plug },
       ],
