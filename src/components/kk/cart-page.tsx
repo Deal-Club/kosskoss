@@ -21,7 +21,7 @@ export function CartPageView() {
         </p>
         <Link
           href="/soins-visage"
-          className="mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
+          className="kk-fill mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
         >
           Découvrir la boutique
         </Link>
@@ -125,7 +125,7 @@ export function CartPageView() {
             </div>
             <Link
               href="/commande"
-              className="group mt-6 flex items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+              className="kk-fill group mt-6 flex items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground"
             >
               Procéder au paiement
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

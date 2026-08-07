@@ -9,10 +9,10 @@ import {
   ChevronLeft,
   ShieldCheck,
 } from "lucide-react";
+import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
 import { getShopNavigation } from "@/server/kk/navigation";
-import { Monogram } from "./motifs";
 import { CartButton } from "./cart-button";
 import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
@@ -232,10 +232,20 @@ export async function SiteFooter() {
       <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div>
-            <div className="flex items-center gap-3">
-              <Monogram className="h-11 w-11 text-footer-foreground" />
-              <span className="wordmark text-lg text-footer-foreground">KOSSKOSS</span>
-            </div>
+            {/* Le lettrage officiel de la charte, dans sa version claire. Le
+                pied de page est le seul endroit assez large pour le porter en
+                entier ; l'en-tête garde le mot-symbole composé en Cinzel, qui
+                reste net à toutes les tailles et ne coûte aucune requête. */}
+            <Link href="/" aria-label={BRAND.name} className="inline-block">
+              <Image
+                src="/images/logo-full-light.png"
+                alt={BRAND.name}
+                width={1070}
+                height={306}
+                sizes="200px"
+                className="h-auto w-[11rem]"
+              />
+            </Link>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-footer-foreground/70">
               {BRAND.slogan} Une sélection cosmétique multimarque, pensée pour votre peau.
             </p>

@@ -22,7 +22,11 @@ export function ProductCard({ product }: { product: KKProductView }) {
 
   return (
     <article className="group flex flex-col">
-      <div className="relative overflow-hidden rounded-2xl border border-border/70 bg-card">
+      {/* Le cadre se soulève au survol ; la photo, elle, zoome légèrement dans
+          son cadre (voir `group-hover:scale-105` plus bas). Deux mouvements de
+          faible amplitude qui se répondent, plutôt qu'un seul geste ample : sur
+          une grille de vingt vignettes, l'ampleur fait vibrer la page. */}
+      <div className="kk-lift relative overflow-hidden rounded-2xl border border-border/70 bg-card">
         <a
           href={href}
           className={`relative flex aspect-[4/5] items-center justify-center bg-gradient-to-br ${TONE[product.tone]} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset`}

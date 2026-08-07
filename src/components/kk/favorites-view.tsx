@@ -34,7 +34,7 @@ function AddButton({ item }: { item: FavoriteItem }) {
     return (
       <Link
         href={item.path}
-        className="inline-flex h-11 items-center gap-1.5 rounded-full bg-deep px-5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+        className="kk-fill inline-flex h-11 items-center gap-1.5 rounded-full bg-deep px-5 text-sm font-semibold text-primary-foreground"
       >
         Choisir <ChevronRight className="h-4 w-4" />
       </Link>
@@ -64,7 +64,7 @@ function AddButton({ item }: { item: FavoriteItem }) {
     <button
       type="button"
       onClick={handleAdd}
-      className="inline-flex h-11 items-center gap-1.5 rounded-full bg-deep px-5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2"
+      className="kk-fill inline-flex h-11 items-center gap-1.5 rounded-full bg-deep px-5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2"
     >
       {added ? <Check className="h-4 w-4" /> : <ShoppingBag className="h-4 w-4" />}
       {added ? "Ajouté" : "Ajouter"}
@@ -96,7 +96,7 @@ export function FavoritesView() {
         </p>
         <Link
           href="/soins-visage"
-          className="mt-6 inline-block rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+          className="kk-fill mt-6 inline-block rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground"
         >
           Découvrir la boutique
         </Link>
@@ -184,7 +184,7 @@ export function FavoritesView() {
           </p>
           <Link
             href="/compte/connexion?suite=/favoris"
-            className="inline-flex items-center gap-1.5 rounded-full bg-deep px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+            className="kk-fill inline-flex items-center gap-1.5 rounded-full bg-deep px-4 py-2 text-sm font-semibold text-primary-foreground"
           >
             <UserPlus className="h-4 w-4" /> La retrouver sur tous mes appareils
           </Link>

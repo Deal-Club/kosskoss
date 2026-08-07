@@ -46,7 +46,7 @@ export function CheckoutForm({
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
         <h1 className="text-3xl text-deep">Votre panier est vide</h1>
-        <Link href="/soins-visage" className="mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground">
+        <Link href="/soins-visage" className="kk-fill mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground">
           Découvrir la boutique
         </Link>
       </div>
@@ -211,7 +211,7 @@ export function CheckoutForm({
             <button
               type="submit"
               disabled={submitting}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 disabled:opacity-60"
+              className="kk-fill mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
             >
               {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {submitting ? "Enregistrement…" : "Procéder au paiement"}

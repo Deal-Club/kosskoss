@@ -235,33 +235,35 @@
 
 /* ---------------------------------------------------------- Écran d'attente --
 
-   Un seul geste, en trois temps sur un cycle de 2.8 s :
+   Le sigle de la marque n'est pas un dessin au trait mais un bloc plein aux
+   lettres évidées : il ne « se trace » donc pas. Le geste suit sa nature —
 
-     0 → 28 %    le monogramme se trace, du cadre vers les deux K
-     28 → 34 %   l'onde part à l'instant où le dernier trait se referme
-     28 → 68 %   palier : le monogramme reste plein et net
-     68 → 100 %  le tracé se retire, et le cycle reprend
+     0 → 30 %    le filet extérieur se dessine
+     26 → 58 %   le bloc se remplit par le bas, comme de l'encre qui monte ;
+                 les deux K se découvrent au passage
+     56 %        l'onde part, à l'instant où le bloc se referme
+     58 → 72 %   palier : le sigle est entier et net
+     72 → 100 %  l'encre redescend, le filet se retire, le cycle reprend
 
-   Le tracé est le seul élément qui boucle : c'est lui l'indicateur d'activité.
-   Le logotype, le filet et la ligne d'attente se posent UNE fois et ne bougent
-   plus — un texte qui clignote à chaque cycle fatigue et ne dit rien de plus.
+   Le sigle est le seul élément qui boucle : c'est lui l'indicateur d'activité.
+   Le logotype, le filet d'or et la ligne d'attente se posent UNE fois et ne
+   bougent plus — un texte qui clignote à chaque cycle fatigue sans rien dire.
 
-   La boucle est sans couture parce que le tracé part de « vide »
-   (dashoffset 1), se remplit, puis repart vers « vide » (dashoffset -1) : les
-   deux extrémités du cycle sont visuellement identiques, il n'y a donc aucun
-   saut au raccord.
+   La boucle est sans couture : le filet part de « vide » (dashoffset 1) et
+   repart vers « vide » (dashoffset -1), et le bloc part et revient à vide.
+   Les deux extrémités du cycle sont identiques, aucun saut au raccord.
 
    `prefers-reduced-motion` (règle globale plus bas) force une itération quasi
-   instantanée : chaque animation se fige alors sur son dernier état. Le texte
-   finit visible, et le tracé finit vide — d'où le repli explicite en fin de
-   section, qui rétablit un monogramme plein et immobile. */
+   instantanée : chaque animation se fige sur son dernier état, qui est ici
+   l'état vide. Le repli explicite en fin de section rétablit donc un sigle
+   entier et immobile. */
 
-@keyframes kkl-draw {
+@keyframes kkl-frame {
   0% {
     stroke-dashoffset: 1;
   }
-  28%,
-  68% {
+  30%,
+  72% {
     stroke-dashoffset: 0;
   }
   100% {
@@ -269,36 +271,46 @@
   }
 }
 
-.kkl-draw {
+.kkl-frame {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: kkl-draw 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite both;
+  opacity: 0.75;
+  animation: kkl-frame 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite both;
 }
 
-/* Le cadre ouvre le geste, les deux K s'enchaînent derrière lui. */
-.kkl-draw--frame {
-  opacity: 0.45;
-  animation-duration: 3s;
+/* Remplissage : `inset()` découpe depuis le haut, donc 100 % = rien de
+   visible et 0 % = bloc entier. La zone visible grandit par le bas. */
+@keyframes kkl-block {
+  0%,
+  26% {
+    clip-path: inset(100% 0 0 0);
+  }
+  58%,
+  72% {
+    clip-path: inset(0 0 0 0);
+  }
+  100% {
+    clip-path: inset(100% 0 0 0);
+  }
 }
-.kkl-draw--left {
-  animation-delay: 0.18s;
-}
-.kkl-draw--right {
-  animation-delay: 0.36s;
+
+.kkl-block {
+  clip-path: inset(100% 0 0 0);
+  animation: kkl-block 2.8s cubic-bezier(0.65, 0, 0.35, 1) infinite both;
 }
 
 /* L'onde : une goutte de soin qui se diffuse. Elle part exactement quand le
-   dernier trait se referme — c'est ce raccord qui fait tenir le geste. */
+   bloc se referme — c'est ce raccord qui fait tenir le geste. */
 @keyframes kkl-ripple {
   0%,
-  26% {
+  52% {
     transform: scale(0.6);
     opacity: 0;
   }
-  34% {
+  60% {
     opacity: 0.5;
   }
-  72%,
+  92%,
   100% {
     transform: scale(1.85);
     opacity: 0;
@@ -342,7 +354,7 @@
      aussi après la dernière lettre et décentrerait le mot pendant la
      transition. */
   text-indent: 0.22em;
-  animation: kkl-wordmark 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.5s both;
+  animation: kkl-wordmark 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
 }
 
 @keyframes kkl-fade-up {
@@ -358,11 +370,11 @@
 
 .kkl-tagline {
   text-indent: 0.5em;
-  animation: kkl-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.72s both;
+  animation: kkl-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.92s both;
 }
 
 .kkl-message {
-  animation: kkl-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
+  animation: kkl-fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
 }
 
 /* Le filet d'or se déploie depuis son centre, comme un trait tiré à la main. */
@@ -384,7 +396,7 @@
     var(--gold),
     color-mix(in oklab, var(--gold) 0%, transparent)
   );
-  animation: kkl-rule 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.86s both;
+  animation: kkl-rule 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.06s both;
 }
 
 /* L'écran entre en fondu court : sur une navigation rapide, il ne doit pas
@@ -403,16 +415,182 @@
 }
 
 /* Mouvement réduit : la règle globale fige chaque animation sur son dernier
-   état, ce qui laisserait le tracé vide (dashoffset -1). On rétablit donc un
-   monogramme plein, net et immobile, et on retire les ondes — qui ne veulent
-   plus rien dire sans diffusion. */
+   état, qui est ici l'état vide. On rétablit donc un sigle entier, net et
+   immobile, et on retire les ondes — sans diffusion, elles ne disent rien. */
 @media (prefers-reduced-motion: reduce) {
-  .kkl-draw {
+  .kkl-frame {
     stroke-dashoffset: 0 !important;
+  }
+  .kkl-block {
+    clip-path: inset(0 0 0 0) !important;
   }
   .kkl-ripple {
     display: none;
   }
+}
+
+/* ------------------------------------------------------- Boutons vivants --
+
+   Au survol, un disque se déploie du centre et remplit le bouton ; la couleur
+   du texte bascule avec lui. Quand le pointeur s'en va, le même disque se
+   rétracte et rend au bouton sa couleur d'origine.
+
+   C'est une `transition` et non une `animation` : la marche arrière est alors
+   gratuite et exactement symétrique. Une animation par images clés, elle,
+   redémarrerait du début à chaque entrée et resterait figée à la sortie.
+
+   Le disque est posé en `z-index: -1` sous un parent `isolation: isolate` : il
+   glisse ainsi derrière le contenu — y compris le texte nu, sans balise
+   autour — tout en restant confiné dans le bouton.
+
+   Le côté du carré est calé sur la diagonale (√2 ≈ 141 %) pour que le disque
+   couvre les angles au moment où il atteint son échelle pleine. */
+.kk-fill {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kk-fill::before {
+  content: "";
+  position: absolute;
+  /* Le disque naît au milieu du bord inférieur et monte : le geste se lit,
+     là où un disque centré ne donne qu'un fondu. Son diamètre (160 % de la
+     largeur) le fait couvrir les deux angles hauts avant la fin de la course. */
+  top: 100%;
+  left: 50%;
+  z-index: -1;
+  width: 160%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--kk-fill, var(--sand));
+  transform: translate(-50%, -50%) scale(0);
+  transform-origin: center;
+  transition: transform 0.55s cubic-bezier(0.34, 1.2, 0.44, 1);
+}
+
+.kk-fill:hover::before,
+.kk-fill:focus-visible::before {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Le texte prend la couleur lisible sur le disque, pas sur le fond d'origine. */
+.kk-fill:hover,
+.kk-fill:focus-visible {
+  color: var(--kk-fill-text, var(--deep));
+}
+
+/* Léger soulèvement : le bouton répond au pointeur avant même le remplissage. */
+.kk-fill:hover {
+  transform: translateY(-1px);
+}
+
+.kk-fill:active {
+  transform: translateY(0);
+}
+
+/* Variante claire — bouton sable ou crème qui se remplit de bleu profond. */
+.kk-fill-deep {
+  --kk-fill: var(--deep);
+  --kk-fill-text: var(--primary-foreground);
+}
+
+/* ------------------------------------------------------ Entrées au scroll --
+
+   Chaque section se lève légèrement en entrant dans le champ, une seule fois.
+
+   `animation-timeline: view()` rattache la progression de l'animation à la
+   position de l'élément dans la fenêtre : aucun JavaScript, aucun observateur,
+   rien à hydrater. Là où la propriété n'est pas reconnue — Firefox à ce jour —
+   l'animation se joue simplement au chargement : le contenu finit visible dans
+   tous les cas, ce qui est la seule dégradation acceptable pour du texte.
+
+   `animation-range` arrête la course à 40 % de la hauteur du bloc : la section
+   est pleinement lisible bien avant d'être centrée, sinon on lit un texte qui
+   bouge encore. */
+@keyframes kk-enter {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kk-enter {
+  animation: kk-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+
+/* Éléments d'une même rangée : un léger décalage donne le sens de lecture,
+   de gauche à droite, au lieu d'un bloc qui apparaît d'un coup. */
+.kk-enter-stagger > * {
+  animation: kk-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 35%;
+}
+
+.kk-enter-stagger > *:nth-child(2) {
+  animation-delay: 60ms;
+}
+.kk-enter-stagger > *:nth-child(3) {
+  animation-delay: 120ms;
+}
+.kk-enter-stagger > *:nth-child(4) {
+  animation-delay: 180ms;
+}
+.kk-enter-stagger > *:nth-child(5) {
+  animation-delay: 240ms;
+}
+.kk-enter-stagger > *:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+/* ------------------------------------------------------- Cartes au survol --
+
+   Une carte se soulève et son filet se teinte. Le mouvement reste court : sur
+   une grille de produits, un survol trop ample fait vibrer toute la page. */
+.kk-lift {
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease;
+}
+
+.kk-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -22px color-mix(in oklab, var(--deep) 55%, transparent);
+  border-color: color-mix(in oklab, var(--deep) 35%, transparent);
+}
+
+/* Filet qui se déroule sous un lien au survol, du bord gauche vers la droite. */
+.kk-underline {
+  position: relative;
+}
+
+.kk-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kk-underline:hover::after,
+.kk-underline:focus-visible::after {
+  transform: scaleX(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -423,5 +601,19 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Sans mouvement, les entrées au scroll doivent rester lisibles : on les
+     neutralise entièrement plutôt que de les figer sur leur première image. */
+  .kk-enter,
+  .kk-enter-stagger > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .kk-fill:hover,
+  .kk-lift:hover {
+    transform: none !important;
   }
 }

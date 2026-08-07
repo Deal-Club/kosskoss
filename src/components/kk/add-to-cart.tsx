@@ -110,7 +110,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           type="button"
           onClick={handleAdd}
           disabled={outOfStock}
-          className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
+          className="kk-fill group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
         >
           <ShoppingBag className="h-4 w-4" />
           {outOfStock ? "Indisponible" : "Ajouter au panier"}

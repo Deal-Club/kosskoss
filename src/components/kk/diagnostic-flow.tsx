@@ -134,7 +134,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
             <button
               type="button"
               onClick={() => setPhase("question")}
-              className="group mt-9 inline-flex items-center gap-2 rounded-full bg-sand px-8 py-4 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+              className="kk-fill kk-fill-deep group mt-9 inline-flex items-center gap-2 rounded-full bg-sand px-8 py-4 text-sm font-semibold text-deep"
             >
               Commencer le diagnostic
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -242,7 +242,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
                 <button
                   type="button"
                   onClick={addRoutine}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+                  className="kk-fill mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground"
                 >
                   <ShoppingBag className="h-4 w-4" />
                   Ajouter toute la routine au panier
@@ -273,7 +273,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
         </p>
         <div className="mx-auto mt-3 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand">
           <div
-            className="h-full rounded-full bg-deep transition-all"
+            className="kk-fill h-full rounded-full bg-deep transition-all"
             style={{ width: `${((qIndex + 1) / questions.length) * 100}%` }}
           />
         </div>
@@ -324,7 +324,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
             type="button"
             onClick={next}
             disabled={!selected}
-            className="group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="kk-fill group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40"
           >
             {qIndex === questions.length - 1 ? "Voir ma routine" : "Continuer"}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

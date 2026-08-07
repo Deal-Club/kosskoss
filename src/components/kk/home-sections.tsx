@@ -60,13 +60,15 @@ export function UniverseCards({ groups }: { groups: NavGroup[] }) {
         <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Par où commencer</h2>
       </div>
 
-      <div className="grid gap-5 md:grid-cols-2">
+      {/* Trois univers, donc trois colonnes sur grand écran : ils tiennent sur
+          une seule ligne et se lisent comme un choix, pas comme une liste. */}
+      <div className="kk-enter-stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => {
           const total = group.categories.reduce((sum, c) => sum + c.productCount, 0);
           return (
             <article
               key={group.slug}
-              className="group relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-card"
+              className="kk-lift group relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-card"
             >
               <Link href={group.href} className="block">
                 <div className="relative aspect-[16/10] overflow-hidden">
@@ -79,7 +81,7 @@ export function UniverseCards({ groups }: { groups: NavGroup[] }) {
                   />
                   {/* Voile bleu profond : il assure la lisibilité du titre
                       quelle que soit la photo, sans retoucher les visuels. */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-deep/85 via-deep/25 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-deep via-deep/60 to-deep/10" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
                     <h3 className="font-[family-name:var(--font-display,inherit)] text-2xl text-primary-foreground">
                       {group.label}
@@ -126,7 +128,7 @@ export function BrandStrip({ brands }: { brands: string[] }) {
   if (brands.length === 0) return null;
 
   return (
-    <section className="border-y border-border/60 bg-sand/40">
+    <section className="kk-enter border-y border-border/60 bg-sand/40">
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="lg:max-w-xs">
@@ -244,7 +246,7 @@ export function MaisonSection({
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <Link
                 href="/a-propos"
-                className="group inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 text-sm font-semibold text-deep"
               >
                 Notre maison
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -259,11 +261,11 @@ export function MaisonSection({
             </div>
           </div>
 
-          <ul className="grid gap-4 self-center">
+          <ul className="kk-enter-stagger grid gap-4 self-center">
             {pillars.map(({ icon: Icon, title, text }) => (
               <li
                 key={title}
-                className="rounded-2xl border border-primary-foreground/15 bg-primary-foreground/[0.06] p-6 backdrop-blur-sm transition hover:border-primary-foreground/30"
+                className="kk-lift rounded-2xl border border-primary-foreground/15 bg-primary-foreground/[0.06] p-6 backdrop-blur-sm hover:border-primary-foreground/30"
               >
                 <div className="flex items-start gap-4">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sand text-deep">
@@ -314,11 +316,11 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
         </Link>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="kk-enter-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {entries.map((entry) => (
           <details
             key={entry.question}
-            className="group rounded-2xl border border-border/70 bg-card p-5 transition hover:border-deep/40"
+            className="kk-lift group rounded-2xl border border-border/70 bg-card p-5"
           >
             <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-medium text-deep [&::-webkit-details-marker]:hidden">
               {entry.question}
@@ -368,7 +370,7 @@ export function HomeCta({ whatsappUrl }: { whatsappUrl?: string }) {
           <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/diagnostic"
-              className="group inline-flex items-center gap-2 rounded-full bg-sand px-7 py-3.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+              className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-7 py-3.5 text-sm font-semibold text-deep"
             >
               <Sparkles className="h-4 w-4" />
               Faire mon diagnostic

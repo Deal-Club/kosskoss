@@ -20,6 +20,7 @@ import {
 import { getHomeProducts, getHomeTestimonials } from "@/server/kk/home";
 import { getHomeFaq } from "@/server/kk/home-faq";
 import { getShopBrands, getShopNavigation } from "@/server/kk/navigation";
+import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { CONTACT } from "@/config/brand";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
@@ -60,15 +61,17 @@ export default async function Home({ params }: { params: HomeParams }) {
   // Univers et marques servent aux sections de navigation et de réassurance ;
   // ils sont comptés en base, jamais écrits à la main.
   const [products, testimonials, groups, brands, faq] = await Promise.all([
-    getHomeProducts(8),
+    getHomeProducts(12),
     getHomeTestimonials(3),
     getShopNavigation(),
     getShopBrands(),
     // Les réponses viennent de la page /faq : une seule source, deux affichages.
     getHomeFaq(locale, 8),
   ]);
-  const selection = products.slice(0, 4);
-  const popular = products.slice(4, 8);
+  // « À découvrir » tient sur deux rangées de quatre ; « Les plus choisis »
+  // garde une seule rangée, pour rester une pointe et non un second catalogue.
+  const selection = products.slice(0, 8);
+  const popular = products.slice(8, 12);
   const productCount = groups.reduce(
     (sum, group) => sum + group.categories.reduce((n, c) => n + c.productCount, 0),
     0,
@@ -78,6 +81,19 @@ export default async function Home({ params }: { params: HomeParams }) {
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
       <AnnouncementBar />
       <SiteHeader />
+
+      {/* Balisage Organization + WebSite, à déclarer une seule fois pour tout
+          le site : c'est ce qui rattache la boutique à une entité identifiée
+          pour Google et pour les moteurs de réponse. Le composant existait déjà
+          mais n'était monté sur aucune page — le balisage n'était donc jamais
+          émis. L'adresse postale reste absente tant que les mentions légales
+          portent « À COMPLÉTER » : mieux vaut pas d'adresse qu'une fausse. */}
+      <OrganizationJsonLd
+        sameAs={[
+          `https://instagram.com/${CONTACT.social.instagram}`,
+          `https://facebook.com/${CONTACT.social.facebook}`,
+        ]}
+      />
 
       <main className="flex-1">
         <Hero />

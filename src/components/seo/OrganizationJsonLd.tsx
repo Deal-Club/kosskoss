@@ -28,12 +28,12 @@ export function OrganizationJsonLd({ sameAs, address }: OrganizationJsonLdProps)
     "@id": `${base}#organization`,
     name: SHOP_NAME,
     url: base,
-    // `/images/logo-full.png` était l'ancien lettrage MLC BOIS, retiré du dépôt
-    // lors du passage à KossKoss : les moteurs et les réseaux sociaux ne
-    // recevaient plus qu'un 404 pour le logo de la boutique. `/icon.svg` est le
-    // monogramme de la marque, servi par Next à cette adresse.
-    logo: `${base}/icon.svg`,
-    image: `${base}/icon.svg`,
+    // Le lettrage KossKoss, régénéré depuis les planches de la charte par
+    // `scripts/generer-logos.mjs`. Ce fichier avait disparu avec l'ancienne
+    // identité MLC BOIS : moteurs et réseaux sociaux ne recevaient plus qu'un
+    // 404 à la place du logo de la boutique.
+    logo: `${base}/images/logo-full.png`,
+    image: `${base}/images/logo-full.png`,
     telephone: SHOP_PHONE,
     areaServed: MERCHANT_COUNTRY,
     contactPoint: {

@@ -57,7 +57,7 @@ export function CartDrawerKK() {
             <Link
               href="/soins-visage"
               onClick={closeDrawer}
-              className="rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground"
+              className="kk-fill rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground"
             >
               Découvrir la boutique
             </Link>
@@ -161,7 +161,7 @@ export function CartDrawerKK() {
                 <Link
                   href="/commande"
                   onClick={closeDrawer}
-                  className="flex-1 rounded-full bg-deep px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+                  className="kk-fill flex-1 rounded-full bg-deep px-5 py-3 text-center text-sm font-semibold text-primary-foreground"
                 >
                   Commander
                 </Link>
