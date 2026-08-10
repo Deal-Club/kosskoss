@@ -18,8 +18,8 @@ import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
 import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
-import { PatternBackdrop } from "./pattern-backdrop";
 import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
+import { Monogram } from "./motifs";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -55,7 +55,14 @@ function FacebookIcon({ className }: { className?: string }) {
  * devenu « Corps & Hygiène », ajout de « Homme » — laisse des entrées de menu
  * pointant vers des pages qui n'existent plus.
  */
+/**
+ * « Nos routines » et « Nos marques » sont repris ici alors qu'ils figurent
+ * aussi dans la barre du haut : le pied de page est la seconde carte du site,
+ * celle qu'on consulte quand on a scrollé et qu'on ne veut pas remonter.
+ */
 const FOOTER_HELP = [
+  { label: "Nos routines", href: "/routines" },
+  { label: "Nos marques", href: "/marques" },
   { label: "Livraison", href: "/livraison" },
   { label: "Suivi de commande", href: "/compte/commandes" },
   { label: "Moyens de paiement", href: "/moyens-de-paiement" },
@@ -103,11 +110,38 @@ export async function AnnouncementBar() {
   return <AnnouncementBarView items={items} config={config} />;
 }
 
-function Wordmark({ className = "" }: { className?: string }) {
+/**
+ * Mot-symbole composé.
+ *
+ * Il s'écrit « KossKoss » et non « KOSSKOSS » : Cinzel n'a pas de vraie
+ * bas-de-casse, ses minuscules sont des petites capitales. La casse mixte rend
+ * donc les deux K hauts suivis de « OSS » en petites capitales — exactement le
+ * dessin du logo officiel (assets/marque/), que le tout-capitales aplatissait.
+ *
+ * `aligne` place le sigle à gauche du lettrage, comme sur la maquette du
+ * client, où l'en-tête porte le monogramme encadré suivi du nom sur deux
+ * lignes. Le mode centré subsiste pour les pages transactionnelles, dont
+ * l'en-tête minimal n'a que le logotype au milieu.
+ */
+function Wordmark({ className = "", aligne = false }: { className?: string; aligne?: boolean }) {
+  if (aligne) {
+    return (
+      <Link href="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label={BRAND.name}>
+        <Monogram className="h-8 w-8 shrink-0 text-deep" title="" />
+        <span className="flex flex-col leading-none">
+          <span className="wordmark text-[1.05rem] text-deep sm:text-[1.15rem]">KossKoss</span>
+          <span className="mt-1 text-[0.52rem] font-medium uppercase tracking-[0.42em] text-deep/70">
+            Select
+          </span>
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Link href="/" className={`inline-flex flex-col items-center leading-none ${className}`} aria-label={BRAND.name}>
-      <span className="wordmark text-[1.15rem] text-deep sm:text-[1.35rem]">KOSSKOSS</span>
-      <span className="mt-0.5 text-[0.55rem] font-medium uppercase tracking-[0.5em] text-deep/70">
+      <span className="wordmark text-[1.2rem] text-deep sm:text-[1.4rem]">KossKoss</span>
+      <span className="mt-1 text-[0.55rem] font-medium uppercase tracking-[0.42em] text-deep/70">
         Select
       </span>
     </Link>
@@ -126,18 +160,21 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-cream/85 backdrop-blur-md">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:px-6">
-        {/* Gauche : recherche (desktop) / menu (mobile) */}
-        <div className="flex items-center gap-2">
+      {/* Une seule rangée : sigle à gauche, navigation au centre, actions à
+          droite — la composition de la maquette du client.
+          L'en-tête précédent centrait le logotype et repoussait la navigation
+          sur une seconde ligne : il occupait deux fois la hauteur pour la même
+          information, et le nom de la maison se retrouvait au milieu de nulle
+          part au lieu de tenir le coin où l'œil le cherche. */}
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3.5 sm:px-6">
+        <div className="flex items-center gap-1">
           <MobileMenu groups={groups} />
-          <SearchAction />
+          <Wordmark aligne className="shrink-0" />
         </div>
 
-        {/* Centre : logotype */}
-        <Wordmark />
+        <DesktopNav groups={groups} />
 
-        {/* Droite : recherche (mobile) + favoris + compte + panier */}
-        <div className="flex items-center justify-end gap-1">
+        <div className="ml-auto flex items-center justify-end gap-1">
           <SearchAction variant="icon" />
           <FavoritesLink />
           <Link
@@ -150,8 +187,6 @@ export async function SiteHeader() {
           <CartButton />
         </div>
       </div>
-
-      <DesktopNav groups={groups} />
     </header>
   );
 }
@@ -175,12 +210,20 @@ export function CheckoutHeader() {
   );
 }
 
-/** Barre de navigation basse — mobile uniquement, Diagnostic mis en avant. */
+/**
+ * Barre de navigation basse — mobile uniquement.
+ *
+ * C'est « Routines » qui occupe désormais la place centrale, et non le
+ * diagnostic. Les deux mènent au même endroit — une routine adaptée — mais
+ * l'une la donne en un clic et l'autre en cinq questions. Sur un écran de
+ * téléphone, la porte la plus courte doit être la plus visible ; le diagnostic
+ * reste en tête du menu, sur l'accueil et sur la page des routines.
+ */
 export function MobileTabBar() {
   const items = [
     { label: "Accueil", href: "/", icon: Home, active: true },
     { label: "Boutique", href: "/soins-visage", icon: LayoutGrid },
-    { label: "Diagnostic", href: "/diagnostic", icon: Sparkles, primary: true },
+    { label: "Routines", href: "/routines", icon: Sparkles, primary: true },
     { label: "Favoris", href: "/favoris", icon: Heart, badge: true },
     { label: "Compte", href: "/compte", icon: User },
   ];
@@ -231,11 +274,12 @@ export function MobileTabBar() {
 export async function SiteFooter() {
   const groups = await getShopNavigation();
 
+  // Le motif a été retiré d'ici. Le pied de page est fait de quatre colonnes de
+  // liens en petit corps : c'était le pire endroit du site pour poser une
+  // trame, et comme il figure sur toutes les pages, c'était aussi le plus
+  // répété. Voir la règle documentée dans pattern-backdrop.tsx.
   return (
     <footer className="relative overflow-hidden bg-footer text-footer-foreground">
-      {/* Motif de marque, présent sur toutes les pages puisque le pied de page
-          l'est : il referme chaque page sur l'identité de la maison. */}
-      <PatternBackdrop align="footer" opacity="opacity-35" />
       <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
           <div>

@@ -65,7 +65,7 @@ export default async function ConfirmationPage({
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-deep text-primary-foreground">
               <Check className="h-8 w-8" />
             </span>
-            <h1 className="mt-6 text-3xl text-deep sm:text-4xl">Merci pour votre commande !</h1>
+            <h1 className="mt-6 text-deep">Merci pour votre commande !</h1>
             <p className="mt-3 text-muted-foreground">
               Votre commande <span className="font-semibold text-deep">{order.orderNumber}</span> est
               enregistrée. Confirmez-la via WhatsApp pour organiser le paiement et la livraison.

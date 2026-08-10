@@ -1,209 +1,109 @@
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
-import {
-  Sparkles,
-  ArrowRight,
-  ArrowUpRight,
-  Star,
-  Smartphone,
-  Truck,
-  BadgeCheck,
-  MessageCircle,
-} from "lucide-react";
-import type { KKProductView, KKTestimonialView } from "@/types/kk";
-import { TYPES_DE_PEAU, PREOCCUPATIONS, type Besoin } from "@/lib/kk/besoins";
+import { Sparkles, ArrowRight } from "lucide-react";
+import type { KKProductView } from "@/types/kk";
 import { ProductCard } from "./product-card";
-import { Monogram, Petal, Flourish } from "./motifs";
-import { PatternBackdrop } from "./pattern-backdrop";
 
-/* ------------------------------------------------------------------ Hero -- */
+/* ------------------------------------------------------------- 1. Hero -- */
 
+/**
+ * Hero, recomposé sur la maquette client.
+ *
+ * Trois différences de fond avec la version précédente :
+ *
+ *  — LE TITRE JOUE DE DEUX GRAISSES et non de deux tailles. La maquette écrit
+ *    « Des soins conçus pour sublimer » en gras et « les peaux noires &
+ *    métissées » en léger, dans la même serif. Le relief vient de la graisse,
+ *    ce qui permet de descendre de 60 px à 44 px sans rien perdre — le retour
+ *    client tenant précisément sur des « textes trop grands ».
+ *
+ *  — LE FOND EST UN APLAT TAUPE, pas le crème de la page. Sur la maquette, le
+ *    hero est le premier des trois registres de fond (taupe, crème, vert
+ *    profond) qui donnent son rythme à la page. L'accueil précédent n'en avait
+ *    que deux.
+ *
+ *  — L'IMAGE VA JUSQU'AU BORD. Elle sortait d'un cadre arrondi flottant au
+ *    milieu du crème ; elle occupe désormais toute la moitié droite, comme sur
+ *    la maquette, ce qui lui donne le poids qu'un visuel de tête doit avoir.
+ */
 export function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <Flourish className="pointer-events-none absolute -left-16 top-24 hidden h-40 w-[28rem] text-gold/40 lg:block" />
-      {/* Respiration dissymétrique : peu d'air en haut, où le bandeau et la
-          navigation en donnent déjà, davantage en bas pour détacher le hero de
-          la section suivante. */}
-      <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 pb-16 pt-6 lg:grid-cols-2 lg:gap-16 lg:pb-24 lg:pt-10">
-        <div className="max-w-xl">
+    <section className="relative overflow-hidden bg-taupe">
+      <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-4">
+        <div className="max-w-xl px-6 pb-4 pt-12 lg:py-20">
           <p className="eyebrow kk-rise flex items-center gap-2" style={{ "--d": "0ms" } as React.CSSProperties}>
-            <span className="h-px w-8 bg-gold" /> Concept-store beauté · Afrique centrale
+            <span className="h-px w-8 bg-gold" /> L&rsquo;expertise dédiée à votre peau
           </p>
-          <h1
-            className="kk-rise mt-5 text-[2.6rem] leading-[1.05] text-deep sm:text-6xl"
-            style={{ "--d": "80ms" } as React.CSSProperties}
-          >
-            La sélection beauté qui vous choisit.
+
+          <h1 className="kk-rise mt-5 text-deep" style={{ "--d": "80ms" } as React.CSSProperties}>
+            Des soins conçus pour sublimer{" "}
+            <span className="title-soft">les peaux noires &amp; métissées</span>
           </h1>
+
           <p
-            className="kk-rise mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg"
+            className="lead kk-rise mt-5 max-w-md text-deep/75"
             style={{ "--d": "160ms" } as React.CSSProperties}
           >
-            Une sélection courte de soins pour les peaux noires, mates et
-            métissées. Des marques reconnues, des circuits d&rsquo;approvisionnement
-            sérieux, et des routines pensées pour le climat d&rsquo;ici.
+            Sélection rigoureuse, formules efficaces, résultats visibles. Et des routines déjà
+            composées, pour ne pas avoir à choisir seul.
           </p>
+
+          {/* Deux portes, dans l'ordre de la maquette : la boutique pour qui
+              sait ce qu'il veut, la routine pour qui ne le sait pas. */}
           <div
-            className="kk-rise mt-9 flex flex-wrap items-center gap-4"
+            className="kk-rise mt-8 flex flex-wrap items-center gap-4"
             style={{ "--d": "240ms" } as React.CSSProperties}
           >
             <Link
-              href="/diagnostic"
-              className="kk-fill group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-cream"
-            >
-              <Sparkles className="h-4 w-4" />
-              Faire mon diagnostic
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
               href="/soins-visage"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
+              className="kk-fill group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-taupe"
             >
               Découvrir la boutique
-              <ArrowUpRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Visuel hero — image d'ambiance plutôt qu'un packshot : le geste de
-            soin sur une peau riche en mélanine dit le positionnement de la
-            maison, là où un flacon isolé ne montrait qu'une référence.
-            Cadrage plein (`object-cover`) : la photo est composée au format
-            4/5 du gabarit, elle n'a pas besoin de marge.
-            `priority` : c'est le plus grand visuel au-dessus de la ligne de
-            flottaison, donc celui que le navigateur doit chercher en premier. */}
-        <div
-          className="kk-rise relative mx-auto w-full max-w-md"
-          style={{ "--d": "200ms" } as React.CSSProperties}
-        >
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-deep shadow-2xl shadow-deep/15">
-            <Image
-              src="/images/editorial/hero-soin.webp"
-              alt="Application d'un sérum du bout des doigts sur une peau riche en mélanine"
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-          <Petal className="kk-float absolute -right-6 -top-6 h-24 w-24 text-deep/90" />
-          <div className="absolute -bottom-5 -left-5 grid h-20 w-20 place-items-center rounded-2xl bg-cream shadow-xl">
-            <Monogram className="h-12 w-12 text-deep" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* --------------------------------------------------- Sélection par peau -- */
-
-/**
- * Une entrée de besoin, en pastille.
- *
- * Les cartes précédentes portaient chacune leur précision sur trois lignes :
- * huit blocs hauts qui mangeaient un écran entier pour huit liens. La
- * précision passe en `title` — elle reste disponible au survol sans occuper
- * la page — et la pastille tient sur une ligne.
- */
-function BesoinCard({ besoin }: { besoin: Besoin }) {
-  return (
-    <li>
-      <Link
-        href={`/soins-visage?besoin=${besoin.tag}`}
-        title={besoin.hint}
-        className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.06] px-4 py-2 text-sm text-primary-foreground/90 backdrop-blur-sm transition hover:border-gold/70 hover:bg-primary-foreground/15 hover:text-primary-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
-      >
-        <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold transition-transform duration-300 group-hover:scale-150" />
-        {besoin.label}
-      </Link>
-    </li>
-  );
-}
-
-/**
- * Entrée dans le catalogue par le besoin.
- *
- * Chaque pastille menait auparavant au diagnostic, quel que soit le type
- * choisi : « choisissez selon votre peau » ne choisissait rien. Elles ouvrent
- * désormais le rayon réellement filtré (`?besoin=`), sur les étiquettes que
- * portent les produits.
- *
- * Deux registres séparés parce qu'ils ne répondent pas à la même question : le
- * type de peau ne change pas, la préoccupation du moment si. Et pour qui ne
- * sait pas se situer, le diagnostic reste offert en bas — c'est la porte de
- * sortie, pas la porte principale.
- */
-export function SkinTypeStrip() {
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-10">
-      {/* Sur bleu profond, avec le tissage bogolan : le motif est dessiné dans
-          cette couleur et n'existe vraiment que sur fond sombre. La section
-          gagne au passage le poids d'une prise de parole, entre le hero et le
-          rayon — et huit pastilles sur deux lignes occupent le tiers de la
-          place que prenaient huit cartes. */}
-      <div className="kk-enter relative overflow-hidden rounded-[1.75rem] bg-deep text-primary-foreground">
-        <PatternBackdrop align="split" opacity="opacity-40" />
-        <div className="relative grid gap-7 p-7 sm:p-9 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)] lg:items-center lg:gap-12">
-          <div className="lg:max-w-xs">
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-gold">
-              Trouver vite
-            </p>
-            <h2 className="mt-2 text-2xl leading-tight sm:text-[1.75rem]">
-              Votre peau, votre routine
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-primary-foreground/70">
-              Dites-nous ce qui vous préoccupe : nous ouvrons le rayon
-              correspondant, déjà trié.
-            </p>
-            <Link
-              href="/diagnostic"
-              className="group mt-5 inline-flex items-center gap-2 text-sm font-medium text-primary-foreground underline-offset-4 hover:underline"
-            >
-              <Sparkles className="h-4 w-4 text-gold" />
-              Je ne sais pas, guidez-moi
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
+            <Link
+              href="/routines"
+              className="inline-flex items-center gap-2 rounded-full border border-deep/30 px-7 py-3.5 text-sm font-semibold text-deep transition hover:border-deep hover:bg-deep/5"
+            >
+              Trouvez votre routine
+              <Sparkles className="h-4 w-4 text-gold" />
+            </Link>
           </div>
+        </div>
 
-          <div className="space-y-5">
-            <div>
-              <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-primary-foreground/45">
-                Type de peau
-              </p>
-              <ul className="mt-2.5 flex flex-wrap gap-2.5">
-                {TYPES_DE_PEAU.map((b) => (
-                  <BesoinCard key={b.tag} besoin={b} />
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-primary-foreground/45">
-                Préoccupation
-              </p>
-              <ul className="mt-2.5 flex flex-wrap gap-2.5">
-                {PREOCCUPATIONS.map((b) => (
-                  <BesoinCard key={b.tag} besoin={b} />
-                ))}
-              </ul>
-            </div>
-          </div>
+        {/* Visuel de tête. `priority` : c'est le plus grand visuel au-dessus de
+            la ligne de flottaison, celui que le navigateur doit chercher en
+            premier. */}
+        <div className="kk-rise relative h-[22rem] w-full sm:h-[28rem] lg:h-[34rem]" style={{ "--d": "200ms" } as React.CSSProperties}>
+          <Image
+            src="/images/editorial/hero-soin.webp"
+            alt="Application d'un sérum du bout des doigts sur une peau riche en mélanine"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="object-cover"
+            priority
+          />
+          {/* Fondu vers le taupe sur le bord gauche : la photo se raccorde à
+              l'aplat au lieu de s'arrêter net contre le texte. Masqué sous `lg`,
+              où l'image passe sous le texte et n'a plus de bord à raccorder. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-y-0 left-0 hidden w-32 bg-gradient-to-r from-taupe to-transparent lg:block"
+          />
         </div>
       </div>
     </section>
   );
 }
 
-/* --------------------------------------------------------- Rail produits -- */
+/* --------------------------------------------------- 7. Rail best-sellers -- */
 
 function SectionHead({ eyebrow, title, action }: { eyebrow: string; title: string; action?: string }) {
   return (
-    <div className="mb-8 flex items-end justify-between gap-4">
+    <div className="mb-6 flex items-end justify-between gap-4">
       <div>
         <p className="eyebrow">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl text-deep sm:text-3xl">{title}</h2>
+        <h2 className="mt-2 text-deep">{title}</h2>
       </div>
       {action && (
         <Link
@@ -218,218 +118,57 @@ function SectionHead({ eyebrow, title, action }: { eyebrow: string; title: strin
   );
 }
 
+/**
+ * Rail de produits.
+ *
+ * `bare` le rend sans sa propre gouttière ni ses marges verticales, pour qu'il
+ * puisse tenir dans une colonne à côté des catégories — c'est la composition de
+ * la maquette, et c'est ce qui permet de loger treize blocs sans doubler la
+ * hauteur de la page.
+ */
 export function ProductRail({
   eyebrow,
   title,
   action,
   products,
+  columns = 4,
+  bare = false,
 }: {
   eyebrow: string;
   title: string;
   action?: string;
   products: KKProductView[];
+  columns?: 2 | 4;
+  bare?: boolean;
 }) {
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-12">
+  const grille =
+    columns === 2 ? "grid-cols-2" : "grid-cols-2 lg:grid-cols-4";
+
+  const contenu = (
+    <>
       <SectionHead eyebrow={eyebrow} title={title} action={action} />
-      <div className="kk-enter-stagger grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-4">
+      <div className={`kk-enter-stagger grid gap-x-5 gap-y-8 ${grille}`}>
         {products.map((p) => (
           <ProductCard key={p.id} product={p} />
         ))}
       </div>
-    </section>
+    </>
   );
+
+  if (bare) {
+    return <div className="rounded-2xl border border-border/70 bg-card p-6">{contenu}</div>;
+  }
+
+  return <section className="section mx-auto max-w-7xl px-6">{contenu}</section>;
 }
 
-/* ----------------------------------------------------- Promo diagnostic -- */
+/* ------------------------------------------------------------ 10. Avis -- */
 
-export function DiagnosticPromo() {
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-12">
-      <div className="kk-enter relative overflow-hidden rounded-[2rem] bg-sand px-8 py-12 sm:px-14 sm:py-16">
-        {/* Visuel de section. Il n'apparaît qu'à partir de `md` : en dessous,
-            la bannière devient étroite et haute, le cadrage `cover` ne
-            retiendrait que le visage et le texte passerait par-dessus. Le fond
-            sable seul y suffit.
-            `alt` vide et `aria-hidden` : l'image illustre un propos que le
-            titre et le paragraphe énoncent déjà — l'annoncer une seconde fois
-            n'apprendrait rien à qui écoute la page. */}
-        <Image
-          src="/images/editorial/diagnostic-bandeau.webp"
-          alt=""
-          aria-hidden="true"
-          fill
-          sizes="(max-width: 768px) 0px, 1280px"
-          className="hidden object-cover object-right md:block"
-        />
-        {/* Dégradé sable : il garantit le contraste du texte quelle que soit la
-            largeur, le recadrage faisant glisser le sujet d'un écran à l'autre.
-            Il est plein jusqu'à 30 % — la colonne de texte s'arrête à 45 % —
-            puis s'efface avant 60 %, là où le sujet commence. Un voile qui
-            court plus loin ternit la photo qu'il est censé mettre en valeur. */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 hidden bg-gradient-to-r from-sand from-30% to-transparent to-60% md:block"
-        />
+/* Le bloc des avis vivait ici, en deux variantes : une grille de trois cartes
+   et une carte compacte. Les deux ont disparu au profit de `InsightsSection`
+   (home-sections.tsx), qui réunit conseils, avant/après et avis en une seule
+   section — trois cartes autonomes côte à côte se disputaient l'attention pour
+   ce qui est un seul propos, la preuve.
 
-        <div className="relative grid items-center gap-8 md:grid-cols-[1.5fr_1fr]">
-          <div className="max-w-lg">
-            <p className="eyebrow">Diagnostic beauté</p>
-            <h2 className="mt-3 text-3xl text-deep sm:text-4xl">
-              Votre routine en quelques réponses
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Cinq questions sur votre peau, vos préoccupations et votre budget.
-              Nous vous proposons ensuite une sélection courte, adaptée à votre
-              profil et au climat local — libre à vous de la suivre ou non.
-            </p>
-            <Link
-              href="/diagnostic"
-              className="kk-fill group mt-8 inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
-            >
-              Commencer
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
-          {/* Colonne de droite laissée vide : c'est là que le sujet de la
-              photo se place. Le pétale décoratif qui l'occupait ferait doublon
-              avec les botaniques de l'image. */}
-          <div aria-hidden="true" />
-        </div>
-        {/* Sur mobile, l'image est masquée : ce pétale reste le seul ornement. */}
-        <Petal className="pointer-events-none absolute -bottom-16 -right-10 h-56 w-56 text-deep/5 md:hidden" />
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------ Bloc éditorial -- */
-
-export function EditorialBlock() {
-  return (
-    <section className="kk-enter mx-auto max-w-7xl px-6 py-16">
-      <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-        {/* Nature morte plutôt qu'un packshot : la section parle de méthode et
-            de tri — « nous filtrons l'offre plutôt que de l'empiler ». Trois
-            flacons largement espacés portent ce propos ; une étagère pleine
-            dirait l'inverse du texte qu'elle accompagne. */}
-        <div className="kk-lift relative order-last aspect-[5/4] overflow-hidden rounded-[2rem] bg-deep lg:order-first">
-          <Image
-            src="/images/editorial/exigence-nature-morte.webp"
-            alt="Trois flacons de soin posés en lumière rasante, largement espacés"
-            fill
-            sizes="(max-width: 1024px) 100vw, 45vw"
-            className="object-cover"
-          />
-        </div>
-        <div className="max-w-xl">
-          <p className="eyebrow">Notre exigence</p>
-          <h2 className="mt-3 text-3xl text-deep sm:text-4xl">Des soins choisis avec méthode</h2>
-          <p className="mt-5 leading-relaxed text-muted-foreground">
-            Nous filtrons l&rsquo;offre plutôt que de l&rsquo;empiler : chaque référence
-            entre au catalogue pour sa formule, sa tolérance et son intérêt réel
-            sur les peaux riches en mélanine. Peu de doublons, aucun produit au
-            hasard.
-          </p>
-          <ul className="mt-6 space-y-3">
-            {["Chaque référence a une raison d'être", "Marques reconnues, circuits d'approvisionnement sérieux", "Conseils adaptés aux peaux noires et métissées"].map(
-              (item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-foreground">
-                  <BadgeCheck className="h-5 w-5 shrink-0 text-gold" />
-                  {item}
-                </li>
-              ),
-            )}
-          </ul>
-          <Link
-            href="/soins-visage"
-            className="group mt-8 inline-flex items-center gap-1.5 text-sm font-semibold text-deep kk-underline"
-          >
-            Découvrir la sélection
-            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------------------------------------------------- Témoignages -- */
-
-function Stars({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-0.5" aria-label={`Note ${rating} sur 5`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <Star
-          key={i}
-          className={`h-4 w-4 ${i < rating ? "fill-gold text-gold" : "text-border"}`}
-        />
-      ))}
-    </div>
-  );
-}
-
-/**
- * Avis clients. N'affiche que de vrais avis passés par la modération.
- * Liste vide = section entièrement masquée : mieux vaut pas d'avis du tout
- * qu'un témoignage écrit par la boutique.
- */
-export function Testimonials({ testimonials }: { testimonials: KKTestimonialView[] }) {
-  if (testimonials.length === 0) return null;
-
-  return (
-    <section className="bg-sand/50">
-      <div className="mx-auto max-w-7xl px-6 py-16">
-        <div className="text-center">
-          <p className="eyebrow">Avis publiés après modération</p>
-          <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Ce qu&rsquo;en disent nos clients</h2>
-        </div>
-        <div className="kk-enter-stagger mt-10 grid gap-6 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <figure key={t.id} className="kk-lift flex flex-col rounded-2xl border border-border/60 bg-card p-7">
-              <Stars rating={t.rating} />
-              <blockquote className="mt-4 flex-1 text-[0.95rem] leading-relaxed text-foreground">
-                « {t.quote} »
-              </blockquote>
-              <figcaption className="mt-5 text-sm">
-                <span className="font-semibold text-deep">{t.author}</span>
-                {t.city && <span className="text-muted-foreground"> · {t.city}</span>}
-                <span className="mt-1 block text-muted-foreground">à propos de {t.productName}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------ Réassurance -- */
-
-export function TrustRow() {
-  // L'authenticité passe en tête : c'est la première inquiétude de nos clients,
-  // avant même le prix ou le délai.
-  const items = [
-    { icon: BadgeCheck, title: "Produits authentiques", text: "Circuits d'approvisionnement sérieux" },
-    { icon: MessageCircle, title: "Conseil avant l'achat", text: "On vous guide, sans jargon" },
-    { icon: Smartphone, title: "Paiement Mobile Money", text: "Orange Money & MTN" },
-    { icon: Truck, title: "Livraison Cameroun", text: "Partout, suivi WhatsApp" },
-  ];
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-14">
-      <div className="kk-enter-stagger grid gap-8 rounded-2xl border border-border/60 bg-card/50 px-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-start gap-4">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sand text-deep">
-              <Icon className="h-5 w-5" />
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-deep">{title}</p>
-              <p className="mt-0.5 text-sm text-muted-foreground">{text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
+   La règle de fond n'a pas bougé : seuls de vrais avis modérés s'affichent, et
+   une liste vide masque le panneau plutôt que d'inventer un témoignage. */

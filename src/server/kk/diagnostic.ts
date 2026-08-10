@@ -14,9 +14,16 @@ function parseTags(value: string | null): string[] {
 }
 
 // Routine en 4 gestes, chaque geste puisé dans une catégorie du visage.
+//
+// « traiter » pointait sur une catégorie `serums` qui n'existe pas au
+// catalogue : les slugs réels sont nettoyants, toniques, TRAITEMENTS,
+// hydratants, solaires (voir prisma/data/kk-catalog.json). Aucun candidat
+// n'étant trouvé, la boucle sortait en silence — le geste central de la
+// routine, celui qui porte les vingt sérums du catalogue, manquait donc à
+// CHAQUE diagnostic depuis l'origine, sans la moindre erreur visible.
 const ROUTINE_STEPS = [
   { key: "nettoyer", label: "Nettoyer", category: "nettoyants" },
-  { key: "traiter", label: "Traiter", category: "serums" },
+  { key: "traiter", label: "Traiter", category: "traitements" },
   { key: "hydrater", label: "Hydrater", category: "hydratants" },
   { key: "proteger", label: "Protéger", category: "solaires" },
 ] as const;

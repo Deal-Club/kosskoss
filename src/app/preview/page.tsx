@@ -1,16 +1,15 @@
 import type { Metadata } from "next";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { Hero, ProductRail } from "@/components/kk/home";
 import {
-  Hero,
-  SkinTypeStrip,
-  ProductRail,
-  DiagnosticPromo,
-  EditorialBlock,
-  Testimonials,
-  TrustRow,
-} from "@/components/kk/home";
+  DiagnosticReminder,
+  InsightsSection,
+  PromisesRow,
+  ServicesBand,
+} from "@/components/kk/home-sections";
+import { NewsletterBand } from "@/components/kk/newsletter";
 import { CartProvider } from "@/components/cart/CartProvider";
-import { MOCK_SELECTION, MOCK_POPULAR } from "@/data/kk/home-mock";
+import { MOCK_SELECTION } from "@/data/kk/home-mock";
 import type { KKTestimonialView } from "@/types/kk";
 
 /**
@@ -65,25 +64,31 @@ export default function PreviewHomePage() {
         <AnnouncementBar />
         <SiteHeader />
 
+        {/* Les blocs branchés sur la base — focus marque, routines, catégories
+            — ne figurent pas ici : cette page n'a pas de connexion et sert à
+            caler le rendu, pas à répéter l'accueil. */}
         <main className="flex-1">
           <Hero />
-          <SkinTypeStrip />
+          <PromisesRow />
           <ProductRail
-            eyebrow="À découvrir"
-            title="La sélection du moment"
+            eyebrow="Les plus choisis"
+            title="Nos best-sellers"
             action="Tout voir"
             products={MOCK_SELECTION}
           />
-          <DiagnosticPromo />
-          <ProductRail
-            eyebrow="Les favoris"
-            title="Les plus choisis"
-            action="Voir la boutique"
-            products={MOCK_POPULAR}
+          <InsightsSection
+            entries={[
+              {
+                question: "Emplacement d'une question fréquente",
+                answer: "Réponse de démonstration. La boutique lit ce bloc depuis la page /faq.",
+              },
+            ]}
+            cases={[]}
+            testimonials={PREVIEW_TESTIMONIALS}
           />
-          <EditorialBlock />
-          <Testimonials testimonials={PREVIEW_TESTIMONIALS} />
-          <TrustRow />
+          <DiagnosticReminder />
+          <ServicesBand />
+          <NewsletterBand />
         </main>
 
         <SiteFooter />

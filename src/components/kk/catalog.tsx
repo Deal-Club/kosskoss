@@ -3,7 +3,6 @@ import { SlidersHorizontal, RotateCcw, Sparkles, ArrowRight, Check, X } from "lu
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
 import { besoinParTag } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
-import { PatternBackdrop } from "./pattern-backdrop";
 
 const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "pertinence", label: "Pertinence" },
@@ -189,17 +188,14 @@ export function CatalogView({
 
   return (
     <>
-      {/* Bandeau de tête, sur le bleu profond de la charte : c'est là que le
-          tissage bogolan existe vraiment, et le contraste donne du poids au
-          titre de rayon. */}
+      {/* Bandeau de tête sur le vert profond de la charte : le contraste donne
+          du poids au titre de rayon. Le motif en a été retiré — un en-tête de
+          catalogue porte un titre, un chapô et se répète sur chaque rayon. */}
       <section className="relative overflow-hidden bg-deep text-primary-foreground">
-        <PatternBackdrop align="center" />
-        <div className="relative mx-auto max-w-7xl px-6 py-16 text-center">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
-            {view.group.label}
-          </p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">{title}</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
+        <div className="relative mx-auto max-w-7xl px-6 py-14 text-center">
+          <p className="eyebrow eyebrow-on-dark">{view.group.label}</p>
+          <h1 className="mt-3">{title}</h1>
+          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground/75">
             Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement
             évalué pour son efficacité, sa formulation et son respect de la peau.
           </p>
@@ -239,7 +235,7 @@ export function CatalogView({
 
         {/* Filtres desktop */}
         <aside className="hidden w-60 shrink-0 lg:block">
-          <div className="sticky top-28">
+          <div className="sticky top-24">
             <FiltersPanel {...filterState} />
           </div>
         </aside>

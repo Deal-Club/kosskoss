@@ -53,7 +53,7 @@ export function CheckoutForm({
   if (ready && lines.length === 0) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
-        <h1 className="text-3xl text-deep">Votre panier est vide</h1>
+        <h1 className="text-deep">Votre panier est vide</h1>
         <Link href="/soins-visage" className="kk-fill mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground">
           Découvrir la boutique
         </Link>
@@ -141,7 +141,7 @@ export function CheckoutForm({
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-7xl px-6 py-10">
-      <h1 className="text-3xl text-deep sm:text-4xl">Finaliser la commande</h1>
+      <h1 className="text-deep">Finaliser la commande</h1>
       <p className="mt-2 text-muted-foreground">
         Renseignez vos informations pour recevoir vos produits KossKoss Select.
       </p>

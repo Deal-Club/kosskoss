@@ -8,21 +8,41 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Deux familles KossKoss Select :
-     - Cinzel (serif haute couture) pour les titres et le logotype ;
-     - Manrope (grotesque humaniste) pour le texte courant, substitut libre de
-       Gilroy (charte). --font-display / --font-sans sont branchés dans layout.tsx. */
+  /* Trois familles KossKoss Select :
+     - Cinzel pour le SEUL logotype. C'est une capitale romaine sans vraie
+       bas-de-casse : elle rend le « KossKoss » à petites capitales du logo
+       officiel, et elle est illisible partout ailleurs.
+     - Playfair Display pour les titres. La maquette du client compose ses
+       titres en bas-de-casse (« Des soins conçus pour sublimer ») — ce que
+       Cinzel ne sait pas faire — et joue de deux graisses dans un même titre.
+     - Manrope pour le texte courant, substitut libre de Gilroy (charte).
+     Les trois sont branchées dans src/app/layout.tsx. */
   --font-sans: var(--font-manrope), "Manrope Fallback", system-ui, sans-serif;
-  --font-display: var(--font-cinzel), "Cinzel Fallback", Georgia, serif;
+  --font-display: var(--font-playfair), "Playfair Display Fallback", Georgia, serif;
+  --font-logo: var(--font-cinzel), "Cinzel Fallback", Georgia, serif;
   --font-mono: var(--font-manrope), system-ui, sans-serif;
 
   /* Couleurs de marque, disponibles en utilitaires (bg-sand, text-deep…) */
   --color-sand: var(--sand);
+  --color-taupe: var(--taupe);
   --color-deep: var(--deep);
+  --color-deep-soft: var(--deep-soft);
+  --color-ink: var(--ink);
   --color-cream: var(--cream);
   --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
   --color-footer: var(--footer);
   --color-footer-foreground: var(--footer-foreground);
+
+  /* Teintes de routine — une par préoccupation. C'est le mécanisme qui casse
+     la monochromie sur la maquette : cinq fonds pastel distincts, et non cinq
+     cartes identiques. Fonctionnel avant d'être décoratif : la couleur
+     identifie la routine partout où elle apparaît (accueil, page, panier). */
+  --color-tint-acne: var(--tint-acne);
+  --color-tint-taches: var(--tint-taches);
+  --color-tint-eclat: var(--tint-eclat);
+  --color-tint-age: var(--tint-age);
+  --color-tint-hydratation: var(--tint-hydratation);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -62,44 +82,83 @@
   --radius-3xl: calc(var(--radius) * 2.75);
 }
 
-/* Palette KossKoss Select — Bleu Profond & Beige Sable (charte).
-   Fond crème chaud, encres bleu profond, accents sable. Beaucoup de
-   respiration : le luxe se joue dans le blanc et la typographie. */
+/* Palette KossKoss Select — relevée au pixel sur la maquette du client
+   (docs/design-references/kks/Mockup_site_Toutes pages.jpeg).
+
+   La palette précédente n'avait que DEUX surfaces réellement perçues : crème
+   ou bleu profond. `sand`, `muted` et `accent` valaient #f3e8dd, #f1e8dd et
+   #eaddcd — trois jetons pour un seul beige à l'œil. D'où la monochromie.
+
+   La maquette, elle, tient douze valeurs distinctes dans la même charte :
+   quatre niveaux de sombre, trois beiges, l'or, et cinq teintes de routine.
+   C'est cette amplitude qui produit les « jeux d'effets » — pas des
+   animations, ni une couleur en plus. */
 :root {
-  --deep: #0f3b46; /* Bleu Profond — primaire */
-  --sand: #f3e8dd; /* Beige Sable — secondaire */
-  --cream: #faf6f0; /* crème chaud — fond de page */
-  --gold: #b98a4b; /* laiton discret — étoiles d'avis, filets */
+  /* Sombres, du plus clair au plus profond. La maquette les hiérarchise :
+     les sections respirent, le pied de page ferme la page. */
+  --deep-soft: #20383c; /* cartes et aplats sur fond sombre */
+  --deep: #11292d; /* vert profond — primaire. Plus vert et plus sombre que
+                      l'ancien #0f3b46, qui tirait au bleu-canard. */
+  --ink: #111b1c; /* pied de page — un cran sous les sections */
 
-  --background: #faf6f0;
-  --foreground: #123138;
+  /* Clairs. Trois valeurs vraiment séparées, contre un seul beige avant. */
+  --taupe: #ddcab9; /* beige chaud saturé — hero, aplats de respiration */
+  --sand: #eeebe6; /* sable clair — cartes, surfaces secondaires */
+  --cream: #f3eeea; /* fond de page — moins jaune que l'ancien #faf6f0 */
+
+  --gold: #bc8640; /* laiton — accent d'action, prix, étoiles */
+  --gold-soft: #b89e7b; /* laiton clair — sur-titres sur fond sombre */
+
+  /* Teintes de routine, une par préoccupation. Assez proches pour tenir
+     ensemble sur une rangée, assez séparées pour se distinguer d'un coup
+     d'œil — c'est la condition pour qu'elles servent de repère et pas
+     seulement d'ornement.
+
+     Elles ont été ramenées d'environ 40 % vers le crème. Les valeurs relevées
+     sur la maquette (#d6d3ca, #e6dcc9, #f2ddcc, #e0d6dc, #d8e0dd) y occupent de
+     petites vignettes ; à l'échelle de nos cartes, cinq aplats de cette force
+     alignés — sous un hero taupe et un focus vert profond — chargeaient
+     nettement le haut de page.
+
+     Elles restent distinctes les unes des autres, ce qui est tout ce qu'on leur
+     demande : la teinte identifie la routine de l'accueil jusqu'à sa page. Ce
+     dispositif est la réponse au « design global un peu trop monochrome » du
+     retour client — on l'assourdit, on ne le retire pas. */
+  --tint-acne: #e5e3dd; /* gris-vert */
+  --tint-taches: #efe9dd; /* sable */
+  --tint-eclat: #f7e9de; /* pêche */
+  --tint-age: #ece5e9; /* mauve */
+  --tint-hydratation: #e6ecea; /* eau */
+
+  --background: #f3eeea;
+  --foreground: #16292b;
   --card: #ffffff;
-  --card-foreground: #123138;
+  --card-foreground: #16292b;
   --popover: #ffffff;
-  --popover-foreground: #123138;
+  --popover-foreground: #16292b;
 
-  --primary: #0f3b46;
-  --primary-foreground: #f5efe6;
-  --secondary: #f3e8dd;
-  --secondary-foreground: #0f3b46;
+  --primary: #11292d;
+  --primary-foreground: #f3eeea;
+  --secondary: #eeebe6;
+  --secondary-foreground: #11292d;
 
-  --muted: #f1e8dd;
-  --muted-foreground: #6a7a7d;
-  --accent: #eaddcd;
-  --accent-foreground: #0f3b46;
+  --muted: #e9e4dd;
+  --muted-foreground: #5f6f70;
+  --accent: #ddcab9;
+  --accent-foreground: #11292d;
   --destructive: #a4322a;
 
-  --border: #e7ddce;
-  --input: #e2d7c6;
-  --ring: #0f3b46;
+  --border: #e2dbd2;
+  --input: #d8cfc4;
+  --ring: #11292d;
 
-  --footer: #0f3b46;
-  --footer-foreground: #e7dccd;
+  --footer: #111b1c;
+  --footer-foreground: #ddd4c8;
 
-  --chart-1: #0f3b46;
+  --chart-1: #11292d;
   --chart-2: #3f6b73;
-  --chart-3: #b98a4b;
-  --chart-4: #cdb79b;
+  --chart-3: #bc8640;
+  --chart-4: #ddcab9;
   --chart-5: #8aa1a4;
 
   /* Coins doux, premium — mais jamais bulleux. */
@@ -116,26 +175,26 @@
 }
 
 .dark {
-  --background: #0c2c33;
-  --foreground: #f1e9dd;
-  --card: #123840;
-  --card-foreground: #f1e9dd;
-  --popover: #123840;
-  --popover-foreground: #f1e9dd;
-  --primary: #f3e8dd;
-  --primary-foreground: #0f3b46;
-  --secondary: #1c4650;
-  --secondary-foreground: #f1e9dd;
-  --muted: #17414a;
-  --muted-foreground: #a9bcbf;
-  --accent: #1c4650;
-  --accent-foreground: #f1e9dd;
+  --background: #0d1f22;
+  --foreground: #f0e9e1;
+  --card: #16302f;
+  --card-foreground: #f0e9e1;
+  --popover: #16302f;
+  --popover-foreground: #f0e9e1;
+  --primary: #eeebe6;
+  --primary-foreground: #11292d;
+  --secondary: #20383c;
+  --secondary-foreground: #f0e9e1;
+  --muted: #1a3134;
+  --muted-foreground: #a3b4b3;
+  --accent: #20383c;
+  --accent-foreground: #f0e9e1;
   --destructive: #e0796f;
   --border: #ffffff1a;
   --input: #ffffff26;
-  --ring: #cdb79b;
-  --footer: #0a262c;
-  --footer-foreground: #d8cbb9;
+  --ring: #ddcab9;
+  --footer: #0a1416;
+  --footer-foreground: #d3cabd;
 }
 
 @layer base {
@@ -144,37 +203,146 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Grain crème très léger : donne de la matière au fond sans image. */
-    background-image: radial-gradient(
-      circle at 1px 1px,
-      color-mix(in oklab, var(--deep) 4%, transparent) 1px,
-      transparent 0
-    );
-    background-size: 26px 26px;
+    /* Le grain radial qui couvrait tout le fond a été retiré : il faisait une
+       seconde texture sous le motif de marque, et deux trames superposées sous
+       du texte, c'est précisément ce qui fatigue. Une seule matière à la fois. */
+    font-size: 1rem;
+    line-height: 1.65;
   }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
   }
 
+  /* ------------------------------------------------- Échelle typographique --
+
+     L'échelle précédente était bimodale : le corps à 14 px, les titres à
+     30-60 px, et presque rien entre les deux. Un rapport titre/corps de 4,3×
+     répété sur treize sections — c'est ce que le retour client décrit par
+     « textes trop grands, j'ai mal aux yeux ».
+
+     La correction ne consiste pas à tout rapetisser : on MONTE le corps à
+     16 px et on DESCEND les titres, pour un rapport de 2,75× conforme à la
+     maquette. Les paliers intermédiaires qui manquaient (h3, h4, chapô) sont
+     créés, sans quoi l'œil continue de sauter du très petit au très grand.
+
+     `clamp()` remplace les bonds de palier : le h1 passait de 41,6 à 60 px
+     entre mobile et desktop, soit +44 % d'un cran à l'autre. */
   h1,
   h2,
   h3,
   h4 {
     font-family: var(--font-display);
+    letter-spacing: -0.005em;
+    /* Les titres de la maquette sont courts et tiennent sur deux ou trois
+       lignes : `balance` évite la ligne orpheline d'un seul mot. */
+    text-wrap: balance;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 1.55rem + 2.3vw, 2.75rem);
+    line-height: 1.12;
     font-weight: 500;
-    letter-spacing: 0.005em;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 1.32rem + 0.75vw, 1.75rem);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+
+  h3 {
+    font-size: clamp(1.15rem, 1.08rem + 0.3vw, 1.3rem);
+    line-height: 1.3;
+    font-weight: 500;
+  }
+
+  h4 {
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    font-weight: 600;
   }
 }
 
 @layer components {
-  /* Surtitre de section : petite capitale au large interlettrage, filet doré. */
+  /* Surtitre de section.
+
+     L'interlettrage passe de 0.24em à 0.12em : la capitale très espacée est le
+     format le plus coûteux à lire, et il y en avait treize sur la seule page
+     d'accueil. La couleur passe au laiton, comme sur la maquette, où le
+     sur-titre annonce la section au lieu de s'effacer en gris. */
   .eyebrow {
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* Même surtitre sur fond sombre : le laiton plein y vibre, le laiton clair
+     tient la lecture. */
+  .eyebrow-on-dark {
+    color: var(--gold-soft);
+  }
+
+  /* Chapô. Le palier qui manquait entre le titre et le texte courant : sans
+     lui, l'œil tombe de 44 px à 16 px sans transition. */
+  .lead {
+    font-size: 1.0625rem;
+    line-height: 1.6;
     color: var(--muted-foreground);
+  }
+
+  /* Second membre d'un titre, en graisse légère.
+
+     La maquette compose son titre de hero en deux graisses de la même serif
+     — « Des soins conçus pour sublimer » en gras, « les peaux noires &
+     métissées » en léger. C'est un contraste obtenu par la graisse et non par
+     la taille : il donne du relief sans agrandir. */
+  .title-soft {
+    font-weight: 400;
+    color: color-mix(in oklab, currentColor 78%, transparent);
+  }
+
+  /* ------------------------------------------------------- Rythme vertical --
+
+     Une seule échelle pour toutes les sections de la vitrine.
+
+     Il en existait huit valeurs concurrentes — py-4, py-6, py-7, py-10, py-12,
+     py-14, py-16, py-20 — décidées bloc par bloc. Les sections composées de
+     l'accueil, celles qui portent le plus de contenu, tombaient sur les plus
+     serrées : catégories et best-sellers se touchaient presque, et les treize
+     blocs se lisaient d'un seul tenant. C'est ce que décrit « tout est touffu ».
+
+     Trois paliers, pas davantage. Une page où chaque section négocie son propre
+     espacement n'a pas de respiration : elle a du bruit.
+
+     `clamp()` fait varier l'air avec la largeur : sur mobile, un espacement
+     calculé pour le bureau consomme un écran entier pour ne rien montrer.
+
+     ATTENTION AU DOUBLEMENT. Ces valeurs sont des `padding-block` : deux
+     sections voisines apportent CHACUNE la sienne, et l'écart perçu entre deux
+     blocs vaut donc le double de la valeur posée. Un premier réglage à 112 px
+     produisait 224 px de vide entre chaque section — la page passait de trop
+     serrée à trop aérée. Les valeurs ci-dessous sont calées sur l'écart voulu
+     divisé par deux. */
+
+  /** Le palier courant. Écart résultant entre deux sections : 64 → 96 px. */
+  .section {
+    padding-block: clamp(2rem, 1.6rem + 1.7vw, 3rem);
+  }
+
+  /** Bandes de réassurance et ceintures : elles ponctuent, elles n'exposent pas.
+      Elles sont sur fond coloré et jouxtent leurs voisines sans écart : leur
+      padding n'est pas doublé, il est lu tel quel. */
+  .section-tight {
+    padding-block: clamp(1.125rem, 1rem + 0.5vw, 1.5rem);
+  }
+
+  /** Prises de parole — hero, focus marque. Elles portent la page, et leur fond
+      coloré les détache déjà : l'air y sert la composition, pas la séparation. */
+  .section-wide {
+    padding-block: clamp(3rem, 2.3rem + 2.8vw, 4.5rem);
   }
 
   /* Prix & grandeurs : chiffres tabulaires alignés en colonne. */
@@ -183,10 +351,16 @@
     font-feature-settings: "tnum", "lnum";
   }
 
-  /* Logotype : Cinzel très espacé, comme sur la charte. */
+  /* Logotype.
+
+     Cinzel n'a pas de vraie bas-de-casse : ses minuscules sont des petites
+     capitales. « KossKoss » y rend donc exactement le K haut suivi de OSS en
+     petites capitales du logo officiel — ce que l'ancien « KOSSKOSS » tout en
+     capitales perdait. L'interlettrage descend en conséquence : les petites
+     capitales portent déjà leur propre respiration. */
   .wordmark {
-    font-family: var(--font-display);
-    letter-spacing: 0.22em;
+    font-family: var(--font-logo);
+    letter-spacing: 0.14em;
     font-weight: 600;
   }
 

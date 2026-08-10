@@ -4,7 +4,17 @@ import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LocalizedLink as Link } from "./localized-link";
 import { usePathname } from "next/navigation";
-import { Search, Menu, X, ChevronRight, Heart, User, Sparkles, Package } from "lucide-react";
+import {
+  Search,
+  Menu,
+  X,
+  ChevronRight,
+  ChevronDown,
+  Heart,
+  User,
+  Sparkles,
+  Package,
+} from "lucide-react";
 import type { NavGroup } from "@/server/kk/navigation";
 
 /**
@@ -202,12 +212,22 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
             </div>
 
             <div className="flex-1 px-5 py-5">
+              {/* Les deux entrées « solution » en tête du menu, avant les
+                  rayons : c'est l'ordre de la structure fournie par le client,
+                  où les routines et le diagnostic passent devant les produits. */}
               <Link
-                href="/diagnostic"
+                href="/routines"
                 {...closeOnNavigate}
                 className="flex items-center gap-2 rounded-full bg-deep px-5 py-3 text-sm font-semibold text-primary-foreground"
               >
-                <Sparkles className="h-4 w-4" /> Faire mon diagnostic
+                <Sparkles className="h-4 w-4" /> Nos routines prêtes à l&rsquo;emploi
+              </Link>
+              <Link
+                href="/diagnostic"
+                {...closeOnNavigate}
+                className="mt-3 flex items-center justify-center gap-2 rounded-full border border-deep/30 px-5 py-3 text-sm font-semibold text-deep"
+              >
+                Faire mon diagnostic
               </Link>
 
               {groups.map((group) => (
@@ -273,9 +293,20 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
  */
 export function DesktopNav({ groups }: { groups: NavGroup[] }) {
   const pathname = usePathname();
+  // Les six entrées de la maquette, dans son ordre :
+  // Accueil · Boutique · Routines · Marques · Conseils · Diagnostic.
+  //
+  // Les trois univers du catalogue étaient jusqu'ici déployés à plat dans la
+  // barre, ce qui la portait à sept entrées et la faisait basculer d'une
+  // hiérarchie à une liste. Ils passent sous « Boutique », en menu déroulant :
+  // la barre retrouve sa lisibilité et l'accès direct aux rayons ne se perd
+  // pas — il gagne même les catégories, qui n'y figuraient pas.
   const entries = [
     { href: "/", label: "Accueil" },
-    ...groups.map((group) => ({ href: group.href, label: group.label })),
+    { href: groups[0]?.href ?? "/soins-visage", label: "Boutique", deroulant: true },
+    { href: "/routines", label: "Routines" },
+    { href: "/marques", label: "Marques" },
+    { href: "/faq", label: "Conseils" },
     { href: "/diagnostic", label: "Diagnostic" },
   ];
 
@@ -285,25 +316,74 @@ export function DesktopNav({ groups }: { groups: NavGroup[] }) {
     return href === "/" ? path === "/" : path === href || path.startsWith(`${href}/`);
   }
 
+  /** « Boutique » est actif dès qu'on est dans l'un des univers du catalogue. */
+  function boutiqueActive(): boolean {
+    return groups.some((g) => isActive(g.href));
+  }
+
   return (
-    <nav className="hidden border-t border-border/50 lg:block">
-      <ul className="mx-auto flex max-w-7xl items-center justify-center gap-10 px-6 py-3">
+    <nav className="hidden flex-1 justify-center lg:flex">
+      <ul className="flex items-center gap-8">
         {entries.map((entry) => {
-          const active = isActive(entry.href);
+          const active = entry.deroulant ? boutiqueActive() : isActive(entry.href);
           return (
-            <li key={entry.href}>
+            <li
+              key={entry.href}
+              // `group` + `relative` : le panneau s'ouvre au survol ET au focus
+              // clavier, sans état React. Un menu de navigation qui ne
+              // s'atteint qu'à la souris exclut la moitié des usages.
+              className={entry.deroulant ? "group relative" : undefined}
+            >
               <Link
                 href={entry.href}
                 aria-current={active ? "page" : undefined}
-                className={`relative text-[0.82rem] font-medium uppercase tracking-[0.14em] transition-colors hover:text-deep ${
+                className={`relative inline-flex items-center gap-1 py-2 text-[0.82rem] font-medium tracking-[0.02em] transition-colors hover:text-deep ${
                   active ? "text-deep" : "text-muted-foreground"
                 }`}
               >
                 {entry.label}
+                {entry.deroulant && (
+                  <ChevronDown
+                    className="h-3.5 w-3.5 transition-transform duration-200 group-hover:rotate-180"
+                    aria-hidden="true"
+                  />
+                )}
                 {active && (
-                  <span className="absolute -bottom-1.5 left-0 h-px w-full bg-gold" aria-hidden="true" />
+                  <span className="absolute -bottom-0.5 left-0 h-px w-full bg-gold" aria-hidden="true" />
                 )}
               </Link>
+
+              {entry.deroulant && groups.length > 0 && (
+                <div className="invisible absolute left-1/2 top-full z-50 w-[42rem] -translate-x-1/2 pt-2 opacity-0 transition-opacity duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                  <div className="grid grid-cols-3 gap-6 rounded-2xl border border-border/70 bg-cream p-6 shadow-2xl shadow-deep/15">
+                    {groups.map((group) => (
+                      <div key={group.slug}>
+                        <Link
+                          href={group.href}
+                          className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-deep transition hover:text-deep/70"
+                        >
+                          {group.label}
+                        </Link>
+                        <ul className="mt-3 space-y-1.5">
+                          {group.categories.map((category) => (
+                            <li key={category.slug}>
+                              <Link
+                                href={category.href}
+                                className="flex items-center justify-between gap-3 text-sm text-foreground transition hover:text-deep"
+                              >
+                                {category.label}
+                                <span className="figure text-[0.7rem] text-muted-foreground">
+                                  {category.productCount}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </li>
           );
         })}

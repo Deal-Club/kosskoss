@@ -62,7 +62,7 @@ export default async function FaqPage({ params }: { params: PageParams }) {
         </div>
 
         <div className="mx-auto max-w-3xl px-3 py-8">
-          <h1 className="mb-2 text-2xl font-black text-foreground sm:text-3xl">{page.title}</h1>
+          <h1 className="mb-2 text-foreground">{page.title}</h1>
           {page.intro && (
             <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
               <RichText text={page.intro} />

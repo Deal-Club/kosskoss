@@ -39,7 +39,7 @@ export default async function AccountOrderPage({ params }: { params: Params }) {
             <ArrowLeft className="h-4 w-4" /> Mes commandes
           </Link>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <h1 className="text-3xl text-deep">{order.orderNumber}</h1>
+            <h1 className="text-deep">{order.orderNumber}</h1>
             <span className="rounded-full bg-sand px-3 py-1 text-sm font-medium text-deep">{order.statusLabel}</span>
           </div>
           <p className="mt-1 text-sm text-muted-foreground">Passée le {formatDate(order.createdAt)}</p>

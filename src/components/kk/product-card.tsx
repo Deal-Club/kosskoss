@@ -1,15 +1,8 @@
 import Image from "next/image";
 import { formatFcfa } from "@/lib/kk/format";
-import type { KKProductView, KKTone } from "@/types/kk";
+import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
 import { FavoriteHeart, QuickAddButton } from "./product-actions";
-
-const TONE: Record<KKTone, string> = {
-  sand: "from-[#f7eee2] to-[#e7d3bd]",
-  rose: "from-[#f4e3e0] to-[#e6c9c4]",
-  teal: "from-[#dde9e8] to-[#bcd2d0]",
-  clay: "from-[#f0e1d3] to-[#d8b79a]",
-};
 
 const BADGE_LABEL: Record<"bestseller" | "nouveau", string> = {
   bestseller: "Bestseller",
@@ -27,9 +20,15 @@ export function ProductCard({ product }: { product: KKProductView }) {
           faible amplitude qui se répondent, plutôt qu'un seul geste ample : sur
           une grille de vingt vignettes, l'ampleur fait vibrer la page. */}
       <div className="kk-lift relative overflow-hidden rounded-2xl border border-border/70 bg-card">
+        {/* Fond crème uni, comme sur la maquette.
+            Les quatre dégradés colorés qui tournaient ici (sable, rose, bleu,
+            argile) étaient attribués selon la POSITION dans la grille et non
+            selon le produit : la même crème changeait de couleur d'une page à
+            l'autre. Décoratif et arbitraire — et surtout en concurrence avec
+            les teintes de routine, qui, elles, veulent dire quelque chose. */}
         <a
           href={href}
-          className={`relative flex aspect-[4/5] items-center justify-center bg-gradient-to-br ${TONE[product.tone]} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset`}
+          className="relative flex aspect-[4/5] items-center justify-center bg-cream p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset"
           aria-label={product.name}
         >
           {hasImage ? (
@@ -38,7 +37,11 @@ export function ProductCard({ product }: { product: KKProductView }) {
               alt={product.name}
               fill
               sizes="(max-width: 1024px) 45vw, 22vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              // `contain` et non `cover` : les visuels détourés sont carrés, le
+              // cadre est en 4/5. En `cover`, le flacon était rogné d'un
+              // cinquième — bouchons et bas d'étiquette coupés sur toute la
+              // grille.
+              className="object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-105"
             />
           ) : (
             <BottleMotif className="h-3/5 w-auto text-deep transition-transform duration-700 ease-out group-hover:scale-105" />

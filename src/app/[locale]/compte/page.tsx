@@ -37,7 +37,7 @@ export default async function AccountPage({ params }: { params: Params }) {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="eyebrow">Espace client</p>
-              <h1 className="mt-2 text-3xl text-deep sm:text-4xl">Bonjour {customer.firstName}</h1>
+              <h1 className="mt-2 text-deep">Bonjour {customer.firstName}</h1>
             </div>
             <AccountLogout />
           </div>

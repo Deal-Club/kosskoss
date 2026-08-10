@@ -82,7 +82,7 @@ export function CartSuggestions() {
                 className="relative grid h-14 w-12 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
               >
                 {p.image ? (
-                  <Image src={p.image} alt={p.name} fill sizes="48px" className="object-cover" />
+                  <Image src={p.image} alt={p.name} fill sizes="48px" className="object-contain p-1" />
                 ) : (
                   <BottleMotif className="h-3/5 text-deep/70" />
                 )}

@@ -25,7 +25,7 @@ export function ProductGrid({
           {eyebrow && (
             <p className="eyebrow mb-3 text-primary">{eyebrow}</p>
           )}
-          <h2 className="font-heading text-3xl leading-tight font-black text-foreground sm:text-[2.6rem]">
+          <h2 className="text-foreground">
             {heading}
           </h2>
         </div>

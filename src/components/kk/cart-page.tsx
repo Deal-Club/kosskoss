@@ -15,7 +15,7 @@ export function CartPageView() {
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
         <BottleMotif className="mx-auto h-24 text-deep/30" />
-        <h1 className="mt-6 text-3xl text-deep">Votre panier est vide</h1>
+        <h1 className="mt-6 text-deep">Votre panier est vide</h1>
         <p className="mt-3 text-muted-foreground">
           Parcourez notre sélection ou lancez le diagnostic pour trouver vos soins.
         </p>
@@ -31,7 +31,7 @@ export function CartPageView() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
-      <h1 className="text-4xl text-deep">Votre panier</h1>
+      <h1 className="text-deep">Votre panier</h1>
       <p className="mt-2 text-muted-foreground">
         Vérifiez vos articles avant de procéder au paiement.
       </p>

@@ -102,7 +102,7 @@ function SectionBlock({ section }: { section: LegalSection }) {
 export function LegalPageArticle({ page, locale }: { page: LegalPage; locale: string }) {
   return (
     <article className="mx-auto max-w-3xl px-3 py-8">
-      <h1 className="mb-4 text-2xl font-black text-foreground sm:text-3xl">{page.title}</h1>
+      <h1 className="mb-4 text-foreground">{page.title}</h1>
 
       {page.intro && (
         <div className="mb-8 rounded-sm border border-border bg-muted p-4">

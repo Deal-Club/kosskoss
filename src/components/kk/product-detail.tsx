@@ -48,7 +48,7 @@ function Gallery({ product }: { product: KKProductDetail }) {
       >
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.5),transparent_55%)]" />
         {hasImage ? (
-          <Image src={product.image as string} alt={product.name} fill sizes="(max-width:1024px) 100vw, 45vw" className="object-cover" />
+          <Image src={product.image as string} alt={product.name} fill sizes="(max-width:1024px) 100vw, 45vw" className="object-contain p-8" />
         ) : (
           <BottleMotif className="h-3/5 w-auto text-deep/80" />
         )}
@@ -90,10 +90,14 @@ export function ProductDetail({
       <Breadcrumb product={product} />
 
       <section className="mx-auto max-w-7xl px-6 pb-8">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+        {/* `items-start` sur la grille, `sticky` sur le bloc d'achat : la
+            galerie est plus haute que lui, et le prix comme le bouton
+            disparaissaient dès qu'on descendait voir les autres vues du
+            produit. Ils suivent maintenant la lecture. */}
+        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
           <Gallery product={product} />
 
-          <div className="lg:pt-4">
+          <div className="lg:sticky lg:top-24 lg:pt-4">
             <div className="rounded-[1.75rem] border border-border/70 bg-card p-7 sm:p-9">
               {product.badge && (
                 <span className="mb-4 inline-block rounded-full bg-sand px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-deep">
@@ -103,7 +107,7 @@ export function ProductDetail({
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {product.brand}
               </p>
-              <h1 className="mt-2 text-3xl leading-tight text-deep sm:text-4xl">{product.name}</h1>
+              <h1 className="mt-2 text-deep">{product.name}</h1>
               {product.shortDescription && (
                 <p className="mt-3 text-muted-foreground">{product.shortDescription}</p>
               )}
@@ -146,7 +150,7 @@ export function ProductDetail({
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2">
           <div className="max-w-xl">
             <p className="eyebrow">Notre parti pris</p>
-            <h2 className="mt-3 text-3xl text-deep sm:text-4xl">L&rsquo;art de la transparence</h2>
+            <h2 className="mt-3 text-deep">L&rsquo;art de la transparence</h2>
             <p className="mt-5 leading-relaxed text-muted-foreground">
               Chaque produit de la maison est sélectionné pour sa formule et sa tolérance. Nous
               privilégions des marques transparentes et des actifs qui ont fait leurs preuves — pour
