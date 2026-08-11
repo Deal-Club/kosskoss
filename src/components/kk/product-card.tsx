@@ -28,7 +28,16 @@ export function ProductCard({ product }: { product: KKProductView }) {
             les teintes de routine, qui, elles, veulent dire quelque chose. */}
         <a
           href={href}
-          className="relative flex aspect-[4/5] items-center justify-center bg-cream p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset"
+          /* Fond BLANC et non crème : les packshots ne sont pas détourés, ce
+             sont des JPEG carrés shootés sur fond blanc. Posés sur le crème,
+             ils dessinaient un rectangle clair au milieu de la vignette. Le
+             cadre étant en 4/5 pour une source carrée, l'image ne peut pas le
+             remplir (`cover` rognerait bouchons et bas d'étiquette, voir plus
+             bas) : aligner le fond sur celui des visuels est donc la seule
+             sortie. Elle n'est pas parfaite — le blanc des fichiers varie de
+             245 à 254 selon les prises de vue — mais l'écart devient invisible
+             là où il sautait aux yeux. */
+          className="relative flex aspect-[4/5] items-center justify-center bg-card p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset"
           aria-label={product.name}
         >
           {hasImage ? (

@@ -78,6 +78,34 @@ export function VisaMark() {
   );
 }
 
+/** MTN Mobile Money — jaune de l'opérateur, sigle en capitales. */
+export function MtnMoneyMark() {
+  return (
+    <Card label="MTN Mobile Money">
+      <rect x="9" y="5.5" width="30" height="13" rx="6.5" fill="#FFCB05" />
+      <text x="24" y="15.5" textAnchor="middle" fontFamily="Helvetica, Arial, sans-serif" fontSize="8" fontWeight="700" fill="#111111">
+        MTN
+      </text>
+      <text x="24" y="27" textAnchor="middle" fontFamily="Helvetica, Arial, sans-serif" fontSize="6.6" fontWeight="700" fill="#111111">
+        MoMo
+      </text>
+    </Card>
+  );
+}
+
+/** Paiement à la livraison — pas une marque mais un geste : des billets. */
+export function CashMark() {
+  return (
+    <Card label="Paiement à la livraison">
+      <rect x="10" y="8.5" width="28" height="13" rx="2" fill="none" stroke="#0f7b45" strokeWidth="1.6" />
+      <circle cx="24" cy="15" r="3.4" fill="none" stroke="#0f7b45" strokeWidth="1.6" />
+      <text x="24" y="29" textAnchor="middle" fontFamily="Helvetica, Arial, sans-serif" fontSize="5.6" fontWeight="700" fill="#0f7b45">
+        À LA LIVRAISON
+      </text>
+    </Card>
+  );
+}
+
 /**
  * Orange Money — le carré orange de l'opérateur, que tout le monde reconnaît
  * sur ce marché, et le nom en dessous. Deux lignes plutôt qu'une : « Orange
@@ -330,6 +358,14 @@ export function brandMarksFor(key: string, icon: string): Mark[] | null {
   if (["banque", "virement", "virement-bancaire"].includes(normalized)) return null;
 
   const byKey: Record<string, Mark[]> = {
+    // Moyens de paiement du marché camerounais, tels qu'ils sont seedés en base.
+    "orange-money": [OrangeMoneyMark],
+    orangemoney: [OrangeMoneyMark],
+    "mtn-momo": [MtnMoneyMark],
+    mtnmomo: [MtnMoneyMark],
+    "moov-money": [MoovMoneyMark],
+    "paiement-livraison": [CashMark],
+    "paiement-a-la-livraison": [CashMark],
     rechnung: [InvoiceMark],
     paypal: [PaypalMark],
     kreditkarte: [VisaMark, MastercardMark, AmexMark],

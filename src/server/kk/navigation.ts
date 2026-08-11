@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
+import { packshot } from "@/lib/kk/packshot";
 
 /**
  * Navigation de la boutique, lue en base.
@@ -57,6 +58,62 @@ export const getShopNavigation = cache(async (): Promise<NavGroup[]> => {
       }))
       .filter((group) => group.categories.length > 0)
   );
+});
+
+/** Produit mis en avant dans le méga-menu. */
+export interface NavHighlight {
+  id: string;
+  brand: string;
+  name: string;
+  priceFcfa: number;
+  image: string | null;
+  href: string;
+  /** « bestseller » ou « nouveau » ; null si le produit n'en porte pas. */
+  badge: string | null;
+}
+
+/**
+ * Deux produits montrés dans le méga-menu.
+ *
+ * Un menu de catalogue qui n'aligne que des noms de rayons demande au visiteur
+ * de se projeter : il doit imaginer ce qu'il y a derrière « Sérums » avant de
+ * cliquer. Deux vignettes réelles suffisent à faire basculer le menu de la
+ * table des matières vers la vitrine — c'est le rôle qu'il tient dans une
+ * boutique, et c'est là que se gagne le clic.
+ *
+ * Priorité aux produits badgés au back-office (« bestseller », « nouveau ») :
+ * c'est le seul signal de mise en avant que le catalogue porte réellement.
+ * À défaut, les dernières références entrées. Aucun classement inventé.
+ */
+export const getNavHighlights = cache(async (limit = 2): Promise<NavHighlight[]> => {
+  const rows = await prisma.product.findMany({
+    where: { active: true, badge: { in: ["bestseller", "nouveau"] } },
+    orderBy: [{ badge: "asc" }, { createdAt: "desc" }],
+    take: limit,
+    include: { category: { include: { group: true } } },
+  });
+
+  // Repli : catalogue sans aucun produit badgé — on montre les plus récents
+  // plutôt que de laisser un trou dans le menu.
+  const complement =
+    rows.length < limit
+      ? await prisma.product.findMany({
+          where: { active: true, id: { notIn: rows.map((r) => r.id) } },
+          orderBy: { createdAt: "desc" },
+          take: limit - rows.length,
+          include: { category: { include: { group: true } } },
+        })
+      : [];
+
+  return [...rows, ...complement].map((row) => ({
+    id: row.id,
+    brand: row.brand,
+    name: row.name,
+    priceFcfa: row.priceCents,
+    image: packshot(row.image),
+    href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
+    badge: row.badge,
+  }));
 });
 
 /** Marques présentes au catalogue, par ordre alphabétique. */

@@ -31,6 +31,10 @@
   --color-cream: var(--cream);
   --color-gold: var(--gold);
   --color-gold-soft: var(--gold-soft);
+  --color-gold-ink: var(--gold-ink);
+  --color-trust: var(--trust);
+  --color-trust-soft: var(--trust-soft);
+  --color-trust-line: var(--trust-line);
   --color-footer: var(--footer);
   --color-footer-foreground: var(--footer-foreground);
 
@@ -74,6 +78,18 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
 
+  /* Largeur de la gouttière commune. Tailwind donne 80rem (1280 px) à
+     `max-w-7xl` ; le site s'en servait partout et paraissait étroit — le
+     client devait zoomer à 110 % pour que la page « s'asseye » sur son écran.
+     88rem, c'est exactement ce zoom rendu inutile.
+
+     Redéfini ici plutôt que remplacé dans les quarante composants qui portent
+     `max-w-7xl` : une seule valeur à bouger si l'on veut réessayer.
+     ATTENTION : le hero borne sa colonne de texte à la MOITIÉ de cette valeur
+     (`lg:max-w-[44rem]` dans home.tsx) pour rester aligné sur la gouttière.
+     Les deux se suivent. */
+  --container-7xl: 88rem;
+
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
@@ -99,15 +115,37 @@
   --deep-soft: #20383c; /* cartes et aplats sur fond sombre */
   --deep: #11292d; /* vert profond — primaire. Plus vert et plus sombre que
                       l'ancien #0f3b46, qui tirait au bleu-canard. */
-  --ink: #111b1c; /* pied de page — un cran sous les sections */
+  --ink: #111b1c; /* presque-noir. N'habille plus le pied de page, qui est
+                     repassé au vert profond (voir `--footer`) ; il ne reste
+                     dans la palette que comme fond le plus sombre disponible */
 
   /* Clairs. Trois valeurs vraiment séparées, contre un seul beige avant. */
   --taupe: #ddcab9; /* beige chaud saturé — hero, aplats de respiration */
   --sand: #eeebe6; /* sable clair — cartes, surfaces secondaires */
   --cream: #f3eeea; /* fond de page — moins jaune que l'ancien #faf6f0 */
 
-  --gold: #bc8640; /* laiton — accent d'action, prix, étoiles */
-  --gold-soft: #b89e7b; /* laiton clair — sur-titres sur fond sombre */
+  --gold: #bc8640; /* laiton — accents DÉCORATIFS : filets, étoiles, icônes */
+  --gold-soft: #b89e7b; /* laiton clair — sur-titres sur fond sombre (5,9:1) */
+
+  /* Laiton d'ENCRE — la seule variante admise pour du texte sur fond clair.
+     Le laiton plein plafonne à 3,2:1 sur blanc et à 2,1:1 sur le taupe du
+     hero : très en dessous des 4,5:1 exigés, et d'autant plus illisible que
+     le sur-titre est petit et espacé. Celui-ci tient 7,9:1 sur blanc et
+     5,1:1 sur le taupe, sans quitter la famille laiton. */
+  --gold-ink: #6f4a17;
+
+  /* Vert de confiance — réservé aux signaux de sûreté du tunnel de commande :
+     paiement sécurisé, code promo accepté, champ validé, garanties.
+
+     Le vert profond de la marque ne pouvait pas jouer ce rôle : à #11292d il
+     se lit comme du noir, et un « Paiement sécurisé » en presque-noir de 12 px
+     ne rassure personne — c'est justement ce qui rendait la mention invisible
+     au bas du bouton. Celui-ci se lit VERT au premier coup d'œil, tient 7,5:1
+     sur blanc et 6,3:1 sur le sable, et ne sert à rien d'autre : un signal qui
+     décore cesse d'être un signal. */
+  --trust: #17603f;
+  --trust-soft: #e8f2ec; /* fond des encarts de réassurance */
+  --trust-line: #bfdccd; /* filet de ces mêmes encarts */
 
   /* Teintes de routine, une par préoccupation. Assez proches pour tenir
      ensemble sur une rangée, assez séparées pour se distinguer d'un coup
@@ -130,7 +168,13 @@
   --tint-age: #ece5e9; /* mauve */
   --tint-hydratation: #e6ecea; /* eau */
 
-  --background: #f3eeea;
+  /* Fond de page blanc. Le crème (`--cream`) reste dans la palette mais n'est
+     plus le fond général : il ne sert plus que d'aplat fonctionnel — vignettes
+     produit, puces, cartes posées sur le vert profond — là où il faut un blanc
+     cassé pour qu'un packshot clair se détache. Le rythme de la page ne repose
+     donc plus sur trois beiges très voisins mais sur le contraste entre le
+     blanc, le taupe du hero et le vert profond des sections de focus. */
+  --background: #ffffff;
   --foreground: #16292b;
   --card: #ffffff;
   --card-foreground: #16292b;
@@ -143,16 +187,29 @@
   --secondary-foreground: #11292d;
 
   --muted: #e9e4dd;
-  --muted-foreground: #5f6f70;
+  /* Texte secondaire. Passé de #5f6f70 (5,3:1) à 7,4:1 sur blanc : la police
+     de texte est fine, et un gris tout juste conforme se lit mal dès que la
+     graisse descend. Le seuil visé sur tout le site est AAA (7:1), pas AA. */
+  --muted-foreground: #4a5859;
   --accent: #ddcab9;
   --accent-foreground: #11292d;
   --destructive: #a4322a;
 
-  --border: #e2dbd2;
-  --input: #d8cfc4;
+  /* Filets un cran plus francs qu'avant : sur un fond de page devenu blanc,
+     une carte blanche n'est plus séparée que par sa bordure. */
+  --border: #d9d1c6;
+  /* Contour des champs de saisie. Il tenait 1,8:1 sur blanc, là où un contrôle
+     de formulaire demande 3:1 pour être repérable — un champ dont on ne voit
+     pas le bord n'est pas un champ. Celui-ci tient 3,2:1. */
+  --input: #9c8e79;
   --ring: #11292d;
 
-  --footer: #111b1c;
+  /* Pied de page : le vert profond de la marque, exactement celui des sections
+     et du hero. Il valait #111b1c — un cran plus sombre, pensé pour « fermer »
+     la page — mais ce presque-noir a perdu toute trace de vert et se lisait
+     comme du noir sous le motif. Le pied de page ferme désormais la page par sa
+     densité de contenu et non par une teinte à part. */
+  --footer: #11292d;
   --footer-foreground: #ddd4c8;
 
   --chart-1: #11292d;
@@ -195,6 +252,12 @@
   --ring: #ddcab9;
   --footer: #0a1416;
   --footer-foreground: #d3cabd;
+
+  /* Le vert de confiance s'inverse en sombre : c'est le texte qui s'éclaircit
+     et le fond qui fonce, sinon l'encart devient une tache lumineuse. */
+  --trust: #5cc794;
+  --trust-soft: #12332a;
+  --trust-line: #2c6c52;
 }
 
 @layer base {
@@ -208,6 +271,19 @@
        du texte, c'est précisément ce qui fatigue. Une seule matière à la fois. */
     font-size: 1rem;
     line-height: 1.65;
+    /* 500 et non 400. Manrope est une linéale à fûts fins : à 400, sur un fond
+       devenu blanc et dans des tailles de 12 à 17 px, le texte courant se
+       délave. C'est le pendant typographique de la passe de contraste — une
+       couleur conforme ne sauve pas une graisse trop mince.
+
+       500 est la valeur la plus haute possible sans casser la hiérarchie :
+       `font-semibold` (600) reste au-dessus pour les libellés et les prix.
+       `font-medium` (500) devient en revanche neutre — c'est assumé, il servait
+       surtout à rattraper la finesse du 400.
+
+       Les poids chargés sont 300/400/500/600/700 (src/app/layout.tsx) : toute
+       valeur intermédiaire comme 450 serait synthétisée par le navigateur. */
+    font-weight: 500;
   }
   html {
     @apply font-sans;
@@ -239,10 +315,18 @@
     text-wrap: balance;
   }
 
+  /* Le h1 remonte à 54 px sur grand écran (contre 44) et à 40 px sur mobile
+     (contre 34), à la demande du client. Il reste sous les 60 px de la version
+     d'origine, qui étaient le vrai objet du « textes trop grands » : ce qui
+     fatiguait n'était pas le titre seul mais l'écart avec un corps de texte à
+     14 px. Le corps étant remonté à 16 px, le rapport titre/corps s'établit à
+     3,4× — au-dessus de 4× on retombe dans le défaut d'origine. */
   h1 {
-    font-size: clamp(2.1rem, 1.55rem + 2.3vw, 2.75rem);
-    line-height: 1.12;
-    font-weight: 500;
+    font-size: clamp(2.5rem, 1.75rem + 2.6vw, 3.4rem);
+    line-height: 1.1;
+    /* 600 et non 500 : le texte courant passe lui-même à 500 (voir `body`),
+       et un titre de la même graisse que son texte perd sa tête de série. */
+    font-weight: 600;
   }
 
   h2 {
@@ -276,7 +360,10 @@
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--gold);
+    /* Laiton d'encre et non laiton plein : voir `--gold-ink`. Une capitale de
+       12 px espacée de 0.12em est déjà le format le plus coûteux à lire, elle
+       ne peut pas en plus être pâle. */
+    color: var(--gold-ink);
   }
 
   /* Même surtitre sur fond sombre : le laiton plein y vibre, le laiton clair
@@ -298,10 +385,15 @@
      La maquette compose son titre de hero en deux graisses de la même serif
      — « Des soins conçus pour sublimer » en gras, « les peaux noires &
      métissées » en léger. C'est un contraste obtenu par la graisse et non par
-     la taille : il donne du relief sans agrandir. */
+     la taille : il donne du relief sans agrandir.
+
+     L'atténuation de couleur qui accompagnait la graisse (78 % d'opacité) a
+     été retirée. Elle cumulait deux affaiblissements sur le même mot — plus
+     léger ET plus pâle — et faisait tomber la moitié du titre de hero à
+     5,8:1 sur le taupe, en serif fine de 44 px. La graisse suffit à faire le
+     relief ; la couleur reste pleine. */
   .title-soft {
     font-weight: 400;
-    color: color-mix(in oklab, currentColor 78%, transparent);
   }
 
   /* ------------------------------------------------------- Rythme vertical --
@@ -391,6 +483,75 @@
 .kk-rise {
   animation: kk-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: var(--d, 0ms);
+}
+
+/* Raccord du visuel de tête avec le fond du hero — le vert profond.
+   -------------------------------------------------------------------------
+   Un MASQUE, et non un voile de couleur posé par-dessus. Le voile précédent
+   allait `from-taupe` vers `to-transparent`, c'est-à-dire vers du NOIR
+   transparent : à mi-parcours l'interpolation passait par un gris sale, et
+   c'est cette salissure qu'on lisait comme une cassure. Un masque agit sur
+   l'opacité de l'image, il ne peut pas déteindre — ce qui apparaît dessous
+   est le vrai fond de la section.
+
+   Les douze arrêts échantillonnent une smoothstep — f(t) = t²(3 − 2t) — et
+   non une rampe droite. Une rampe se repère toujours à ses deux extrémités,
+   là où la pente s'interrompt net : ce sont ces deux arêtes qu'on voit, et
+   pas le dégradé lui-même. La smoothstep part et finit à pente nulle, donc
+   sans arête. Et elle court sur 55 % de la colonne — environ 415 px sur un
+   écran de 1512, contre 128 px à l'origine : plus la course est longue, plus
+   la variation par pixel est faible, et moins l'œil a de quoi accrocher.
+
+   Sous `lg`, l'image passe sous le texte en pleine largeur : plus de bord à
+   raccorder, donc pas de masque. */
+/* Voile du hero MOBILE.
+   -------------------------------------------------------------------------
+   Sous `lg`, la photo occupe tout le cadre du hero et le texte se pose
+   dessus. Ce dégradé est ce qui rend le second lisible sans cacher la
+   première : opaque sur la moitié basse, où vivent le titre, le chapô et les
+   deux boutons ; presque nul en haut, où l'on ne voit que le visage.
+
+   Il est monté en `color-mix` sur `--deep` plutôt qu'en `to-transparent` :
+   un dégradé qui va vers `transparent` passe par du NOIR transparent et
+   salit son milieu d'un gris — c'est la même erreur que celle corrigée sur
+   le fondu latéral, et elle se verrait ici en plein sur un visage.
+
+   Au-delà de `lg`, plus de voile : l'image reprend sa colonne, le texte a
+   son propre fond, et rien ne se superpose. */
+@media (max-width: 63.999rem) {
+  .kk-hero-voile {
+    background: linear-gradient(
+      to top,
+      var(--deep) 0%,
+      var(--deep) 38%,
+      color-mix(in oklab, var(--deep) 92%, transparent) 52%,
+      color-mix(in oklab, var(--deep) 70%, transparent) 66%,
+      color-mix(in oklab, var(--deep) 40%, transparent) 82%,
+      color-mix(in oklab, var(--deep) 18%, transparent) 100%
+    );
+  }
+}
+
+@media (min-width: 64rem) {
+  .kk-hero-fade {
+    --kk-fade: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.023) 5%,
+      rgba(0, 0, 0, 0.087) 10%,
+      rgba(0, 0, 0, 0.183) 15%,
+      rgba(0, 0, 0, 0.301) 20%,
+      rgba(0, 0, 0, 0.432) 25%,
+      rgba(0, 0, 0, 0.568) 30%,
+      rgba(0, 0, 0, 0.699) 35%,
+      rgba(0, 0, 0, 0.818) 40%,
+      rgba(0, 0, 0, 0.913) 45%,
+      rgba(0, 0, 0, 0.977) 50%,
+      rgb(0, 0, 0) 55%
+    );
+    -webkit-mask-image: var(--kk-fade);
+    mask-image: var(--kk-fade);
+  }
 }
 
 @keyframes kk-float {
@@ -599,6 +760,203 @@
     clip-path: inset(0 0 0 0) !important;
   }
   .kkl-ripple {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------- Analyse du diagnostic --
+
+   Ce qui se joue entre la dernière réponse et la routine proposée.
+
+   Une roue qui tourne n'y disait rien : elle ne porte aucune identité, et
+   surtout elle ne dit pas ce qui se passe. Or il se passe quelque chose de
+   précis — les réponses sont lues, croisées au catalogue, une routine est
+   composée — et c'est ce travail qu'il faut montrer.
+
+   Le geste est celui de l'écran d'attente de la maison : de l'encre qui monte
+   dans une forme, et non un objet qui tourne. La forme est ici le pétale du
+   diagnostic, celui-là même qui orne les questions. Son contour se trace, il se
+   remplit par le bas, ses nervures se posent — pendant que les quatre temps de
+   l'analyse s'allument dessous. Le remplissage EST l'indicateur de progression.
+
+   Séquence, en millisecondes — douze secondes en deux actes :
+
+   Acte I — l'analyse
+     0 → 1600      le contour se trace
+     1000 → 9000   l'encre monte
+     2500 →        les ondes se diffusent, deux décalées, en boucle
+     3200 → 7000   les nervures se posent, une à une, en laiton
+     1200 / 4000 / 6800 / 9200   les quatre temps de l'analyse
+
+   Acte II — la composition
+     9800 → 11600  les quatre gestes de la routine s'inscrivent
+     9000 →        le pétale respire jusqu'à l'affichage du résultat
+
+   Douze secondes ne se tiennent qu'à une condition : que rien ne s'arrête en
+   route. D'où la montée d'encre étalée sur huit secondes — le fil conducteur —,
+   les ondes qui bouclent pour dire l'activité continue, et surtout le second
+   acte : la routine se compose sous les yeux du visiteur au lieu de le laisser
+   devant un écran figé. Une attente qu'on regarde n'est pas une attente qu'on
+   subit.
+
+   `DUREE_ANALYSE`, dans diagnostic-analyse.tsx, reprend cette durée pour
+   retenir le résultat jusque-là. Les deux se suivent — décaler une animation
+   ici demande d'y revenir. */
+
+@keyframes kkd-trait {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.kkd-trait {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: kkd-trait 1.6s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+/* Les nervures reprennent le même tracé, plus court et décalé par --d. */
+.kkd-nervure {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: kkd-trait 1.4s cubic-bezier(0.65, 0, 0.35, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* `inset()` découpe depuis le haut : 100 % ne montre rien, 0 % montre tout.
+   La zone visible grandit donc par le bas — l'encre monte. Même mécanisme que
+   `.kkl-block` sur l'écran d'attente, à dessein. */
+@keyframes kkd-encre {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Huit secondes de montée, en `ease-out` plutôt qu'en courbe symétrique :
+   l'encre gagne vite les deux tiers puis ralentit longuement près du sommet.
+   Une montée linéaire sur cette durée se lirait comme une barre de progression
+   — exactement ce qu'on cherchait à ne pas faire. */
+.kkd-encre {
+  clip-path: inset(100% 0 0 0);
+  animation: kkd-encre 8s cubic-bezier(0.25, 0.85, 0.35, 1) 1s both;
+}
+
+/* Les ondes : une goutte de soin qui se diffuse, en boucle.
+   Elles ne mesurent rien — elles disent que le travail continue. C'est ce qui
+   distingue, sur une longue attente, un écran qui analyse d'un écran qui a
+   planté. Même geste que sur l'écran d'attente de la maison. */
+@keyframes kkd-onde {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
+
+.kkd-onde {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  border-radius: 50%;
+  border: 1px solid var(--gold-soft);
+  opacity: 0;
+  animation: kkd-onde 3s cubic-bezier(0.16, 1, 0.3, 1) 2.5s infinite both;
+}
+
+/* La seconde onde part à mi-cycle : la diffusion devient continue plutôt que
+   pulsée, et l'écran ne retombe jamais tout à fait au calme. */
+.kkd-onde--late {
+  animation-delay: 4s;
+}
+
+/* Les gestes de la routine, au second acte. Ils arrivent en s'élargissant
+   depuis le centre : la routine se COMPOSE, elle n'apparaît pas. */
+@keyframes kkd-geste {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.kkd-geste {
+  opacity: 0;
+  animation: kkd-geste 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Une fois plein, le pétale respire. C'est ce qui distingue « l'analyse
+   continue » de « l'écran est resté bloqué » quand la réponse tarde. */
+@keyframes kkd-souffle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.68;
+  }
+}
+
+.kkd-souffle {
+  animation: kkd-souffle 3s ease-in-out 9s infinite both;
+}
+
+/* Les quatre temps de l'analyse, chacun à son tour. */
+@keyframes kkd-temps {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.kkd-temps {
+  opacity: 0;
+  animation: kkd-temps 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Mouvement réduit : la règle globale fige déjà chaque animation sur sa
+   dernière image, mais elle ne touche pas aux DÉLAIS — les quatre temps
+   apparaîtraient encore en escalier, sur deux secondes, sans rien montrer
+   entre-temps. On les pose tous d'un coup, pétale plein. */
+@media (prefers-reduced-motion: reduce) {
+  .kkd-trait,
+  .kkd-nervure {
+    stroke-dashoffset: 0 !important;
+    animation-delay: 0ms !important;
+  }
+  .kkd-encre {
+    clip-path: inset(0 0 0 0) !important;
+    animation-delay: 0ms !important;
+  }
+  .kkd-temps,
+  .kkd-geste {
+    opacity: 1 !important;
+    transform: none !important;
+    animation-delay: 0ms !important;
+  }
+  .kkd-souffle {
+    animation: none !important;
+  }
+  /* Sans diffusion, une onde ne dit rien : on la retire plutôt que de la figer
+     sur une image morte. Même traitement que sur l'écran d'attente. */
+  .kkd-onde {
     display: none;
   }
 }
@@ -835,5 +1193,54 @@
 
   .kk-marquee > [aria-hidden="true"] {
     display: none;
+  }
+}
+
+/* ------------------------------------------------------------ Rail défilant --
+
+   Piste du carrousel produits. La barre de défilement est masquée : elle
+   apparaîtrait puis disparaîtrait au rythme de l'animation, ce qui attire l'œil
+   sur le mécanisme au lieu des produits. Le rail reste défilable au doigt, à la
+   molette et au clavier — seule sa barre est invisible. */
+.kk-piste {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Le glissement est piloté image par image : un `scroll-behavior: smooth`
+     global entrerait en conflit avec lui. Il n'est rétabli que pour les
+     flèches, via l'option `behavior` de `scrollBy`. */
+  scroll-behavior: auto;
+}
+
+.kk-piste::-webkit-scrollbar {
+  display: none;
+}
+
+/* ------------------------------------------------- Passage problème → solution --
+
+   Le trait qui relie la plainte à la réponse se remplit d'or vers la droite au
+   survol de la ligne. Il ne s'agit pas d'un ornement : le geste EST le propos
+   du bloc — on passe d'un côté à l'autre.
+
+   Le remplissage se fait par un pseudo-élément mis à l'échelle, et non par une
+   animation de largeur : `transform` se compose sur le processeur graphique, là
+   où animer `width` force un recalcul de mise en page à chaque image. */
+.kk-passage-trait::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.kk-passage:hover .kk-passage-trait::after,
+.kk-passage:focus-visible .kk-passage-trait::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kk-passage-trait::after {
+    transition: none;
   }
 }

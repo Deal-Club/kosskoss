@@ -68,7 +68,7 @@ export function CartSuggestions() {
 
   return (
     <section className="border-t border-border px-6 py-5">
-      <h3 className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+      <h3 className="text-[0.78rem] font-bold uppercase tracking-[0.14em] text-deep">
         Vous aimeriez aussi
       </h3>
 
@@ -89,12 +89,12 @@ export function CartSuggestions() {
               </Link>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                <p className="truncate text-[0.68rem] font-semibold uppercase tracking-[0.1em] text-deep/70">
                   {p.brand}
                 </p>
                 <Link
                   href={p.href ?? "#"}
-                  className="block truncate text-sm text-foreground transition hover:text-deep"
+                  className="block truncate text-sm font-medium text-deep transition hover:text-deep/70"
                 >
                   {p.name}
                 </Link>

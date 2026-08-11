@@ -95,7 +95,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
         <div className="relative flex flex-col gap-6 px-7 py-10 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
           <div className="lg:max-w-md">
             <h2 className="text-primary-foreground">Rejoignez la communauté</h2>
-            <p className="mt-2 text-sm leading-relaxed text-primary-foreground/75">
+            <p className="mt-2 text-sm leading-relaxed text-primary-foreground">
               Nos conseils de soin, nos nouveautés et nos offres réservées. Pas plus d&rsquo;un
               message par semaine.
             </p>
@@ -145,7 +145,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
                 </p>
               )}
 
-              <p className="mt-2.5 text-xs text-primary-foreground/55">
+              <p className="mt-2.5 text-xs text-primary-foreground">
                 Désinscription en un clic depuis chaque message.
               </p>
             </form>
@@ -163,7 +163,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
                   target="_blank"
                   rel="noopener noreferrer me"
                   aria-label={nom}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-primary-foreground/25 text-primary-foreground/80 transition hover:border-gold hover:text-gold"
+                  className="grid h-10 w-10 place-items-center rounded-full border border-primary-foreground/25 text-primary-foreground transition hover:border-gold hover:text-gold"
                 >
                   <Icone className="h-4 w-4" />
                 </a>

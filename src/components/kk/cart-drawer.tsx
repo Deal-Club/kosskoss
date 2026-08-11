@@ -36,7 +36,7 @@ export function CartDrawerKK() {
         onClick={closeDrawer}
         className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
       />
-      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-cream shadow-2xl">
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-background shadow-2xl">
         <header className="flex items-center justify-between border-b border-border px-6 py-5">
           <h2 className="flex items-center gap-2 text-lg text-deep">
             <ShoppingBag className="h-5 w-5" /> Votre panier
@@ -54,7 +54,7 @@ export function CartDrawerKK() {
         {empty ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
             <BottleMotif className="h-24 text-deep/30" />
-            <p className="text-muted-foreground">Votre panier est vide.</p>
+            <p className="text-deep/80">Votre panier est vide.</p>
             <Link
               href="/soins-visage"
               onClick={closeDrawer}
@@ -92,7 +92,7 @@ export function CartDrawerKK() {
                       )}
                     </Link>
                     <div className="flex flex-1 flex-col">
-                      <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      <p className="text-[0.7rem] font-semibold uppercase tracking-[0.1em] text-deep/70">
                         {line.brand}
                       </p>
                       <Link
@@ -103,7 +103,7 @@ export function CartDrawerKK() {
                         {line.name}
                       </Link>
                       {line.variantLabel && (
-                        <p className="text-xs text-muted-foreground">{line.variantLabel}</p>
+                        <p className="text-xs font-medium text-deep/70">{line.variantLabel}</p>
                       )}
                       <div className="mt-auto flex items-center justify-between pt-2">
                         <div className="flex items-center rounded-full border border-border">
@@ -150,7 +150,7 @@ export function CartDrawerKK() {
 
             <footer className="border-t border-border px-6 py-5">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Sous-total</span>
+                <span className="text-sm font-medium text-deep">Sous-total</span>
                 <span className="figure text-lg font-semibold text-deep">{formatFcfa(subtotal)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">

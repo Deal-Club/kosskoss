@@ -4,8 +4,22 @@ import Image from "next/image";
  * Motif de marque KossKoss — tissage de la charte — posé en fond de section.
  *
  * ─────────────────────────────────────────────────────────────────────────
- * RÈGLE : un seul motif sur tout le parcours, jamais sous du texte courant.
+ * RÈGLE : jamais sous du texte courant — bandeaux de tête et pied de page
+ * seulement, et toujours sous un voile.
  * ─────────────────────────────────────────────────────────────────────────
+ *
+ * La règle a d'abord été « un seul emplacement sur tout le parcours ». Elle a
+ * été élargie à la demande du client : le motif habille désormais TOUS les
+ * bandeaux sombres hors accueil — rayons, routines, marques, favoris — plus le
+ * bandeau d'inscription et le pied de page.
+ *
+ * Ce qui n'a pas bougé, et qui est le fond du reproche d'origine, c'est
+ * l'endroit : ces bandeaux ne portent qu'un sur-titre, un titre et un chapô de
+ * deux lignes. Aucun n'est une zone de lecture. Le motif reste proscrit sous
+ * un paragraphe, une liste, une fiche produit ou un formulaire.
+ *
+ * L'ACCUEIL EN EST EXCLU : son hero porte déjà une photographie pleine hauteur,
+ * et deux matières côte à côte se disputeraient l'entrée du site.
  *
  * Le motif était monté à sept endroits, dont quatre sur la seule page
  * d'accueil, et systématiquement sous du texte. Trois sources concordantes ont
@@ -66,6 +80,16 @@ const VEIL = {
    */
   center:
     "bg-[radial-gradient(ellipse_at_center,var(--deep)_0%,color-mix(in_oklab,var(--deep)_92%,transparent)_60%,color-mix(in_oklab,var(--deep)_70%,transparent)_100%)]",
+  /**
+   * Pied de page. Voile UNIFORME et non dégradé : le footer porte du texte sur
+   * toute sa surface — quatre colonnes de liens puis les mentions légales — et
+   * il n'existe donc aucun côté « vide » où relâcher le voile.
+   *
+   * Il reprend `--footer`, qui vaut désormais le vert profond de la marque :
+   * le voile est donc exactement de la couleur du fond qu'il recouvre, et il
+   * assourdit le motif sans introduire de troisième teinte.
+   */
+  footer: "bg-footer/60",
 } as const;
 
 export function PatternBackdrop({

@@ -14,13 +14,25 @@ function createClient(): PrismaClient {
   return new PrismaClient({
     adapter: new PrismaPg({
       connectionString: url,
-      // Neon met le calcul en veille après une période d'inactivité : le
-      // premier appel qui le réveille peut demander plusieurs secondes.
-      connectionTimeoutMillis: 15_000,
-      // Une connexion inactive est rendue au bout de trente secondes plutôt
-      // que gardée ouverte : Neon facture le temps de calcul, pas les
-      // connexions, et le pooler préfère des sessions courtes.
-      idleTimeoutMillis: 30_000,
+      // Mesuré sur cette base : la REQUÊTE prend 221 ms, mais OUVRIR une
+      // connexion en demande 2 000 à 3 000. Le calcul est en `us-east-2`,
+      // les postes de travail sont en Europe : l'établissement TLS et
+      // l'authentification Postgres coûtent chacun plusieurs allers-retours
+      // transatlantiques. S'y ajoute le réveil du calcul Neon, mis en veille
+      // après inactivité, qui peut demander plusieurs secondes de plus.
+      //
+      // Une page comme le catalogue lance trois requêtes en parallèle : sur un
+      // pool froid, ce sont trois ouvertures simultanées, et l'ancien plafond
+      // de quinze secondes était atteint — d'où les « timeout exceeded when
+      // trying to connect » intermittents, toujours après un moment sans
+      // activité, jamais en usage soutenu.
+      connectionTimeoutMillis: 30_000,
+      // Conserver les connexions ouvertes plus longtemps en développement :
+      // chaque réouverture coûte les 2 à 3 secondes ci-dessus, et un poste de
+      // travail alterne des rafales de requêtes et de longues pauses. En
+      // production, les sessions restent courtes — le pooler Neon préfère, et
+      // le calcul est facturé au temps d'activité.
+      idleTimeoutMillis: process.env.NODE_ENV === "production" ? 30_000 : 300_000,
       max: 10,
     }),
   });

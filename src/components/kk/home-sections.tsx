@@ -81,7 +81,11 @@ export function PromisesRow() {
   ];
 
   return (
-    <section className="border-y border-border/60 bg-sand">
+    /* Fond de page, pas d'aplat : cette bande court sur toute la largeur, juste
+       sous le hero, et son sable se lisait comme la couleur de fond du site.
+       Le vert profond du hero la délimite en haut, un filet la ferme en bas —
+       c'est tout ce dont elle a besoin pour se détacher. */
+    <section className="border-b border-border/60 bg-background">
       <div className="section-tight mx-auto grid max-w-7xl gap-x-8 gap-y-6 px-6 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ icon: Icon, title, text }) => (
           <div key={title} className="flex items-center gap-3">
@@ -180,10 +184,10 @@ export function BrandFocus({
           <h2 className="mt-3 font-display text-4xl leading-none text-primary-foreground sm:text-5xl">
             {focus.brand}
           </h2>
-          <p className="mt-3 font-display text-xl leading-snug text-primary-foreground/80">
+          <p className="mt-3 font-display text-xl leading-snug text-primary-foreground">
             {focus.claim}
           </p>
-          <p className="mt-5 max-w-lg leading-relaxed text-primary-foreground/70">
+          <p className="mt-5 max-w-lg leading-relaxed text-primary-foreground">
             {focus.description}
           </p>
 
@@ -195,7 +199,7 @@ export function BrandFocus({
               Découvrir la marque
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-            <span className="figure text-sm text-primary-foreground/60">
+            <span className="figure text-sm text-primary-foreground">
               {focus.productCount} référence{focus.productCount > 1 ? "s" : ""} au catalogue
             </span>
           </div>
@@ -230,10 +234,15 @@ export function BrandFocus({
 /**
  * Une icône par catégorie, comme sur la maquette.
  *
- * La même silhouette de flacon servait pour les huit : la grille se lisait
- * comme un damier indifférencié et l'icône n'aidait pas à choisir. La table est
+ * La même silhouette de flacon servait pour toutes : la grille se lisait comme
+ * un damier indifférencié et l'icône n'aidait pas à choisir. La table est
  * explicite parce que les slugs viennent de la base — une catégorie inconnue
  * retombe sur la goutte, jamais sur rien.
+ *
+ * `cheveux` et `masques` y figurent alors que le catalogue ne les contient pas
+ * encore : ce sont deux entrées prévues, prêtes à s'afficher le jour où elles
+ * sont créées. Toute autre catégorie ajoutée sans icône ici s'affichera avec la
+ * goutte — c'est correct, mais c'est le signe qu'il faut compléter la table.
  */
 const ICONE_CATEGORIE: Record<string, LucideIcon> = {
   nettoyants: SprayCan,
@@ -253,18 +262,47 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
   if (categories.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-border/70 bg-card p-6">
+    /* `h-full` et colonne flex : la carte doit atteindre la hauteur du rail de
+       best-sellers qu'elle accompagne, les deux blocs étant posés côte à côte.
+       Le `mt-auto` sur le pied de carte absorbe la différence — l'écart s'ouvre
+       entre les icônes et les deux liens, jamais à l'intérieur de la grille
+       d'icônes, qui garde son pas régulier. */
+    <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5 sm:p-6">
       <p className="eyebrow">Shoppez par catégorie</p>
       <h2 className="mt-2 text-deep">Par où commencer</h2>
 
-      <ul className="mt-6 grid grid-cols-3 gap-x-3 gap-y-5 sm:grid-cols-4">
-        {categories.slice(0, 8).map((category) => {
+      {/* TROIS PAR LIGNE, et non quatre.
+
+          Le catalogue compte huit catégories : à quatre par ligne elles
+          tenaient en deux rangées et la carte restait nettement plus courte que
+          le rail de best-sellers posé à côté. À trois, les mêmes huit entrées
+          occupent trois rangées et les deux blocs s'équilibrent — sans inventer
+          de catégorie. Une catégorie sans produit est d'ailleurs masquée
+          d'office par la navigation (voir server/kk/navigation.ts) : en créer
+          pour remplir la grille ne remplirait rien du tout.
+
+          `flex` plutôt que `grid` pour une seule raison : la dernière rangée
+          est incomplète (8 = 3 + 3 + 2) et se centre, là où une grille la
+          collerait à gauche en laissant un trou à droite. Le plafond de douze
+          laisse la place à une quatrième rangée si le catalogue s'étoffe. */}
+      <ul className="mt-6 flex flex-wrap justify-center gap-x-3 gap-y-5">
+        {categories.slice(0, 12).map((category) => {
           const Icone = ICONE_CATEGORIE[category.slug] ?? Droplet;
           return (
-            <li key={category.href}>
+            /* (100 % − deux gouttières de 0.75rem) / 3 */
+            <li key={category.href} className="w-[calc((100%-1.5rem)/3)]">
               <Link href={category.href} className="group flex flex-col items-center gap-2 text-center">
-                <span className="grid h-14 w-14 place-items-center rounded-full bg-sand text-deep transition group-hover:bg-taupe">
-                  <Icone className="h-6 w-6" strokeWidth={1.5} />
+                {/* 72 px sur grand écran, 56 sur mobile.
+
+                    Le 72 vient du passage de quatre à trois colonnes, qui a
+                    élargi chaque case d'un tiers — mais seulement là où la
+                    carte occupe un tiers de la page. Sur un téléphone elle
+                    prend toute la largeur : trois cases dans 264 px utiles font
+                    80 px chacune, et un cercle de 72 les remplissait au point
+                    de se toucher. Le rapport icône/pastille reste à 44 % dans
+                    les deux cas. */}
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-sand text-deep transition group-hover:bg-taupe sm:h-[4.5rem] sm:w-[4.5rem]">
+                  <Icone className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={1.5} />
                 </span>
                 <span className="text-xs font-medium leading-snug text-deep">{category.label}</span>
               </Link>
@@ -273,7 +311,7 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
         })}
       </ul>
 
-      <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2">
+      <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6">
         <Link
           href="/soins-visage"
           className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-medium text-deep transition hover:border-deep/50 hover:bg-sand"
@@ -471,14 +509,14 @@ export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
               <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
               <div>
                 <p className="text-sm font-semibold text-primary-foreground">{title}</p>
-                <p className="mt-0.5 text-sm text-primary-foreground/65">{text}</p>
+                <p className="mt-0.5 text-sm text-primary-foreground">{text}</p>
               </div>
             </li>
           ))}
         </ul>
 
         {whatsappUrl && (
-          <p className="mt-9 border-t border-primary-foreground/15 pt-7 text-center text-sm text-primary-foreground/70">
+          <p className="mt-9 border-t border-primary-foreground/15 pt-7 text-center text-sm text-primary-foreground">
             Une question avant d&rsquo;acheter ?{" "}
             <a
               href={whatsappUrl}
@@ -500,9 +538,12 @@ export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
 /* ------------------------------------------------------------- Diagnostic -- */
 
 /**
- * Rappel du diagnostic en bas de page, pour qui a parcouru l'accueil sans se
- * reconnaître dans aucune routine. Volontairement sobre : le module complet est
- * en haut de page (bloc 4), celui-ci n'est qu'une porte de sortie.
+ * Rappel du diagnostic, posé juste après les best-sellers et avant la section
+ * « Bon à savoir » — c'est la place demandée par le client.
+ *
+ * Il s'adresse à qui vient de parcourir le rayon sans se reconnaître dans aucun
+ * produit. Volontairement sobre : le module complet est en haut de page
+ * (bloc 4), celui-ci n'est qu'une porte de sortie.
  */
 export function DiagnosticReminder() {
   return (
@@ -510,7 +551,7 @@ export function DiagnosticReminder() {
       <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-taupe px-8 py-9">
         <div>
           <h2 className="text-deep">Vous ne savez pas par où commencer ?</h2>
-          <p className="mt-1.5 text-sm text-deep/70">
+          <p className="mt-1.5 text-sm text-deep">
             Cinq questions sur votre peau, et nous composons votre routine.
           </p>
         </div>

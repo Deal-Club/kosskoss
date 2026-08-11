@@ -43,7 +43,7 @@ export function LanguageSwitcher({ className, tone = "dark" }: LanguageSwitcherP
             tone === "light"
               ? code === locale
                 ? "bg-white/15 text-white"
-                : "text-white/60 hover:text-white"
+                : "text-white hover:text-gold-soft"
               : code === locale
                 ? "bg-muted text-foreground"
                 : "text-muted-foreground hover:text-foreground",

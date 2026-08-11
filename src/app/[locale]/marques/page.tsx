@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getShopBrands } from "@/server/kk/navigation";
 import { alternatesFor } from "@/lib/hreflang";
@@ -39,14 +40,15 @@ export default async function MarquesPage({ params }: { params: Params }) {
       <SiteHeader />
 
       <main className="flex-1">
-        <section className="bg-deep text-primary-foreground">
-          <div className="mx-auto max-w-3xl px-6 py-14 text-center">
+        <section className="relative overflow-hidden bg-deep text-primary-foreground">
+          <PatternBackdrop align="center" />
+          <div className="relative mx-auto max-w-3xl px-6 py-14 text-center">
             <p className="eyebrow eyebrow-on-dark">Nos marques</p>
             <h1 className="mt-3">
               {brands.length} maison{brands.length > 1 ? "s" : ""} distribuée
               {brands.length > 1 ? "s" : ""}
             </h1>
-            <p className="lead mx-auto mt-4 max-w-xl text-primary-foreground/75">
+            <p className="lead mx-auto mt-4 max-w-xl text-primary-foreground">
               Nous filtrons l&rsquo;offre plutôt que de l&rsquo;empiler. Chaque maison entre au
               catalogue pour ses formules et sa tenue sur les peaux riches en mélanine — et chaque
               référence arrive par un circuit d&rsquo;approvisionnement identifié.

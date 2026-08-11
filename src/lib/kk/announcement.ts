@@ -35,11 +35,24 @@ export interface AnnouncementConfig {
   scrolling: boolean;
 }
 
-/** Repli : la charte KossKoss, bleu profond et crème. */
+/**
+ * Repli : la charte KossKoss, vert profond et crème.
+ *
+ * Les deux valeurs étaient restées sur l'ANCIENNE palette — #0F3B46, le canard
+ * tirant au bleu qui a été abandonné, et #F3E8DD, le crème d'avant. Le bandeau
+ * affichait donc un vert qui n'existe plus nulle part ailleurs sur le site, ce
+ * qui ne se voyait pas tant qu'il surplombait un hero clair. Depuis que le hero
+ * est lui-même sombre, les deux verts se répondent à travers l'en-tête et
+ * l'écart se lit. Ils reprennent ici `--deep` et `--primary-foreground`.
+ *
+ * ATTENTION : ce n'est qu'un REPLI. Si une configuration a été enregistrée
+ * depuis le back-office, c'est elle qui s'applique et la couleur doit y être
+ * corrigée aussi.
+ */
 export const REGLAGES_PAR_DEFAUT: AnnouncementConfig = {
   enabled: true,
-  background: "#0F3B46",
-  color: "#F3E8DD",
+  background: "#11292D",
+  color: "#F3EEEA",
   speedSeconds: 30,
   scrolling: true,
 };

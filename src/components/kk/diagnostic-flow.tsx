@@ -18,7 +18,6 @@ import {
   Check,
   X,
   ArrowLeft,
-  Loader2,
   ShoppingBag,
   RefreshCw,
 } from "lucide-react";
@@ -28,6 +27,7 @@ import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
 import { Petal, BottleMotif } from "./motifs";
+import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
 const ICONS: Record<DiagIcon, typeof Droplet> = {
   droplet: Droplet, wind: Wind, smile: Smile, contrast: Contrast, sparkles: Sparkles,
@@ -76,6 +76,8 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const [error, setError] = useState<string | null>(null);
   /** Passage automatique en cours : neutralise un second clic pendant le délai. */
   const enCours = useRef<number | null>(null);
+  /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
+  const attenteAnalyse = useRef<number | null>(null);
 
   const question = questions[qIndex];
   const selected = question ? answers[question.id] : undefined;
@@ -107,6 +109,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   // Un passage automatique programmé ne doit pas survivre au démontage.
   useEffect(() => () => {
     if (enCours.current !== null) window.clearTimeout(enCours.current);
+    if (attenteAnalyse.current !== null) window.clearTimeout(attenteAnalyse.current);
   }, []);
 
   /**
@@ -132,10 +135,20 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
       setQIndex((i) => i + 1);
       return;
     }
-    // Dernière question → analyse. Aucune attente ajoutée : l'écran d'analyse
-    // ne dure que le temps de la requête.
+    // Dernière question → analyse.
+    //
+    // Le résultat n'est affiché qu'une fois la séquence d'analyse arrivée à son
+    // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
+    // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
+    // l'écran ne passe pas pour rapide — il passe pour n'avoir rien regardé.
+    // Les trois temps montrés (lecture, croisement, composition) sont ceux que
+    // le moteur exécute réellement ; on leur laisse le temps d'être lus.
+    //
+    // L'attente est un PLANCHER, jamais un ajout : si la requête dure plus
+    // longtemps que la séquence, rien n'est rallongé.
     setPhase("loading");
     setError(null);
+    const debut = Date.now();
     try {
       const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
       const res = await fetch("/api/kk/diagnostic", {
@@ -145,9 +158,21 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
       });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as DiagnosticResult;
+
+      const reste = DUREE_ANALYSE - (Date.now() - debut);
+      if (reste > 0) {
+        await new Promise<void>((resoudre) => {
+          attenteAnalyse.current = window.setTimeout(() => {
+            attenteAnalyse.current = null;
+            resoudre();
+          }, reste);
+        });
+      }
+
       setResult(data);
       setPhase("result");
     } catch {
+      // Un échec ne se fait pas attendre : on rend la main tout de suite.
       setError("L'analyse a échoué. Choisissez à nouveau votre réponse.");
       setPhase("question");
     }
@@ -190,15 +215,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   if (phase === "loading") {
     return (
       <MinimalShell>
-        <section className="flex min-h-[70vh] flex-col items-center justify-center gap-5 px-6 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-deep" />
-          {/* `aria-live` : sans lui, un lecteur d'écran ne signale rien entre la
-              dernière réponse et l'arrivée du résultat. */}
-          <p aria-live="polite" className="font-display text-2xl text-deep">
-            Analyse de votre profil…
-          </p>
-          <p className="text-sm text-muted-foreground">Nous composons votre routine sur mesure.</p>
-        </section>
+        <DiagnosticAnalyse />
       </MinimalShell>
     );
   }
@@ -207,7 +224,10 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   if (phase === "result" && result) {
     return (
       <MinimalShell>
-        <section className="mx-auto max-w-6xl px-6 py-12">
+        {/* Le résultat se lève au lieu d'apparaître d'un coup : il prend la
+            suite du pétale qui vient de se remplir, et le raccord entre les
+            deux écrans se lit comme un seul geste. */}
+        <section className="kk-rise mx-auto max-w-6xl px-6 py-12">
           <p className="eyebrow">Votre routine personnalisée</p>
           <h1 className="mt-2 text-deep">Votre profil beauté</h1>
           {result.chips.length > 0 && (
@@ -310,8 +330,16 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const Icon = (icon: string) => ICONS[icon as DiagIcon] ?? Check;
   return (
     <MinimalShell>
-      <section className="relative mx-auto max-w-3xl px-6 py-10">
-        <Petal className="pointer-events-none absolute -left-24 top-20 hidden h-72 w-72 text-sand/60 lg:block" />
+      {/* `isolate` : la section devient son propre contexte d'empilement, ce qui
+          confine le pétale décoratif — sans quoi son `-z-10` le ferait passer
+          sous le fond de la page, où il disparaîtrait. */}
+      <section className="relative isolate mx-auto max-w-3xl px-6 py-10">
+        {/* `-z-10` : le pétale est POSITIONNÉ, le titre et les cartes ne le sont
+            pas. En CSS, un élément positionné se peint au-dessus de ceux qui ne
+            le sont pas, même s'il vient avant dans le DOM — le motif recouvrait
+            donc la question et les réponses d'un voile clair. Il repasse
+            derrière, à sa place d'ornement. */}
+        <Petal className="pointer-events-none absolute -left-24 top-20 -z-10 hidden h-72 w-72 text-sand/60 lg:block" />
         <p className="eyebrow text-center">
           Étape {qIndex + 1} sur {questions.length}
         </p>
@@ -392,10 +420,10 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 /** Coquille immersive : en-tête minimal (logo + quitter). */
 function MinimalShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-cream">
+    <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b border-border/60 px-6 py-4">
         <Link href="/" className="wordmark text-sm text-deep">
-          KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep/60">SELECT</span>
+          KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep">SELECT</span>
         </Link>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-deep">
           Quitter le diagnostic <X className="h-4 w-4" />

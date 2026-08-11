@@ -31,40 +31,34 @@ export function tintClass(tint: string): string {
 }
 
 /**
- * Vitrine d'une routine : les produits qui la composent, posés sur sa teinte.
+ * Vitrine d'une routine : un seul visuel, posé sur sa teinte.
  *
- * Les packshots sont légèrement décalés et se chevauchent, comme sur la
- * maquette : une routine est un ensemble, pas une grille de trois vignettes
- * indépendantes.
+ * La version précédente alignait les trois ou quatre packshots de la routine
+ * côte à côte. À 270 px de large, chaque flacon tombait sous les 90 px : on ne
+ * reconnaissait plus aucun produit et la vignette se lisait comme un
+ * encombrement. Retour client explicite là-dessus — un seul produit, présenté
+ * en grand. La composition de la routine reste dite juste en dessous, par la
+ * suite des gestes (« Nettoyer · Traiter · Protéger »), qui est de toute façon
+ * l'information utile : c'est un ordre qu'on achète, pas un lot de flacons.
  */
 function RoutineVisual({ routine }: { routine: KKRoutineView }) {
   return (
-    <div className={`relative flex h-44 items-end justify-center gap-1 overflow-hidden px-4 ${tintClass(routine.tint)}`}>
+    <div className={`relative flex h-44 items-center justify-center overflow-hidden ${tintClass(routine.tint)}`}>
       {routine.image ? (
+        // Visuel éditorial propre à la routine : il occupe tout le cadre.
         <Image src={routine.image} alt="" aria-hidden="true" fill sizes="320px" className="object-cover" />
       ) : (
-        routine.steps.slice(0, 4).map((step, i) => (
-          <div
-            key={step.id}
-            className="relative h-[78%] w-1/3 shrink-0"
-            // Les flacons du milieu remontent : la silhouette d'ensemble est
-            // alors une courbe et non un trait, ce qui se lit comme un groupe.
-            style={{ marginBottom: i % 2 === 1 ? "0.9rem" : 0 }}
-          >
-            {step.product.image ? (
-              <Image
-                src={step.product.image}
-                alt=""
-                aria-hidden="true"
-                fill
-                sizes="120px"
-                className="object-contain object-bottom"
-              />
-            ) : (
-              <BottleMotif className="absolute inset-0 m-auto h-full w-auto text-deep/25" />
-            )}
-          </div>
-        ))
+        // En attendant les visuels de coffret fournis par le client.
+        //
+        // La carte affichait ici le packshot du premier produit de la routine.
+        // C'était trompeur : un flacon isolé se lit comme LE produit vendu,
+        // alors qu'une routine est un ensemble de trois à cinq gestes. Le
+        // visiteur croyait acheter ce qu'il voyait.
+        //
+        // Le motif sur l'aplat teinté ne prétend rien : il tient la place,
+        // porte la couleur de la routine, et s'efface dès qu'une vraie image
+        // de coffret est renseignée sur `Routine.image`.
+        <BottleMotif className="h-[78%] w-auto text-deep/25" />
       )}
     </div>
   );
@@ -97,7 +91,7 @@ export function RoutineCard({ routine }: { routine: KKRoutineView }) {
 
         {/* La suite des gestes : « Nettoyer • Traiter • Protéger ». C'est ce qui
             distingue une routine d'un lot de produits — on achète un ordre. */}
-        <p className="mt-3 text-[0.78rem] font-medium text-deep/70">
+        <p className="mt-3 text-[0.78rem] font-medium text-deep">
           {routine.steps.map((s) => s.label).join(" · ")}
         </p>
 

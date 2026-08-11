@@ -72,7 +72,7 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
               {/* La date en toutes lettres double toujours le compte à rebours :
                   il ne s'affiche qu'une fois la page hydratée, et il reste
                   inaudible pour un lecteur d'écran. */}
-              <p className="text-sm text-white/70">{t("validUntil", { date: endsAtLabel })}</p>
+              <p className="text-sm text-white">{t("validUntil", { date: endsAtLabel })}</p>
             </div>
           </div>
         </section>

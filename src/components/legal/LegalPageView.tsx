@@ -49,7 +49,7 @@ export function SectionList({ items }: { items: readonly string[] }) {
   return (
     <ul className="mt-2 space-y-1.5">
       {items.map((item, index) => (
-        <li key={`${index}-${item.slice(0, 24)}`} className="flex gap-2 text-sm text-foreground/80">
+        <li key={`${index}-${item.slice(0, 24)}`} className="flex gap-2 text-sm text-foreground">
           <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-primary" aria-hidden />
           <span>
             <RichText text={item} />
@@ -71,7 +71,7 @@ export function SectionBody({ body }: { body: string }) {
       {paragraphsOf(body).map((paragraph, index) => (
         <p
           key={`${index}-${paragraph.slice(0, 24)}`}
-          className="mb-3 text-sm leading-relaxed text-foreground/80 last:mb-0"
+          className="mb-3 text-sm leading-relaxed text-foreground last:mb-0"
         >
           <RichText text={paragraph} />
         </p>
@@ -109,7 +109,7 @@ export function LegalPageArticle({ page, locale }: { page: LegalPage; locale: st
           {paragraphsOf(page.intro).map((paragraph, index) => (
             <p
               key={`${index}-${paragraph.slice(0, 24)}`}
-              className="mb-2 text-sm leading-relaxed text-foreground/80 last:mb-0"
+              className="mb-2 text-sm leading-relaxed text-foreground last:mb-0"
             >
               <RichText text={paragraph} />
             </p>

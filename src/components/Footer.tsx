@@ -23,21 +23,21 @@ export async function Footer() {
             <Truck className="h-6 w-6 text-primary" />
             <div>
               <p className="text-sm font-bold">{t("deliveryTitle")}</p>
-              <p className="text-xs text-white/60">{t("deliveryDetail")}</p>
+              <p className="text-xs text-white">{t("deliveryDetail")}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-6 w-6 text-primary" />
             <div>
               <p className="text-sm font-bold">{t("warrantyTitle")}</p>
-              <p className="text-xs text-white/60">{t("warrantyDetail")}</p>
+              <p className="text-xs text-white">{t("warrantyDetail")}</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <CreditCard className="h-6 w-6 text-primary" />
             <div>
               <p className="text-sm font-bold">{t("paymentTitle")}</p>
-              <p className="text-xs text-white/60">{t("paymentDetail")}</p>
+              <p className="text-xs text-white">{t("paymentDetail")}</p>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@ export async function Footer() {
                 {COMPANY.phone}
               </a>
             </p>
-            <p className="mt-4 text-xs leading-relaxed text-white/55">{t("oeffnung")}</p>
+            <p className="mt-4 text-xs leading-relaxed text-white">{t("oeffnung")}</p>
           </div>
 
           {/* Colonnes issues du contenu légal : libellés et pages restent
@@ -93,7 +93,7 @@ export async function Footer() {
           <PaymentMethodsBar source="vitrine" />
         </div>
 
-        <div className="mt-6 border-t border-white/10 pt-6 text-center text-xs text-white/60">
+        <div className="mt-6 border-t border-white/10 pt-6 text-center text-xs text-white">
           {/* Année passée en chaîne : sinon ICU l'afficherait comme « 2.026 » */}
           <p>{t("copyright", { year: String(new Date().getFullYear()) })}</p>
         </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { FavoritesView } from "@/components/kk/favorites-view";
 import type { Locale } from "@/i18n/routing";
 
@@ -22,12 +23,14 @@ export default async function FavoritesPage({ params }: { params: Params }) {
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
-        {/* Bandeau de tête, sans motif : voir la règle dans pattern-backdrop.tsx. */}
+        {/* Bandeau de tête au motif de marque, comme tous les bandeaux sombres
+            hors accueil. */}
         <section className="relative overflow-hidden bg-deep text-primary-foreground">
+          <PatternBackdrop align="center" />
           <div className="relative mx-auto max-w-4xl px-6 py-12 text-center">
             <p className="eyebrow eyebrow-on-dark">Ma sélection</p>
             <h1 className="mt-3">Mes favoris</h1>
-            <p className="lead mx-auto mt-3 max-w-xl text-primary-foreground/75">
+            <p className="lead mx-auto mt-3 max-w-xl text-primary-foreground">
               Les produits que vous avez mis de côté, prêts à passer au panier.
             </p>
           </div>

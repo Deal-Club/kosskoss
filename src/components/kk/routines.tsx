@@ -44,8 +44,13 @@ export function RoutinesRail({ routines }: { routines: KKRoutineView[] }) {
           entre deux cartes. Les marges négatives font courir la piste jusqu'aux
           bords de l'écran alors que la section reste dans sa gouttière — sans
           quoi la carte suivante semble coupée par une marge et non par le bord,
-          et rien n'indique qu'on peut faire défiler. */}
-      <div className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 lg:mx-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:px-0 lg:pb-0">
+          et rien n'indique qu'on peut faire défiler.
+
+          `kk-piste` masque la barre de défilement, comme sur le rail des
+          best-sellers : c'est la carte à demi visible au bord de l'écran qui
+          annonce qu'on peut faire défiler, la barre ne faisait que salir le bas
+          de la rangée. */}
+      <div className="kk-piste -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 lg:mx-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:px-0 lg:pb-0">
         {routines.map((routine) => (
           <div
             key={routine.id}

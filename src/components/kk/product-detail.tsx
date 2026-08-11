@@ -1,10 +1,12 @@
-import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import type { KKProductDetail } from "@/server/kk/product";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif, Petal, Monogram } from "./motifs";
 import { AddToCart } from "./add-to-cart";
 import { ProductRail } from "./home";
+import { ProductReviews } from "./product-reviews";
+import { ProductZoom } from "./product-zoom";
+import type { KKProductReviews } from "@/server/kk/product-reviews";
 
 const BADGE_LABEL: Record<"bestseller" | "nouveau", string> = {
   bestseller: "Bestseller",
@@ -42,18 +44,33 @@ function Gallery({ product }: { product: KKProductDetail }) {
   const hasImage = typeof product.image === "string" && product.image.length > 0;
   return (
     <div className="grid gap-4">
-      <div
-        data-visuel-produit
-        className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.5),transparent_55%)]" />
-        {hasImage ? (
-          <Image src={product.image as string} alt={product.name} fill sizes="(max-width:1024px) 100vw, 45vw" className="object-contain p-8" />
-        ) : (
+      {/* Le zoom au survol vit dans son propre composant client (ProductZoom) :
+          il suit le pointeur, ce que la fiche — rendue sur le serveur — ne peut
+          pas faire. `data-visuel-produit` reste porté par ce cadre : c'est le
+          point de départ du vol vers le panier (lib/kk/fly-to-cart).
+          Sans image, on garde le motif et aucun zoom : il n'y a rien à
+          approcher sur un flacon dessiné. */}
+      {hasImage ? (
+        <ProductZoom
+          src={product.image as string}
+          alt={product.name}
+          /* Fond blanc, et non le dégradé beige qui habillait ce cadre : les
+             packshots sont des JPEG shootés sur fond blanc, ils y dessinaient
+             un rectangle clair au milieu du dégradé. Même correction que sur
+             les cartes produit. Le filet remplace le dégradé pour délimiter le
+             visuel, qui sans lui flotterait sur la page. */
+          className="aspect-[4/5] rounded-[1.75rem] border border-border/70 bg-card"
+        />
+      ) : (
+        <div
+          data-visuel-produit
+          className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.5),transparent_55%)]" />
           <BottleMotif className="h-3/5 w-auto text-deep/80" />
-        )}
-        <Petal className="absolute -right-4 -top-4 h-20 w-20 text-deep/15" />
-      </div>
+          <Petal className="absolute -right-4 -top-4 h-20 w-20 text-deep/15" />
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4">
         <div className="flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#dde9e8] to-[#bcd2d0]">
           <BottleMotif className="h-1/2 w-auto text-deep/60" />
@@ -81,9 +98,11 @@ function Accordion({ title, children, open = false }: { title: string; children:
 export function ProductDetail({
   product,
   related,
+  reviews,
 }: {
   product: KKProductDetail;
   related: KKProductView[];
+  reviews: KKProductReviews;
 }) {
   return (
     <>
@@ -145,24 +164,16 @@ export function ProductDetail({
         </div>
       </section>
 
-      {/* Bande éditoriale — parti pris de transparence */}
-      <section className="bg-sand/50">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-16 lg:grid-cols-2">
-          <div className="max-w-xl">
-            <p className="eyebrow">Notre parti pris</p>
-            <h2 className="mt-3 text-deep">L&rsquo;art de la transparence</h2>
-            <p className="mt-5 leading-relaxed text-muted-foreground">
-              Chaque produit de la maison est sélectionné pour sa formule et sa tolérance. Nous
-              privilégions des marques transparentes et des actifs qui ont fait leurs preuves — pour
-              que votre routine soit un choix éclairé, jamais un pari.
-            </p>
-          </div>
-          <div className="relative aspect-[5/4] overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#e7dccb] to-[#9db6b5]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.5),transparent_60%)]" />
-            <Monogram className="absolute inset-0 m-auto h-1/2 w-1/2 text-deep/25" />
-          </div>
-        </div>
-      </section>
+      {/* La bande « Notre parti pris » vivait ici : un discours général sur la
+         sélection, identique sur les soixante-onze fiches, illustré par un
+         aplat dégradé et le monogramme. Retirée à la demande du client. Elle
+         séparait la fiche de ses produits associés par un écran de texte qui
+         n'apprenait rien sur le produit qu'on est en train de regarder — le
+         même propos est tenu à sa place sur l'accueil et sur /marques. */}
+
+      {/* Les avis AVANT les produits associés : ils portent sur le produit
+          qu'on regarde, alors que le rail propose d'aller voir ailleurs. */}
+      <ProductReviews productId={product.id} reviews={reviews} />
 
       {related.length > 0 && (
         <ProductRail

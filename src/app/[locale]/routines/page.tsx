@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { RoutineCard } from "@/components/kk/routine-card";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getRoutines } from "@/server/kk/routines";
@@ -40,11 +41,12 @@ export default async function RoutinesPage({ params }: { params: Params }) {
       <SiteHeader />
 
       <main className="flex-1">
-        <section className="bg-deep text-primary-foreground">
-          <div className="mx-auto max-w-3xl px-6 py-14 text-center">
+        <section className="relative overflow-hidden bg-deep text-primary-foreground">
+          <PatternBackdrop align="center" />
+          <div className="relative mx-auto max-w-3xl px-6 py-14 text-center">
             <p className="eyebrow eyebrow-on-dark">Besoin par besoin</p>
             <h1 className="mt-3">Nos routines prêtes à l&rsquo;emploi</h1>
-            <p className="lead mx-auto mt-4 max-w-xl text-primary-foreground/75">
+            <p className="lead mx-auto mt-4 max-w-xl text-primary-foreground">
               Nous ne vendons pas des produits isolés mais des suites de gestes. Choisissez la
               préoccupation qui est la vôtre : la routine est déjà composée, dans l&rsquo;ordre
               qui la fait fonctionner.

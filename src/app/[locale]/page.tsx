@@ -3,22 +3,20 @@ import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
 import { Hero, ProductRail } from "@/components/kk/home";
 import {
-  BrandFocus,
   CategoryPills,
   DiagnosticReminder,
   InsightsSection,
   PromisesRow,
-  ServicesBand,
 } from "@/components/kk/home-sections";
 import { RoutinesRail } from "@/components/kk/routines";
-import { NewsletterBand } from "@/components/kk/newsletter";
+import { AvantApresSection } from "@/components/kk/avant-apres-section";
+import { BrandsShowcase } from "@/components/kk/brands-showcase";
+import { getBrandShowcase } from "@/server/kk/brands";
 import { getHomeProducts, getHomeTestimonials } from "@/server/kk/home";
 import { getHomeFaq } from "@/server/kk/home-faq";
 import { getShopNavigation } from "@/server/kk/navigation";
 import { getRoutines } from "@/server/kk/routines";
-import { getBrandFocus } from "@/server/kk/brand-focus";
-import { getQuestions } from "@/server/kk/diagnostic-data";
-import { AVANT_APRES } from "@/data/kk/avant-apres";
+import { AVANT_APRES, AVANT_APRES_CAS } from "@/data/kk/avant-apres";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { CONTACT } from "@/config/brand";
 import { alternatesFor } from "@/lib/hreflang";
@@ -26,19 +24,6 @@ import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
 type HomeParams = Promise<{ locale: Locale }>;
-
-/**
- * Lien WhatsApp de la bande services. Même source que le bouton flottant et le
- * pied de page : la ligne dédiée si elle est configurée, sinon le téléphone de
- * la société. Vide, le lien ne s'affiche pas.
- */
-const WHATSAPP_DIGITS =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || CONTACT.phone.replace(/\D/g, "");
-const WHATSAPP_URL = WHATSAPP_DIGITS
-  ? `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
-      "Bonjour, j'aimerais un conseil pour choisir mes soins.",
-    )}`
-  : undefined;
 
 export async function generateMetadata({ params }: { params: HomeParams }): Promise<Metadata> {
   const { locale } = await params;
@@ -70,21 +55,29 @@ export default async function Home({ params }: { params: HomeParams }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [products, testimonials, groups, faq, routines, brandFocus, questions] = await Promise.all([
-    getHomeProducts(8),
+  const [products, testimonials, groups, faq, routines, brands] = await Promise.all([
+    getHomeProducts(12),
     getHomeTestimonials(3),
     getShopNavigation(),
     // Les réponses viennent de la page /faq : une seule source, deux affichages.
     getHomeFaq(locale, 8),
     getRoutines(locale, 5),
-    getBrandFocus(),
-    getQuestions(),
+    // Douze : le catalogue en compte exactement douze, et six par rangée les
+    // range en deux lignes pleines. Au-delà, les moins fournies passeraient à
+    // la trappe — voir getBrandShowcase pour l'ordre retenu.
+    getBrandShowcase(12),
   ]);
 
   // Un seul rail produit désormais, contre deux auparavant : le second faisait
   // de l'accueil un catalogue là où la maquette en fait une entrée par le
   // besoin.
-  const bestsellers = products.slice(0, 4);
+  //
+  // Douze références et non quatre : le rail défile en boucle, et une liste
+  // trop courte fait repasser les mêmes produits toutes les quelques secondes
+  // — la boucle devient alors visible, ce qui est exactement ce qu'elle doit
+  // éviter. `getHomeProducts` alterne les marques, donc les douze ne viennent
+  // pas de la même maison.
+  const bestsellers = products.slice(0, 12);
 
   return (
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
@@ -112,37 +105,38 @@ export default async function Home({ params }: { params: HomeParams }) {
             premier frein de la cible. */}
         <PromisesRow />
 
+
         {/* Achat rapide : les routines prêtes à l'emploi. Le bloc qui manquait
             entièrement, et le cœur de la promesse de marque. */}
         <RoutinesRail routines={routines} />
 
-        {/* Focus marque, avec le module de diagnostic en carte.
-            Il est placé ENTRE les deux sections produit — routines au-dessus,
-            catégories et best-sellers en dessous — plutôt qu'avant elles. Son
-            fond vert profond sépare alors deux zones claires au lieu d'en
-            précéder une seule : la page reprend son souffle au milieu, là où
-            elle enchaînait le plus de contenu.
-            Conséquence assumée : le module de diagnostic passe après les
-            routines, alors que la structure du client le numérote avant. Les
-            deux mènent au même endroit, et la porte la plus courte — la routine
-            déjà composée — vient désormais en premier. */}
-        <BrandFocus focus={brandFocus} questions={questions.map((q) => q.title)} />
+        {/* Preuve par l'image, à la place du focus marque.
+            Même rôle dans la page : un fond vert profond qui sépare deux zones
+            claires et fait reprendre son souffle au milieu du parcours. Mais
+            une preuve visuelle porte plus loin qu'un nom de maison auprès d'une
+            clientèle qui a déjà vu beaucoup de promesses.
+            Le comparateur ne s'affiche que si un cas réel est fourni ; sinon
+            la colonne de texte tient seule (voir avant-apres-section.tsx). */}
+        <AvantApresSection cas={AVANT_APRES_CAS} />
 
         {/* Catégories et best-sellers, côte à côte comme sur la
             maquette. Les produits seuls arrivent ici, après les routines.
 
-            La colonne des catégories est COLLANTE : elle est deux fois moins
-            haute que la grille de produits qu'elle accompagne, et laissait donc
-            un grand vide sous elle pendant qu'on faisait défiler les
-            best-sellers. Elle suit désormais la lecture, ce qui garde l'entrée
-            par le rayon disponible au moment où l'on regarde les produits.
-            `self-start` est indispensable : sans lui, la grille étire la colonne
-            à sa hauteur et `sticky` n'a plus de course. */}
+            LES DEUX CARTES ONT LA MÊME HAUTEUR, à la demande du client : elles
+            sont posées côte à côte, et deux cadres inégaux se lisaient comme un
+            bloc inachevé.
+
+            Ce qui a été abandonné pour l'obtenir : la colonne des catégories
+            était COLLANTE, pour rester disponible pendant qu'on faisait défiler
+            les best-sellers. Une colonne qui remplit toute la hauteur de sa
+            rangée n'a plus de course dans laquelle glisser — les deux réglages
+            s'excluent. Le rail de best-sellers défilant désormais
+            horizontalement plutôt qu'en grille haute, la page est bien moins
+            longue à cet endroit et le collant y perdait de toute façon son
+            intérêt. */}
         <section className="section mx-auto max-w-7xl px-6">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)]">
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <CategoryPills groups={groups} />
-            </div>
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)]">
+            <CategoryPills groups={groups} />
             {bestsellers.length > 0 && (
               <ProductRail
                 eyebrow="Les plus choisis"
@@ -150,10 +144,30 @@ export default async function Home({ params }: { params: HomeParams }) {
                 action="Tout voir"
                 products={bestsellers}
                 bare
+                carousel
               />
             )}
           </div>
         </section>
+
+        {/* Les maisons distribuées, juste après le rayon.
+            Sa place ici tient à ce qu'elle répond : on vient de faire défiler
+            des produits, la question qui suit est « à qui j'achète ? ». Sur un
+            marché où la contrefaçon est le premier frein — c'est l'identité de
+            marque qui le dit —, montrer douze maisons identifiées vaut mieux
+            que de l'affirmer en une ligne de réassurance.
+            Elle ne s'insère pas entre le diagnostic et « Bon à savoir », qui
+            forment un couple : la question « par où commencer ? » doit rester
+            collée aux conseils qui y répondent. */}
+        <BrandsShowcase brands={brands} />
+
+        {/* Le rappel du diagnostic passe DEVANT la section « Bon à savoir »,
+            à la demande du client. Il vient donc directement après les
+            best-sellers : on sort du rayon, et la question « vous ne savez pas
+            par où commencer ? » tombe pile sur qui vient de faire défiler des
+            produits sans se décider. Les conseils et les avis, eux, se lisent
+            plus volontiers après cette porte de sortie qu'avant. */}
+        <DiagnosticReminder />
 
         {/* 8 + 9 + 10 — Conseils, avant/après et avis.
             Une seule section, un seul cadre, un seul titre : les trois blocs
@@ -164,17 +178,6 @@ export default async function Home({ params }: { params: HomeParams }) {
             colonnes s'ajuste alors tout seul. */}
         <InsightsSection entries={faq} cases={AVANT_APRES} testimonials={testimonials} />
 
-        <DiagnosticReminder />
-
-        {/* 11 — Services & engagements. */}
-        <ServicesBand whatsappUrl={WHATSAPP_URL} />
-
-        {/* 12 — Newsletter. Seul bloc du site qui porte encore le motif de
-            marque : une ligne de titre, un champ, aucun texte courant.
-            Sans enveloppe : le `pt-14` qui était posé ici s'ajoutait au padding
-            propre du bandeau ET à celui de la bande services au-dessus — trois
-            espacements empilés pour un seul écart. */}
-        <NewsletterBand locale={locale} />
       </main>
 
       {/* 13 — Footer */}

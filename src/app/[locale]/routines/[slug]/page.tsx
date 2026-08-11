@@ -83,13 +83,13 @@ export default async function RoutinePage({ params }: { params: Params }) {
               <p className="eyebrow">{besoin ? libelleBesoin(besoin, locale) : "Routine complète"}</p>
               <h1 className="mt-3 text-deep">{routine.name}</h1>
               {routine.claim && (
-                <p className="mt-3 font-display text-xl text-deep/80">{routine.claim}</p>
+                <p className="mt-3 font-display text-xl text-deep">{routine.claim}</p>
               )}
               {routine.description && (
-                <p className="mt-5 leading-relaxed text-deep/75">{routine.description}</p>
+                <p className="mt-5 leading-relaxed text-deep">{routine.description}</p>
               )}
 
-              <p className="mt-7 text-sm text-deep/70">
+              <p className="mt-7 text-sm text-deep">
                 {routine.steps.length} gestes ·{" "}
                 <span className="figure text-lg font-semibold text-deep">
                   {formatFcfa(routine.totalFcfa)}
