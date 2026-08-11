@@ -85,7 +85,7 @@ export async function AccountShell({
             </nav>
 
             <div className="min-w-0">
-              <h1 className="text-2xl font-black text-foreground sm:text-3xl">{title}</h1>
+              <h1 className="text-foreground">{title}</h1>
               {intro && <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{intro}</p>}
               <div className="mt-6 space-y-6">{children}</div>
             </div>

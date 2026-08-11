@@ -141,7 +141,7 @@ function DiagnosticCell() {
     <div className="flex min-h-[18rem] flex-col justify-between rounded-2xl bg-deep p-6 text-primary-foreground">
       <Sparkles className="h-7 w-7 opacity-90" />
       <div>
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground/70">
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground">
           Besoin d&rsquo;aide ?
         </p>
         <h3 className="mt-2 font-display text-xl leading-snug">
@@ -189,17 +189,16 @@ export function CatalogView({
 
   return (
     <>
-      {/* Bandeau de tête, sur le bleu profond de la charte : c'est là que le
-          tissage bogolan existe vraiment, et le contraste donne du poids au
-          titre de rayon. */}
+      {/* Bandeau de tête sur le vert profond de la charte : le contraste donne
+          du poids au titre de rayon. Le motif de marque y est posé comme sur
+          tous les bandeaux sombres hors accueil — celui-ci est le plus répété
+          du site, il se voit sur chaque rayon, d'où le voile qui l'assourdit. */}
       <section className="relative overflow-hidden bg-deep text-primary-foreground">
         <PatternBackdrop align="center" />
-        <div className="relative mx-auto max-w-7xl px-6 py-16 text-center">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
-            {view.group.label}
-          </p>
-          <h1 className="mt-3 text-4xl sm:text-5xl">{title}</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-primary-foreground/75">
+        <div className="relative mx-auto max-w-7xl px-6 py-14 text-center">
+          <p className="eyebrow eyebrow-on-dark">{view.group.label}</p>
+          <h1 className="mt-3">{title}</h1>
+          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground">
             Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement
             évalué pour son efficacité, sa formulation et son respect de la peau.
           </p>
@@ -209,7 +208,7 @@ export function CatalogView({
               comment revenir au complet. La croix lève le filtre. */}
           {besoinActif && (
             <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
-              <span className="text-primary-foreground/60">Vous cherchez&nbsp;:</span>
+              <span className="text-primary-foreground">Vous cherchez&nbsp;:</span>
               <Link
                 href={withParams(basePath, brands, sort)}
                 className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 font-medium text-primary-foreground transition hover:bg-primary-foreground/20"
@@ -218,7 +217,7 @@ export function CatalogView({
                 <X className="h-3.5 w-3.5 opacity-70 transition group-hover:opacity-100" aria-hidden="true" />
                 <span className="sr-only">Retirer ce filtre</span>
               </Link>
-              <span className="text-primary-foreground/60">
+              <span className="text-primary-foreground">
                 {view.total} produit{view.total > 1 ? "s" : ""}
               </span>
             </p>
@@ -239,7 +238,7 @@ export function CatalogView({
 
         {/* Filtres desktop */}
         <aside className="hidden w-60 shrink-0 lg:block">
-          <div className="sticky top-28">
+          <div className="sticky top-24">
             <FiltersPanel {...filterState} />
           </div>
         </aside>

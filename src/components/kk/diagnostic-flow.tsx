@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import {
@@ -17,9 +17,7 @@ import {
   Leaf,
   Check,
   X,
-  ArrowRight,
   ArrowLeft,
-  Loader2,
   ShoppingBag,
   RefreshCw,
 } from "lucide-react";
@@ -29,53 +27,153 @@ import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
 import { Petal, BottleMotif } from "./motifs";
-import { PatternBackdrop } from "./pattern-backdrop";
+import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
 const ICONS: Record<DiagIcon, typeof Droplet> = {
   droplet: Droplet, wind: Wind, smile: Smile, contrast: Contrast, sparkles: Sparkles,
   sun: Sun, clock: Clock, shield: Shield, wallet: Wallet, gem: Gem, leaf: Leaf, check: Check,
 };
 
-type Phase = "intro" | "question" | "loading" | "result";
+/**
+ * Parcours du diagnostic.
+ *
+ * Trois étapes mortes ont été retirées, sur le principe posé par le client
+ * (« le site doit être orienté conversion et donc ne pas multiplier les étapes
+ * si elles ne sont pas nécessaires ») :
+ *
+ *  1. L'ÉCRAN D'INTRO. Le visiteur venait de cliquer « Faire mon diagnostic » ;
+ *     il tombait sur un écran qui affichait « Commencer le diagnostic ». Une
+ *     étape entière pour zéro information nouvelle. La promesse (5 questions,
+ *     1 minute, gratuit, sans engagement) est désormais tenue sur la page
+ *     d'accueil, avant le clic — comme sur la maquette du client, qui liste les
+ *     cinq questions dans le module d'appel. On entre donc sur la question 1.
+ *
+ *  2. LE FAUX CHARGEMENT. Un `setTimeout` de 1,1 s retardait volontairement un
+ *     résultat déjà reçu du serveur, « pour l'effet ». C'est de l'abandon
+ *     acheté. L'écran d'analyse subsiste, mais il ne dure que le temps réel de
+ *     la requête.
+ *
+ *  3. LE SECOND CLIC PAR QUESTION. Il fallait choisir sa réponse PUIS cliquer
+ *     « Continuer » : dix clics pour cinq questions. La sélection fait
+ *     désormais avancer d'elle-même. Le court délai avant le passage laisse
+ *     voir la coche — sans lui, on doute d'avoir cliqué.
+ *
+ * Les réponses sont conservées le temps de l'onglet : un rechargement, un
+ * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
+ */
+type Phase = "question" | "loading" | "result";
+
+/** Clé de reprise. `session` et non `local` : un diagnostic est daté, il ne
+ *  doit pas ressurgir des semaines plus tard comme s'il était encore valable. */
+const REPRISE = "kk-diagnostic";
 
 export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const { add, openDrawer } = useCart();
-  const [phase, setPhase] = useState<Phase>("intro");
+  const [phase, setPhase] = useState<Phase>("question");
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DiagnosticResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** Passage automatique en cours : neutralise un second clic pendant le délai. */
+  const enCours = useRef<number | null>(null);
+  /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
+  const attenteAnalyse = useRef<number | null>(null);
 
   const question = questions[qIndex];
   const selected = question ? answers[question.id] : undefined;
 
+  // Reprise. Lue une seule fois au montage ; l'index est borné au cas où le
+  // questionnaire aurait raccourci entre-temps au back-office.
+  useEffect(() => {
+    try {
+      const brut = sessionStorage.getItem(REPRISE);
+      if (!brut) return;
+      const repris = JSON.parse(brut) as { qIndex?: number; answers?: Record<string, string> };
+      if (repris.answers) setAnswers(repris.answers);
+      if (typeof repris.qIndex === "number") {
+        setQIndex(Math.min(Math.max(repris.qIndex, 0), questions.length - 1));
+      }
+    } catch {
+      /* Stockage indisponible ou illisible : on repart simplement de zéro. */
+    }
+  }, [questions.length]);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(REPRISE, JSON.stringify({ qIndex, answers }));
+    } catch {
+      /* Navigation privée, quota plein : la reprise est un confort, pas un dû. */
+    }
+  }, [qIndex, answers]);
+
+  // Un passage automatique programmé ne doit pas survivre au démontage.
+  useEffect(() => () => {
+    if (enCours.current !== null) window.clearTimeout(enCours.current);
+    if (attenteAnalyse.current !== null) window.clearTimeout(attenteAnalyse.current);
+  }, []);
+
+  /**
+   * Sélection d'une réponse : elle vaut validation.
+   *
+   * Le délai de 260 ms n'est pas un effet — c'est le temps de voir la coche se
+   * poser. Sans lui, l'écran change avant que le geste soit confirmé et le
+   * visiteur ne sait pas ce qu'il a répondu.
+   */
   function choose(answerId: string) {
-    setAnswers((prev) => ({ ...prev, [question.id]: answerId }));
+    if (enCours.current !== null) return;
+    const suivant = { ...answers, [question.id]: answerId };
+    setAnswers(suivant);
+    setError(null);
+    enCours.current = window.setTimeout(() => {
+      enCours.current = null;
+      avancer(suivant);
+    }, 260);
   }
 
-  async function next() {
+  async function avancer(reponses: Record<string, string>) {
     if (qIndex < questions.length - 1) {
       setQIndex((i) => i + 1);
       return;
     }
-    // Dernière question → analyse
+    // Dernière question → analyse.
+    //
+    // Le résultat n'est affiché qu'une fois la séquence d'analyse arrivée à son
+    // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
+    // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
+    // l'écran ne passe pas pour rapide — il passe pour n'avoir rien regardé.
+    // Les trois temps montrés (lecture, croisement, composition) sont ceux que
+    // le moteur exécute réellement ; on leur laisse le temps d'être lus.
+    //
+    // L'attente est un PLANCHER, jamais un ajout : si la requête dure plus
+    // longtemps que la séquence, rien n'est rallongé.
     setPhase("loading");
     setError(null);
+    const debut = Date.now();
     try {
-      const answerIds = questions.map((q) => answers[q.id]).filter(Boolean);
+      const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: answerIds }),
       });
+      if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as DiagnosticResult;
-      // Petite pause pour l'effet « analyse ».
-      window.setTimeout(() => {
-        setResult(data);
-        setPhase("result");
-      }, 1100);
+
+      const reste = DUREE_ANALYSE - (Date.now() - debut);
+      if (reste > 0) {
+        await new Promise<void>((resoudre) => {
+          attenteAnalyse.current = window.setTimeout(() => {
+            attenteAnalyse.current = null;
+            resoudre();
+          }, reste);
+        });
+      }
+
+      setResult(data);
+      setPhase("result");
     } catch {
-      setError("L'analyse a échoué. Réessayez.");
+      // Un échec ne se fait pas attendre : on rend la main tout de suite.
+      setError("L'analyse a échoué. Choisissez à nouveau votre réponse.");
       setPhase("question");
     }
   }
@@ -84,7 +182,12 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     setAnswers({});
     setQIndex(0);
     setResult(null);
-    setPhase("intro");
+    setPhase("question");
+    try {
+      sessionStorage.removeItem(REPRISE);
+    } catch {
+      /* sans conséquence */
+    }
   }
 
   function addRoutine() {
@@ -108,53 +211,11 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     openDrawer();
   }
 
-  /* ------------------------------------------------------------- Intro -- */
-  if (phase === "intro") {
-    return (
-      <MinimalShell>
-        {/* Le motif habille l'écran d'accueil du diagnostic, pas les questions
-            qui suivent : là, l'attention doit aller aux réponses. */}
-        <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-hidden bg-deep px-6 py-16 text-center text-primary-foreground">
-          <PatternBackdrop align="center" />
-          <Petal className="kk-float pointer-events-none absolute -top-4 right-4 h-24 w-24 text-primary-foreground/10" />
-          <div className="relative mx-auto flex max-w-2xl flex-col items-center">
-            <span className="grid h-16 w-16 place-items-center rounded-full bg-sand text-deep">
-              <Sparkles className="h-8 w-8" />
-            </span>
-            <p className="mt-6 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
-              Diagnostic beauté
-            </p>
-            <h1 className="mt-3 text-4xl sm:text-5xl">La sélection qui vous choisit</h1>
-            <p className="mx-auto mt-4 max-w-lg text-primary-foreground/75">
-              5 questions sur votre peau et vos envies. Nous composons une routine de soins
-              parfaitement adaptée, à ajouter au panier en un geste.
-            </p>
-            {/* Bouton en sable sur fond profond : l'inverse du reste du site,
-                parce qu'ici c'est le fond qui est sombre. */}
-            <button
-              type="button"
-              onClick={() => setPhase("question")}
-              className="kk-fill kk-fill-deep group mt-9 inline-flex items-center gap-2 rounded-full bg-sand px-8 py-4 text-sm font-semibold text-deep"
-            >
-              Commencer le diagnostic
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </button>
-            <p className="mt-4 text-xs text-primary-foreground/60">Environ 1 minute · gratuit</p>
-          </div>
-        </section>
-      </MinimalShell>
-    );
-  }
-
   /* ---------------------------------------------------------- Loading -- */
   if (phase === "loading") {
     return (
       <MinimalShell>
-        <section className="flex min-h-[70vh] flex-col items-center justify-center gap-5 px-6 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-deep" />
-          <p className="font-display text-2xl text-deep">Analyse de votre profil…</p>
-          <p className="text-sm text-muted-foreground">Nous composons votre routine sur mesure.</p>
-        </section>
+        <DiagnosticAnalyse />
       </MinimalShell>
     );
   }
@@ -163,9 +224,12 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   if (phase === "result" && result) {
     return (
       <MinimalShell>
-        <section className="mx-auto max-w-6xl px-6 py-12">
+        {/* Le résultat se lève au lieu d'apparaître d'un coup : il prend la
+            suite du pétale qui vient de se remplir, et le raccord entre les
+            deux écrans se lit comme un seul geste. */}
+        <section className="kk-rise mx-auto max-w-6xl px-6 py-12">
           <p className="eyebrow">Votre routine personnalisée</p>
-          <h1 className="mt-2 text-4xl text-deep sm:text-5xl">Votre profil beauté</h1>
+          <h1 className="mt-2 text-deep">Votre profil beauté</h1>
           {result.chips.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
               {result.chips.map((c) => (
@@ -190,7 +254,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
                   <li key={step.key} className="flex gap-5 rounded-2xl border border-border/70 bg-card p-5">
                     <div className="relative hidden h-32 w-28 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab] sm:block">
                       {hasImage ? (
-                        <Image src={p.image as string} alt={p.name} fill sizes="120px" className="object-cover" />
+                        <Image src={p.image as string} alt={p.name} fill sizes="120px" className="object-contain p-2" />
                       ) : (
                         <BottleMotif className="absolute inset-0 m-auto h-3/5 text-deep/60" />
                       )}
@@ -219,7 +283,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
             </ol>
 
             {/* Résumé routine */}
-            <aside className="lg:sticky lg:top-8 lg:self-start">
+            <aside className="lg:sticky lg:top-24 lg:self-start">
               <div className="rounded-2xl border border-border bg-card p-6">
                 <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">
                   Votre routine complète
@@ -266,8 +330,16 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const Icon = (icon: string) => ICONS[icon as DiagIcon] ?? Check;
   return (
     <MinimalShell>
-      <section className="relative mx-auto max-w-3xl px-6 py-10">
-        <Petal className="pointer-events-none absolute -left-24 top-20 hidden h-72 w-72 text-sand/60 lg:block" />
+      {/* `isolate` : la section devient son propre contexte d'empilement, ce qui
+          confine le pétale décoratif — sans quoi son `-z-10` le ferait passer
+          sous le fond de la page, où il disparaîtrait. */}
+      <section className="relative isolate mx-auto max-w-3xl px-6 py-10">
+        {/* `-z-10` : le pétale est POSITIONNÉ, le titre et les cartes ne le sont
+            pas. En CSS, un élément positionné se peint au-dessus de ceux qui ne
+            le sont pas, même s'il vient avant dans le DOM — le motif recouvrait
+            donc la question et les réponses d'un voile clair. Il repasse
+            derrière, à sa place d'ornement. */}
+        <Petal className="pointer-events-none absolute -left-24 top-20 -z-10 hidden h-72 w-72 text-sand/60 lg:block" />
         <p className="eyebrow text-center">
           Étape {qIndex + 1} sur {questions.length}
         </p>
@@ -278,10 +350,16 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
           />
         </div>
 
-        <h1 className="mt-8 text-center text-2xl text-deep sm:text-3xl">{question.title}</h1>
-        <p className="mx-auto mt-2 max-w-md text-center text-muted-foreground">{question.subtitle}</p>
+        <h1 className="mt-8 text-center text-deep">{question.title}</h1>
+        <p className="lead mx-auto mt-2 max-w-md text-center">{question.subtitle}</p>
 
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        {/* Une réponse = une validation : plus de bouton « Continuer ». Dit ici
+            pour que le visiteur sache que son clic engage la suite. */}
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          Choisissez une réponse pour passer à la suite
+        </p>
+
+        <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {question.answers.map((a) => {
             const active = selected === a.id;
             const A = Icon(a.icon);
@@ -312,23 +390,27 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 
         {error && <p role="alert" className="mt-4 text-center text-sm text-destructive">{error}</p>}
 
-        <div className="mt-8 flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => (qIndex === 0 ? setPhase("intro") : setQIndex((i) => i - 1))}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
-          >
-            <ArrowLeft className="h-4 w-4" /> Retour
-          </button>
-          <button
-            type="button"
-            onClick={next}
-            disabled={!selected}
-            className="kk-fill group inline-flex items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {qIndex === questions.length - 1 ? "Voir ma routine" : "Continuer"}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </button>
+        {/* Il ne reste que le retour. Le bouton « Continuer » a disparu avec le
+            second clic par question : c'est la sélection qui fait avancer.
+            Sur la première question, le retour quitte le diagnostic — plutôt
+            que de ramener sur un écran d'intro qui n'existe plus. */}
+        <div className="mt-8 flex items-center justify-center">
+          {qIndex === 0 ? (
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
+            >
+              <ArrowLeft className="h-4 w-4" /> Retour à l&rsquo;accueil
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setQIndex((i) => i - 1)}
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
+            >
+              <ArrowLeft className="h-4 w-4" /> Question précédente
+            </button>
+          )}
         </div>
       </section>
     </MinimalShell>
@@ -338,10 +420,10 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 /** Coquille immersive : en-tête minimal (logo + quitter). */
 function MinimalShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col bg-cream">
+    <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b border-border/60 px-6 py-4">
         <Link href="/" className="wordmark text-sm text-deep">
-          KOSSKOSS <span className="text-[0.6rem] tracking-[0.4em] text-deep/60">SELECT</span>
+          KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep">SELECT</span>
         </Link>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-deep">
           Quitter le diagnostic <X className="h-4 w-4" />

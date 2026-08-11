@@ -2,358 +2,98 @@ import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import {
   ArrowRight,
-  ArrowUpRight,
-  Leaf,
-  MapPin,
+  BadgeCheck,
+  Bath,
+  Check,
+  Droplet,
+  Droplets,
+  FlaskConical,
   MessageCircle,
+  Pipette,
   Plus,
+  RefreshCw,
+  Scissors,
   ShieldCheck,
+  ShowerHead,
+  Smartphone,
+  Smile,
+  SprayCan,
   Sparkles,
+  Star,
+  Sun,
+  Truck,
+  UserRound,
+  type LucideIcon,
 } from "lucide-react";
 import type { NavGroup } from "@/server/kk/navigation";
 import type { HomeFaqEntry } from "@/server/kk/home-faq";
-import { Flourish, Petal } from "./motifs";
-import { PatternBackdrop } from "./pattern-backdrop";
+import type { BrandFocusView } from "@/server/kk/brand-focus";
+import type { AvantApresView } from "@/data/kk/avant-apres";
+import type { KKTestimonialView } from "@/types/kk";
 
 /**
- * Sections d'accueil bâties sur des données réelles du catalogue.
+ * Sections d'accueil.
  *
- * Elles vivent à part de `home.tsx` — qui porte le haut de page historique —
- * parce qu'elles ont besoin de la navigation et des marques lues en base, là où
- * les autres se contentent des produits qu'on leur passe.
+ * ─────────────────────────────────────────────────────────────────────────
+ * L'ORDRE DES BLOCS N'EST PAS UN CHOIX D'AUTEUR.
+ * ─────────────────────────────────────────────────────────────────────────
  *
- * Aucun chiffre n'est écrit à la main ici : le nombre de références, celui des
- * marques et la liste des univers sont comptés dans la base au moment du rendu.
+ * La maquette « Toutes pages » livrée par le client (voir
+ * docs/design-references/kks/) porte une colonne « STRUCTURE DU SITE » avec
+ * treize blocs numérotés et annotés. C'est la « philosophie de l'agencement »
+ * qu'il dit ne pas percevoir : elle était écrite, elle n'était pas appliquée.
+ *
+ *    1 Hero · 2 Promesses clés · 3 Focus marque · 4 Diagnostic ·
+ *    5 Achat rapide routines · 6 Catégories · 7 Best-sellers ·
+ *    8 Conseils · 9 Avant/après · 10 Avis · 11 Services ·
+ *    12 Newsletter · 13 Footer
+ *
+ * Le point décisif est l'ordre : les deux modules « solution » (diagnostic,
+ * routines) passent AVANT les modules « produit » (catégories, best-sellers).
+ * L'accueil précédent faisait l'inverse — trois blocs produit avant le
+ * diagnostic, et aucune routine.
+ *
+ * Second changement de fond : la réassurance remonte en position 2. Elle était
+ * en onzième position, alors que l'identité de marque désigne la peur de la
+ * contrefaçon comme le premier frein de la cible.
+ *
+ * Troisième : deux blocs disaient la même chose sur nous-mêmes (« un
+ * concept-store, pas un catalogue de plus » et « des soins choisis avec
+ * méthode »). La maquette occupe cette place par un focus sur une marque
+ * distribuée — c'est-à-dire par quelque chose qu'on peut acheter.
  */
+
+/* ---------------------------------------------------------- 2. Promesses -- */
 
 /**
- * Visuels de secours par univers, tant que les catégories n'ont pas d'image.
+ * Les quatre promesses, immédiatement sous le hero.
  *
- * Ce sont des photos de produits réels du catalogue : les visuels génériques
- * p1/p3/p6 ont disparu avec le catalogue de démonstration, et les référencer
- * laissait trois images cassées sur l'accueil. Les clés suivent les slugs
- * d'univers réellement en base — « corps-cheveux » n'existe plus.
+ * Bande basse et serrée, comme sur la maquette : ce n'est pas une section, c'est
+ * une ceinture de réassurance. L'authenticité passe en tête — c'est la première
+ * inquiétude de cette clientèle, avant le prix et avant le délai.
  */
-const UNIVERSE_IMAGE: Record<string, string> = {
-  "soins-visage": "/images/products/BOJ-GLO-SER-30.jpg",
-  "corps-hygiene": "/images/products/NUB-BAU-COR-450.jpg",
-  homme: "/images/products/CLI-MEN-DEO-75.jpg",
-};
-
-const FALLBACK_IMAGE = "/images/products/BOJ-GIN-CLE-210.jpg";
-
-/* ----------------------------------------------------------- Nos univers -- */
-
-/**
- * Les deux (ou N) univers du catalogue, en grandes cartes.
- *
- * C'est le raccourci de navigation qui manquait sur l'accueil : jusqu'ici, le
- * seul chemin vers une catégorie précise passait par le menu déroulant.
- */
-export function UniverseCards({ groups }: { groups: NavGroup[] }) {
-  if (groups.length === 0) return null;
-
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-14">
-      <div className="mb-8">
-        <p className="eyebrow">Nos univers</p>
-        <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Par où commencer</h2>
-      </div>
-
-      {/* Trois univers, donc trois colonnes sur grand écran : ils tiennent sur
-          une seule ligne et se lisent comme un choix, pas comme une liste. */}
-      <div className="kk-enter-stagger grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {groups.map((group) => {
-          const total = group.categories.reduce((sum, c) => sum + c.productCount, 0);
-          return (
-            <article
-              key={group.slug}
-              className="kk-lift group relative overflow-hidden rounded-[1.75rem] border border-border/60 bg-card"
-            >
-              <Link href={group.href} className="block">
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <Image
-                    src={UNIVERSE_IMAGE[group.slug] ?? FALLBACK_IMAGE}
-                    alt={group.label}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 45vw"
-                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                  />
-                  {/* Voile bleu profond : il assure la lisibilité du titre
-                      quelle que soit la photo, sans retoucher les visuels. */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-deep via-deep/60 to-deep/10" />
-                  <div className="absolute inset-x-0 bottom-0 p-6">
-                    <h3 className="font-[family-name:var(--font-display,inherit)] text-2xl text-primary-foreground">
-                      {group.label}
-                    </h3>
-                    <p className="mt-1 text-sm text-primary-foreground/80">
-                      {total} référence{total > 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-
-              <div className="flex flex-wrap items-center gap-2 p-5">
-                {group.categories.map((category) => (
-                  <Link
-                    key={category.slug}
-                    href={category.href}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-cream px-3.5 py-1.5 text-xs font-medium text-deep transition hover:border-deep/50 hover:bg-sand"
-                  >
-                    {category.label}
-                    <span className="figure text-[0.65rem] text-muted-foreground">
-                      {category.productCount}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </article>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-/* ---------------------------------------------------------- Nos marques -- */
-
-/**
- * Bandeau des marques présentes au catalogue.
- *
- * L'authenticité est la première inquiétude sur ce marché — devant le prix et
- * le délai. Nommer les maisons distribuées répond à cette question avant même
- * qu'elle soit posée, et chaque nom mène à ses produits.
- */
-export function BrandStrip({ brands }: { brands: string[] }) {
-  if (brands.length === 0) return null;
-
-  return (
-    <section className="kk-enter border-y border-border/60 bg-sand/40">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="lg:max-w-xs">
-            <p className="eyebrow">Nos marques</p>
-            <h2 className="mt-2 text-xl text-deep">
-              {brands.length} maisons distribuées
-            </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Des références reconnues, achetées par des circuits sérieux.
-            </p>
-          </div>
-
-          <ul className="flex flex-wrap items-center gap-x-3 gap-y-3 lg:justify-end">
-            {brands.map((brand) => (
-              <li key={brand}>
-                <Link
-                  href={`/recherche?q=${encodeURIComponent(brand)}`}
-                  className="inline-block rounded-full border border-border/70 bg-cream px-4 py-2 text-[0.78rem] font-medium uppercase tracking-[0.12em] text-deep/80 transition hover:border-deep/50 hover:bg-card hover:text-deep"
-                >
-                  {brand}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------ La maison -- */
-
-/**
- * Présentation de la maison, sur fond bleu profond.
- *
- * Avec la section « Trouver vite » en haut de page et l'appel à l'action en
- * bas, c'est l'un des trois ancrages sombres du déroulé crème : ils rythment
- * la page et donnent à ces sections le poids d'une prise de parole.
- *
- * Les trois repères chiffrés sont comptés en base — jamais d'indicateur inventé
- * (nombre de clients, années d'existence) tant qu'il n'est pas vérifiable.
- */
-export function MaisonSection({
-  productCount,
-  brandCount,
-  universeCount,
-}: {
-  productCount: number;
-  brandCount: number;
-  universeCount: number;
-}) {
-  const figures = [
-    { value: productCount, label: "références en catalogue" },
-    { value: brandCount, label: "maisons distribuées" },
-    { value: universeCount, label: "univers de soin" },
-  ];
-
-  const pillars = [
-    {
-      icon: ShieldCheck,
-      title: "Authenticité d'abord",
-      text: "Chaque référence vient d'un circuit d'approvisionnement identifié. C'est la première question qu'on nous pose, elle mérite une réponse claire.",
-    },
-    {
-      icon: Leaf,
-      title: "Une sélection courte",
-      text: "Nous filtrons l'offre au lieu de l'empiler. Un produit entre au catalogue pour sa formule et sa tolérance, pas pour remplir un rayon.",
-    },
-    {
-      icon: MapPin,
-      title: "Pensé pour ici",
-      text: "Peaux riches en mélanine, climat d'Afrique centrale, habitudes locales : nos conseils partent de ce contexte, pas d'un manuel importé.",
-    },
+export function PromisesRow() {
+  const items = [
+    { icon: BadgeCheck, title: "Sélection experte", text: "Produits testés et approuvés" },
+    { icon: ShieldCheck, title: "Paiement sécurisé", text: "Transactions protégées" },
+    { icon: Truck, title: "Livraison rapide", text: "Partout au Cameroun" },
+    { icon: MessageCircle, title: "Conseils personnalisés", text: "Par des experts skincare" },
   ];
 
   return (
-    <section className="kk-enter relative overflow-hidden bg-deep text-primary-foreground">
-      {/* Motif de marque. C'est ici la prise de parole de la maison : le seul
-          endroit de l'accueil où un fond travaillé se justifie pleinement. */}
-      <PatternBackdrop align="split" />
-
-      <Flourish className="pointer-events-none absolute -right-24 top-10 hidden h-48 w-[32rem] text-primary-foreground/10 lg:block" />
-      <Petal className="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 text-primary-foreground/[0.06]" />
-
-      <div className="relative mx-auto max-w-7xl px-6 py-20">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
-          <div>
-            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
-              La maison
-            </p>
-            <h2 className="mt-4 text-3xl leading-tight sm:text-4xl">
-              Un concept-store, pas un catalogue de plus
-            </h2>
-            <p className="mt-6 leading-relaxed text-primary-foreground/80">
-              KossKoss Select réunit une sélection de soins pour les peaux noires, mates et
-              métissées. Nous ne vendons pas tout ce qui existe : nous choisissons, nous
-              expliquons, et nous assumons ce qui reste au catalogue.
-            </p>
-
-            <dl className="mt-10 grid grid-cols-3 gap-4">
-              {figures.map((figure) => (
-                <div key={figure.label}>
-                  <dt className="sr-only">{figure.label}</dt>
-                  <dd>
-                    <span className="figure block text-3xl font-semibold text-primary-foreground">
-                      {figure.value}
-                    </span>
-                    <span className="mt-1 block text-xs leading-snug text-primary-foreground/60">
-                      {figure.label}
-                    </span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                href="/a-propos"
-                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 text-sm font-semibold text-deep"
-              >
-                Notre maison
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/diagnostic"
-                className="group inline-flex items-center gap-1.5 text-sm font-medium text-primary-foreground/85 kk-underline"
-              >
-                Faire le diagnostic
-                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
+    /* Fond de page, pas d'aplat : cette bande court sur toute la largeur, juste
+       sous le hero, et son sable se lisait comme la couleur de fond du site.
+       Le vert profond du hero la délimite en haut, un filet la ferme en bas —
+       c'est tout ce dont elle a besoin pour se détacher. */
+    <section className="border-b border-border/60 bg-background">
+      <div className="section-tight mx-auto grid max-w-7xl gap-x-8 gap-y-6 px-6 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map(({ icon: Icon, title, text }) => (
+          <div key={title} className="flex items-center gap-3">
+            <Icon className="h-5 w-5 shrink-0 text-gold" />
+            <div className="min-w-0">
+              <p className="text-sm font-semibold leading-snug text-deep">{title}</p>
+              <p className="text-xs leading-snug text-muted-foreground">{text}</p>
             </div>
-          </div>
-
-          <ul className="kk-enter-stagger grid gap-4 self-center">
-            {pillars.map(({ icon: Icon, title, text }) => (
-              <li
-                key={title}
-                className="kk-lift rounded-2xl border border-primary-foreground/15 bg-primary-foreground/[0.06] p-6 backdrop-blur-sm hover:border-primary-foreground/30"
-              >
-                <div className="flex items-start gap-4">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sand text-deep">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <p className="font-semibold text-primary-foreground">{title}</p>
-                    <p className="mt-1.5 text-sm leading-relaxed text-primary-foreground/70">
-                      {text}
-                    </p>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------ Questions fréquentes -- */
-
-/**
- * Questions fréquentes, en grille 4 × 2 sur grand écran.
- *
- * Les réponses proviennent de la page /faq (voir `getHomeFaq`) : un seul texte,
- * deux endroits d'affichage. Chaque carte est un `<details>` natif — pas de
- * JavaScript, pas d'état à hydrater, et le repli reste accessible au clavier
- * comme aux lecteurs d'écran.
- */
-/**
- * Répartit les questions en deux colonnes, dans l'ordre de lecture : la
- * première moitié à gauche, la seconde à droite. On lit donc chaque colonne de
- * haut en bas, et non en zigzag comme le ferait une grille.
- */
-function COLONNES(entries: HomeFaqEntry[]): HomeFaqEntry[][] {
-  const milieu = Math.ceil(entries.length / 2);
-  return [entries.slice(0, milieu), entries.slice(milieu)].filter((c) => c.length > 0);
-}
-
-export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
-  if (entries.length === 0) return null;
-
-  return (
-    <section className="mx-auto max-w-7xl px-6 py-16">
-      <div className="kk-enter mb-10 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow">Bon à savoir</p>
-          <h2 className="mt-2 text-2xl text-deep sm:text-3xl">Les questions qu&rsquo;on nous pose</h2>
-        </div>
-        <Link
-          href="/faq"
-          className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep kk-underline"
-        >
-          Toutes les questions
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
-
-      {/* Deux colonnes INDÉPENDANTES, quatre questions chacune — et non une
-          grille de huit cellules.
-
-          En grille, toutes les cellules d'une même rangée partagent leur
-          hauteur : déplier une question étirait ses voisines, qui semblaient
-          s'ouvrir en même temps. Ici chaque colonne est une pile autonome, donc
-          déplier une question ne pousse que celles qui sont sous elle, dans sa
-          seule colonne. `items-start` empêche par ailleurs la colonne courte de
-          s'aligner sur la longue. */}
-      <div className="kk-enter-stagger grid items-start gap-x-6 gap-y-4 md:grid-cols-2">
-        {COLONNES(entries).map((colonne, index) => (
-          <div key={index} className="flex flex-col gap-4">
-            {colonne.map((entry) => (
-              <details
-                key={entry.question}
-                className="kk-lift group rounded-2xl border border-border/70 bg-card p-5"
-              >
-                <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-medium text-deep [&::-webkit-details-marker]:hidden">
-                  {entry.question}
-                  <Plus
-                    className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-45"
-                    aria-hidden="true"
-                  />
-                </summary>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{entry.answer}</p>
-              </details>
-            ))}
           </div>
         ))}
       </div>
@@ -361,58 +101,468 @@ export function HomeFaq({ entries }: { entries: HomeFaqEntry[] }) {
   );
 }
 
-/* ------------------------------------------------------------------- Appel -- */
+/* ------------------------------------------- 3. Focus marque + 4. Diagnostic */
 
 /**
- * Appel à l'action de bas de page.
+ * Le module de diagnostic, tel que la maquette le compose : une carte posée
+ * dans la section « Focus marque », qui ANNONCE LES CINQ QUESTIONS avant le
+ * clic.
  *
- * Deux portes, pas une : le diagnostic pour qui ne sait pas quoi choisir,
- * WhatsApp pour qui veut parler à quelqu'un. Sur ce marché, la conversation
- * précède souvent l'achat — proposer seulement un bouton « acheter » laisserait
- * de côté une bonne part des visiteurs.
- *
- * Le lien WhatsApp ne s'affiche pas si aucun numéro n'est configuré : mieux
- * vaut un seul bouton qu'un lien qui ne mène nulle part.
+ * C'est ce qui a permis de supprimer l'écran d'intro du parcours (voir
+ * diagnostic-flow.tsx) : la promesse — cinq questions, gratuit, sans engagement
+ * — est tenue ici, donc le bouton peut mener directement à la question 1 au lieu
+ * d'un second écran qui redemandait le même clic.
  */
-export function HomeCta({ whatsappUrl }: { whatsappUrl?: string }) {
+function DiagnosticCard({ questions }: { questions: string[] }) {
   return (
-    <section className="mx-auto max-w-7xl px-6 pb-16">
-      <div className="kk-enter relative overflow-hidden rounded-[2rem] bg-deep px-8 py-14 text-center text-primary-foreground sm:px-14 sm:py-16">
-        <PatternBackdrop align="center" />
-        <div className="relative mx-auto max-w-2xl">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-primary-foreground/60">
-            On vous accompagne
-          </p>
-          <h2 className="mt-4 text-3xl leading-tight sm:text-4xl">
-            Vous ne savez pas par où commencer ?
+    <div className="rounded-2xl bg-cream p-7 shadow-2xl shadow-deep/20 sm:p-8">
+      <p className="eyebrow">Diagnostic beauté</p>
+      <h3 className="mt-2 font-display text-2xl leading-tight text-deep">
+        Votre routine idéale en 3 minutes
+      </h3>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+        Répondez à {questions.length} questions et recevez votre routine personnalisée.
+      </p>
+
+      <ol className="mt-5 space-y-2.5">
+        {questions.map((titre, i) => (
+          <li key={titre} className="flex items-start gap-2.5 text-sm text-deep">
+            <span className="mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-full border border-gold text-gold">
+              <Check className="h-2.5 w-2.5" />
+            </span>
+            <span>
+              <span className="text-muted-foreground">{i + 1}. </span>
+              {titre}
+            </span>
+          </li>
+        ))}
+      </ol>
+
+      <Link
+        href="/diagnostic"
+        className="kk-fill kk-fill-deep group mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-deep"
+      >
+        Commencer le diagnostic
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </Link>
+
+      <p className="mt-3 text-center text-xs text-muted-foreground">
+        100 % personnalisé · Gratuit · Sans engagement
+      </p>
+    </div>
+  );
+}
+
+/**
+ * Bloc 3 : mise en avant d'une maison distribuée.
+ *
+ * Il remplace les deux sections qui parlaient de nous. La différence est
+ * commerciale autant qu'éditoriale : à cet endroit de la page, la maquette
+ * montre une marque qu'on peut acheter plutôt qu'un discours sur notre méthode.
+ *
+ * La marque n'est pas écrite en dur : elle est lue en base (voir
+ * server/kk/brand-focus.ts). Si elle disparaît du catalogue, la section se
+ * masque au lieu d'annoncer une maison qu'on ne distribue plus.
+ */
+export function BrandFocus({
+  focus,
+  questions,
+}: {
+  focus: BrandFocusView | null;
+  questions: string[];
+}) {
+  if (!focus) return null;
+
+  return (
+    <section className="relative overflow-hidden bg-deep text-primary-foreground">
+      {/* `items-center` : la colonne de texte est plus courte que la carte de
+          diagnostic depuis que le panneau de packshots a été retiré. Alignées
+          en haut, elles laissaient un vide sous le texte. */}
+      <div className="section-wide mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-16">
+        <div>
+          <p className="eyebrow eyebrow-on-dark">Focus marque</p>
+          <h2 className="mt-3 font-display text-4xl leading-none text-primary-foreground sm:text-5xl">
+            {focus.brand}
           </h2>
-          <p className="mx-auto mt-5 text-primary-foreground/75">
-            Répondez à cinq questions sur votre peau : nous composons une routine adaptée, à votre
-            budget. Et si vous préférez en parler, écrivez-nous — on répond dans la journée.
+          <p className="mt-3 font-display text-xl leading-snug text-primary-foreground">
+            {focus.claim}
+          </p>
+          <p className="mt-5 max-w-lg leading-relaxed text-primary-foreground">
+            {focus.description}
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-7 flex flex-wrap items-center gap-4">
             <Link
-              href="/diagnostic"
-              className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-7 py-3.5 text-sm font-semibold text-deep"
+              href={`/recherche?q=${encodeURIComponent(focus.brand)}`}
+              className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 text-sm font-semibold text-deep"
             >
-              <Sparkles className="h-4 w-4" />
-              Faire mon diagnostic
+              Découvrir la marque
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
-            {whatsappUrl && (
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/40 px-7 py-3.5 text-sm font-semibold text-primary-foreground transition hover:border-primary-foreground hover:bg-primary-foreground/10"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Parler sur WhatsApp
-              </a>
-            )}
+            <span className="figure text-sm text-primary-foreground">
+              {focus.productCount} référence{focus.productCount > 1 ? "s" : ""} au catalogue
+            </span>
           </div>
+
+          {/* Le panneau qui montrait quatre packshots de la maison a été retiré.
+              Posés sur le vert profond, leurs fonds de studio ressortaient ;
+              rapatriés sur une dalle claire, ils devenaient une grande surface
+              vide occupée par de petits flacons. Le bloc dit ce qu'il a à dire
+              — la maison, son parti pris, le lien vers ses références — et les
+              produits se montrent là où c'est leur place : dans les rails et
+              les routines. */}
         </div>
+
+        <DiagnosticCard questions={questions} />
+      </div>
+    </section>
+  );
+}
+
+/* --------------------------------------------------------- 6. Catégories -- */
+
+/**
+ * Accès direct aux rayons, en pastilles.
+ *
+ * Les grandes cartes précédentes occupaient un écran entier pour trois liens.
+ * La maquette traite les catégories comme un raccourci — petites pastilles
+ * rondes, deux rangées, à côté des best-sellers — et non comme une section.
+ * C'est aussi ce qui permet de tenir treize blocs sans doubler la hauteur de
+ * page : la maquette compose en colonnes là où l'accueil empilait des bandes
+ * pleine largeur.
+ */
+/**
+ * Une icône par catégorie, comme sur la maquette.
+ *
+ * La même silhouette de flacon servait pour toutes : la grille se lisait comme
+ * un damier indifférencié et l'icône n'aidait pas à choisir. La table est
+ * explicite parce que les slugs viennent de la base — une catégorie inconnue
+ * retombe sur la goutte, jamais sur rien.
+ *
+ * `cheveux` et `masques` y figurent alors que le catalogue ne les contient pas
+ * encore : ce sont deux entrées prévues, prêtes à s'afficher le jour où elles
+ * sont créées. Toute autre catégorie ajoutée sans icône ici s'affichera avec la
+ * goutte — c'est correct, mais c'est le signe qu'il faut compléter la table.
+ */
+const ICONE_CATEGORIE: Record<string, LucideIcon> = {
+  nettoyants: SprayCan,
+  toniques: FlaskConical,
+  traitements: Pipette,
+  hydratants: Droplets,
+  solaires: Sun,
+  corps: Bath,
+  hygiene: ShowerHead,
+  homme: UserRound,
+  cheveux: Scissors,
+  masques: Smile,
+};
+
+export function CategoryPills({ groups }: { groups: NavGroup[] }) {
+  const categories = groups.flatMap((g) => g.categories);
+  if (categories.length === 0) return null;
+
+  return (
+    /* `h-full` et colonne flex : la carte doit atteindre la hauteur du rail de
+       best-sellers qu'elle accompagne, les deux blocs étant posés côte à côte.
+       Le `mt-auto` sur le pied de carte absorbe la différence — l'écart s'ouvre
+       entre les icônes et les deux liens, jamais à l'intérieur de la grille
+       d'icônes, qui garde son pas régulier. */
+    <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5 sm:p-6">
+      <p className="eyebrow">Shoppez par catégorie</p>
+      <h2 className="mt-2 text-deep">Par où commencer</h2>
+
+      {/* TROIS PAR LIGNE, et non quatre.
+
+          Le catalogue compte huit catégories : à quatre par ligne elles
+          tenaient en deux rangées et la carte restait nettement plus courte que
+          le rail de best-sellers posé à côté. À trois, les mêmes huit entrées
+          occupent trois rangées et les deux blocs s'équilibrent — sans inventer
+          de catégorie. Une catégorie sans produit est d'ailleurs masquée
+          d'office par la navigation (voir server/kk/navigation.ts) : en créer
+          pour remplir la grille ne remplirait rien du tout.
+
+          `flex` plutôt que `grid` pour une seule raison : la dernière rangée
+          est incomplète (8 = 3 + 3 + 2) et se centre, là où une grille la
+          collerait à gauche en laissant un trou à droite. Le plafond de douze
+          laisse la place à une quatrième rangée si le catalogue s'étoffe. */}
+      <ul className="mt-6 flex flex-wrap justify-center gap-x-3 gap-y-5">
+        {categories.slice(0, 12).map((category) => {
+          const Icone = ICONE_CATEGORIE[category.slug] ?? Droplet;
+          return (
+            /* (100 % − deux gouttières de 0.75rem) / 3 */
+            <li key={category.href} className="w-[calc((100%-1.5rem)/3)]">
+              <Link href={category.href} className="group flex flex-col items-center gap-2 text-center">
+                {/* 72 px sur grand écran, 56 sur mobile.
+
+                    Le 72 vient du passage de quatre à trois colonnes, qui a
+                    élargi chaque case d'un tiers — mais seulement là où la
+                    carte occupe un tiers de la page. Sur un téléphone elle
+                    prend toute la largeur : trois cases dans 264 px utiles font
+                    80 px chacune, et un cercle de 72 les remplissait au point
+                    de se toucher. Le rapport icône/pastille reste à 44 % dans
+                    les deux cas. */}
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-sand text-deep transition group-hover:bg-taupe sm:h-[4.5rem] sm:w-[4.5rem]">
+                  <Icone className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={1.5} />
+                </span>
+                <span className="text-xs font-medium leading-snug text-deep">{category.label}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-6">
+        <Link
+          href="/soins-visage"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-medium text-deep transition hover:border-deep/50 hover:bg-sand"
+        >
+          Voir toutes les catégories
+        </Link>
+        <Link
+          href="/routines"
+          className="group inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
+        >
+          Ou partez d&rsquo;une routine
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------ 8 + 9 + 10. Conseils & preuves -- */
+
+/**
+ * Une seule section pour les blocs 8, 9 et 10 de la structure client —
+ * « Conseils & contenu », « Avant / après » et « Avis clientes ».
+ *
+ * Ils étaient rendus en trois cartes autonomes posées côte à côte : trois
+ * cadres, trois sur-titres dorés, trois titres de section, pour ce qui est un
+ * seul propos — la preuve. À l'écran, cela faisait trois blocs qui se
+ * disputaient l'attention là où il n'en fallait qu'un, et multipliait les
+ * accents de couleur sans rien hiérarchiser.
+ *
+ * Un seul cadre, un seul titre, trois colonnes séparées par un filet. Les
+ * colonnes absentes ne laissent pas de trou : le nombre de colonnes suit le
+ * nombre de panneaux réellement servis, l'avant/après restant masqué tant
+ * qu'aucun cas réel n'est fourni (voir src/data/kk/avant-apres.ts).
+ */
+function PanelTitre({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+      {children}
+    </h3>
+  );
+}
+
+export function InsightsSection({
+  entries,
+  cases,
+  testimonials,
+}: {
+  entries: HomeFaqEntry[];
+  cases: AvantApresView[];
+  testimonials: KKTestimonialView[];
+}) {
+  const panneaux: React.ReactNode[] = [];
+
+  if (entries.length > 0) {
+    panneaux.push(
+      <div key="conseils">
+        <div className="flex items-baseline justify-between gap-4">
+          <PanelTitre>Conseils &amp; guides</PanelTitre>
+          <Link
+            href="/faq"
+            className="shrink-0 text-xs font-medium text-deep kk-underline"
+          >
+            Tout voir
+          </Link>
+        </div>
+        <div className="mt-5 space-y-3">
+          {entries.slice(0, 4).map((entry) => (
+            <details key={entry.question} className="group border-b border-border/60 pb-3 last:border-0">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-3 text-sm font-medium text-deep [&::-webkit-details-marker]:hidden">
+                {entry.question}
+                <Plus
+                  className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-300 group-open:rotate-45"
+                  aria-hidden="true"
+                />
+              </summary>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{entry.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>,
+    );
+  }
+
+  if (cases.length > 0) {
+    const cas = cases[0];
+    panneaux.push(
+      <div key="avant-apres">
+        <PanelTitre>Avant / après</PanelTitre>
+        <figure className="mt-5">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
+            <Image src={cas.image} alt={cas.alt} fill sizes="(max-width:1024px) 100vw, 30vw" className="object-cover" />
+            <span className="absolute bottom-3 left-3 rounded-full bg-deep/80 px-3 py-1 text-xs font-medium text-primary-foreground">
+              Avant
+            </span>
+            <span className="absolute bottom-3 right-3 rounded-full bg-deep/80 px-3 py-1 text-xs font-medium text-primary-foreground">
+              Après
+            </span>
+          </div>
+          <figcaption className="mt-4">
+            <p className="text-sm font-semibold text-deep">{cas.title}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{cas.caption}</p>
+            {cas.routineHref && (
+              <Link
+                href={cas.routineHref}
+                className="group mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
+              >
+                Voir la routine
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+              </Link>
+            )}
+          </figcaption>
+        </figure>
+      </div>,
+    );
+  }
+
+  if (testimonials.length > 0) {
+    const t = testimonials[0];
+    panneaux.push(
+      <div key="avis">
+        <PanelTitre>Elles nous font confiance</PanelTitre>
+        <figure className="mt-5">
+          <div className="flex items-center gap-0.5" aria-label={`Note ${t.rating} sur 5`}>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} className={`h-4 w-4 ${i < t.rating ? "fill-gold text-gold" : "text-border"}`} />
+            ))}
+          </div>
+          <blockquote className="mt-4 text-[0.95rem] leading-relaxed text-foreground">
+            « {t.quote} »
+          </blockquote>
+          <figcaption className="mt-4 text-sm">
+            <span className="font-semibold text-deep">{t.author}</span>
+            {t.city && <span className="text-muted-foreground"> · {t.city}</span>}
+            <span className="mt-1 block text-muted-foreground">à propos de {t.productName}</span>
+          </figcaption>
+        </figure>
+      </div>,
+    );
+  }
+
+  if (panneaux.length === 0) return null;
+
+  // Le nombre de colonnes suit le nombre de panneaux servis : à deux panneaux,
+  // une grille de trois laisserait une colonne vide et déséquilibrerait la
+  // section — exactement le défaut qu'on cherche à corriger.
+  const colonnes =
+    panneaux.length === 1 ? "" : panneaux.length === 2 ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3";
+
+  return (
+    <section className="section mx-auto max-w-7xl px-6">
+      <div className="rounded-[1.75rem] border border-border/70 bg-card px-7 py-9 sm:px-10 sm:py-11">
+        <div className="mb-9">
+          <p className="eyebrow">Bon à savoir</p>
+          <h2 className="mt-2 text-deep">Conseils, résultats et avis</h2>
+        </div>
+
+        {/* `divide-x` trace un filet entre les colonnes plutôt qu'un cadre
+            autour de chacune : la séparation se lit, la section reste une. */}
+        <div className={`grid gap-9 ${colonnes} md:divide-x md:divide-border/70`}>
+          {panneaux.map((panneau, i) => (
+            <div key={i} className={i > 0 ? "md:pl-9" : undefined}>
+              {panneau}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------ 11. Services -- */
+
+/**
+ * Bloc 11 : « Services & engagements ».
+ *
+ * Distinct des promesses du bloc 2 : celles-ci portent sur l'achat (sélection,
+ * paiement, livraison, conseil), celles-là sur l'après (authenticité,
+ * accompagnement, retour, moyens de paiement locaux).
+ */
+export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
+  const items = [
+    { icon: BadgeCheck, title: "Produits authentiques", text: "Circuits d'approvisionnement tracés" },
+    { icon: UserRound, title: "Experts à votre écoute", text: "Conseil avant et après l'achat" },
+    { icon: RefreshCw, title: "Satisfait ou remboursé", text: "14 jours pour changer d'avis" },
+    { icon: Smartphone, title: "Mobile Money", text: "Orange Money & MTN" },
+  ];
+
+  return (
+    <section className="bg-deep text-primary-foreground">
+      <div className="section mx-auto max-w-7xl px-6">
+        <ul className="grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+          {items.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="flex items-start gap-3.5">
+              <Icon className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
+              <div>
+                <p className="text-sm font-semibold text-primary-foreground">{title}</p>
+                <p className="mt-0.5 text-sm text-primary-foreground">{text}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        {whatsappUrl && (
+          <p className="mt-9 border-t border-primary-foreground/15 pt-7 text-center text-sm text-primary-foreground">
+            Une question avant d&rsquo;acheter ?{" "}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 font-medium text-primary-foreground kk-underline"
+            >
+              <MessageCircle className="h-4 w-4" />
+              Écrivez-nous sur WhatsApp
+            </a>{" "}
+            — on répond dans la journée.
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------- Diagnostic -- */
+
+/**
+ * Rappel du diagnostic, posé juste après les best-sellers et avant la section
+ * « Bon à savoir » — c'est la place demandée par le client.
+ *
+ * Il s'adresse à qui vient de parcourir le rayon sans se reconnaître dans aucun
+ * produit. Volontairement sobre : le module complet est en haut de page
+ * (bloc 4), celui-ci n'est qu'une porte de sortie.
+ */
+export function DiagnosticReminder() {
+  return (
+    <section className="section mx-auto max-w-7xl px-6">
+      <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-taupe px-8 py-9">
+        <div>
+          <h2 className="text-deep">Vous ne savez pas par où commencer ?</h2>
+          <p className="mt-1.5 text-sm text-deep">
+            Cinq questions sur votre peau, et nous composons votre routine.
+          </p>
+        </div>
+        <Link
+          href="/diagnostic"
+          className="kk-fill group inline-flex shrink-0 items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
+        >
+          <Sparkles className="h-4 w-4" />
+          Faire mon diagnostic
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </Link>
       </div>
     </section>
   );

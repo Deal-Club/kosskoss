@@ -1,15 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Minus, ShoppingBag, Check } from "lucide-react";
+import { useRouter, usePathname } from "next/navigation";
+import { Plus, Minus, ShoppingBag, Check, Zap } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import type { KKProductDetail } from "@/server/kk/product";
 import { volVersPanier } from "@/lib/kk/fly-to-cart";
 import { FavoriteHeart } from "./product-actions";
+import { withLocale } from "./localized-link";
 
 export function AddToCart({ product }: { product: KKProductDetail }) {
   const { add, openDrawer } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
   const [variantId, setVariantId] = useState<string | undefined>(product.variants[0]?.id);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
@@ -19,22 +23,38 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   const oldPriceFcfa = variant?.oldPriceFcfa ?? product.oldPriceFcfa;
   const outOfStock = product.stock <= 0;
 
+  /** La ligne de panier décrite par les choix en cours (variante, quantité). */
+  function ligneCourante() {
+    return {
+      productId: product.id,
+      variantId: variant?.id,
+      variantLabel: variant?.label,
+      slug: product.slug,
+      brand: product.brand,
+      name: product.name,
+      image: product.image ?? "",
+      path: product.href,
+      priceCents: priceFcfa,
+      stock: product.stock,
+    };
+  }
+
+  /**
+   * Achat direct : on dépose la ligne au panier et on file au tunnel.
+   *
+   * Le panier reste le passage obligé — c'est lui qui porte l'état de la
+   * commande, et le tunnel le lit. La différence avec l'ajout ordinaire tient
+   * à ce qui NE se produit pas : ni vol vers le panier, ni ouverture du
+   * tiroir, ni message de confirmation. Trois interruptions qui, sur un achat
+   * décidé, ne font que retarder le paiement.
+   */
+  function handleBuyNow() {
+    add(ligneCourante(), qty);
+    router.push(withLocale(pathname, "/commande"));
+  }
+
   async function handleAdd() {
-    add(
-      {
-        productId: product.id,
-        variantId: variant?.id,
-        variantLabel: variant?.label,
-        slug: product.slug,
-        brand: product.brand,
-        name: product.name,
-        image: product.image ?? "",
-        path: product.href,
-        priceCents: priceFcfa,
-        stock: product.stock,
-      },
-      qty,
-    );
+    add(ligneCourante(), qty);
     setAdded(true);
     window.setTimeout(() => setAdded(false), 2600);
 
@@ -56,6 +76,26 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           </span>
         )}
       </div>
+
+      {/* TOTAL, dès que la quantité dépasse un.
+
+          Le grand prix reste le prix UNITAIRE : c'est lui qui se compare d'une
+          fiche à l'autre, et le multiplier en place ferait croire à un produit
+          plus cher. Le total s'ajoute donc en dessous, avec le détail du calcul
+          — on voit à la fois ce qu'on paie et pourquoi.
+          Il ne s'affiche pas à l'unité : « Total : 20 500 FCFA » sous
+          « 20 500 FCFA » n'apprend rien et alourdit le bloc d'achat. */}
+      {qty > 1 && (
+        <p className="mt-2 text-sm text-muted-foreground" aria-live="polite">
+          Total&nbsp;:{" "}
+          <span className="figure text-base font-semibold text-deep">
+            {formatFcfa(priceFcfa * qty)}
+          </span>{" "}
+          <span className="figure">
+            ({qty} × {formatFcfa(priceFcfa)})
+          </span>
+        </p>
+      )}
 
       {/* Sélecteur de variante (contenance) */}
       {product.variants.length > 0 && (
@@ -86,8 +126,35 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         </fieldset>
       )}
 
+      {/* ACHAT DIRECT EN PREMIER, et seul sur sa ligne.
+
+          C'est le geste que la fiche doit servir : sur une boutique où le
+          paiement se fait par Mobile Money en quelques secondes, envoyer tout
+          le monde par le panier ajoute une étape à une décision déjà prise.
+          « Ajouter au panier » reste juste en dessous, pour qui compose une
+          commande de plusieurs produits — les deux publics sont réels, l'ordre
+          dit lequel est le plus courant.
+
+          Le laiton le distingue du vert profond de l'ajout : deux boutons de
+          même couleur l'un sous l'autre ne se hiérarchisent que par leur
+          position, ce qui est trop peu pour l'action principale.
+
+          LAITON D'ENCRE et non laiton plein : le libellé est en blanc pur, et
+          du blanc sur le laiton vif ne tient que 3,2:1 — illisible en plein
+          soleil sur un téléphone, ce qui est la situation d'usage. Sur ce
+          laiton foncé, il tient 7,9:1. */}
+      <button
+        type="button"
+        onClick={handleBuyNow}
+        disabled={outOfStock}
+        className="kk-fill kk-fill-deep group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-ink px-7 py-4 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <Zap className="h-4 w-4 shrink-0" />
+        {outOfStock ? "Indisponible" : "Payer maintenant"}
+      </button>
+
       {/* Quantité + ajout */}
-      <div className="mt-6 flex flex-wrap items-center gap-3">
+      <div className="mt-3 flex flex-wrap items-center gap-3">
         <div className="flex items-center rounded-full border border-border bg-cream">
           <button
             type="button"

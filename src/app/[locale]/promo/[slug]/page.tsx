@@ -61,7 +61,7 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
             <p className="mb-2 text-[11px] font-black tracking-widest text-primary uppercase">
               {t("eyebrow")}
             </p>
-            <h1 className="max-w-3xl text-3xl leading-tight font-black tracking-tight sm:text-4xl">
+            <h1 className="max-w-3xl">
               {landing.headline}
             </h1>
 
@@ -72,7 +72,7 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
               {/* La date en toutes lettres double toujours le compte à rebours :
                   il ne s'affiche qu'une fois la page hydratée, et il reste
                   inaudible pour un lecteur d'écran. */}
-              <p className="text-sm text-white/70">{t("validUntil", { date: endsAtLabel })}</p>
+              <p className="text-sm text-white">{t("validUntil", { date: endsAtLabel })}</p>
             </div>
           </div>
         </section>

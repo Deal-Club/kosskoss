@@ -44,7 +44,7 @@ function AnimatedMonogram({ className }: { className?: string }) {
 
 export function BrandLoader({
   /** Ligne d'attente. Doit décrire ce qui se prépare, pas meubler. */
-  message = "Nous préparons votre sélection",
+  message = "À chaque peau, sa solution",
 }: {
   message?: string;
 }) {
@@ -54,7 +54,7 @@ export function BrandLoader({
       // sans voler le focus. Le texte visible sert aux deux publics.
       role="status"
       aria-live="polite"
-      className="kkl-screen fixed inset-0 z-50 grid place-items-center bg-cream px-6"
+      className="kkl-screen fixed inset-0 z-50 grid place-items-center bg-background px-6"
     >
       <div className="flex flex-col items-center">
         {/* L'onde part du centre du sigle : posée derrière lui, à la même
@@ -68,7 +68,7 @@ export function BrandLoader({
         {/* L'onde déborde largement du sigle (jusqu'à 1.85×) : cette marge
             l'empêche de venir toucher le logotype en fin de diffusion. */}
         <p className="kkl-wordmark wordmark mt-16 text-[0.95rem] text-deep sm:text-lg">KOSSKOSS</p>
-        <p className="kkl-tagline mt-2 text-[0.55rem] font-medium uppercase tracking-[0.5em] text-deep/60">
+        <p className="kkl-tagline mt-2 text-[0.55rem] font-medium uppercase tracking-[0.5em] text-deep">
           Select
         </p>
 

@@ -72,3 +72,43 @@ export type KKFavoriteView = {
   /** Horodatage de l'ajout, pour afficher le plus récent en premier. */
   addedAt: number;
 };
+
+/* ---------------------------------------------------------------- Routines -- */
+
+/** Un geste de routine : le rôle, la raison, le produit. */
+export type KKRoutineStepView = {
+  id: string;
+  /** « Nettoyer », « Traiter », « Protéger »… */
+  label: string;
+  /** Pourquoi ce geste dans CETTE routine. Peut être vide. */
+  why: string;
+  product: KKProductView;
+};
+
+/**
+ * Une routine prête à l'emploi, telle qu'affichée sur l'accueil et sur sa page.
+ *
+ * `totalFcfa` est calculé au rendu, jamais lu en base : c'est la somme des
+ * gestes réellement servables au moment de l'affichage.
+ */
+export type KKRoutineView = {
+  id: string;
+  slug: string;
+  name: string;
+  /** Accroche d'une ligne : le besoin auquel la routine répond. */
+  claim: string;
+  description: string;
+  /**
+   * Étiquette de besoin correspondante (`src/lib/kk/besoins.ts`). Elle ouvre le
+   * rayon filtré pour qui veut choisir lui-même — en second recours, la routine
+   * restant la porte principale.
+   */
+  besoinTag: string;
+  /** Jeton de teinte : l'un des `--tint-*` de globals.css. */
+  tint: string;
+  image: string | null;
+  /** Chemin de la page routine, préfixe de langue non compris. */
+  href: string;
+  steps: KKRoutineStepView[];
+  totalFcfa: number;
+};

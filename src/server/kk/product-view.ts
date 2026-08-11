@@ -1,4 +1,5 @@
 import type { KKBadge, KKProductView, KKTone } from "@/types/kk";
+import { packshot } from "@/lib/kk/packshot";
 
 /**
  * Construction de la vue produit affichée sur les vignettes (accueil, catalogue,
@@ -57,7 +58,12 @@ export function toProductView(row: ProductViewRow, index = 0): KKProductView {
     oldPriceFcfa: row.oldPriceCents ?? undefined,
     badge: toBadge(row.badge),
     tone: toneAt(index),
-    image: row.image,
+    // Version détourée quand elle existe, visuel d'origine sinon. Fait ici plutôt
+    // que dans chaque composant : la vue produit alimente les vignettes, le
+    // catalogue, le panier, les routines et le diagnostic — une seule des cinq
+    // qui oublierait la conversion réafficherait un fond de studio sur une
+    // couleur de marque.
+    image: packshot(row.image),
     href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
     stock: row.stock,
     hasVariants: (row.variants?.length ?? 0) > 0,

@@ -35,7 +35,7 @@ export default async function LoginPage({
       <SiteHeader />
       <main className="flex-1">
         <section className="mx-auto max-w-md px-6 py-16">
-          <h1 className="text-center text-3xl text-deep sm:text-4xl">Mon espace client</h1>
+          <h1 className="text-center text-deep">Mon espace client</h1>
           <p className="mt-2 text-center text-muted-foreground">
             Connectez-vous pour suivre vos commandes et votre routine.
           </p>

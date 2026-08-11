@@ -4,6 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
 import { ProductDetail } from "@/components/kk/product-detail";
 import { getProductDetail, getRelatedProducts } from "@/server/kk/product";
+import { getProductReviews } from "@/server/kk/product-reviews";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -35,14 +36,18 @@ export default async function ProductPage({ params }: { params: ProductParams })
   const detail = await getProductDetail(group, category, product);
   if (!detail) notFound();
 
-  const related = await getRelatedProducts(detail.category.slug, detail.id, 4);
+  const [related, reviews] = await Promise.all([
+    getRelatedProducts(detail.category.slug, detail.id, 4),
+    // Seuls les avis modérés sortent d'ici — voir getProductReviews.
+    getProductReviews(detail.id),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
-        <ProductDetail product={detail} related={related} />
+        <ProductDetail product={detail} related={related} reviews={reviews} />
       </main>
       <SiteFooter />
       <MobileTabBar />

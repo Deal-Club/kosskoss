@@ -41,7 +41,7 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      <div className="bg-[#150e0b] text-[0.72rem] text-white/65">
+      <div className="bg-[#150e0b] text-[0.72rem] text-white">
         <div className="mx-auto flex max-w-screen-xl items-center gap-5 px-4 py-1.5">
           {/* Choix de la langue : dans la barre de service pour rester visible
               en permanence, desktop comme mobile, sans encombrer la rangée

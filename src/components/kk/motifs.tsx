@@ -71,24 +71,32 @@ export function BottleMotif({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Tracés du pétale, dans le repère 200 × 200.
+ *
+ * Exportés parce que l'écran d'analyse du diagnostic redessine le même pétale
+ * pour l'animer trait par trait : deux copies du chemin finiraient par diverger
+ * à la première retouche, et le motif de la marque cesserait d'être le même
+ * d'un écran à l'autre.
+ */
+export const KK_PETAL_PATH =
+  "M100 8 C150 40 180 90 172 140 C168 168 140 192 100 192 C60 192 32 168 28 140 C20 90 50 40 100 8 Z";
+/** Nervure centrale, de la pointe à la base. */
+export const KK_PETAL_VEIN = "M100 24 C100 80 100 130 100 180";
+/** Les deux nervures latérales, dans l'ordre où elles se tracent. */
+export const KK_PETAL_VEINS_SIDE = [
+  "M100 70 C124 62 146 66 160 82",
+  "M100 110 C126 104 150 108 164 124",
+];
+
 /** Pétale / feuille organique — décor du bloc diagnostic. */
 export function Petal({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 200 200" className={className} aria-hidden="true">
+      <path d={KK_PETAL_PATH} fill="currentColor" opacity="0.9" />
+      <path d={KK_PETAL_VEIN} fill="none" stroke="var(--cream)" strokeWidth="1.5" opacity="0.6" />
       <path
-        d="M100 8 C150 40 180 90 172 140 C168 168 140 192 100 192 C60 192 32 168 28 140 C20 90 50 40 100 8 Z"
-        fill="currentColor"
-        opacity="0.9"
-      />
-      <path
-        d="M100 24 C100 80 100 130 100 180"
-        fill="none"
-        stroke="var(--cream)"
-        strokeWidth="1.5"
-        opacity="0.6"
-      />
-      <path
-        d="M100 70 C124 62 146 66 160 82 M100 110 C126 104 150 108 164 124"
+        d={KK_PETAL_VEINS_SIDE.join(" ")}
         fill="none"
         stroke="var(--cream)"
         strokeWidth="1.5"

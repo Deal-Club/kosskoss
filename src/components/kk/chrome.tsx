@@ -12,14 +12,15 @@ import {
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
-import { getShopNavigation } from "@/server/kk/navigation";
+import { getShopNavigation, getNavHighlights } from "@/server/kk/navigation";
 import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
 import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
 import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
-import { PatternBackdrop } from "./pattern-backdrop";
 import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
+import { Monogram } from "./motifs";
+import { PatternBackdrop } from "./pattern-backdrop";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -55,24 +56,44 @@ function FacebookIcon({ className }: { className?: string }) {
  * devenu « Corps & Hygiène », ajout de « Homme » — laisse des entrées de menu
  * pointant vers des pages qui n'existent plus.
  */
-const FOOTER_HELP = [
-  { label: "Livraison", href: "/livraison" },
-  { label: "Suivi de commande", href: "/compte/commandes" },
-  { label: "Moyens de paiement", href: "/moyens-de-paiement" },
-  { label: "Retours", href: "/retours" },
-  { label: "Contact", href: "/contact" },
-  { label: "FAQ", href: "/faq" },
-];
-
+/**
+ * « Nos routines » et « Nos marques » sont repris ici alors qu'ils figurent
+ * aussi dans la barre du haut : le pied de page est la seconde carte du site,
+ * celle qu'on consulte quand on a scrollé et qu'on ne veut pas remonter.
+ */
+/**
+ * Liens du pied de page, réduits au strict nécessaire.
+ *
+ * Le pied de page portait vingt-deux liens répartis en quatre colonnes : les
+ * univers du catalogue, le diagnostic, la maison, huit pages d'aide, plus les
+ * mentions. Sur une boutique orientée conversion, ce n'est pas une carte du
+ * site, c'est une sortie de secours géante placée juste après le bouton
+ * d'achat.
+ *
+ * Ne restent ici que deux catégories :
+ *   — les pages EXIGÉES par la vente à distance, qui doivent rester
+ *     atteignables depuis n'importe quelle page (mentions, CGV, données
+ *     personnelles, rétractation) ;
+ *   — les pages qui LÈVENT une objection au moment de payer : les frais et
+ *     délais de livraison, les moyens de paiement acceptés, le renvoi.
+ *
+ * Tout le reste est parti : le catalogue est dans l'en-tête, et « Notre
+ * maison », « Le diagnostic », « Suivi de commande » et la FAQ se rejoignent
+ * par la navigation ou depuis le compte.
+ */
 const FOOTER_LEGAL = [
   { label: "Mentions légales", href: "/mentions-legales" },
   { label: "CGV", href: "/cgv" },
   { label: "Confidentialité", href: "/confidentialite" },
-  { label: "Droit de rétractation", href: "/retractation" },
+  { label: "Rétractation", href: "/retractation" },
+  { label: "Livraison", href: "/livraison" },
+  { label: "Retours", href: "/retours" },
+  { label: "Paiement", href: "/moyens-de-paiement" },
 ];
 
-const FOOTER_LINK =
-  "text-sm text-footer-foreground/85 transition hover:text-footer-foreground";
+/* `FOOTER_LINK` habillait les colonnes de liens du pied de page. Ces colonnes
+   ont disparu avec la refonte compacte : la seule liste restante, celle des
+   mentions, porte son propre style en petit corps. */
 
 /**
  * Lien WhatsApp du pied de page. Même source que le bouton flottant : la ligne
@@ -103,11 +124,38 @@ export async function AnnouncementBar() {
   return <AnnouncementBarView items={items} config={config} />;
 }
 
-function Wordmark({ className = "" }: { className?: string }) {
+/**
+ * Mot-symbole composé.
+ *
+ * Il s'écrit « KossKoss » et non « KOSSKOSS » : Cinzel n'a pas de vraie
+ * bas-de-casse, ses minuscules sont des petites capitales. La casse mixte rend
+ * donc les deux K hauts suivis de « OSS » en petites capitales — exactement le
+ * dessin du logo officiel (assets/marque/), que le tout-capitales aplatissait.
+ *
+ * `aligne` place le sigle à gauche du lettrage, comme sur la maquette du
+ * client, où l'en-tête porte le monogramme encadré suivi du nom sur deux
+ * lignes. Le mode centré subsiste pour les pages transactionnelles, dont
+ * l'en-tête minimal n'a que le logotype au milieu.
+ */
+function Wordmark({ className = "", aligne = false }: { className?: string; aligne?: boolean }) {
+  if (aligne) {
+    return (
+      <Link href="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label={BRAND.name}>
+        <Monogram className="h-8 w-8 shrink-0 text-deep" title="" />
+        <span className="flex flex-col leading-none">
+          <span className="wordmark text-[1.05rem] text-deep sm:text-[1.15rem]">KossKoss</span>
+          <span className="mt-1 text-[0.52rem] font-medium uppercase tracking-[0.42em] text-deep">
+            Select
+          </span>
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Link href="/" className={`inline-flex flex-col items-center leading-none ${className}`} aria-label={BRAND.name}>
-      <span className="wordmark text-[1.15rem] text-deep sm:text-[1.35rem]">KOSSKOSS</span>
-      <span className="mt-0.5 text-[0.55rem] font-medium uppercase tracking-[0.5em] text-deep/70">
+      <span className="wordmark text-[1.2rem] text-deep sm:text-[1.4rem]">KossKoss</span>
+      <span className="mt-1 text-[0.55rem] font-medium uppercase tracking-[0.42em] text-deep">
         Select
       </span>
     </Link>
@@ -122,22 +170,25 @@ function Wordmark({ className = "" }: { className?: string }) {
  * à traverser la frontière client.
  */
 export async function SiteHeader() {
-  const groups = await getShopNavigation();
+  const [groups, highlights] = await Promise.all([getShopNavigation(), getNavHighlights()]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-cream/85 backdrop-blur-md">
-      <div className="mx-auto grid max-w-7xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 py-4 sm:px-6">
-        {/* Gauche : recherche (desktop) / menu (mobile) */}
-        <div className="flex items-center gap-2">
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
+      {/* Une seule rangée : sigle à gauche, navigation au centre, actions à
+          droite — la composition de la maquette du client.
+          L'en-tête précédent centrait le logotype et repoussait la navigation
+          sur une seconde ligne : il occupait deux fois la hauteur pour la même
+          information, et le nom de la maison se retrouvait au milieu de nulle
+          part au lieu de tenir le coin où l'œil le cherche. */}
+      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3.5 sm:px-6">
+        <div className="flex items-center gap-1">
           <MobileMenu groups={groups} />
-          <SearchAction />
+          <Wordmark aligne className="shrink-0" />
         </div>
 
-        {/* Centre : logotype */}
-        <Wordmark />
+        <DesktopNav groups={groups} highlights={highlights} />
 
-        {/* Droite : recherche (mobile) + favoris + compte + panier */}
-        <div className="flex items-center justify-end gap-1">
+        <div className="ml-auto flex items-center justify-end gap-1">
           <SearchAction variant="icon" />
           <FavoritesLink />
           <Link
@@ -150,42 +201,63 @@ export async function SiteHeader() {
           <CartButton />
         </div>
       </div>
-
-      <DesktopNav groups={groups} />
     </header>
   );
 }
 
-/** En-tête minimal des pages transactionnelles (panier → paiement). */
+/**
+ * En-tête minimal des pages transactionnelles (panier → paiement).
+ *
+ * La mention « Paiement sécurisé » y était grise, en 12 px, et masquée sous
+ * 640 px — c'est-à-dire absente sur la majorité des visites. C'est pourtant la
+ * seule preuve de sûreté visible au moment où le client hésite. Elle devient
+ * une pastille verte, présente à toutes les tailles : sur mobile le mot
+ * « Sécurisé » suffit, la mention complète revient dès qu'il y a la place.
+ */
 export function CheckoutHeader() {
   return (
-    <header className="border-b border-border/60 bg-cream">
-      <div className="mx-auto grid max-w-7xl grid-cols-3 items-center px-6 py-4">
-        <Link href="/" className="inline-flex w-fit items-center gap-1.5 text-sm text-deep transition hover:opacity-80">
-          <ChevronLeft className="h-4 w-4" /> <span className="hidden sm:inline">Continuer mes achats</span>
+    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 backdrop-blur-md">
+      <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 sm:px-6">
+        <Link
+          href="/"
+          className="inline-flex w-fit items-center gap-1.5 text-sm text-deep transition hover:opacity-80"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          <span className="hidden sm:inline">Continuer mes achats</span>
+          <span className="sr-only sm:hidden">Continuer mes achats</span>
         </Link>
         <div className="justify-self-center">
           <Wordmark />
         </div>
-        <span className="hidden items-center justify-end gap-1.5 justify-self-end text-xs text-muted-foreground sm:inline-flex">
-          <ShieldCheck className="h-4 w-4" /> Paiement sécurisé
+        <span className="inline-flex items-center gap-1.5 justify-self-end rounded-full border border-trust-line bg-trust-soft px-2.5 py-1.5 text-xs font-semibold text-trust sm:px-3">
+          <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">Paiement sécurisé</span>
+          <span className="sm:hidden">Sécurisé</span>
         </span>
       </div>
     </header>
   );
 }
 
-/** Barre de navigation basse — mobile uniquement, Diagnostic mis en avant. */
+/**
+ * Barre de navigation basse — mobile uniquement.
+ *
+ * C'est « Routines » qui occupe désormais la place centrale, et non le
+ * diagnostic. Les deux mènent au même endroit — une routine adaptée — mais
+ * l'une la donne en un clic et l'autre en cinq questions. Sur un écran de
+ * téléphone, la porte la plus courte doit être la plus visible ; le diagnostic
+ * reste en tête du menu, sur l'accueil et sur la page des routines.
+ */
 export function MobileTabBar() {
   const items = [
     { label: "Accueil", href: "/", icon: Home, active: true },
     { label: "Boutique", href: "/soins-visage", icon: LayoutGrid },
-    { label: "Diagnostic", href: "/diagnostic", icon: Sparkles, primary: true },
+    { label: "Routines", href: "/routines", icon: Sparkles, primary: true },
     { label: "Favoris", href: "/favoris", icon: Heart, badge: true },
     { label: "Compte", href: "/compte", icon: User },
   ];
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-cream/95 backdrop-blur-md lg:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/95 backdrop-blur-md lg:hidden">
       <ul className="mx-auto flex max-w-md items-end justify-between px-4 pb-[calc(env(safe-area-inset-bottom)+0.4rem)] pt-2">
         {items.map(({ label, href, icon: Icon, active, primary, badge }) => (
           <li key={label}>
@@ -215,56 +287,93 @@ export function MobileTabBar() {
 }
 
 /**
- * Pied de page — bleu profond, colonnes de liens réels.
+ * Pied de page — compact, orienté conversion.
  *
- * La colonne « Boutique » suit la navigation lue en base plutôt que des
- * rubriques figées. Les douze liens « # » qui l'occupaient auparavant menaient
- * tous au néant : dans une boutique en ligne, un pied de page en trompe-l'œil
- * coûte la confiance, et les mentions légales doivent rester joignables depuis
- * n'importe quelle page.
+ * ── Ce qu'il n'est plus ───────────────────────────────────────────────────
+ * Il portait quatre colonnes et vingt-deux liens : les univers du catalogue,
+ * le diagnostic, la maison, huit pages d'aide, les réseaux, les mentions. Sur
+ * une boutique dont tout le parcours pousse à commander, un tel pied de page
+ * est une sortie de secours géante placée juste après le bouton d'achat — et
+ * il occupait plus de hauteur que certaines pages qu'il concluait.
  *
- * Le formulaire de newsletter a été retiré : il n'envoyait rien nulle part, et
- * la boutique n'a volontairement pas de fichier d'adresses (voir
- * src/server/contacts.ts). À sa place, le canal réellement en service ici —
- * WhatsApp, déjà utilisé pour confirmer les commandes.
+ * ── Ce qu'il garde, et pourquoi ───────────────────────────────────────────
+ *   1. WHATSAPP. C'est le canal réellement en service — celui par lequel les
+ *      commandes sont confirmées. Une question sans réponse, c'est un panier
+ *      abandonné ; il reste donc en évidence, pas en petits caractères.
+ *   2. LES MOYENS DE PAIEMENT. Dernière objection levée au dernier moment :
+ *      savoir qu'on peut payer avec ce qu'on a déjà dans son téléphone.
+ *   3. LES PAGES LÉGALES. Elles ne relèvent pas d'un choix éditorial : la
+ *      vente à distance impose que mentions, CGV, données personnelles et
+ *      rétractation soient joignables depuis n'importe quelle page. Livraison,
+ *      retours et paiement les accompagnent parce qu'elles lèvent, elles
+ *      aussi, une objection d'achat.
+ *
+ * Tout tient désormais en trois rangées, et plus aucune n'est une colonne de
+ * liens : le catalogue est dans l'en-tête, c'est là qu'on navigue.
  */
-export async function SiteFooter() {
-  const groups = await getShopNavigation();
-
+export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden bg-footer text-footer-foreground">
-      {/* Motif de marque, présent sur toutes les pages puisque le pied de page
-          l'est : il referme chaque page sur l'identité de la maison. */}
-      <PatternBackdrop align="footer" opacity="opacity-35" />
-      <div className="relative mx-auto max-w-7xl px-6 py-16">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.3fr]">
-          <div>
-            {/* Le lettrage officiel de la charte, dans sa version claire. Le
-                pied de page est le seul endroit assez large pour le porter en
-                entier ; l'en-tête garde le mot-symbole composé en Cinzel, qui
-                reste net à toutes les tailles et ne coûte aucune requête. */}
-            <Link href="/" aria-label={BRAND.name} className="inline-block">
-              <Image
-                src="/images/logo-full-light.png"
-                alt={BRAND.name}
-                width={1070}
-                height={306}
-                sizes="200px"
-                className="h-auto w-[11rem]"
-              />
-            </Link>
-            <p className="mt-5 max-w-xs text-sm leading-relaxed text-footer-foreground/70">
-              {BRAND.slogan} Une sélection cosmétique multimarque, pensée pour votre peau.
-            </p>
-            <div className="mt-6 flex items-center gap-4 text-footer-foreground/80">
-              {/* Comptes réels de la charte (@kosskoss_select) : la marque vit
-                  d'abord sur le social, un lien mort y est un aveu d'abandon. */}
+      {/* Motif de marque en fond. Le pied de page est bien plus court qu'avant
+          et ne porte plus de colonnes de liens en petit corps : la trame y
+          respire au lieu de courir sous du texte. 12 % d'opacité tout de même,
+          contre 18 % ailleurs — il figure sur toutes les pages du site, c'est
+          l'endroit le plus répété du parcours. */}
+      <PatternBackdrop align="footer" opacity="opacity-[0.12]" />
+
+      <div className="relative mx-auto max-w-7xl px-6 py-8">
+        {/* RANGÉE 1 — tout ce qui sert à acheter : l'identité, le contact
+            direct, et les moyens de paiement.
+
+            Les logos de paiement tenaient une rangée à eux seuls, sous un
+            titre « Paiement accepté ». Le titre est parti et les logos ont
+            rejoint cette ligne : trois marques dessinées se reconnaissent sans
+            qu'on les annonce, et l'intitulé coûtait une rangée entière pour un
+            mot que personne ne lit. */}
+        <div className="flex flex-col items-center gap-6 text-center sm:flex-row sm:justify-between sm:text-left">
+          <Link href="/" aria-label={BRAND.name} className="inline-block shrink-0">
+            <Image
+              src="/images/logo-full-light.png"
+              alt={BRAND.name}
+              width={1070}
+              height={306}
+              sizes="180px"
+              className="h-auto w-[9.5rem]"
+            />
+          </Link>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
+            {WHATSAPP_LINK && (
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Une question ? WhatsApp
+              </a>
+            )}
+
+            <a
+              href={`tel:${CONTACT.phone.replace(/\s/g, "")}`}
+              className="inline-flex items-center gap-2 text-sm transition hover:text-gold-soft"
+            >
+              <Phone className="h-4 w-4" />
+              {CONTACT.phone}
+            </a>
+
+            <span className="hidden h-4 w-px bg-footer-foreground/25 sm:block" />
+
+            {/* Comptes réels de la charte : la marque vit d'abord sur le
+                social, un lien mort y est un aveu d'abandon. */}
+            <span className="flex items-center gap-4">
               <a
                 href={`https://instagram.com/${CONTACT.social.instagram}`}
                 target="_blank"
                 rel="noopener noreferrer me"
                 aria-label={`Instagram — @${CONTACT.social.instagram}`}
-                className="transition hover:text-footer-foreground"
+                className="transition hover:text-gold-soft"
               >
                 <InstagramIcon className="h-5 w-5" />
               </a>
@@ -273,115 +382,40 @@ export async function SiteFooter() {
                 target="_blank"
                 rel="noopener noreferrer me"
                 aria-label={`Facebook — ${CONTACT.social.facebook}`}
-                className="transition hover:text-footer-foreground"
+                className="transition hover:text-gold-soft"
               >
                 <FacebookIcon className="h-5 w-5" />
               </a>
-              <span className="h-4 w-px bg-footer-foreground/25" />
-              <a href={`tel:${CONTACT.phone.replace(/\s/g, "")}`} className="flex items-center gap-2 text-sm transition hover:text-footer-foreground">
-                <Phone className="h-4 w-4" />
-                {CONTACT.phone}
-              </a>
-            </div>
-          </div>
+            </span>
 
-          <div>
-            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
-              Boutique
-            </h4>
-            <ul className="mt-4 space-y-3">
-              {groups.map((group) => (
-                <li key={group.slug}>
-                  <Link href={group.href} className={FOOTER_LINK}>
-                    {group.label}
-                  </Link>
-                </li>
-              ))}
-              <li>
-                <Link href="/diagnostic" className={FOOTER_LINK}>
-                  Le diagnostic
-                </Link>
-              </li>
-              <li>
-                <Link href="/a-propos" className={FOOTER_LINK}>
-                  Notre maison
-                </Link>
-              </li>
-            </ul>
-          </div>
+            <span className="hidden h-4 w-px bg-footer-foreground/25 sm:block" />
 
-          <div>
-            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
-              Aide
-            </h4>
-            <ul className="mt-4 space-y-3">
-              {FOOTER_HELP.map((entry) => (
-                <li key={entry.href}>
-                  <Link href={entry.href} className={FOOTER_LINK}>
-                    {entry.label}
-                  </Link>
+            {/* Moyens de paiement, sans intitulé. Les marques sont dessinées au
+                trait (voir PaymentIcons), jamais reprises des fichiers
+                officiels. Un cran plus petites qu'avant, où elles occupaient
+                leur propre rangée. */}
+            <ul className="flex flex-wrap items-center justify-center gap-3 [&_svg]:h-8 [&_svg]:w-12">
+              {[VisaMark, OrangeMoneyMark, MoovMoneyMark].map((Mark, i) => (
+                <li key={i} className="transition-transform duration-300 hover:-translate-y-0.5">
+                  <Mark />
                 </li>
               ))}
             </ul>
           </div>
-
-          <div>
-            <h4 className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-footer-foreground/60">
-              Une question ?
-            </h4>
-            <p className="mt-4 text-sm text-footer-foreground/70">
-              Conseil produit, suivi de commande, livraison : écrivez-nous sur WhatsApp, on
-              répond dans la journée.
-            </p>
-            {WHATSAPP_LINK && (
-              <a
-                href={WHATSAPP_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
-              >
-                <MessageCircle className="h-4 w-4" />
-                Discuter sur WhatsApp
-              </a>
-            )}
-            <Link
-              href="/contact"
-              className="mt-4 block text-sm text-footer-foreground/70 underline underline-offset-4 transition hover:text-footer-foreground"
-            >
-              Toutes nos coordonnées
-            </Link>
-          </div>
         </div>
 
-        {/* Moyens de paiement, juste au-dessus de la mention légale.
-            C'est la dernière chose que lit un visiteur hésitant : savoir qu'il
-            pourra payer avec ce qu'il a déjà dans son téléphone lève une
-            objection au moment précis où elle se pose. Les marques sont
-            dessinées au trait (voir PaymentIcons), pas reprises des fichiers
-            officiels. */}
-        <div className="mt-14 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-8 sm:flex-row sm:justify-between">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-footer-foreground/50">
-            Paiement accepté
-          </p>
-          <ul className="flex flex-wrap items-center justify-center gap-3">
-            {[VisaMark, OrangeMoneyMark, MoovMoneyMark].map((Mark, i) => (
-              <li key={i} className="transition-transform duration-300 hover:-translate-y-0.5">
-                <Mark />
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="mt-8 flex flex-col items-center gap-4 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
-          <p className="text-xs text-footer-foreground/50">
+        {/* RANGÉE 2 — mentions. Une seule ligne, en petit corps : obligatoire,
+            donc présent ; jamais une invitation à quitter la page. */}
+        <div className="mt-7 flex flex-col items-center gap-3 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
+          <p className="text-xs text-footer-foreground">
             © 2026 {BRAND.name}. Tous droits réservés.
           </p>
-          <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             {FOOTER_LEGAL.map((entry) => (
               <li key={entry.href}>
                 <Link
                   href={entry.href}
-                  className="text-xs text-footer-foreground/60 transition hover:text-footer-foreground"
+                  className="text-xs text-footer-foreground transition hover:text-gold-soft"
                 >
                   {entry.label}
                 </Link>

@@ -120,9 +120,101 @@ model Product {
   campaigns      CampaignProduct[]
   variants       ProductVariant[]
   favorites      CustomerFavorite[]
+  routineSteps   RoutineStep[]
 
   @@index([categoryId])
   @@index([brand])
+}
+
+// ---- Newsletter ----
+//
+// Bloc 12 de la structure fournie par le client. Un formulaire de newsletter
+// existait autrefois dans le pied de page ; il avait été retiré parce qu'il
+// n'envoyait rien nulle part — une adresse saisie disparaissait. Le bloc
+// revient donc avec sa table : mieux vaut pas de formulaire du tout qu'un
+// formulaire qui ment.
+//
+// `confirmed` prépare le double opt-in sans l'imposer aujourd'hui : la colonne
+// existe, la logique d'envoi de confirmation viendra avec le prestataire
+// d'e-mailing retenu.
+model NewsletterSubscriber {
+  id     String @id @default(cuid())
+  email  String @unique
+  locale String @default("fr")
+  // D'où vient l'inscription : « accueil », « pied-de-page », « commande »…
+  // Sert à savoir quel emplacement recrute réellement.
+  source    String   @default("accueil")
+  confirmed Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ---- Routines ----
+//
+// La routine est l'objet central de la marque, et il manquait.
+//
+// L'identité KossKoss Select l'écrit noir sur blanc — mission : « des ROUTINES
+// simples, efficaces et adaptées » ; promesse : « une sélection de produits
+// sûrs et adaptés pour DES ROUTINES QUI FONCTIONNENT ». Le retour client la
+// redemande : « la mise en avant prioritairement des routines (prêtes ou
+// issues du diagnostic peau) plutôt que des produits seuls ».
+//
+// Jusqu'ici une routine n'existait que le temps d'un écran, en mémoire, à la
+// sortie du diagnostic : pas d'URL, pas de sauvegarde, pas de partage, et
+// surtout aucune routine PRÊTE — la moitié de ce que la marque promet. On ne
+// peut pas mettre en avant ce qui n'existe pas en base.
+//
+// Le prix n'est pas stocké : il est la somme des gestes, calculée au rendu.
+// Un prix recopié se désaligne du catalogue au premier changement de tarif.
+model Routine {
+  id        String @id @default(cuid())
+  slug      String @unique
+  name      String
+  nameEn    String @default("")
+  // Accroche d'une ligne : le besoin auquel la routine répond.
+  claim     String @default("")
+  claimEn   String @default("")
+  // Texte de la page routine.
+  description   String @default("")
+  descriptionEn String @default("")
+  // Étiquette de besoin (voir src/lib/kk/besoins.ts et Product.tags). Elle
+  // relie la routine au rayon filtré correspondant : le visiteur qui veut
+  // choisir lui-même y accède depuis la routine, en second recours.
+  besoinTag String @default("")
+  // Jeton de teinte — l'un des --tint-* de globals.css. C'est le mécanisme qui
+  // casse la monochromie relevée par le client : chaque routine porte sa
+  // couleur, sur l'accueil comme sur sa page. Fonctionnel avant d'être
+  // décoratif : la teinte sert de repère.
+  tint      String @default("acne")
+  image     String @default("")
+  position  Int    @default(0)
+  active    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  steps RoutineStep[]
+}
+
+// Un geste de la routine : un produit, son rôle, et pourquoi il est là.
+model RoutineStep {
+  id        String @id @default(cuid())
+  routineId String
+  productId String
+  // Geste : « Nettoyer », « Traiter », « Protéger »…
+  label     String
+  labelEn   String @default("")
+  // Le motif du choix, propre à CETTE routine : le même sérum ne se justifie
+  // pas de la même façon contre les taches et contre la déshydratation.
+  why       String @default("")
+  whyEn     String @default("")
+  position  Int    @default(0)
+
+  routine Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([routineId, productId])
+  @@index([routineId])
+  @@index([productId])
 }
 
 // Variation d'un produit vendu par volume (bois vrac & palette). Le produit

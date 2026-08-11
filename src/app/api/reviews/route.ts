@@ -62,12 +62,12 @@ export async function POST(request: Request) {
   const rating = typeof payload.rating === "number" ? payload.rating : Number.NaN;
 
   if (!productId) {
-    return NextResponse.json({ error: "Das Produkt konnte nicht zugeordnet werden." }, { status: 400 });
+    return NextResponse.json({ error: "Le produit n'a pas pu être identifié." }, { status: 400 });
   }
 
   if (authorName.length < 2 || authorName.length > 80) {
     return NextResponse.json(
-      { error: "Bitte geben Sie einen Namen mit 2 bis 80 Zeichen an." },
+      { error: "Merci d'indiquer un nom de 2 à 80 caractères." },
       { status: 400 },
     );
   }
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
   if (body.length < 10 || body.length > 2000) {
     return NextResponse.json(
-      { error: "Ihr Bewertungstext muss zwischen 10 und 2000 Zeichen lang sein." },
+      { error: "Votre avis doit faire entre 10 et 2000 caractères." },
       { status: 400 },
     );
   }
@@ -108,7 +108,7 @@ export async function POST(request: Request) {
   }
 
   if (!(await productExists(productId))) {
-    return NextResponse.json({ error: "Das Produkt wurde nicht gefunden." }, { status: 404 });
+    return NextResponse.json({ error: "Ce produit est introuvable." }, { status: 404 });
   }
 
   const rate = checkReviewRate(productId);
