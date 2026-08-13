@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { AccountLogin } from "@/components/kk/account";
 import { getCurrentCustomer } from "@/server/customerSession";
 import type { Locale } from "@/i18n/routing";
@@ -30,7 +30,7 @@ export default async function LoginPage({
   const suite = Array.isArray(sp.suite) ? sp.suite[0] : sp.suite;
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -51,7 +51,6 @@ export default async function LoginPage({
         </section>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

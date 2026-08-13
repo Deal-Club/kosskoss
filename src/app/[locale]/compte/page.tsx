@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { Package, Sparkles, ChevronRight, Heart, MapPin, ShieldCheck } from "lucide-react";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { AccountLogout } from "@/components/kk/account";
 import { requireCustomer } from "@/server/customerSession";
 import { getAccountOrders } from "@/server/kk/account";
@@ -29,7 +29,7 @@ export default async function AccountPage({ params }: { params: Params }) {
   const orders = await getAccountOrders(customer.id);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -101,7 +101,6 @@ export default async function AccountPage({ params }: { params: Params }) {
         </section>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

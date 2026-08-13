@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { requireCustomer } from "@/server/customerSession";
 import { getAccountOrder } from "@/server/kk/account";
 import { formatFcfa } from "@/lib/kk/format";
@@ -30,7 +30,7 @@ export default async function AccountOrderPage({ params }: { params: Params }) {
   if (!order) notFound();
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -77,7 +77,6 @@ export default async function AccountOrderPage({ params }: { params: Params }) {
         </section>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

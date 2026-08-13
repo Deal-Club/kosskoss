@@ -21,6 +21,30 @@ export type KKTestimonialView = {
   rating: number;
   /** Produit concerné, pour situer l'avis. */
   productName: string;
+  /** Titre laissé par le client ; vide dans la plupart des cas. */
+  title?: string;
+  /** Fiche du produit concerné, pour que l'avis y renvoie. */
+  href?: string;
+  /** Date de publication, au format ISO — mise en forme à l'affichage. */
+  publishedAt?: string;
+};
+
+/**
+ * Agrégat des avis publiés.
+ *
+ * Il ne sort de la base que des avis MODÉRÉS : afficher une moyenne calculée
+ * sur des avis en attente reviendrait à publier ce qui n'a pas été relu.
+ * `total` vaut 0 tant qu'aucun avis n'est approuvé, et la section se masque —
+ * une note moyenne inventée est une allégation commerciale trompeuse au sens
+ * de l'article L121-2 du Code de la consommation.
+ */
+export type KKReviewsSummary = {
+  /** Moyenne sur 5, arrondie au dixième. */
+  average: number;
+  /** Nombre d'avis publiés retenus dans la moyenne. */
+  total: number;
+  /** Nombre d'avis par note, de 5 à 1 — pour la répartition. */
+  distribution: { rating: number; count: number }[];
 };
 
 /** Vue produit prête à afficher (carte, rail). Montants en FCFA entiers. */

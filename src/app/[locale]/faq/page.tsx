@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { buildLegalMetadata, SectionBody, SectionList } from "@/components/legal/LegalPageView";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -46,7 +46,7 @@ export default async function FaqPage({ params }: { params: PageParams }) {
   };
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -98,7 +98,6 @@ export default async function FaqPage({ params }: { params: PageParams }) {
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
 
       <JsonLd data={jsonLd} />
     </div>

@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { LayoutDashboard, MapPin, Receipt, ShieldCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { AccountLogoutButton } from "@/components/account/AccountLogoutButton";
 
@@ -37,7 +37,7 @@ export async function AccountShell({
   ];
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1 bg-muted/40">
@@ -93,7 +93,6 @@ export async function AccountShell({
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }
@@ -116,7 +115,7 @@ export async function AccountAuthShell({
   const t = await getTranslations({ locale, namespace: "account" });
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1 bg-muted/40">
@@ -136,7 +135,6 @@ export async function AccountAuthShell({
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

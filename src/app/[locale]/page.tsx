@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Hero, ProductRail } from "@/components/kk/home";
 import {
   CategoryPills,
-  DiagnosticReminder,
   InsightsSection,
   PromisesRow,
 } from "@/components/kk/home-sections";
 import { RoutinesRail } from "@/components/kk/routines";
 import { AvantApresSection } from "@/components/kk/avant-apres-section";
+import { GammeSection } from "@/components/kk/gamme-section";
+import { AvisClients } from "@/components/kk/avis-clients";
 import { BrandsShowcase } from "@/components/kk/brands-showcase";
 import { getBrandShowcase } from "@/server/kk/brands";
-import { getHomeProducts, getHomeTestimonials } from "@/server/kk/home";
+import { getHomeProducts, getHomeTestimonials, getReviewsSummary } from "@/server/kk/home";
 import { getHomeFaq } from "@/server/kk/home-faq";
 import { getShopNavigation } from "@/server/kk/navigation";
 import { getRoutines } from "@/server/kk/routines";
@@ -55,9 +56,13 @@ export default async function Home({ params }: { params: HomeParams }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [products, testimonials, groups, faq, routines, brands] = await Promise.all([
+  const [products, testimonials, avisResume, groups, faq, routines, brands] = await Promise.all([
     getHomeProducts(12),
+    // Trois, et pas un de plus : la section les montre sur UNE SEULE rangée.
+    // À six, la grille repassait à la ligne et la section doublait de hauteur
+    // pour dire la même chose.
     getHomeTestimonials(3),
+    getReviewsSummary(),
     getShopNavigation(),
     // Les réponses viennent de la page /faq : une seule source, deux affichages.
     getHomeFaq(locale, 8),
@@ -80,7 +85,7 @@ export default async function Home({ params }: { params: HomeParams }) {
   const bestsellers = products.slice(0, 12);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
 
@@ -135,7 +140,18 @@ export default async function Home({ params }: { params: HomeParams }) {
             longue à cet endroit et le collant y perdait de toute façon son
             intérêt. */}
         <section className="section mx-auto max-w-7xl px-6">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)]">
+          {/* `grid-cols-[minmax(0,1fr)]` : SANS LUI, TOUTE LA PAGE DÉBORDE.
+              Les colonnes n'étaient déclarées qu'à partir de `lg`. En dessous,
+              les deux cartes tombaient dans une colonne IMPLICITE en `auto`,
+              que le navigateur dimensionne sur le contenu le plus large — ici
+              la piste du carrousel, soit les vingt-quatre cartes best-sellers
+              mises bout à bout. Mesuré sur iPhone 13 : 6 118 px de large pour
+              un écran de 390. La page entière partait en défilement
+              horizontal, en emportant l'en-tête et le hero.
+              `minmax(0, 1fr)` borne la colonne au cadre ; la piste retrouve
+              alors son rôle, défiler DANS son propre cadre (`overflow-x-auto`)
+              au lieu de l'élargir. */}
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.9fr)]">
             <CategoryPills groups={groups} />
             {bestsellers.length > 0 && (
               <ProductRail
@@ -161,28 +177,38 @@ export default async function Home({ params }: { params: HomeParams }) {
             collée aux conseils qui y répondent. */}
         <BrandsShowcase brands={brands} />
 
-        {/* Le rappel du diagnostic passe DEVANT la section « Bon à savoir »,
-            à la demande du client. Il vient donc directement après les
-            best-sellers : on sort du rayon, et la question « vous ne savez pas
-            par où commencer ? » tombe pile sur qui vient de faire défiler des
-            produits sans se décider. Les conseils et les avis, eux, se lisent
-            plus volontiers après cette porte de sortie qu'avant. */}
-        <DiagnosticReminder />
+        {/* « Un problème, une réponse » — les préoccupations nommées, chacune
+            ouvrant son rayon filtré.
 
-        {/* 8 + 9 + 10 — Conseils, avant/après et avis.
-            Une seule section, un seul cadre, un seul titre : les trois blocs
-            de la structure client disent la même chose — la preuve — et trois
-            cartes autonomes côte à côte se disputaient l'attention au lieu de
-            se compléter. L'avant/après reste masqué tant qu'aucun cas réel
-            n'est fourni (voir src/data/kk/avant-apres.ts) ; le nombre de
-            colonnes s'ajuste alors tout seul. */}
-        <InsightsSection entries={faq} cases={AVANT_APRES} testimonials={testimonials} />
+            Elle précède immédiatement « Vous ne savez pas par où commencer ? »,
+            et les deux se répondent : celle-ci s'adresse à qui SAIT ce qui le
+            gêne et lui ouvre le rayon correspondant ; celle-là recueille ceux
+            qui ne savent pas se situer et les envoie au diagnostic. Ensemble,
+            elles couvrent les deux façons d'arriver sur une boutique de soin. */}
+        <GammeSection />
+
+
+        {/* Les avis, en section entière et non plus en tiers de panneau.
+            Ils viennent APRÈS le rappel du diagnostic et AVANT les conseils :
+            le visiteur qui n'a pas cliqué sur « Trouver ma routine » a besoin
+            d'une raison de rester, et c'est la parole d'un autre client qui la
+            donne — pas une FAQ. La section disparaît d'elle-même tant qu'aucun
+            avis n'est publié en base. */}
+        <AvisClients avis={testimonials} resume={avisResume} />
+
+        {/* 8 + 9 — Conseils et avant/après.
+            Une seule section, un seul cadre, un seul titre. Les avis en ont
+            été retirés : ils occupaient une troisième colonne pour un seul
+            témoignage, sans note ni volume, et ils ont désormais leur propre
+            section juste au-dessus. L'avant/après reste masqué tant qu'aucun
+            cas réel n'est fourni (voir src/data/kk/avant-apres.ts) ; le nombre
+            de colonnes s'ajuste alors tout seul. */}
+        <InsightsSection entries={faq} cases={AVANT_APRES} />
 
       </main>
 
       {/* 13 — Footer */}
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

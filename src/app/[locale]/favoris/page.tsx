@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { FavoritesView } from "@/components/kk/favorites-view";
 import type { Locale } from "@/i18n/routing";
@@ -19,7 +19,7 @@ export default async function FavoritesPage({ params }: { params: Params }) {
   setRequestLocale(locale);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -41,7 +41,6 @@ export default async function FavoritesPage({ params }: { params: Params }) {
         </section>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

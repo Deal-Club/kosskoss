@@ -19,7 +19,6 @@ import {
   Smile,
   SprayCan,
   Sparkles,
-  Star,
   Sun,
   Truck,
   UserRound,
@@ -29,7 +28,6 @@ import type { NavGroup } from "@/server/kk/navigation";
 import type { HomeFaqEntry } from "@/server/kk/home-faq";
 import type { BrandFocusView } from "@/server/kk/brand-focus";
 import type { AvantApresView } from "@/data/kk/avant-apres";
-import type { KKTestimonialView } from "@/types/kk";
 
 /**
  * Sections d'accueil.
@@ -289,8 +287,20 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
         {categories.slice(0, 12).map((category) => {
           const Icone = ICONE_CATEGORIE[category.slug] ?? Droplet;
           return (
-            /* (100 % − deux gouttières de 0.75rem) / 3 */
-            <li key={category.href} className="w-[calc((100%-1.5rem)/3)]">
+            /* DEUX PAR LIGNE SOUS 380 PX, trois au-delà.
+               À trois colonnes fixes, une case mesure (320 − 48 de gouttière
+               − 40 de padding de carte − 24 de gouttières) / 3 ≈ 69 px. Un
+               libellé comme « Nettoyants » ou « Hydratants » réclame environ
+               75 px en 12 px de corps : le mot débordait de sa case et venait
+               chevaucher la voisine, la largeur du `li` étant figée en
+               pourcentage. Deux colonnes donnent 105 px, ce qui les loge.
+               `min-w-0` + `break-words` sont la ceinture : ils garantissent
+               qu'aucun libellé, même inconnu à l'écriture de ce code, ne peut
+               élargir sa case — les catégories viennent de la base. */
+            <li
+              key={category.href}
+              className="min-w-0 w-[calc((100%-0.75rem)/2)] min-[380px]:w-[calc((100%-1.5rem)/3)]"
+            >
               <Link href={category.href} className="group flex flex-col items-center gap-2 text-center">
                 {/* 72 px sur grand écran, 56 sur mobile.
 
@@ -301,10 +311,24 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
                     80 px chacune, et un cercle de 72 les remplissait au point
                     de se toucher. Le rapport icône/pastille reste à 44 % dans
                     les deux cas. */}
-                <span className="grid h-14 w-14 place-items-center rounded-full bg-sand text-deep transition group-hover:bg-taupe sm:h-[4.5rem] sm:w-[4.5rem]">
-                  <Icone className="h-6 w-6 sm:h-8 sm:w-8" strokeWidth={1.5} />
+                {/* 56 px sur téléphone · 72 px dès 640 · 104 px sur tablette ·
+                    retour à 72 px à partir de `lg`.
+                    Le palier tablette est nouveau : entre 768 et 1024 px, la
+                    carte occupe TOUTE la largeur de la page, chaque case fait
+                    près de 300 px, et une pastille de 72 px y flottait au
+                    milieu du vide. Au-delà de `lg` la carte redevient une
+                    colonne d'un tiers et la valeur d'origine reprend, sans
+                    quoi les pastilles se toucheraient. Le rapport
+                    icône/pastille reste à 44 % à tous les paliers. */}
+                <span className="grid h-14 w-14 place-items-center rounded-full bg-sand text-deep transition group-hover:bg-taupe sm:h-[4.5rem] sm:w-[4.5rem] md:h-[6.5rem] md:w-[6.5rem] lg:h-[4.5rem] lg:w-[4.5rem]">
+                  <Icone
+                    className="h-6 w-6 sm:h-8 sm:w-8 md:h-[2.75rem] md:w-[2.75rem] lg:h-8 lg:w-8"
+                    strokeWidth={1.5}
+                  />
                 </span>
-                <span className="text-xs font-medium leading-snug text-deep">{category.label}</span>
+                <span className="hyphens-auto break-words text-xs font-medium leading-snug text-deep md:text-base lg:text-xs">
+                  {category.label}
+                </span>
               </Link>
             </li>
           );
@@ -358,11 +382,9 @@ function PanelTitre({ children }: { children: React.ReactNode }) {
 export function InsightsSection({
   entries,
   cases,
-  testimonials,
 }: {
   entries: HomeFaqEntry[];
   cases: AvantApresView[];
-  testimonials: KKTestimonialView[];
 }) {
   const panneaux: React.ReactNode[] = [];
 
@@ -429,29 +451,12 @@ export function InsightsSection({
     );
   }
 
-  if (testimonials.length > 0) {
-    const t = testimonials[0];
-    panneaux.push(
-      <div key="avis">
-        <PanelTitre>Elles nous font confiance</PanelTitre>
-        <figure className="mt-5">
-          <div className="flex items-center gap-0.5" aria-label={`Note ${t.rating} sur 5`}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className={`h-4 w-4 ${i < t.rating ? "fill-gold text-gold" : "text-border"}`} />
-            ))}
-          </div>
-          <blockquote className="mt-4 text-[0.95rem] leading-relaxed text-foreground">
-            « {t.quote} »
-          </blockquote>
-          <figcaption className="mt-4 text-sm">
-            <span className="font-semibold text-deep">{t.author}</span>
-            {t.city && <span className="text-muted-foreground"> · {t.city}</span>}
-            <span className="mt-1 block text-muted-foreground">à propos de {t.productName}</span>
-          </figcaption>
-        </figure>
-      </div>,
-    );
-  }
+  /* Le panneau « Elles nous font confiance » vivait ici. Il montrait UN
+     témoignage sur les trois lus en base, sans note moyenne ni volume, dans un
+     tiers de cadre partagé avec la FAQ et l'avant/après. La preuve sociale —
+     le seul contenu de la page qui ne soit pas écrit par la marque — a
+     désormais sa propre section : voir components/kk/avis-clients.tsx, montée
+     juste au-dessus de celle-ci sur l'accueil. */
 
   if (panneaux.length === 0) return null;
 

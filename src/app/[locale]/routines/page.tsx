@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { RoutineCard } from "@/components/kk/routine-card";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
@@ -36,7 +36,7 @@ export default async function RoutinesPage({ params }: { params: Params }) {
   const routines = await getRoutines(locale);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
 
@@ -108,7 +108,6 @@ export default async function RoutinesPage({ params }: { params: Params }) {
       </main>
 
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

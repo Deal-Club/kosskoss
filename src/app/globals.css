@@ -504,32 +504,82 @@
 
    Sous `lg`, l'image passe sous le texte en pleine largeur : plus de bord à
    raccorder, donc pas de masque. */
-/* Voile du hero MOBILE.
+/* Voile du hero.
    -------------------------------------------------------------------------
-   Sous `lg`, la photo occupe tout le cadre du hero et le texte se pose
-   dessus. Ce dégradé est ce qui rend le second lisible sans cacher la
-   première : opaque sur la moitié basse, où vivent le titre, le chapô et les
-   deux boutons ; presque nul en haut, où l'on ne voit que le visage.
+   La photo est le fond de la section à toutes les tailles et le texte se pose
+   dessus. Ce voile est ce qui rend le second lisible sans cacher la première.
 
-   Il est monté en `color-mix` sur `--deep` plutôt qu'en `to-transparent` :
-   un dégradé qui va vers `transparent` passe par du NOIR transparent et
-   salit son milieu d'un gris — c'est la même erreur que celle corrigée sur
-   le fondu latéral, et elle se verrait ici en plein sur un visage.
+   DEUX RÉGIMES, PARCE QUE LE TEXTE NE TOMBE PAS AU MÊME ENDROIT.
+   Sous `lg`, le cadre est presque carré : `object-cover` n'y montre plus qu'une
+   bande verticale de la photo, centrée sur le visage, et le texte occupe la
+   moitié BASSE. Le voile y descend donc du haut vers le bas — presque nul sur
+   le visage, dense sous lui. C'est ce que l'ancienne version ratait : elle
+   n'avait qu'un dégradé horizontal, appliqué tel quel au mobile, où il
+   assombrissait le bord gauche pendant que le texte, lui, était en bas.
+   Au-delà de `lg`, le cadre retrouve le format de la photo, le sujet reprend sa
+   place à droite et le texte passe à GAUCHE : le voile bascule à l'horizontale
+   et s'efface complètement sur le sujet.
 
-   Au-delà de `lg`, plus de voile : l'image reprend sa colonne, le texte a
-   son propre fond, et rien ne se superpose. */
-@media (max-width: 63.999rem) {
+   NOIR PUR, et non le vert profond de la marque. Sur une photo au fond beige
+   chaud, `--deep` (#11292d) déposait une dominante verte qui virait le beige au
+   kaki : la teinte se voyait comme une salissure au lieu de s'oublier. Le noir
+   ne déplace aucune teinte — il ne fait qu'assombrir, et laisse la photo garder
+   ses propres couleurs.
+
+   Les arrêts échantillonnent une smoothstep — f(t) = t²(3 − 2t) — et non une
+   rampe droite. Une rampe se repère toujours à ses deux extrémités, là où la
+   pente s'interrompt net : ce sont ces arêtes qu'on voit, et pas le dégradé
+   lui-même. La smoothstep part et finit à pente nulle, donc sans arête. */
+/* LES ARRÊTS SONT CALÉS SUR LA POSITION RÉELLE DU TEXTE, RELEVÉE DANS LE
+   NAVIGATEUR À 390 PX : titre de 14 à 45 % de la hauteur du hero, chapô de 48
+   à 67 %, boutons de 73 à 93 %. Autrement dit le texte occupe TOUT sauf la
+   bande des 12 premiers pour cent — la seule où la photo peut rester claire.
+   Un dégradé qui ne devient dense qu'à mi-hauteur, comme celui d'origine,
+   laisse donc le titre entier dans sa partie faible : c'est exactement ce qui
+   le rendait illisible. La montée est ramenée sur les 20 premiers pour cent,
+   et le voile reste ensuite proche de son maximum. */
+.kk-hero-voile {
+  background: linear-gradient(
+    to bottom,
+    rgb(0 0 0 / 0.3) 0%,
+    rgb(0 0 0 / 0.35) 6%,
+    rgb(0 0 0 / 0.46) 12%,
+    rgb(0 0 0 / 0.56) 20%,
+    rgb(0 0 0 / 0.62) 30%,
+    rgb(0 0 0 / 0.66) 45%,
+    rgb(0 0 0 / 0.7) 65%,
+    rgb(0 0 0 / 0.72) 100%
+  );
+}
+
+@media (min-width: 64rem) {
   .kk-hero-voile {
     background: linear-gradient(
-      to top,
-      var(--deep) 0%,
-      var(--deep) 38%,
-      color-mix(in oklab, var(--deep) 92%, transparent) 52%,
-      color-mix(in oklab, var(--deep) 70%, transparent) 66%,
-      color-mix(in oklab, var(--deep) 40%, transparent) 82%,
-      color-mix(in oklab, var(--deep) 18%, transparent) 100%
+      to right,
+      rgb(0 0 0 / 0.72) 0%,
+      rgb(0 0 0 / 0.71) 28%,
+      rgb(0 0 0 / 0.64) 40%,
+      rgb(0 0 0 / 0.48) 52%,
+      rgb(0 0 0 / 0.29) 64%,
+      rgb(0 0 0 / 0.12) 80%,
+      rgb(0 0 0 / 0) 100%
     );
   }
+}
+
+/* Ombre portée des textes du hero.
+   -------------------------------------------------------------------------
+   Deux ombres superposées : une très proche et dense qui détache la lettre de
+   son fond, une large et diffuse qui assombrit la zone autour du mot. On ne la
+   remarque pas — on remarque seulement que le texte tient.
+
+   Elle porte le contraste LOCAL, au contact de la lettre, ce qui autorise un
+   voile plus discret que si le fond devait tout assumer seul : sans elle, il
+   faudrait noyer la photo pour tenir la même lisibilité. */
+.kk-hero-texte {
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.45),
+    0 2px 16px rgb(0 0 0 / 0.35);
 }
 
 @media (min-width: 64rem) {

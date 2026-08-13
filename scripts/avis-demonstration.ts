@@ -1,9 +1,16 @@
 /**
  * Avis de démonstration, pour juger du rendu d'un catalogue vivant.
  *
- * ATTENTION — ces avis ne sont pas des avis de clients. Publier de faux avis
- * est déloyal en toutes circonstances au sens de l'annexe au § 3 Abs. 3 UWG
- * (n° 23b et 23c) : ils doivent disparaître avant l'ouverture de la boutique.
+ * ATTENTION — ces avis ne sont pas des avis de clients. Publier de faux avis,
+ * ou présenter comme authentiques des avis qui ne le sont pas, est une
+ * pratique commerciale trompeuse réputée telle en toutes circonstances
+ * (article L121-4, 21° et 22° du Code de la consommation) : ils doivent
+ * disparaître avant l'ouverture de la boutique.
+ *
+ * La référence était auparavant le § 3 Abs. 3 UWG allemand, comme tout le
+ * corpus de ce fichier — un reste du clone quelle.de dont ce projet est parti.
+ * L'allemand a été retiré du projet (voir TARGET.md) et la boutique vend au
+ * Cameroun : le droit applicable et les textes sont français.
  *
  * Chaque avis porte pour cela une note de modération reconnaissable, visible
  * dans le back-office et qui sert de prise pour tout effacer :
@@ -51,25 +58,37 @@ const piocher = <T>(liste: readonly T[]): T => liste[Math.floor(alea() * liste.l
 // Identités
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Identités
+//
+// Prénoms et villes du Cameroun et de la diaspora francophone : la boutique
+// livre « partout au Cameroun » et règle en Mobile Money. Le corpus précédent
+// était allemand — Thomas, Sabine, Düsseldorf, Saarbrücken — hérité du clone
+// quelle.de dont ce projet est parti, et l'allemand a depuis été retiré du
+// projet entier (voir TARGET.md).
+// ---------------------------------------------------------------------------
+
 const PRENOMS = [
-  "Thomas", "Andrea", "Michael", "Sabine", "Stefan", "Claudia", "Andreas", "Petra",
-  "Markus", "Susanne", "Christian", "Birgit", "Frank", "Nicole", "Jürgen", "Katrin",
-  "Matthias", "Anja", "Peter", "Martina", "Wolfgang", "Silke", "Daniel", "Kerstin",
-  "Alexander", "Heike", "Sebastian", "Ute", "Tobias", "Monika", "Dirk", "Gabriele",
-  "Ralf", "Christine", "Oliver", "Bettina", "Jens", "Manuela", "Holger", "Simone",
-  "Uwe", "Angelika", "Bernd", "Doris", "Karsten", "Elke", "Marco", "Ingrid",
-  "Lukas", "Julia", "Florian", "Franziska", "Jonas", "Melanie", "Patrick", "Sandra",
+  "Aminata", "Nadège", "Christelle", "Mireille", "Sandrine", "Laure", "Estelle",
+  "Carine", "Yannick", "Brenda", "Josiane", "Armelle", "Danielle", "Rachelle",
+  "Sylvie", "Patricia", "Ornella", "Bertrande", "Cynthia", "Marlyse", "Grâce",
+  "Larissa", "Nathalie", "Solange", "Viviane", "Chantal", "Prisca", "Léonie",
+  "Michelle", "Bénédicte", "Reine", "Aurélie", "Édith", "Nadia", "Clarisse",
+  "Serge", "Hervé", "Landry", "Boris", "Cédric", "Franck", "Ulrich", "Rodrigue",
+  "Achille", "Guy", "Arnaud", "Willy", "Steve", "Thierry", "Éric", "Joël",
+  "Fadimatou", "Hawa", "Salamatou", "Ngo Bell", "Manuela",
 ];
 
 const INITIALES = "ABCDEFGHKLMNPRSTVWZ".split("");
 
 const VILLES = [
-  "Berlin", "Hamburg", "München", "Köln", "Frankfurt", "Stuttgart", "Düsseldorf",
-  "Leipzig", "Dortmund", "Essen", "Bremen", "Dresden", "Hannover", "Nürnberg",
-  "Duisburg", "Bochum", "Wuppertal", "Bielefeld", "Bonn", "Münster", "Karlsruhe",
-  "Mannheim", "Augsburg", "Wiesbaden", "Mönchengladbach", "Kiel", "Chemnitz",
-  "Braunschweig", "Halle", "Magdeburg", "Freiburg", "Krefeld", "Mainz", "Erfurt",
-  "Rostock", "Kassel", "Potsdam", "Saarbrücken", "Oldenburg", "Heidelberg",
+  "Douala", "Yaoundé", "Bafoussam", "Garoua", "Bamenda", "Maroua", "Ngaoundéré",
+  "Bertoua", "Buea", "Kribi", "Limbé", "Edéa", "Kumba", "Dschang", "Foumban",
+  "Ebolowa", "Nkongsamba", "Sangmélima", "Mbalmayo", "Bafang", "Melong",
+  "Loum", "Tiko", "Guider", "Kousséri", "Meiganga", "Batouri", "Mbouda",
+  "Bandjoun", "Obala", "Akonolinga", "Yagoua", "Wum", "Kumbo", "Mora",
+  "Douala — Bonapriso", "Douala — Akwa", "Yaoundé — Bastos", "Yaoundé — Mvog-Ada",
+  "Paris", "Bruxelles",
 ];
 
 // ---------------------------------------------------------------------------
@@ -78,217 +97,234 @@ const VILLES = [
 // Assemblés par morceaux plutôt qu'écrits un par un : quelques milliers d'avis
 // tirés d'une liste figée se répéteraient d'une fiche à l'autre, et rien ne
 // trahit un catalogue artificiel comme deux fiches au même commentaire.
+//
+// Le vocabulaire est celui du soin, pas celui de l'électroménager. Les
+// familles précédentes — téléviseurs, lave-linge, aspirateurs, machines à
+// café — faisaient dire à un sérum visage que « le montage a été rapide ».
 // ---------------------------------------------------------------------------
 
 /** Familles de produits, reconnues au slug de la catégorie. */
-type Famille = "bild" | "mobil" | "waschen" | "kaffee" | "kueche" | "saugen" | "allgemein";
+type Famille =
+  | "nettoyant"
+  | "hydratant"
+  | "serum"
+  | "solaire"
+  | "corps"
+  | "cheveux"
+  | "general";
 
 const FAMILLES: Record<string, Famille> = {
-  fernseher: "bild",
-  smartphones: "mobil",
-  smartwatches: "mobil",
-  computer: "mobil",
-  waschmaschinen: "waschen",
-  geschirrspueler: "waschen",
-  kaffeemaschinen: "kaffee",
-  kuechenmaschinen: "kueche",
-  "backoefen-herde": "kueche",
-  staubsauger: "saugen",
-  klimageraete: "allgemein",
-  videospiele: "allgemein",
-  drohnen: "allgemein",
+  nettoyants: "nettoyant",
+  demaquillants: "nettoyant",
+  toniques: "nettoyant",
+  masques: "nettoyant",
+  hydratants: "hydratant",
+  cremes: "hydratant",
+  serums: "serum",
+  traitements: "serum",
+  "serums-traitements": "serum",
+  "anti-taches": "serum",
+  solaires: "solaire",
+  corps: "corps",
+  "soins-du-corps": "corps",
+  hygiene: "corps",
+  cheveux: "cheveux",
+  homme: "general",
 };
 
 const OUVERTURES_BONNES = [
-  "Nach {dauer} kann ich nur Gutes berichten.",
-  "Seit {dauer} im Einsatz und bisher keinerlei Probleme.",
-  "Genau das, was ich gesucht habe.",
-  "Preis-Leistung stimmt hier wirklich.",
-  "Bin nach {dauer} immer noch sehr zufrieden.",
-  "Hat meine Erwartungen übertroffen.",
-  "Zweites Gerät dieser Marke, wieder eine gute Wahl.",
-  "Lieferung war schnell, Aufbau problemlos.",
-  "Für den Preis absolut in Ordnung.",
-  "Ich würde es jederzeit wieder kaufen.",
+  "Après {duree} d'utilisation, je ne peux qu'en dire du bien.",
+  "Utilisé depuis {duree}, aucun souci pour l'instant.",
+  "Exactement ce que je cherchais pour ma peau.",
+  "Le rapport qualité-prix est vraiment là.",
+  "Toujours très satisfaite après {duree}.",
+  "Le produit a dépassé mes attentes.",
+  "Deuxième flacon, je ne change plus.",
+  "Livraison rapide sur Douala, produit bien emballé.",
+  "Pour ce prix, c'est largement au niveau.",
+  "Je le rachèterai sans hésiter.",
 ];
 
 const OUVERTURES_MOYENNES = [
-  "Insgesamt zufrieden, mit kleinen Abstrichen.",
-  "Solide, aber kein Überflieger.",
-  "Tut, was es soll — mehr aber auch nicht.",
-  "Für den Preis in Ordnung, Luft nach oben gibt es trotzdem.",
-  "Nach {dauer} ein gemischtes, aber überwiegend positives Bild.",
+  "Globalement satisfaite, avec quelques réserves.",
+  "Correct, sans être renversant.",
+  "Il fait le travail, mais rien de plus.",
+  "Pour le prix c'est honnête, il y a tout de même mieux.",
+  "Après {duree}, un bilan mitigé mais plutôt positif.",
 ];
 
 const OUVERTURES_MAUVAISES = [
-  "Leider kann ich das Gerät nicht empfehlen.",
-  "Nach {dauer} bin ich ziemlich enttäuscht.",
-  "Hätte ich mir vorher genauer angesehen.",
-  "Schade, die Erwartungen wurden nicht erfüllt.",
+  "Je ne peux malheureusement pas le recommander.",
+  "Après {duree}, je suis assez déçue.",
+  "J'aurais dû me renseigner davantage avant.",
+  "Dommage, mes attentes n'ont pas été comblées.",
 ];
 
 const CORPS: Record<Famille, { bon: string[]; moyen: string[]; mauvais: string[] }> = {
-  bild: {
+  nettoyant: {
     bon: [
-      "Das Bild ist auch bei Tageslicht kräftig, Farben wirken natürlich.",
-      "Schwarzwerte sind für diese Preisklasse erstaunlich gut.",
-      "Die Streaming-Apps laufen flüssig, kein Ruckeln beim Umschalten.",
-      "Fußball in Zeitlupe bleibt scharf, nichts zieht nach.",
-      "Der Ton ist besser als erwartet, eine Soundbar braucht es nicht zwingend.",
-      "Die Einrichtung war in zehn Minuten erledigt.",
+      "La peau est nette sans tirailler, ce qui est rare chez moi.",
+      "Il retire bien la protection solaire, même en fin de journée.",
+      "La mousse est légère et l'odeur reste discrète.",
+      "Aucune sensation de film gras après le rinçage.",
+      "Mon teint est visiblement plus net au bout de trois semaines.",
     ],
     moyen: [
-      "Das Bild überzeugt, die Fernbedienung wirkt dagegen billig.",
-      "Der Ton ist dünn, mit Soundbar aber völlig ausreichend.",
-      "Das Menü könnte übersichtlicher sein, man findet sich mit der Zeit zurecht.",
+      "Il nettoie correctement mais je dois passer deux fois le soir.",
+      "L'odeur est un peu forte à mon goût.",
+      "Le flacon se vide vite si on l'utilise matin et soir.",
     ],
     mauvais: [
-      "Die Blickwinkelstabilität ist schwach: schon leicht seitlich verblassen die Farben spürbar.",
-      "Das Betriebssystem hängt regelmäßig, mehrmals musste ich den Stecker ziehen.",
-      "Bei dunklen Szenen sieht man deutliche Lichthöfe an den Rändern.",
+      "Il assèche ma peau, j'ai des tiraillements dès le rinçage.",
+      "J'ai eu des petits boutons au bout d'une semaine.",
     ],
   },
-  mobil: {
+  hydratant: {
     bon: [
-      "Der Akku hält bei mir gut zwei Tage bei normaler Nutzung.",
-      "Die Kamera macht auch bei wenig Licht brauchbare Bilder.",
-      "Alles läuft flüssig, selbst mit vielen offenen Apps.",
-      "Die Verarbeitung fühlt sich hochwertig an, nichts knarzt.",
-      "Die Übernahme der Daten vom alten Gerät ging reibungslos.",
+      "La texture pénètre vite et ne laisse aucun film collant.",
+      "Ma peau reste confortable toute la journée, même en saison sèche.",
+      "Il se superpose bien sous le maquillage, sans faire de peluches.",
+      "Les zones sèches autour du nez ont disparu en quelques jours.",
+      "Un petit peu suffit, le pot dure longtemps.",
     ],
     moyen: [
-      "Leistung gut, aber es wird beim Laden spürbar warm.",
-      "Der Akku reicht knapp einen Tag, das hatte ich mir mehr erhofft.",
-      "Gutes Gerät, die vorinstallierte Software hätte ich nicht gebraucht.",
+      "Hydratant correct, mais insuffisant pour ma peau très sèche.",
+      "La texture est un peu riche pour la chaleur d'ici.",
+      "Le résultat est bon, le prix un peu élevé pour la contenance.",
     ],
     mauvais: [
-      "Nach vier Monaten war der Akku deutlich schwächer, abends musste ich nachladen.",
-      "Das Display hat nach kurzer Zeit einen Farbstich bekommen.",
-      "Der Empfang bricht bei mir regelmäßig ein, mein altes Gerät war da klar besser.",
+      "Il fait briller ma peau mixte au bout de deux heures.",
+      "J'ai ressenti des picotements dès la première application.",
     ],
   },
-  waschen: {
+  serum: {
     bon: [
-      "Läuft leise, man hört das Gerät im Nebenraum kaum.",
-      "Die Wäsche kommt sauber heraus, auch bei kurzen Programmen.",
-      "Der Verbrauch ist merklich niedriger als beim Vorgängergerät.",
-      "Die Programme sind selbsterklärend, die Anleitung brauchte ich kaum.",
-      "Der Anschluss war in einer halben Stunde erledigt.",
+      "Mes taches se sont estompées après environ deux mois de cure.",
+      "Le grain de peau est plus régulier, c'est net sur les photos.",
+      "La texture est fluide et sèche vite, sans coller.",
+      "Aucune réaction sur ma peau réactive, ce que je craignais.",
+      "Le compte-gouttes dose bien, on ne gaspille pas.",
     ],
     moyen: [
-      "Reinigt gut, das Schleudern ist allerdings recht laut.",
-      "Zuverlässig, die Programmdauer finde ich aber lang.",
-      "Solide Maschine, die Bedienung am Display ist etwas fummelig.",
+      "Des résultats visibles, mais il faut être très patiente.",
+      "Efficace sur l'éclat, moins sur les taches anciennes.",
+      "Bon produit, le format reste petit pour le prix.",
     ],
     mauvais: [
-      "Nach acht Monaten kam eine Fehlermeldung, der Service ließ auf sich warten.",
-      "Das Gerät wandert beim Schleudern trotz sauberer Ausrichtung.",
-      "Es bleibt Wasser in der Dichtung stehen, das riecht nach kurzer Zeit unangenehm.",
+      "Aucun changement visible après deux mois d'utilisation régulière.",
+      "Ma peau a réagi, avec des rougeurs sur les joues.",
     ],
   },
-  kaffee: {
+  solaire: {
     bon: [
-      "Der Kaffee ist heiß und aromatisch, genau richtig für den Morgen.",
-      "Die Reinigung geht schnell, das nimmt man gern in Kauf.",
-      "Kompakt genug, um dauerhaft auf der Arbeitsplatte zu stehen.",
-      "Die Bedienung versteht auch Besuch auf Anhieb.",
-      "Der Milchschaum gelingt gleichmäßig, ohne großes Üben.",
+      "Aucun voile blanc sur ma carnation, c'est le point décisif.",
+      "Le fini est mat et tient bien malgré la chaleur.",
+      "Il ne pique pas les yeux, même en transpirant.",
+      "Se porte très bien sous le maquillage au quotidien.",
+      "Je l'utilise tous les jours depuis {duree}, aucune réaction.",
     ],
     moyen: [
-      "Guter Kaffee, das Mahlwerk ist aber lauter als gedacht.",
-      "Zufrieden, die Entkalkung könnte einfacher sein.",
-      "Macht ihren Job, der Wassertank ist mir zu klein.",
+      "Protection efficace mais le fini brille un peu trop.",
+      "Il laisse un léger voile gris qu'il faut bien estomper.",
+      "Correct, à condition de le réappliquer en journée.",
     ],
     mauvais: [
-      "Nach einem halben Jahr tropft es unter dem Gerät.",
-      "Die Brühgruppe lässt sich nur mit Mühe herausnehmen und reinigen.",
-      "Der Kaffee kommt nur lauwarm an, mehrere Einstellungen brachten nichts.",
+      "Le voile blanc est très visible sur peau foncée.",
+      "Il colle et attrape la poussière au bout d'une heure.",
     ],
   },
-  kueche: {
+  corps: {
     bon: [
-      "Kräftig genug für schweren Teig, nichts bleibt stehen.",
-      "Die Reinigung ist unkompliziert, das meiste darf in die Spülmaschine.",
-      "Steht sicher auf der Arbeitsplatte, auch bei hoher Stufe.",
-      "Das Zubehör ist gut verarbeitet und sitzt fest.",
+      "La peau reste souple toute la journée, même après la douche froide.",
+      "L'odeur est agréable sans être entêtante.",
+      "Les coudes et les genoux sont nettement moins secs.",
+      "La texture s'étale bien et pénètre sans attendre.",
+      "Le format dure longtemps pour un usage quotidien.",
     ],
     moyen: [
-      "Leistung passt, das Gerät ist aber schwer zu verstauen.",
-      "Gutes Ergebnis, bei hoher Stufe wird es laut.",
+      "Hydratation correcte, mais qui ne tient pas la journée entière.",
+      "Le parfum est un peu trop présent à mon goût.",
+      "Bon produit, le flacon-pompe se bloque parfois.",
     ],
     mauvais: [
-      "Ein Kunststoffteil ist nach wenigen Monaten gebrochen, Ersatz war nicht lieferbar.",
-      "Die Rührschüssel sitzt locker und löst sich beim Kneten.",
+      "Il reste collant longtemps après l'application.",
+      "Aucun effet sur mes zones vraiment sèches.",
     ],
   },
-  saugen: {
+  cheveux: {
     bon: [
-      "Die Saugleistung reicht auf Teppich wie auf Fliesen völlig aus.",
-      "Der Akku hält für die ganze Wohnung durch.",
-      "Leicht genug, um ihn ohne Mühe die Treppe hochzutragen.",
-      "Der Staubbehälter lässt sich ohne Staubwolke entleeren.",
+      "Mes longueurs sont beaucoup plus souples au démêlage.",
+      "Le cuir chevelu ne gratte plus depuis que je l'utilise.",
+      "Les boucles sont mieux définies, sans effet carton.",
+      "Une petite quantité suffit sur cheveux épais.",
+      "Résultat visible dès la deuxième utilisation.",
     ],
     moyen: [
-      "Saugt gut, an Kanten muss man aber nachhelfen.",
-      "Ordentliches Gerät, der Akku könnte länger halten.",
+      "Il hydrate bien mais alourdit un peu mes racines.",
+      "Correct, sans remplacer un vrai masque profond.",
+      "Le résultat dépend beaucoup de la quantité utilisée.",
     ],
     mauvais: [
-      "Die Bürste verstopft bei langen Haaren ständig.",
-      "Nach kurzer Zeit ließ die Saugkraft spürbar nach.",
+      "Mes cheveux sont restés secs malgré plusieurs applications.",
+      "L'odeur persiste trop longtemps après le rinçage.",
     ],
   },
-  allgemein: {
+  general: {
     bon: [
-      "Aufbau und Einrichtung waren schnell erledigt.",
-      "Macht genau das, wofür ich es gekauft habe.",
-      "Wirkt solide verarbeitet und läuft zuverlässig.",
-      "Die Anleitung ist verständlich, auch ohne Vorkenntnisse.",
+      "Le produit correspond exactement à la description.",
+      "Emballage soigné et flacon bien protégé à la livraison.",
+      "Je retrouve la même qualité que sur mon achat précédent.",
+      "Aucune mauvaise surprise, c'est bien l'authentique.",
     ],
     moyen: [
-      "Erfüllt seinen Zweck, ein paar Details könnten besser sein.",
-      "Für den Preis in Ordnung, herausragend ist es nicht.",
+      "Produit correct, sans rien de remarquable.",
+      "Il fait ce qu'il annonce, le prix reste un peu haut.",
     ],
     mauvais: [
-      "Die Verarbeitung wirkt an mehreren Stellen unsauber.",
-      "Nach wenigen Wochen traten Aussetzer auf.",
+      "La qualité n'est pas à la hauteur de ce que j'attendais.",
+      "Le flacon fuyait légèrement à la réception.",
     ],
   },
 };
 
 const CLOTURES_BONNES = [
-  "Klare Empfehlung.",
-  "Würde ich wieder bestellen.",
-  "Von mir volle Punktzahl.",
-  "Gerne wieder.",
-  "Kann ich weiterempfehlen.",
+  "Je recommande sans réserve.",
+  "Je recommanderai la boutique.",
+  "Note maximale de ma part.",
+  "Avec plaisir à nouveau.",
+  "À conseiller autour de soi.",
   "",
   "",
 ];
 
-const CLOTURES_MOYENNES = ["Für den Preis geht das in Ordnung.", "Kaufen würde ich es wieder.", ""];
+const CLOTURES_MOYENNES = [
+  "Pour le prix, cela reste acceptable.",
+  "Je le rachèterais malgré tout.",
+  "",
+];
 
 const CLOTURES_MAUVAISES = [
-  "Für mich leider keine Empfehlung.",
-  "Ich habe es zurückgeschickt.",
-  "Das nächste Mal greife ich zu einem anderen Modell.",
+  "Ce n'est pas une recommandation de ma part.",
+  "Je l'ai renvoyé.",
+  "La prochaine fois, je prendrai une autre référence.",
 ];
 
 const TITRES_BONS = [
-  "Sehr zufrieden", "Klare Empfehlung", "Hält, was es verspricht", "Guter Kauf",
-  "Top Preis-Leistung", "Genau richtig", "Alles bestens", "Würde ich wieder kaufen",
-  "Läuft einwandfrei", "Bin begeistert",
+  "Très satisfaite", "Je recommande", "Tient ses promesses", "Bon achat",
+  "Excellent rapport qualité-prix", "Exactement ce qu'il me fallait", "Parfait",
+  "Je rachèterai", "Rien à redire", "Conquise",
 ];
 const TITRES_MOYENS = [
-  "Solide, mit kleinen Abstrichen", "Ganz ordentlich", "Erfüllt seinen Zweck",
-  "Gut, aber nicht perfekt", "Zufrieden mit Einschränkungen",
+  "Correct, avec des réserves", "Plutôt bien", "Fait le travail",
+  "Bien sans être parfait", "Satisfaite en partie",
 ];
 const TITRES_MAUVAIS = [
-  "Leider enttäuscht", "Nicht zu empfehlen", "Hält nicht lange", "Schade um das Geld",
+  "Déçue", "Je ne recommande pas", "Sans effet sur ma peau", "Dommage",
 ];
 
 const DUREES = [
-  "zwei Wochen", "einem Monat", "sechs Wochen", "zwei Monaten", "drei Monaten",
-  "einem halben Jahr", "acht Monaten", "einem Jahr",
+  "deux semaines", "un mois", "six semaines", "deux mois", "trois mois",
+  "six mois", "huit mois", "un an",
 ];
 
 function redigerTexte(famille: Famille, note: number): { titre: string; corps: string } {
@@ -300,7 +336,7 @@ function redigerTexte(famille: Famille, note: number): { titre: string; corps: s
       : registre === "moyen"
         ? OUVERTURES_MOYENNES
         : OUVERTURES_MAUVAISES,
-  ).replace("{dauer}", piocher(DUREES));
+  );
 
   const corpsFamille = CORPS[famille][registre];
   // Deux détails sur trois avis : des textes de longueur identique se
@@ -323,10 +359,16 @@ function redigerTexte(famille: Famille, note: number): { titre: string; corps: s
     registre === "bon" ? TITRES_BONS : registre === "moyen" ? TITRES_MOYENS : TITRES_MAUVAIS,
   );
 
-  return {
-    titre,
-    corps: [ouverture, ...details, cloture].filter(Boolean).join(" "),
-  };
+  // La durée est substituée sur le texte ASSEMBLÉ, et non sur la seule
+  // ouverture : le marqueur apparaît aussi dans certains détails de famille.
+  // Un tirage par occurrence, sans quoi « depuis deux mois … après deux mois »
+  // reviendrait deux fois dans la même phrase.
+  const corps = [ouverture, ...details, cloture]
+    .filter(Boolean)
+    .join(" ")
+    .replace(/\{duree\}/g, () => piocher(DUREES));
+
+  return { titre, corps };
 }
 
 // ---------------------------------------------------------------------------

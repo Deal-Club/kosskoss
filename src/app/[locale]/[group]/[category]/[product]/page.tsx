@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { ProductDetail } from "@/components/kk/product-detail";
 import { getProductDetail, getRelatedProducts } from "@/server/kk/product";
 import { getProductReviews } from "@/server/kk/product-reviews";
@@ -43,14 +43,13 @@ export default async function ProductPage({ params }: { params: ProductParams })
   ]);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
         <ProductDetail product={detail} related={related} reviews={reviews} />
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

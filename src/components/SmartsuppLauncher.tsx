@@ -101,7 +101,16 @@ export function SmartsuppLauncher({
       disabled={etat === "chargement"}
       aria-label={label}
       title={label}
-      className="fixed right-5 bottom-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:scale-100 disabled:opacity-70"
+      // Le bouton WhatsApp est passé du coin bas-gauche au coin bas-DROITE,
+      // celui-ci — sur mobile, la gauche est le début de chaque ligne de texte
+      // et le bouton y recouvrait titres et liens. Les deux partagent donc
+      // maintenant le même coin, empilés à la verticale : WhatsApp au ras du
+      // bord, ce lanceur juste au-dessus.
+      //
+      // 5,75 rem = 1,25 rem de retrait + 3,5 rem de hauteur du bouton WhatsApp
+      // + 1 rem de gouttière. Les trois valeurs vont par paire avec celles de
+      // `WhatsAppButton` : si l'une bouge, celle-ci suit.
+      className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:scale-100 disabled:opacity-70"
     >
       {etat === "chargement" ? (
         <span

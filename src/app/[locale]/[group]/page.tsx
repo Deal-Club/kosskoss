@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
 import { parseBesoin, parseBrands, parseSort } from "@/lib/kk/catalog-params";
@@ -43,7 +43,7 @@ export default async function GroupPage({
   if (!view) notFound();
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -56,7 +56,6 @@ export default async function GroupPage({
         />
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

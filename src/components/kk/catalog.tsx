@@ -136,23 +136,44 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
   );
 }
 
+/**
+ * Appel au diagnostic, glissé en troisième position de la grille produits.
+ *
+ * ── Pourquoi il tient toute la largeur sur téléphone ──────────────────────
+ * La grille du catalogue est à DEUX colonnes sur mobile. Cette carte y
+ * occupait une demi-colonne, soit 161 px sur un écran de 390 — dont 48 partent
+ * en padding : il restait 113 px de texte. À cette largeur, « Besoin d'aide ? »
+ * renvoyait le point d'interrogation seul à la ligne, et le titre en 20 px se
+ * brisait après chaque mot, sur cinq lignes. Une carte produit s'accommode
+ * d'une colonne étroite — elle est faite d'une image et de deux lignes ; un
+ * bloc de discours, non.
+ *
+ * Elle passe donc en BANDEAU pleine largeur sous 640 px, avec le pictogramme
+ * ramené à gauche du texte plutôt qu'au-dessus : 258 px de texte utile, le
+ * titre tient en trois lignes, et le bloc cesse d'être plus haut que les
+ * produits qu'il accompagne.
+ *
+ * Au-delà de 640 px il redevient une cellule de la grille, où il retrouve sa
+ * composition verticale et la hauteur minimale qui l'aligne sur les cartes
+ * produit voisines.
+ */
 function DiagnosticCell() {
   return (
-    <div className="flex min-h-[18rem] flex-col justify-between rounded-2xl bg-deep p-6 text-primary-foreground">
-      <Sparkles className="h-7 w-7 opacity-90" />
-      <div>
+    <div className="col-span-2 flex items-center gap-4 rounded-2xl bg-deep p-5 text-primary-foreground sm:col-span-1 sm:min-h-[18rem] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6">
+      <Sparkles className="h-7 w-7 shrink-0 opacity-90" />
+      <div className="min-w-0">
         <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground">
           Besoin d&rsquo;aide ?
         </p>
-        <h3 className="mt-2 font-display text-xl leading-snug">
+        <h3 className="mt-1.5 font-display text-lg leading-snug sm:mt-2 sm:text-xl">
           Trouvez les produits faits pour votre peau
         </h3>
         <Link
           href="/diagnostic"
-          className="group mt-4 inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
+          className="group mt-3 inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground sm:mt-4"
         >
           Faire le diagnostic
-          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
     </div>

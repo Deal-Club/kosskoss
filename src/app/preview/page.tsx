@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Hero, ProductRail } from "@/components/kk/home";
 import {
   DiagnosticReminder,
@@ -7,10 +7,11 @@ import {
   PromisesRow,
   ServicesBand,
 } from "@/components/kk/home-sections";
+import { AvisClients } from "@/components/kk/avis-clients";
 import { NewsletterBand } from "@/components/kk/newsletter";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { MOCK_SELECTION } from "@/data/kk/home-mock";
-import type { KKTestimonialView } from "@/types/kk";
+import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
 
 /**
  * Échantillon servant UNIQUEMENT à caler le rendu du bloc avis sur cette page
@@ -46,6 +47,25 @@ const PREVIEW_TESTIMONIALS: KKTestimonialView[] = [
   },
 ];
 
+/**
+ * Agrégat de calage, pour cette page de design system uniquement.
+ *
+ * La boutique, elle, calcule sa note moyenne en base sur les seuls avis
+ * modérés (`getReviewsSummary`) et masque la section tant qu'aucun avis n'est
+ * publié : aucune note n'y est jamais écrite à la main.
+ */
+const PREVIEW_RESUME: KKReviewsSummary = {
+  average: 4.6,
+  total: 3,
+  distribution: [
+    { rating: 5, count: 2 },
+    { rating: 4, count: 1 },
+    { rating: 3, count: 0 },
+    { rating: 2, count: 0 },
+    { rating: 1, count: 0 },
+  ],
+};
+
 // Page de prévisualisation du design system KossKoss Select — données de
 // démonstration, non branchée sur la base. Jamais indexée.
 export const metadata: Metadata = {
@@ -60,7 +80,7 @@ export default function PreviewHomePage() {
   // Sans lui, la page entière échoue au rendu.
   return (
     <CartProvider>
-      <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+      <div className="flex min-h-screen flex-col">
         <AnnouncementBar />
         <SiteHeader />
 
@@ -84,15 +104,14 @@ export default function PreviewHomePage() {
               },
             ]}
             cases={[]}
-            testimonials={PREVIEW_TESTIMONIALS}
           />
+          <AvisClients avis={PREVIEW_TESTIMONIALS} resume={PREVIEW_RESUME} />
           <DiagnosticReminder />
           <ServicesBand />
           <NewsletterBand />
         </main>
 
         <SiteFooter />
-        <MobileTabBar />
       </div>
     </CartProvider>
   );

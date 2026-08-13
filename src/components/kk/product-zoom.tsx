@@ -73,7 +73,7 @@ export function ProductZoom({
         alt={alt}
         fill
         sizes="(max-width:1024px) 100vw, 45vw"
-        className="object-contain p-8 transition-transform duration-300 ease-out motion-reduce:transform-none motion-reduce:transition-none"
+        className="object-contain p-2 transition-transform duration-300 ease-out motion-reduce:transform-none motion-reduce:transition-none"
         style={{
           transformOrigin: "var(--zoom-x, 50%) var(--zoom-y, 50%)",
           transform: survole ? `scale(${FACTEUR})` : "scale(1)",

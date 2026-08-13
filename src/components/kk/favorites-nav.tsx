@@ -12,7 +12,18 @@ import { useFavorites } from "@/lib/favorites";
  * l'hydratation.
  */
 
-/** Cœur du bandeau d'en-tête, à côté du panier. Masqué sur mobile (barre basse). */
+/**
+ * Cœur du bandeau d'en-tête, à côté du panier.
+ *
+ * Il était masqué sous 640 px — donc sur TOUS les téléphones — parce que la
+ * barre d'onglets basse portait l'entrée « Favoris ». Cette barre a été
+ * retirée : le cœur revient dans l'en-tête, avec son compteur, qui est le seul
+ * rappel visible d'une envie mise de côté.
+ *
+ * Il ne s'efface qu'en dessous de 360 px, où burger, logotype, recherche,
+ * favoris et panier ne tiennent plus sur une rangée. Les favoris restent alors
+ * accessibles depuis le menu, qui porte « Mes favoris ».
+ */
 export function FavoritesLink() {
   const { count, ready } = useFavorites();
   const visible = ready ? count : 0;
@@ -21,7 +32,7 @@ export function FavoritesLink() {
     <Link
       href="/favoris"
       aria-label={visible > 0 ? `Favoris, ${visible} article${visible > 1 ? "s" : ""}` : "Favoris"}
-      className="relative hidden h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand sm:grid"
+      className="relative grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand max-[359px]:hidden"
     >
       <Heart className="h-5 w-5" />
       {visible > 0 && (
@@ -33,14 +44,5 @@ export function FavoritesLink() {
   );
 }
 
-/** Pastille du compteur, posée sur l'icône « Favoris » de la barre mobile. */
-export function FavoritesTabBadge() {
-  const { count, ready } = useFavorites();
-  if (!ready || count === 0) return null;
-
-  return (
-    <span className="absolute -right-2 -top-1 grid h-4 min-w-[1rem] place-items-center rounded-full bg-deep px-1 text-[0.6rem] font-semibold text-primary-foreground">
-      {count}
-    </span>
-  );
-}
+/* `FavoritesTabBadge` a disparu avec la barre d'onglets basse qu'elle
+   décorait. Le compteur vit désormais uniquement sur `FavoritesLink`. */

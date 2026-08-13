@@ -1,14 +1,4 @@
-import {
-  User,
-  Home,
-  Sparkles,
-  LayoutGrid,
-  Heart,
-  Phone,
-  MessageCircle,
-  ChevronLeft,
-  ShieldCheck,
-} from "lucide-react";
+import { User, Phone, MessageCircle, ChevronLeft, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
@@ -16,7 +6,7 @@ import { getShopNavigation, getNavHighlights } from "@/server/kk/navigation";
 import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
 import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
-import { FavoritesLink, FavoritesTabBadge } from "./favorites-nav";
+import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
 import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
 import { Monogram } from "./motifs";
@@ -173,7 +163,28 @@ export async function SiteHeader() {
   const [groups, highlights] = await Promise.all([getShopNavigation(), getNavHighlights()]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-md">
+    /*
+     * COLLÉ EN HAUT, Y COMPRIS SUR TÉLÉPHONE.
+     *
+     * La barre d'onglets du bas ayant disparu, cet en-tête est désormais la
+     * SEULE navigation d'un mobile : il doit rester atteignable à tout moment,
+     * sans quoi il faut remonter toute la page pour ouvrir le menu ou le
+     * panier.
+     *
+     * Le fond devient OPAQUE sous `lg` et ne garde le flou qu'au-delà. Un
+     * `backdrop-filter` sur un élément collant est le défaut le plus répandu
+     * des en-têtes de boutique sur iOS : Safari recalcule le flou à chaque
+     * image du défilement inertiel, la barre scintille, se fige à mi-course ou
+     * disparaît le temps de quelques images — exactement l'impression d'un
+     * en-tête « qui ne tient pas ». Un aplat coûte zéro composition, et sur un
+     * téléphone rien ne dépasse assez sous l'en-tête pour qu'on regrette la
+     * transparence.
+     *
+     * `z-50` : au-dessus du bouton WhatsApp flottant (z-40) et de tout élément
+     * collant des pages de catalogue. Les panneaux modaux — menu, recherche,
+     * panier — montent eux à z-60, portés dans <body>.
+     */
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background lg:bg-background/85 lg:backdrop-blur-md">
       {/* Une seule rangée : sigle à gauche, navigation au centre, actions à
           droite — la composition de la maquette du client.
           L'en-tête précédent centrait le logotype et repoussait la navigation
@@ -239,52 +250,23 @@ export function CheckoutHeader() {
   );
 }
 
-/**
- * Barre de navigation basse — mobile uniquement.
+/*
+ * `MobileTabBar` — RETIRÉE.
+ * ---------------------------------------------------------------------------
+ * Une barre de cinq onglets fixée en bas de l'écran, doublant une navigation
+ * déjà entièrement présente dans l'en-tête et son menu. Elle coûtait :
+ *   — 64 px de hauteur utile en permanence, plus la zone sûre de l'écran, sur
+ *     l'appareil où la hauteur est la ressource la plus rare ;
+ *   — un retrait `pb-16` sur chaque page pour compenser, à maintenir partout ;
+ *   — un empilement à trois étages en bas d'écran, avec le bouton WhatsApp et
+ *     la barre d'achat des pages produit qui devaient tous s'éviter ;
+ *   — un troisième chemin vers « Favoris » et « Compte », déjà atteignables
+ *     depuis l'en-tête et le menu.
  *
- * C'est « Routines » qui occupe désormais la place centrale, et non le
- * diagnostic. Les deux mènent au même endroit — une routine adaptée — mais
- * l'une la donne en un clic et l'autre en cinq questions. Sur un écran de
- * téléphone, la porte la plus courte doit être la plus visible ; le diagnostic
- * reste en tête du menu, sur l'accueil et sur la page des routines.
+ * Tout ce qu'elle donnait se retrouve dans le menu du burger — routines,
+ * diagnostic, univers, compte, favoris, commandes — et l'en-tête reste collé
+ * en haut à toutes les tailles (voir SiteHeader).
  */
-export function MobileTabBar() {
-  const items = [
-    { label: "Accueil", href: "/", icon: Home, active: true },
-    { label: "Boutique", href: "/soins-visage", icon: LayoutGrid },
-    { label: "Routines", href: "/routines", icon: Sparkles, primary: true },
-    { label: "Favoris", href: "/favoris", icon: Heart, badge: true },
-    { label: "Compte", href: "/compte", icon: User },
-  ];
-  return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/70 bg-background/95 backdrop-blur-md lg:hidden">
-      <ul className="mx-auto flex max-w-md items-end justify-between px-4 pb-[calc(env(safe-area-inset-bottom)+0.4rem)] pt-2">
-        {items.map(({ label, href, icon: Icon, active, primary, badge }) => (
-          <li key={label}>
-            <Link
-              href={href}
-              className={`flex flex-col items-center gap-1 ${
-                active ? "text-deep" : "text-muted-foreground"
-              }`}
-            >
-              {primary ? (
-                <span className="grid h-12 w-12 -translate-y-3 place-items-center rounded-full bg-deep text-primary-foreground shadow-lg shadow-deep/25">
-                  <Icon className="h-5 w-5" />
-                </span>
-              ) : (
-                <span className="relative">
-                  <Icon className="h-5 w-5" />
-                  {badge && <FavoritesTabBadge />}
-                </span>
-              )}
-              <span className={`text-[0.6rem] font-medium ${primary ? "-mt-2" : ""}`}>{label}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </nav>
-  );
-}
 
 /**
  * Pied de page — compact, orienté conversion.

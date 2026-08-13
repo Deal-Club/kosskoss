@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getShopBrands } from "@/server/kk/navigation";
@@ -35,7 +35,7 @@ export default async function MarquesPage({ params }: { params: Params }) {
   const brands = await getShopBrands();
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
 
@@ -79,7 +79,6 @@ export default async function MarquesPage({ params }: { params: Params }) {
       </main>
 
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

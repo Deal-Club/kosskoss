@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 // l'en-tête hérité de MLC Bois (ancienne activité bois de chauffage) : deux
 // identités visuelles pour un même site, et le nom d'une autre marque en clair
 // sur douze pages.
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { RichText } from "@/components/RichText";
 import { findLegalPage } from "@/server/legalPages";
@@ -139,7 +139,7 @@ export async function LegalPageView({ slug, locale }: { slug: LegalSlug; locale:
   const home = locale === "en" ? "Home" : "Accueil";
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -152,7 +152,6 @@ export async function LegalPageView({ slug, locale }: { slug: LegalSlug; locale:
         <LegalPageArticle page={page} locale={locale} />
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

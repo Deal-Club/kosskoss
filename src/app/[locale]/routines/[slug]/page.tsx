@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { setRequestLocale } from "next-intl/server";
 import { ArrowRight, ChevronRight, Sparkles } from "lucide-react";
-import { AnnouncementBar, SiteHeader, MobileTabBar, SiteFooter } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { RoutineAddToCart } from "@/components/kk/routine-add";
 import { tintClass } from "@/components/kk/routine-card";
@@ -51,7 +51,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
   const autres = (await getRoutines(locale)).filter((r) => r.id !== routine.id).slice(0, 3);
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
 
@@ -275,7 +275,6 @@ export default async function RoutinePage({ params }: { params: Params }) {
       </main>
 
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

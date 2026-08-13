@@ -36,8 +36,12 @@ export function AvantApresSection({ cas }: { cas: AvantApresCase | null }) {
   return (
     <section className="relative overflow-hidden bg-deep text-primary-foreground">
       <div className="section-wide mx-auto grid max-w-7xl items-center gap-10 px-6 lg:grid-cols-2 lg:gap-16">
-        {/* Colonne image */}
-        <div className="kk-enter mx-auto w-full max-w-lg lg:mx-0">
+        {/* Colonne image.
+            Le plafond passe de 32 à 42 rem entre 768 et 1024 px : sur tablette
+            la section n'a qu'une colonne, et un visuel bloqué à 512 px y
+            flottait au milieu d'une bande vide. Il retrouve ses 32 rem dès que
+            la composition redevient à deux colonnes. */}
+        <div className="kk-enter mx-auto w-full max-w-lg md:max-w-2xl lg:mx-0 lg:max-w-lg">
           {cas ? (
             <>
               <AvantApresSlider
@@ -60,11 +64,23 @@ export function AvantApresSection({ cas }: { cas: AvantApresCase | null }) {
           )}
         </div>
 
-        {/* Colonne contenu */}
-        <div className="kk-enter max-w-lg">
+        {/* Colonne contenu.
+            LE PLAFOND DE 32 REM NE S'APPLIQUE PLUS QU'À PARTIR DE `lg`.
+            Il valait à toutes les tailles. Sur tablette, où la section n'a
+            qu'UNE colonne large de plus de 900 px, le texte restait bloqué à
+            512 px et laissait la moitié droite du bloc vide — le pavé vert
+            s'étendait sur toute la largeur, le contenu sur la moitié.
+            Au-delà de `lg` la composition redevient à deux colonnes et le
+            plafond reprend son rôle : y renoncer donnerait des lignes de
+            600 px, bien au-delà des 75 caractères qu'un œil suit sans se
+            perdre.
+            Le corps de texte gagne un cran sur tablette pour la même raison —
+            un texte calibré pour une colonne étroite paraît maigre dès qu'on
+            lui donne toute la largeur. */}
+        <div className="kk-enter md:text-[1.05rem] lg:max-w-lg lg:text-base">
           <p className="eyebrow text-white">Notre raison d&rsquo;être</p>
 
-          <h2 className="mt-3 font-display text-3xl leading-tight text-white sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl leading-tight text-white sm:text-4xl md:text-[2.6rem] lg:text-4xl">
             Bien choisir ne devrait pas être{" "}
             <span className="title-soft text-white/70">un parcours du combattant.</span>
           </h2>
@@ -85,9 +101,9 @@ export function AvantApresSection({ cas }: { cas: AvantApresCase | null }) {
 
           <ul className="mt-7 space-y-3">
             {piliers.map((pilier) => (
-              <li key={pilier} className="flex items-start gap-3 text-sm leading-snug">
-                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-gold/60 text-gold">
-                  <Check className="h-3 w-3" />
+              <li key={pilier} className="flex items-start gap-3 text-sm leading-snug md:text-base lg:text-sm">
+                <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border border-gold/60 text-gold md:h-6 md:w-6 lg:h-5 lg:w-5">
+                  <Check className="h-3 w-3 md:h-3.5 md:w-3.5 lg:h-3 lg:w-3" />
                 </span>
                 <span className="text-white">{pilier}</span>
               </li>

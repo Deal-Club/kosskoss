@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CategoryProductBrowser } from "@/components/CategoryProductBrowser";
 import { getCategoryPages } from "@/server/store";
@@ -84,7 +84,7 @@ export default async function RecherchePage({
   const results = query ? await searchResults(locale, query) : [];
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -115,7 +115,6 @@ export default async function RecherchePage({
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
-import type { KKProductView, KKTestimonialView } from "@/types/kk";
+import type { KKProductView, KKReviewsSummary, KKTestimonialView } from "@/types/kk";
 
 /**
  * Produits mis en avant sur l'accueil, lus en base.
@@ -68,15 +68,28 @@ export async function getHomeProducts(limit = 8): Promise<KKProductView[]> {
  * n'est inventé.
  */
 export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[]> {
+  // On lit plus large que la limite : le filtre sur la longueur du corps
+  // s'applique APRÈS la requête, et sans marge une série d'avis courts
+  // renverrait une liste vide alors que la base en contient d'utilisables.
   const rows = await prisma.review.findMany({
     where: { status: "approved", rating: { gte: 4 } },
     orderBy: { createdAt: "desc" },
-    take: limit,
-    include: { product: { select: { brand: true, name: true } } },
+    take: Math.max(limit * 4, 24),
+    include: {
+      product: {
+        select: {
+          brand: true,
+          name: true,
+          slug: true,
+          category: { select: { slug: true, group: { select: { slug: true } } } },
+        },
+      },
+    },
   });
 
   return rows
     .filter((r) => r.body.trim().length >= 40)
+    .slice(0, limit)
     .map((r) => ({
       id: r.id,
       quote: r.body.trim(),
@@ -84,5 +97,55 @@ export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[
       city: r.city ?? undefined,
       rating: r.rating,
       productName: `${r.product.brand} ${r.product.name}`,
+      title: r.title.trim() || undefined,
+      href: `/${r.product.category.group.slug}/${r.product.category.slug}/${r.product.slug}`,
+      publishedAt: r.createdAt.toISOString(),
     }));
+}
+
+/**
+ * Note moyenne et répartition des avis publiés.
+ *
+ * Calculées en base sur les seuls avis MODÉRÉS, et sur TOUTES les notes — y
+ * compris les mauvaises. C'est la différence entre une note moyenne et un
+ * argument de vente : `getHomeTestimonials` ne montre que des avis à 4 et 5
+ * parce que l'accueil est une vitrine, mais la moyenne affichée à côté doit
+ * porter sur l'ensemble, sans quoi elle serait fausse — et une note inventée
+ * ou tronquée relève de la pratique commerciale trompeuse (article L121-2 du
+ * Code de la consommation).
+ *
+ * Renvoie `total: 0` tant qu'aucun avis n'est publié ; la section se masque
+ * alors d'elle-même plutôt que d'afficher un « 0/5 » ou une note de repli.
+ */
+export async function getReviewsSummary(): Promise<KKReviewsSummary> {
+  const [agg, parNote] = await Promise.all([
+    prisma.review.aggregate({
+      where: { status: "approved" },
+      _avg: { rating: true },
+      _count: { _all: true },
+    }),
+    prisma.review.groupBy({
+      by: ["rating"],
+      where: { status: "approved" },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const total = agg._count._all;
+  if (total === 0) return { average: 0, total: 0, distribution: [] };
+
+  const compte = new Map(parNote.map((n) => [n.rating, n._count._all]));
+
+  return {
+    // Arrondi au dixième : afficher « 4,7 » et non « 4,6666666666667 ».
+    average: Math.round((agg._avg.rating ?? 0) * 10) / 10,
+    total,
+    // De 5 à 1, et toutes les notes présentes même à zéro : une répartition à
+    // trous se lit mal, et l'absence de 1 et 2 étoiles est en soi une
+    // information.
+    distribution: [5, 4, 3, 2, 1].map((rating) => ({
+      rating,
+      count: compte.get(rating) ?? 0,
+    })),
+  };
 }

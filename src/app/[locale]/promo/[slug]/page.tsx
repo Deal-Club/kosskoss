@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ProductCard } from "@/components/ProductCard";
 import { CampaignCountdown } from "@/components/CampaignCountdown";
@@ -44,7 +44,7 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
   });
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -90,7 +90,6 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }

@@ -1,7 +1,8 @@
+import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import type { KKProductDetail } from "@/server/kk/product";
 import type { KKProductView } from "@/types/kk";
-import { BottleMotif, Petal, Monogram } from "./motifs";
+import { BottleMotif, Petal } from "./motifs";
 import { AddToCart } from "./add-to-cart";
 import { ProductRail } from "./home";
 import { ProductReviews } from "./product-reviews";
@@ -42,6 +43,9 @@ function Breadcrumb({ product }: { product: KKProductDetail }) {
 
 function Gallery({ product }: { product: KKProductDetail }) {
   const hasImage = typeof product.image === "string" && product.image.length > 0;
+  // Les entrées vides sont écartées : une chaîne vide en base ferait un cadre
+  // gris et casserait `next/image`, qui refuse un `src` vide.
+  const vues = product.images.filter((s) => typeof s === "string" && s.trim().length > 0);
   return (
     <div className="grid gap-4">
       {/* Le zoom au survol vit dans son propre composant client (ProductZoom) :
@@ -59,26 +63,49 @@ function Gallery({ product }: { product: KKProductDetail }) {
              un rectangle clair au milieu du dégradé. Même correction que sur
              les cartes produit. Le filet remplace le dégradé pour délimiter le
              visuel, qui sans lui flotterait sur la page. */
-          className="aspect-[4/5] rounded-[1.75rem] border border-border/70 bg-card"
+          className="aspect-square rounded-[1.75rem] border border-border/70 bg-card"
         />
       ) : (
         <div
           data-visuel-produit
-          className="relative flex aspect-[4/5] items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
+          className="relative flex aspect-square items-center justify-center overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]"
         >
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.5),transparent_55%)]" />
           <BottleMotif className="h-3/5 w-auto text-deep/80" />
           <Petal className="absolute -right-4 -top-4 h-20 w-20 text-deep/15" />
         </div>
       )}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#dde9e8] to-[#bcd2d0]">
-          <BottleMotif className="h-1/2 w-auto text-deep/60" />
-        </div>
-        <div className="flex aspect-square items-center justify-center rounded-2xl bg-gradient-to-br from-[#f4e3e0] to-[#e6c9c4]">
-          <Monogram className="h-1/2 w-auto text-deep/40" />
-        </div>
-      </div>
+      {/* LES VUES COMPLÉMENTAIRES, ET RIEN SI LE PRODUIT N'EN A PAS.
+          Deux carrés étaient posés ici EN DUR sur toutes les fiches : un aplat
+          vert d'eau portant un flacon dessiné, un aplat rose portant le
+          monogramme. Ce n'étaient pas des photos du produit — c'étaient des
+          images inventées, identiques sur les soixante-onze fiches, et elles
+          promettaient au visiteur des vues supplémentaires qui n'existaient
+          pas. Sur une boutique dont le premier frein est la contrefaçon, un
+          faux visuel de produit coûte exactement ce qu'on cherche à gagner.
+
+          Le champ `images` existe pourtant en base depuis l'origine (voir
+          prisma/schema.prisma) et le type le porte déjà : la galerie
+          l'ignorait. Elle l'affiche maintenant, et disparaît quand il est
+          vide. */}
+      {vues.length > 0 && (
+        <ul className="grid grid-cols-2 gap-4">
+          {vues.map((src, i) => (
+            <li
+              key={src}
+              className="relative aspect-square overflow-hidden rounded-2xl border border-border/70 bg-card"
+            >
+              <Image
+                src={src}
+                alt={`${product.name} — vue ${i + 2}`}
+                fill
+                sizes="(max-width: 1024px) 45vw, 22vw"
+                className="object-contain p-2"
+              />
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
@@ -117,7 +144,7 @@ export function ProductDetail({
           <Gallery product={product} />
 
           <div className="lg:sticky lg:top-24 lg:pt-4">
-            <div className="rounded-[1.75rem] border border-border/70 bg-card p-7 sm:p-9">
+            <div className="rounded-[1.75rem] border border-border/70 bg-card p-5 sm:p-7 lg:p-9">
               {product.badge && (
                 <span className="mb-4 inline-block rounded-full bg-sand px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-deep">
                   {BADGE_LABEL[product.badge]}
@@ -126,7 +153,18 @@ export function ProductDetail({
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {product.brand}
               </p>
-              <h1 className="mt-2 text-deep">{product.name}</h1>
+              {/* Le h1 global démarre à 2,5 rem (40 px) — une taille pensée
+                  pour un titre de page court, pas pour un nom de produit.
+                  « Crème solaire au riz et probiotiques » dans les 286 px
+                  utiles d'un téléphone y tenait sur cinq lignes et occupait à
+                  lui seul le tiers du premier écran, repoussant le prix et le
+                  bouton d'achat hors de vue.
+                  Il redescend à 1,6 rem sur mobile et retrouve progressivement
+                  sa taille : le nom reste la tête de série de la fiche, il
+                  cesse d'en être le contenu principal. */}
+              <h1 className="mt-2 text-[1.6rem] leading-tight text-deep sm:text-[1.9rem] lg:text-[2.15rem]">
+                {product.name}
+              </h1>
               {product.shortDescription && (
                 <p className="mt-3 text-muted-foreground">{product.shortDescription}</p>
               )}

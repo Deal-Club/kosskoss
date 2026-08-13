@@ -19,6 +19,7 @@ import {
   MessageCircleQuestion,
 } from "lucide-react";
 import { formatFcfa } from "@/lib/kk/format";
+import { useScrollLock } from "@/lib/kk/use-scroll-lock";
 import type { NavGroup, NavHighlight } from "@/server/kk/navigation";
 
 /**
@@ -66,6 +67,7 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
   const action = pathname.startsWith("/en/") || pathname === "/en" ? "/en/recherche" : "/recherche";
 
   useDismiss(open, () => setOpen(false));
+  useScrollLock(open);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -97,25 +99,38 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
         </button>
       )}
 
-      {open && (
-        <div id={panelId} className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Rechercher">
+      {/* Monté dans <body>, pour la même raison que le menu mobile : l'en-tête
+          porte `backdrop-blur`, et un `backdrop-filter` devient le référentiel
+          des positions `fixed` de ses descendants. Rendu sur place, ce panneau
+          `fixed inset-0` se calait donc sur la BOÎTE DE L'EN-TÊTE — 72 px de
+          haut — au lieu de l'écran : le voile ne couvrait pas la page et le
+          champ se retrouvait écrasé sous le logotype. Le menu mobile avait été
+          corrigé, la recherche non. */}
+      {open &&
+        createPortal(
+        <div id={panelId} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Rechercher">
           <button
             type="button"
             aria-label="Fermer la recherche"
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
           />
-          <div className="absolute inset-x-0 top-0 bg-background px-6 py-6 shadow-2xl">
+          <div className="absolute inset-x-0 top-0 bg-background px-4 py-4 shadow-2xl sm:px-6 sm:py-6">
+            {/* Le bouton « Chercher » disparaît sous 640 px : le champ, le
+                bouton et la croix réclamaient ensemble plus de largeur qu'un
+                téléphone n'en a, et le champ se réduisait à une fente. La
+                touche « Entrée » — « Rechercher » sur le clavier virtuel —
+                soumet le formulaire, la fonction n'est donc pas perdue. */}
             <form
               action={action}
               method="get"
               role="search"
-              className="mx-auto flex max-w-2xl items-center gap-3"
+              className="mx-auto flex max-w-2xl items-center gap-2 sm:gap-3"
             >
               <label htmlFor="recherche-boutique" className="sr-only">
                 Rechercher un produit
               </label>
-              <div className="flex flex-1 items-center gap-3 rounded-full border border-border bg-card px-5 py-3">
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-card px-4 py-3 sm:gap-3 sm:px-5">
                 <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <input
                   id="recherche-boutique"
@@ -131,7 +146,7 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
               </div>
               <button
                 type="submit"
-                className="shrink-0 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90"
+                className="hidden shrink-0 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 sm:block"
               >
                 Chercher
               </button>
@@ -145,7 +160,8 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
               </button>
             </form>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
@@ -166,13 +182,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
    */
   const closeOnNavigate = { onClick: () => setOpen(false) };
 
-  useEffect(() => {
-    if (!open) return;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  useScrollLock(open);
 
   return (
     <>
@@ -195,14 +205,19 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
           et ne passe à vrai que sur un clic, donc côté client uniquement. */}
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <button
             type="button"
             aria-label="Fermer le menu"
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
           />
-          <nav className="absolute left-0 top-0 flex h-full w-full max-w-xs flex-col overflow-y-auto bg-background shadow-2xl">
+          {/* `h-[100dvh]` et non `h-full` : sur mobile, un bloc `fixed` se cale
+              sur la fenêtre barre d'adresse repliée, et le bas du panneau —
+              « Mon compte », « Mes commandes » — passait sous l'interface du
+              navigateur, hors d'atteinte. `overscroll-contain` empêche le
+              geste de défilement de se propager à la page derrière. */}
+          <nav className="absolute inset-y-0 left-0 flex h-[100dvh] w-full max-w-xs flex-col overflow-y-auto overscroll-contain bg-background shadow-2xl">
             <div className="flex items-center justify-between border-b border-border px-5 py-4">
               <span className="wordmark text-base text-deep">KOSSKOSS</span>
               <button

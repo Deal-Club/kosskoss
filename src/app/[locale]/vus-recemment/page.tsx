@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { AnnouncementBar, SiteHeader, SiteFooter, MobileTabBar } from "@/components/kk/chrome";
+import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { RecentlyViewedView } from "@/components/RecentlyViewedView";
 
@@ -26,7 +26,7 @@ export default async function RecentlyViewedPage({ params }: { params: PageParam
   const common = await getTranslations("common");
 
   return (
-    <div className="flex min-h-screen flex-col pb-16 lg:pb-0">
+    <div className="flex min-h-screen flex-col">
       <AnnouncementBar />
       <SiteHeader />
       <main className="flex-1">
@@ -43,7 +43,6 @@ export default async function RecentlyViewedPage({ params }: { params: PageParam
         </div>
       </main>
       <SiteFooter />
-      <MobileTabBar />
     </div>
   );
 }
