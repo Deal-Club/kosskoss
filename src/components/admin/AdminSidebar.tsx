@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Megaphone,
   Menu,
+  Newspaper,
   Package,
   Plug,
   Receipt,
@@ -25,7 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Logo } from "@/components/brand/Logo";
+import { LogoImage } from "@/components/brand/Logo";
 import { LogoutButton } from "@/components/admin/LogoutButton";
 
 interface NavEntry {
@@ -91,6 +92,16 @@ export function AdminSidebar({
       ],
     },
     {
+      title: "Éditorial",
+      entries: [
+        // Une seule entrée : les rubriques, tags et auteurs sont accessibles
+        // depuis l'écran du Journal. Trois lignes de menu de plus pour des
+        // réglages qu'on touche au démarrage puis presque jamais auraient
+        // surtout allongé la barre.
+        { label: "Le Journal", href: "/admin/journal", icon: Newspaper },
+      ],
+    },
+    {
       title: "Système",
       entries: [
         { label: "Pages & mentions légales", href: "/admin/pages", icon: FileText },
@@ -114,8 +125,10 @@ export function AdminSidebar({
           className="block"
           aria-label="KossKoss Select — administration"
         >
-          {/* Fond sombre : c'est la variante claire du logo qui s'impose. */}
-          <Logo tone="light" className="h-8 w-auto" />
+          {/* Logo officiel, variante claire : le fond est sombre (bg-deep).
+              `priority` parce qu'il est au-dessus de la ligne de flottaison sur
+              chaque écran du back-office. */}
+          <LogoImage tone="light" priority className="h-8 w-auto" />
           <span className="mt-1.5 block text-[11px] font-semibold tracking-widest text-sand uppercase">
             Administration
           </span>
@@ -194,7 +207,7 @@ export function AdminSidebar({
       {/* Barre mobile : la même navigation, ouverte par-dessus le contenu */}
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-deep px-4 py-3 text-white lg:hidden">
         <Link href="/admin" aria-label="KossKoss Select — administration">
-          <Logo tone="light" className="h-7 w-auto sm:h-7" />
+          <LogoImage tone="light" priority className="h-7 w-auto" />
         </Link>
         <button
           type="button"

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Logo } from "@/components/brand/Logo";
+import { LogoImage } from "@/components/brand/Logo";
 
 interface Challenge {
   challengeId: string;
@@ -166,10 +166,10 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-muted px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="overflow-hidden rounded-sm border border-border bg-white shadow-sm">
-          {/* Logo centré sur fond blanc : le lettrage est presque noir, il faut
-              un fond clair. Le filet reprend l'accent de l'e-mail de code. */}
+          {/* Logo officiel, variante foncée : le fond est blanc. Le filet
+              reprend l'accent de l'e-mail de code. */}
           <div className="flex justify-center bg-white px-6 pt-8 pb-6">
-            <Logo tone="dark" className="scale-110" />
+            <LogoImage tone="dark" priority className="h-10 w-auto" />
           </div>
           <div className="h-1 bg-primary" />
 

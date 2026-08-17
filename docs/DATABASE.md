@@ -70,7 +70,8 @@ Aucune des deux n'est transposable telle quelle.
 | Variable | Rôle | Où |
 |---|---|---|
 | `DATABASE_URL` | Connexion PostgreSQL | `.env.local` |
-| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Compte de secours utilisé uniquement si la table `AdminUser` est vide | `.env.local` |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Compte de secours utilisé uniquement si la table `AdminUser` est vide ; `ADMIN_EMAIL` sert aussi de boîte vendeur | `.env.local` |
+| `SUPERADMIN_EMAIL` / `SUPERADMIN_PASSWORD` | Compte masqué (rôle `superadmin`) posé par `scripts/acces-admin.ts` ; lues par ce script uniquement, pas par l'application | `.env.local`, le temps du script |
 | `ADMIN_SESSION_SECRET` | Signature des cookies de session du back-office | `.env.local` |
 | `CUSTOMER_SESSION_SECRET` | Signature des cookies de session des clients | `.env.local` |
 | `INTEGRATION_ENCRYPTION_KEY` | Clé AES-256-GCM chiffrant les clés API saisies dans le back-office (32 octets en hexadécimal) | `.env.local` |

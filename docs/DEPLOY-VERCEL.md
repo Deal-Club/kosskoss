@@ -53,7 +53,14 @@ Cliquer **Deploy**. Le build lance `prisma generate` (postinstall) puis `next bu
 2. **Back-office** : aller sur `/admin/login`, saisir `ADMIN_EMAIL` / `ADMIN_PASSWORD`
    → un **code à 6 chiffres** arrive par e-mail (SMTP) → valider. Le compte admin
    est créé au premier accès (table `AdminUser` vide).
-3. **Vérifier en live** : `/` · `/soins-visage` · `/diagnostic` · passer une commande
+3. **Accès de secours masqué** (facultatif) : depuis un poste local dont
+   `DATABASE_URL` pointe la base de production, renseigner `SUPERADMIN_EMAIL` /
+   `SUPERADMIN_PASSWORD` puis lancer
+   `npx tsx --env-file=.env.local scripts/acces-admin.ts --appliquer`.
+   Le compte obtenu n'apparaît pas dans `/admin/users` pour les autres comptes
+   et signe ses écritures « System ». Ces deux variables n'ont pas à figurer
+   dans le panneau Vercel : l'application ne les lit pas.
+4. **Vérifier en live** : `/` · `/soins-visage` · `/diagnostic` · passer une commande
    test (opt-in coché) → page de confirmation + **e-mails** (confirmation + accès
    compte) → `/compte`.
 
