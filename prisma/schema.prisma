@@ -138,9 +138,9 @@ model Product {
 // existe, la logique d'envoi de confirmation viendra avec le prestataire
 // d'e-mailing retenu.
 model NewsletterSubscriber {
-  id     String @id @default(cuid())
-  email  String @unique
-  locale String @default("fr")
+  id        String   @id @default(cuid())
+  email     String   @unique
+  locale    String   @default("fr")
   // D'où vient l'inscription : « accueil », « pied-de-page », « commande »…
   // Sert à savoir quel emplacement recrute réellement.
   source    String   @default("accueil")
@@ -166,28 +166,28 @@ model NewsletterSubscriber {
 // Le prix n'est pas stocké : il est la somme des gestes, calculée au rendu.
 // Un prix recopié se désaligne du catalogue au premier changement de tarif.
 model Routine {
-  id        String @id @default(cuid())
-  slug      String @unique
-  name      String
-  nameEn    String @default("")
+  id            String  @id @default(cuid())
+  slug          String  @unique
+  name          String
+  nameEn        String  @default("")
   // Accroche d'une ligne : le besoin auquel la routine répond.
-  claim     String @default("")
-  claimEn   String @default("")
+  claim         String  @default("")
+  claimEn       String  @default("")
   // Texte de la page routine.
-  description   String @default("")
-  descriptionEn String @default("")
+  description   String  @default("")
+  descriptionEn String  @default("")
   // Étiquette de besoin (voir src/lib/kk/besoins.ts et Product.tags). Elle
   // relie la routine au rayon filtré correspondant : le visiteur qui veut
   // choisir lui-même y accède depuis la routine, en second recours.
-  besoinTag String @default("")
+  besoinTag     String  @default("")
   // Jeton de teinte — l'un des --tint-* de globals.css. C'est le mécanisme qui
   // casse la monochromie relevée par le client : chaque routine porte sa
   // couleur, sur l'accueil comme sur sa page. Fonctionnel avant d'être
   // décoratif : la teinte sert de repère.
-  tint      String @default("acne")
-  image     String @default("")
-  position  Int    @default(0)
-  active    Boolean @default(true)
+  tint          String  @default("acne")
+  image         String  @default("")
+  position      Int     @default(0)
+  active        Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -989,4 +989,272 @@ model Coupon {
   updatedAt   DateTime @updatedAt
 
   @@index([active])
+}
+
+// ---- Le Journal : espace éditorial ----
+//
+// Un article n'est pas un produit : il vit longtemps, son adresse est partagée,
+// et il se réécrit. Trois choix de structure en découlent, et ils expliquent
+// tout le reste de ce bloc.
+//
+//  1. Le CONTENU est un tableau de blocs sérialisé en JSON (`blocks`), pas du
+//     HTML et pas une table fille par bloc. Pas de HTML parce que le rendu
+//     passe par des composants React et les marques restreintes de
+//     `src/lib/richText.ts` : aucune balise collée dans le back-office ne peut
+//     s'exécuter chez un visiteur. Pas de table fille parce qu'un article n'est
+//     jamais interrogé autrement que « tout le contenu d'un coup » — c'est le
+//     même raisonnement que pour `LegalContent`.
+//
+//  2. La CORBEILLE est `deletedAt`, pas un statut. Un article jeté conserve
+//     ainsi le statut qu'il avait, et le restaurer le remet exactement où il
+//     était. Prisma n'a pas de suppression douce native : le filtre est appliqué
+//     explicitement dans `src/server/journal/`, en un seul endroit.
+//
+//  3. Les TRADUCTIONS suivent la convention du catalogue : colonnes `*En`
+//     facultatives, vide = repli sur le français. Aucun champ vide sur la
+//     boutique anglaise.
+
+model Article {
+  id   String @id @default(cuid())
+  slug String @unique
+
+  // draft | scheduled | published | archived — voir src/types/journal.ts.
+  // Pas d'enum Prisma : le schéma s'interdit les enums pour rester portable.
+  status String @default("draft")
+
+  title     String
+  titleEn   String @default("")
+  excerpt   String @default("")
+  excerptEn String @default("")
+
+  // Tableau de blocs sérialisé. « [] » et non « » : la lecture n'a jamais à
+  // distinguer « pas encore écrit » de « vidé ».
+  blocks   String @default("[]")
+  blocksEn String @default("[]")
+
+  coverImage String @default("")
+  coverAlt   String @default("")
+  coverAltEn String @default("")
+
+  categoryId String?
+  authorId   String?
+
+  // Un article mis en avant remonte sur la page du Journal et peut être repris
+  // ailleurs. Le nombre affiché est plafonné à la lecture, pas ici : limiter en
+  // base empêcherait de préparer la mise en avant suivante.
+  featured Boolean @default(false)
+
+  // Dérivés du contenu, recalculés à chaque écriture. Stockés parce que les
+  // listes les affichent : les recalculer pour vingt-cinq articles à chaque
+  // rendu de page reviendrait à relire tout le contenu pour un « 6 min ».
+  readingMinutes Int @default(1)
+
+  // Compteur dénormalisé. Le détail par jour vit dans ArticleViewDay ; « les
+  // plus lus » lit cette colonne et ne fait jamais de COUNT.
+  viewCount Int @default(0)
+
+  publishedAt DateTime?
+  scheduledAt DateTime?
+  deletedAt   DateTime?
+
+  // --- SEO ---
+  // Tous facultatifs : les replis sont calculés par src/server/journal/seo.ts.
+  metaTitle          String  @default("")
+  metaTitleEn        String  @default("")
+  metaDescription    String  @default("")
+  metaDescriptionEn  String  @default("")
+  focusKeyword       String  @default("")
+  canonicalUrl       String  @default("")
+  robotsNoindex      Boolean @default(false)
+  ogTitle            String  @default("")
+  ogDescription      String  @default("")
+  ogImage            String  @default("")
+  twitterTitle       String  @default("")
+  twitterDescription String  @default("")
+  twitterImage       String  @default("")
+
+  // Architecture préparée, fonctionnalité fermée — voir ArticleComment.
+  commentsEnabled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // E-mail de l'administrateur qui a publié, comme LegalContent et CodeSnippet.
+  updatedBy String   @default("")
+
+  category  ArticleCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  author    ArticleAuthor?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  tags      ArticleTagLink[]
+  revisions ArticleRevision[]
+  comments  ArticleComment[]
+  views     ArticleViewDay[]
+  redirects ArticleRedirect[]
+
+  // La liste publique lit toujours « publié, daté, non supprimé, du plus
+  // récent » : c'est cet index-là qui la sert.
+  @@index([status, publishedAt])
+  @@index([deletedAt])
+  @@index([categoryId])
+  @@index([authorId])
+  @@index([featured, publishedAt])
+}
+
+// Catégorie éditoriale. Distincte des catégories du catalogue : « Conseils
+// d'experte » n'est pas un rayon, et mélanger les deux casserait autant la
+// navigation de la boutique que celle du Journal.
+//
+// La hiérarchie s'arrête volontairement à un niveau : au-delà, le fil d'Ariane
+// devient illisible et le maillage interne se dilue sur des pages presque vides.
+model ArticleCategory {
+  id            String @id @default(cuid())
+  slug          String @unique
+  label         String
+  labelEn       String @default("")
+  description   String @default("")
+  descriptionEn String @default("")
+  image         String @default("")
+
+  metaTitle       String @default("")
+  metaDescription String @default("")
+
+  parentId String?
+  position Int     @default(0)
+  active   Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent   ArticleCategory?  @relation("ArticleCategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children ArticleCategory[] @relation("ArticleCategoryTree")
+  articles Article[]
+
+  @@index([parentId])
+  @@index([active, position])
+}
+
+model ArticleTag {
+  id      String @id @default(cuid())
+  slug    String @unique
+  label   String
+  labelEn String @default("")
+
+  createdAt DateTime @default(now())
+
+  articles ArticleTagLink[]
+}
+
+// Table de liaison explicite, comme CampaignProduct et CustomerFavorite : le
+// dépôt n'utilise pas les relations implicites de Prisma.
+model ArticleTagLink {
+  articleId String
+  tagId     String
+
+  article Article    @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag     ArticleTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+}
+
+// Identité publique d'un auteur.
+//
+// Volontairement séparée d'AdminUser : un compte du back-office est un accès
+// technique protégé par un second facteur, sans photo ni biographie, et qu'on
+// désactive le jour où quelqu'un s'en va. Un auteur est une signature qui reste
+// sur les articles publiés. `adminUserId` relie les deux quand c'est la même
+// personne, sans les confondre.
+model ArticleAuthor {
+  id     String @id @default(cuid())
+  slug   String @unique
+  name   String
+  role   String @default("")
+  roleEn String @default("")
+  bio    String @default("")
+  bioEn  String @default("")
+  avatar String @default("")
+
+  // JSON : { "instagram": "...", "linkedin": "..." }. Pas de liste scalaire.
+  socials String @default("{}")
+
+  adminUserId String?
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles Article[]
+}
+
+// Ancienne adresse d'un article renommé après publication.
+//
+// Sans cette table, corriger le titre d'un article référencé casserait son URL
+// en silence. La page article lit ici avant de rendre un 404 et répond par une
+// redirection permanente.
+model ArticleRedirect {
+  id        String   @id @default(cuid())
+  oldSlug   String   @unique
+  articleId String
+  createdAt DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId])
+}
+
+// Instantané d'un article, écrit à chaque enregistrement manuel et à chaque
+// publication.
+//
+// L'écriture des versions démarre en v1 même si la restauration n'est pas
+// exposée : un historique qu'on branche le jour où on en a besoin démarre vide,
+// c'est-à-dire trop tard.
+model ArticleRevision {
+  id        String   @id @default(cuid())
+  articleId String
+  // Article complet sérialisé, même parti pris que LegalContent.data.
+  snapshot  String
+  updatedBy String   @default("")
+  createdAt DateTime @default(now())
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId, createdAt])
+}
+
+// Commentaires : la table existe, la fonctionnalité n'est pas ouverte.
+//
+// Aucune route publique n'écrit ici et aucun formulaire ne s'affiche. Le circuit
+// de validation reprend celui des avis produits (pending/approved/rejected) pour
+// que l'ouvrir plus tard ne demande pas d'inventer un second vocabulaire.
+model ArticleComment {
+  id          String    @id @default(cuid())
+  articleId   String
+  authorName  String
+  authorEmail String
+  body        String
+  // pending | approved | rejected
+  status      String    @default("pending")
+  createdAt   DateTime  @default(now())
+  moderatedAt DateTime?
+  moderatedBy String    @default("")
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId, status])
+}
+
+// Vues agrégées par jour.
+//
+// Une ligne par article et par jour, jamais une ligne par visite : le détail
+// n'apporte rien et une table de visites grossit sans fin. Le total vit dans
+// Article.viewCount, incrémenté dans la même transaction — « les plus lus » se
+// lit alors sans agrégat.
+model ArticleViewDay {
+  articleId String
+  // Jour à minuit UTC. Sert de clé, donc jamais d'horodatage complet.
+  day       DateTime
+  count     Int      @default(0)
+
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, day])
+  @@index([day])
 }
