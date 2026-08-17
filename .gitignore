@@ -28,6 +28,11 @@ tsconfig.tsbuildinfo
 # Dossiers de travail temporaires (scraping, captures Playwright)
 /.tmp-*
 /.playwright-mcp
+
+# Maquette client : sortie régénérable de scripts/maquette (construire.mjs +
+# capture.mjs), 14 Mo de HTML autoportant et de captures. Le générateur est
+# versionné, son produit non — comme un dossier de build.
+/livrables
 /prisma-migrations-mysql.bak
 /prisma-migrations-sqlite.bak
 
