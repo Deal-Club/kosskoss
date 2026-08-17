@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { ArrowRight } from "lucide-react";
-import { formatFcfa } from "@/lib/kk/format";
 import { BottleMotif } from "./motifs";
 import { RoutineAddToCart } from "./routine-add";
 import type { KKRoutineView } from "@/types/kk";
@@ -46,7 +45,19 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
     <div className={`relative flex h-44 items-center justify-center overflow-hidden ${tintClass(routine.tint)}`}>
       {routine.image ? (
         // Visuel éditorial propre à la routine : il occupe tout le cadre.
-        <Image src={routine.image} alt="" aria-hidden="true" fill sizes="320px" className="object-cover" />
+        // `kk-zoom` + variante `group-hover` : il grossit de 6 % au survol de
+        // la carte. Le cadre est en `overflow-hidden`, rien ne déborde ; la
+        // durée est plus longue que celle du soulèvement (600 ms contre 400)
+        // pour que l'image continue son mouvement après que la carte s'est
+        // posée — c'est ce décalage qui donne l'impression de profondeur.
+        <Image
+          src={routine.image}
+          alt=""
+          aria-hidden="true"
+          fill
+          sizes="320px"
+          className="kk-zoom object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+        />
       ) : (
         // En attendant les visuels de coffret fournis par le client.
         //
@@ -58,7 +69,10 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
         // Le motif sur l'aplat teinté ne prétend rien : il tient la place,
         // porte la couleur de la routine, et s'efface dès qu'une vraie image
         // de coffret est renseignée sur `Routine.image`.
-        <BottleMotif className="h-[78%] w-auto text-deep/25" />
+        // Le motif suit le même mouvement que le visuel éditorial : sans lui,
+        // les routines sans image seraient les seules cartes inertes de la
+        // rangée, et l'effet paraîtrait cassé une carte sur deux.
+        <BottleMotif className="kk-zoom h-[78%] w-auto text-deep/25 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]" />
       )}
     </div>
   );
@@ -73,14 +87,29 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
  */
 export function RoutineCard({ routine }: { routine: KKRoutineView }) {
   return (
-    <article className="kk-lift flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card">
+    /* `group` : c'est la CARTE ENTIÈRE qui est survolée, pas chacun de ses
+       morceaux. Sans elle, le visuel ne grossirait qu'au passage sur le visuel
+       lui-même, et l'effet se déclencherait par bouts selon l'endroit où la
+       souris entre.
+
+       `kk-lift-fort` s'ajoute à `kk-lift` (voir globals.css) : soulèvement
+       doublé, ombre creusée, filet qui vire au laiton. Les cartes de routine
+       sont les seules vignettes de l'accueil dont le clic engage un achat ;
+       elles peuvent répondre plus franchement que les autres. */
+    <article className="kk-lift kk-lift-fort group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card">
       <Link href={routine.href} className="block" tabIndex={-1} aria-hidden="true">
         <RoutineVisual routine={routine} />
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
+        {/* Le titre suit le survol de la carte et non le sien : il passe au
+            laiton d'encre, la même teinte que prend le filet. Deux signaux
+            d'une seule couleur valent mieux que deux effets sans rapport. */}
         <h3 className="leading-snug">
-          <Link href={routine.href} className="text-deep transition hover:text-deep/70">
+          <Link
+            href={routine.href}
+            className="text-deep transition-colors duration-300 group-hover:text-gold-ink hover:text-gold-ink"
+          >
             {routine.name}
           </Link>
         </h3>
@@ -89,23 +118,24 @@ export function RoutineCard({ routine }: { routine: KKRoutineView }) {
           <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{routine.claim}</p>
         )}
 
-        {/* La suite des gestes : « Nettoyer • Traiter • Protéger ». C'est ce qui
-            distingue une routine d'un lot de produits — on achète un ordre. */}
-        <p className="mt-3 text-[0.78rem] font-medium text-deep">
-          {routine.steps.map((s) => s.label).join(" · ")}
-        </p>
+        {/* LA SUITE DES GESTES ET LE PRIX D'ENTRÉE ONT ÉTÉ RETIRÉS DE LA CARTE.
+            Ils y tenaient deux lignes — « Nettoyer · Traiter · Hydrater », puis
+            « À partir de 51 500 FCFA » — au-dessus des commandes. La vignette
+            portait ainsi cinq niveaux d'information pour un objet qu'on
+            parcourt du regard ; le nom et l'accroche disent le besoin traité,
+            c'est ce sur quoi le clic se décide. Le détail des gestes et le prix
+            restent sur la page de la routine, où l'on va justement pour cela.
+            `routine.steps` et `routine.totalFcfa` continuent d'être servis par
+            la vue : rien n'a bougé côté données, seul l'affichage change. */}
 
-        {/* `mt-auto` : les prix et les boutons s'alignent d'une carte à l'autre,
-            quelle que soit la longueur des accroches au-dessus. */}
+        {/* `mt-auto` : les boutons s'alignent d'une carte à l'autre, quelle que
+            soit la longueur des accroches au-dessus. */}
         <div className="mt-auto pt-4">
-          <p className="text-xs text-muted-foreground">
-            À partir de{" "}
-            <span className="figure text-[0.95rem] font-semibold text-deep">
-              {formatFcfa(routine.totalFcfa)}
-            </span>
-          </p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-            <RoutineAddToCart routine={routine} />
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            {/* `mode="achat"` : depuis une vignette, le bouton mène au tunnel
+                plutôt que de déposer la routine et de laisser le visiteur
+                chercher son panier. */}
+            <RoutineAddToCart routine={routine} mode="achat" />
             <Link
               href={routine.href}
               className="group inline-flex items-center gap-1 text-sm font-medium text-deep kk-underline"

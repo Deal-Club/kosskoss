@@ -470,8 +470,12 @@ export function InsightsSection({
     <section className="section mx-auto max-w-7xl px-6">
       <div className="rounded-[1.75rem] border border-border/70 bg-card px-7 py-9 sm:px-10 sm:py-11">
         <div className="mb-9">
+          {/* Le titre annonçait « Conseils, résultats et avis » alors que la
+              section ne porte plus d'avis : ils ont leur propre bloc, désormais
+              placé juste en dessous. Un titre qui promet une troisième colonne
+              inexistante fait chercher au lecteur ce qui n'est pas là. */}
           <p className="eyebrow">Bon à savoir</p>
-          <h2 className="mt-2 text-deep">Conseils, résultats et avis</h2>
+          <h2 className="mt-2 text-deep">Vos questions, nos résultats</h2>
         </div>
 
         {/* `divide-x` trace un filet entre les colonnes plutôt qu'un cadre

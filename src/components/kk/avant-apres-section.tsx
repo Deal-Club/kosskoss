@@ -110,13 +110,20 @@ export function AvantApresSection({ cas }: { cas: AvantApresCase | null }) {
             ))}
           </ul>
 
+          {/* Le libellé dit où mène le bouton.
+              Il annonçait « Trouver ma routine » alors qu'il ouvre le
+              DIAGNOSTIC — un questionnaire, pas la liste des routines, qui a sa
+              propre entrée dans le hero et dans la navigation. Deux boutons de
+              promesse identique menant à deux pages différentes, c'est la
+              manière la plus sûre de faire quitter celui qui croyait cliquer
+              sur l'autre. Ici on est conseillé, on ne choisit pas encore. */}
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link
               href="/diagnostic"
               className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep"
             >
               <Sparkles className="h-4 w-4" />
-              Trouver ma routine
+              Faire mon diagnostic
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link

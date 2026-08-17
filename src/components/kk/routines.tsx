@@ -25,8 +25,10 @@ export function RoutinesRail({ routines }: { routines: KKRoutineView[] }) {
         <div>
           <p className="eyebrow">Achat rapide</p>
           <h2 className="mt-2 text-deep">Nos routines prêtes à l&rsquo;emploi</h2>
+          {/* Le chapô promettait « un seul ajout au panier ». Les vignettes ne
+              déposent plus rien : leur bouton mène directement au paiement. */}
           <p className="lead mt-2 max-w-xl">
-            Une préoccupation, trois gestes dans le bon ordre, un seul ajout au panier.
+            Une préoccupation, trois gestes dans le bon ordre, une seule commande.
           </p>
         </div>
         <Link

@@ -7,6 +7,7 @@ import { CategoryFilters, PRICE_RANGES } from "@/components/CategoryFilters";
 import { ProductCard } from "@/components/ProductCard";
 import { Reveal } from "@/components/Reveal";
 import { parsePrice } from "@/lib/price";
+import { normaliserBadge } from "@/lib/kk/badges";
 import { useDismissable } from "@/lib/useDismissable";
 import type { Product } from "@/types/home";
 
@@ -85,8 +86,14 @@ export function CategoryProductBrowser({ products }: { products: Product[] }) {
     } else if (sortBy === "price-desc") {
       sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
     } else if (sortBy === "newest") {
-      // Le badge « Neu » vient du catalogue et n'est pas traduit
-      sorted.sort((a, b) => Number(b.badge === "Neu") - Number(a.badge === "Neu"));
+      // Le tri « Nouveautés » cherchait le badge « Neu » — l'allemand du site
+      // dont ce composant est hérité. Aucun produit ne l'a jamais porté depuis
+      // le passage au français : l'option de tri ne changeait rien à l'ordre.
+      // Elle s'appuie maintenant sur la clé réellement stockée, via la même
+      // normalisation que le reste du site.
+      const estNouveau = (p: (typeof sorted)[number]) =>
+        Number(normaliserBadge(p.badge) === "nouveau");
+      sorted.sort((a, b) => estNouveau(b) - estNouveau(a));
     }
     return sorted;
   }, [products, selectedBrands, activePriceRange, minRatings, inStockOnly, sortBy]);

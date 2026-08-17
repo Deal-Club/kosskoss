@@ -2,6 +2,7 @@ import { toCents } from "@/server/pricingUtils";
 import type { VariantInput } from "@/lib/variantPricing";
 import type { ProductRecord } from "@/server/types";
 import { isValidGtin } from "@/lib/gtin";
+import { normaliserBadge } from "@/lib/kk/badges";
 
 // Validation commune des champs produit, partagée par les routes unitaires et
 // l'import en masse. Les messages sont en français : ils s'affichent dans le back-office.
@@ -89,8 +90,20 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
     }
   }
 
+  // BADGE : normalisé à l'écriture, jamais stocké tel quel.
+  //
+  // Le champ acceptait n'importe quelle chaîne. La boutique, elle, n'affiche
+  // que deux valeurs exactes (`bestseller`, `nouveau`) : tout le reste était
+  // enregistré sans erreur puis ignoré silencieusement à l'affichage — un
+  // « Nouveau » avec sa majuscule ne sortait jamais, et rien ne le signalait.
+  //
+  // `normaliserBadge` reconnaît les variantes de casse et d'accent, ce qui
+  // sert surtout l'import CSV rempli au tableur, et renvoie `null` pour tout
+  // le reste. Une saisie non reconnue vaut donc « pas de badge » — et non une
+  // erreur de formulaire : le formulaire n'offre plus que trois choix, et un
+  // import de cent lignes ne doit pas échouer sur une colonne décorative.
   if (has("badge")) {
-    values.badge = asTrimmedString(body.badge) ?? "";
+    values.badge = normaliserBadge(asTrimmedString(body.badge)) ?? "";
   }
 
   if (has("image")) {

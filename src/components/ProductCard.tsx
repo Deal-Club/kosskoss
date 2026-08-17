@@ -4,6 +4,7 @@ import { Star } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import { formatRating } from "@/lib/formatRating";
+import { BADGE_LABEL, normaliserBadge } from "@/lib/kk/badges";
 import type { Product } from "@/types/home";
 
 // Composant partagé : il est rendu côté serveur (grilles de la page d'accueil)
@@ -12,6 +13,8 @@ import type { Product } from "@/types/home";
 export function ProductCard({ product }: { product: Product }) {
   const t = useTranslations("product");
   const locale = useLocale();
+  const cleBadge = normaliserBadge(product.badge);
+  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge] : null;
 
   return (
     <div className="relative h-full">
@@ -37,10 +40,16 @@ export function ProductCard({ product }: { product: Product }) {
       href={product.href}
       className="group flex h-full flex-col rounded-lg border border-border bg-white p-3 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
     >
+      {/* Le badge est stocké sous sa CLÉ (`bestseller`, `nouveau`), pas sous
+          son libellé : affiché brut, il écrivait « bestseller » en minuscules
+          sur la page de recherche, seul appelant restant de cette vignette. Il
+          passe par la table partagée (`lib/kk/badges`), comme les vignettes de
+          la boutique. Une clé inconnue ne donne rien plutôt qu'un mot technique
+          — ce qui est aussi le comportement de la boutique. */}
       <div className="relative mb-2 min-h-6">
-        {product.badge && (
+        {libelleBadge && (
           <span className="absolute top-0 left-0 z-10 rounded-sm bg-badge px-2 py-0.5 text-[11px] font-bold text-badge-foreground">
-            {product.badge}
+            {libelleBadge}
           </span>
         )}
       </div>

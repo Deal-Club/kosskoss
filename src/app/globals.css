@@ -1156,6 +1156,29 @@
   border-color: color-mix(in oklab, var(--deep) 35%, transparent);
 }
 
+/* SURVOL RENFORCÉ — les cartes de routine.
+
+   Elles ne sont que cinq sur une seule rangée, et ce sont les seules vignettes
+   de l'accueil dont le clic engage un achat : le retour au survol peut y être
+   franc, là où une grille de vingt-quatre produits vibrerait.
+
+   Trois écarts avec `.kk-lift`, à cumuler avec elle et non à la remplacer —
+   la transition de base reste la sienne :
+     — le soulèvement double (4 → 8 px) ;
+     — l'ombre porte deux fois plus loin et se creuse ;
+     — le filet passe au LAITON au lieu du vert profond. C'est le changement
+       qui se voit le plus vite, parce qu'il change de teinte et pas seulement
+       d'intensité — et il désigne la carte survolée sans ambiguïté quand deux
+       voisines sont côte à côte.
+
+   Le zoom du visuel, lui, est porté par la carte elle-même (variantes `group`
+   de Tailwind) : il n'a pas besoin de CSS global. */
+.kk-lift-fort:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px -26px color-mix(in oklab, var(--deep) 70%, transparent);
+  border-color: color-mix(in oklab, var(--gold) 70%, transparent);
+}
+
 /* Filet qui se déroule sous un lien au survol, du bord gauche vers la droite. */
 .kk-underline {
   position: relative;
@@ -1226,8 +1249,17 @@
     transform: none !important;
   }
 
+  /* `.kk-zoom` : le grossissement du visuel au survol d'une carte. Il tombe
+     ici comme le reste — un mouvement d'échelle est de ceux qui gênent le
+     plus. L'ombre et le filet, eux, restent : ils désignent la carte survolée
+     sans rien déplacer. */
   .kk-fill:hover,
-  .kk-lift:hover {
+  .kk-lift:hover,
+  .kk-lift-fort:hover {
+    transform: none !important;
+  }
+
+  .kk-zoom {
     transform: none !important;
   }
 

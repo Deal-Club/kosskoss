@@ -1,13 +1,13 @@
 import Image from "next/image";
 import { formatFcfa } from "@/lib/kk/format";
+import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
 import { FavoriteHeart, QuickAddButton } from "./product-actions";
 
-const BADGE_LABEL: Record<"bestseller" | "nouveau", string> = {
-  bestseller: "Bestseller",
-  nouveau: "Nouveau",
-};
+// Libellés partagés avec la fiche produit et le back-office : voir
+// `lib/kk/badges`. Ils étaient recopiés dans chaque composant, et « Bestseller »
+// d'un côté cohabitait avec « Meilleure vente » de l'autre.
 
 export function ProductCard({ product }: { product: KKProductView }) {
   const href = product.href ?? "#";
@@ -56,12 +56,23 @@ export function ProductCard({ product }: { product: KKProductView }) {
             <BottleMotif className="h-3/5 w-auto text-deep transition-transform duration-700 ease-out group-hover:scale-105" />
           )}
 
+          {/* LA PASTILLE.
+              « Nouveauté » était en `bg-cream` sur un cadre `bg-card` — deux
+              blancs à quelques points d'écart : le badge existait dans le DOM
+              et ne se voyait sur aucun écran. Il passe au laiton plein, la
+              couleur d'accent de la marque, avec le vert profond pour texte.
+              « Meilleure vente » garde l'aplat vert : la distinction la plus
+              forte prend la valeur la plus sombre, et les deux ne peuvent pas
+              se confondre d'un coup d'œil.
+
+              Aucune ombre, aucun contour : posée sur un packshot détouré à fond
+              blanc, une pastille pleine se détache déjà seule. */}
           {product.badge && (
             <span
               className={`absolute left-3 top-3 rounded-full px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.14em] ${
                 product.badge === "bestseller"
                   ? "bg-deep text-primary-foreground"
-                  : "bg-cream text-deep"
+                  : "bg-gold text-deep"
               }`}
             >
               {BADGE_LABEL[product.badge]}

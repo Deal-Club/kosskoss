@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import type { KKProductDetail } from "@/server/kk/product";
+import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif, Petal } from "./motifs";
 import { AddToCart } from "./add-to-cart";
@@ -9,10 +10,7 @@ import { ProductReviews } from "./product-reviews";
 import { ProductZoom } from "./product-zoom";
 import type { KKProductReviews } from "@/server/kk/product-reviews";
 
-const BADGE_LABEL: Record<"bestseller" | "nouveau", string> = {
-  bestseller: "Bestseller",
-  nouveau: "Nouveau",
-};
+// Libellés partagés : voir `lib/kk/badges`.
 
 function Breadcrumb({ product }: { product: KKProductDetail }) {
   const crumbs = [
@@ -145,8 +143,19 @@ export function ProductDetail({
 
           <div className="lg:sticky lg:top-24 lg:pt-4">
             <div className="rounded-[1.75rem] border border-border/70 bg-card p-5 sm:p-7 lg:p-9">
+              {/* Mêmes couleurs que sur la vignette — vert profond pour la
+                  meilleure vente, laiton pour la nouveauté. Le badge était ici
+                  en `bg-sand` quel que soit son sens : un client qui reconnaît
+                  une pastille verte dans la grille ne devait pas la retrouver
+                  beige sur la fiche. */}
               {product.badge && (
-                <span className="mb-4 inline-block rounded-full bg-sand px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-deep">
+                <span
+                  className={`mb-4 inline-block rounded-full px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] ${
+                    product.badge === "bestseller"
+                      ? "bg-deep text-primary-foreground"
+                      : "bg-gold text-deep"
+                  }`}
+                >
                   {BADGE_LABEL[product.badge]}
                 </span>
               )}

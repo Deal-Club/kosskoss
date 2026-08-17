@@ -11,6 +11,7 @@ import {
 import { PreviewPanel } from "@/components/admin/PreviewPanel";
 import { ProductPreview, type ProductPreviewView } from "@/components/admin/ProductPreview";
 import { slugify } from "@/lib/slugify";
+import { PRODUCT_BADGES } from "@/lib/kk/badges";
 import type { CategoryRecord, ProductRecord } from "@/server/types";
 
 interface ProductFormProps {
@@ -279,7 +280,7 @@ export function ProductForm({
 
         <GalleryUploadField value={images} onChange={setImages} />
 
-        <div className="mb-4 grid grid-cols-3 gap-4">
+        <div className="mb-4 grid grid-cols-2 gap-4">
           <label className="text-sm">
             <span className="mb-1 block font-semibold text-foreground">Ancien prix</span>
             <input
@@ -299,16 +300,61 @@ export function ProductForm({
               className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
             />
           </label>
-          <label className="text-sm">
-            <span className="mb-1 block font-semibold text-foreground">Badge</span>
-            <input
-              value={badge}
-              onChange={(event) => setBadge(event.target.value)}
-              placeholder="ex. -20%, Nouveau"
-              className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
-            />
-          </label>
         </div>
+
+        {/* ── Badge ─────────────────────────────────────────────────────────
+            TROIS CHOIX, PLUS UN CHAMP LIBRE.
+
+            C'était un `input` texte, « ex. -20%, Nouveau ». La boutique
+            n'affiche que deux valeurs exactes — `bestseller` et `nouveau` —,
+            donc tout le reste, y compris le « Nouveau » suggéré par l'exemple
+            lui-même, était enregistré puis ignoré à l'affichage. On pouvait
+            croire avoir badgé un produit pendant des mois.
+
+            Les trois boutons écrivent la clé attendue, et rien d'autre ne peut
+            entrer par ce formulaire. Le serveur normalise malgré tout (voir
+            `productInput.ts`) : l'import CSV, lui, reste une porte ouverte.
+
+            Un seul badge à la fois : une vignette qui porterait « Meilleure
+            vente » ET « Nouveauté » n'aurait plus de hiérarchie, et les deux
+            pastilles se disputeraient le même coin de l'image. */}
+        <fieldset className="mb-4">
+          <legend className="mb-1 block text-sm font-semibold text-foreground">Badge</legend>
+          <p className="mb-2 text-xs text-muted-foreground">
+            Pastille affichée sur la vignette et sur la fiche produit.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {[{ key: "", label: "Aucun", hint: "Le produit s'affiche sans pastille." }, ...PRODUCT_BADGES].map(
+              (option) => {
+                const actif = badge === option.key;
+                return (
+                  <button
+                    key={option.key || "aucun"}
+                    type="button"
+                    onClick={() => setBadge(option.key)}
+                    aria-pressed={actif}
+                    title={option.hint}
+                    className={`rounded-full border px-4 py-2 text-sm transition ${
+                      actif
+                        ? "border-primary bg-primary text-primary-foreground font-semibold"
+                        : "border-border bg-background text-foreground hover:border-primary/50"
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                );
+              },
+            )}
+          </div>
+          {/* La valeur enregistrée n'est pas celle qu'on lit sur le bouton :
+              on montre donc laquelle part en base, pour que l'export CSV et
+              l'import ne soient pas des boîtes noires. */}
+          {badge && (
+            <p className="mt-2 text-xs text-muted-foreground">
+              Enregistré en base sous « {badge} ».
+            </p>
+          )}
+        </fieldset>
 
         {/* ── Variations de volume ─────────────────────────────────────────── */}
         <fieldset className="mb-4">

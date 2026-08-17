@@ -30,6 +30,25 @@ import type { NavGroup, NavHighlight } from "@/server/kk/navigation";
  * serveur) : ces composants n'interrogent rien eux-mêmes.
  */
 
+/**
+ * L'UNIVERS PROMU DANS LA BARRE, au lieu d'être rangé sous « Boutique ».
+ *
+ * « Homme » est un univers du catalogue comme les autres, mais il ne se
+ * cherche pas de la même façon : personne n'ouvre un menu déroulant pour
+ * vérifier qu'une boutique de soin propose une gamme homme — on la voit, ou on
+ * suppose qu'il n'y en a pas. Il gagne donc sa place dans la barre, et sort du
+ * méga-menu par la même occasion : deux entrées vers le même rayon à dix
+ * centimètres l'une de l'autre, dont une cachée sous un survol, ne servent
+ * personne.
+ *
+ * Le slug est la SEULE chose écrite en dur. Le libellé et le lien viennent de
+ * `groups`, c'est-à-dire du back-office : si l'univers est renommé, l'entrée
+ * suit ; s'il est retiré ou vidé, `getShopNavigation` l'écarte et l'entrée
+ * disparaît d'elle-même — là où un lien écrit à la main aurait survécu au
+ * rayon et mené à une page vide.
+ */
+const UNIVERS_EN_BARRE = "homme";
+
 /** Ferme au clic hors zone et à la touche Échap. */
 function useDismiss(open: boolean, close: () => void) {
   useEffect(() => {
@@ -266,15 +285,13 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
                     <ul className="pb-2">
                       {group.categories.map((category) => (
                         <li key={category.slug}>
+                          {/* Sans compteur : voir le méga-menu, même raison. */}
                           <Link
                             href={category.href}
                             {...closeOnNavigate}
-                            className="flex items-baseline gap-2 rounded-xl px-3 py-2.5 text-sm text-foreground transition hover:bg-sand hover:text-deep"
+                            className="block rounded-xl px-3 py-2.5 text-sm text-foreground transition hover:bg-sand hover:text-deep"
                           >
                             {category.label}
-                            <span className="figure text-xs text-muted-foreground">
-                              {category.productCount}
-                            </span>
                           </Link>
                         </li>
                       ))}
@@ -395,9 +412,12 @@ export function DesktopNav({
   // hiérarchie à une liste. Ils passent sous « Boutique », en menu déroulant :
   // la barre retrouve sa lisibilité et l'accès direct aux rayons ne se perd
   // pas — il gagne même les catégories, qui n'y figuraient pas.
+  const homme = groups.find((group) => group.slug === UNIVERS_EN_BARRE);
+
   const entries = [
     { href: "/", label: "Accueil" },
     { href: groups[0]?.href ?? "/soins-visage", label: "Boutique", deroulant: true },
+    ...(homme ? [{ href: homme.href, label: homme.label }] : []),
     { href: "/routines", label: "Routines" },
     { href: "/marques", label: "Marques" },
     // « Conseils » (la FAQ) a été retiré de la barre : cinq entrées se lisent
@@ -418,6 +438,8 @@ export function DesktopNav({
   }
 
   return (
+    /* `flex-1` + `justify-center` : la barre occupe tout l'espace laissé entre
+       le logo et les actions, et centre ses entrées dedans. */
     <nav className="hidden flex-1 justify-center lg:flex">
       <ul className="flex items-center gap-7">
         {entries.map((entry) => {
@@ -507,10 +529,11 @@ function MegaMenu({
   ouvert: boolean;
   onFermer: () => void;
 }) {
-  const total = groups.reduce(
-    (n, g) => n + g.categories.reduce((m, c) => m + c.productCount, 0),
-    0,
-  );
+  // « Homme » ne figure pas dans le panneau : il a sa propre entrée dans la
+  // barre (voir `UNIVERS_EN_BARRE`). L'y laisser reviendrait à proposer deux
+  // fois le même rayon à dix centimètres d'écart, dont une fois caché sous un
+  // survol.
+  const univers = groups.filter((group) => group.slug !== UNIVERS_EN_BARRE);
 
   return (
     <div
@@ -522,12 +545,24 @@ function MegaMenu({
           : "invisible -translate-y-1 opacity-0"
       }`}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+      {/* LE PANNEAU SUIT SON CONTENU, il ne suit plus la largeur de l'en-tête.
+          Il s'étendait sur les 88 rem du cadre — 1 400 px pour une dizaine de
+          liens courts et deux vignettes. Avec le départ de « Homme » vers la
+          barre, la grille des rayons perdait en plus sa troisième colonne : le
+          panneau était plus vide que plein. Il est ramené à 64 rem, et les
+          colonnes s'ajustent au nombre d'univers réellement servis — deux
+          colonnes pour deux univers, trois au-delà, sans jamais de colonne
+          fantôme. */}
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <div className="overflow-hidden rounded-2xl border border-border/70 bg-background shadow-2xl shadow-deep/15">
-          <div className="grid gap-8 p-7 lg:grid-cols-[1fr_20rem]">
+          <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1fr)_17rem]">
             {/* Les rayons */}
-            <div className="grid gap-7 sm:grid-cols-2 xl:grid-cols-3">
-              {groups.map((group) => (
+            <div
+              className={`grid gap-x-6 gap-y-5 sm:grid-cols-2 ${
+                univers.length > 2 ? "xl:grid-cols-3" : ""
+              }`}
+            >
+              {univers.map((group) => (
                 <div key={group.slug}>
                   <Link
                     href={group.href}
@@ -537,21 +572,22 @@ function MegaMenu({
                     {group.label}
                     <ChevronRight className="h-3 w-3 transition-transform duration-200 group-hover/univers:translate-x-0.5" />
                   </Link>
-                  <ul className="mt-3.5 space-y-0.5">
+                  <ul className="mt-2.5 space-y-0.5">
                     {group.categories.map((category) => (
                       <li key={category.slug}>
-                        {/* Le compteur collé au libellé, et non poussé au bout
-                            de la colonne : un chiffre séparé de son mot par
-                            douze centimètres de vide ne se rattache à rien. */}
+                        {/* PLUS DE COMPTEUR à côté du libellé.
+                            Le nombre de références par rayon renseignait
+                            l'exploitant, pas le client : personne ne choisit
+                            « Toniques » plutôt que « Solaires » parce qu'il y
+                            en a six au lieu de trois. Sur un catalogue jeune,
+                            il ne disait qu'une chose — c'est petit — et il le
+                            disait à l'endroit le plus visible du site. */}
                         <Link
                           href={category.href}
                           onClick={onFermer}
-                          className="-mx-2.5 flex items-baseline gap-2 rounded-lg px-2.5 py-1.5 text-sm text-foreground transition hover:bg-sand hover:text-deep"
+                          className="-mx-2.5 block rounded-lg px-2.5 py-1.5 text-sm text-foreground transition hover:bg-sand hover:text-deep"
                         >
-                          <span className="min-w-0">{category.label}</span>
-                          <span className="figure text-[0.7rem] text-muted-foreground">
-                            {category.productCount}
-                          </span>
+                          {category.label}
                         </Link>
                       </li>
                     ))}
@@ -562,19 +598,19 @@ function MegaMenu({
 
             {/* La vitrine */}
             {highlights.length > 0 && (
-              <aside className="rounded-xl bg-sand p-5">
+              <aside className="rounded-xl bg-sand p-4">
                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-gold-ink">
                   À découvrir
                 </p>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-3 space-y-2">
                   {highlights.map((produit) => (
                     <li key={produit.id}>
                       <Link
                         href={produit.href}
                         onClick={onFermer}
-                        className="group/produit flex items-center gap-3 rounded-xl bg-background p-2.5 transition hover:shadow-lg hover:shadow-deep/10"
+                        className="group/produit flex items-center gap-3 rounded-xl bg-background p-2 transition hover:shadow-lg hover:shadow-deep/10"
                       >
-                        <span className="relative grid h-16 w-14 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]">
+                        <span className="relative grid h-14 w-12 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab]">
                           {produit.image ? (
                             <Image
                               src={produit.image}
@@ -609,16 +645,16 @@ function MegaMenu({
           {/* Pied du panneau : la sortie vers le catalogue entier, et les deux
               portes d'entrée « par le besoin » — celles qui convertissent un
               visiteur qui ne connaît aucune marque. */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-sand/60 px-7 py-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-sand/60 px-5 py-3">
             <Link
               href={groups[0]?.href ?? "/"}
               onClick={onFermer}
               className="group/tout inline-flex items-center gap-1.5 text-sm font-semibold text-deep"
             >
+              {/* Le total entre parenthèses — « Voir tout le catalogue (71) » —
+                  a suivi les compteurs de rayon, pour la même raison : un
+                  catalogue ne s'annonce pas par son inventaire. */}
               Voir tout le catalogue
-              {total > 0 && (
-                <span className="figure font-normal text-muted-foreground">({total})</span>
-              )}
               <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover/tout:translate-x-1" />
             </Link>
             <span className="flex items-center gap-2">

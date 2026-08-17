@@ -9,7 +9,6 @@ import { CartButton } from "./cart-button";
 import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
 import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
-import { Monogram } from "./motifs";
 import { PatternBackdrop } from "./pattern-backdrop";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
@@ -60,18 +59,24 @@ function FacebookIcon({ className }: { className?: string }) {
  * site, c'est une sortie de secours géante placée juste après le bouton
  * d'achat.
  *
- * Ne restent ici que deux catégories :
+ * Ne restent ici que trois catégories :
  *   — les pages EXIGÉES par la vente à distance, qui doivent rester
  *     atteignables depuis n'importe quelle page (mentions, CGV, données
  *     personnelles, rétractation) ;
  *   — les pages qui LÈVENT une objection au moment de payer : les frais et
- *     délais de livraison, les moyens de paiement acceptés, le renvoi.
+ *     délais de livraison, les moyens de paiement acceptés, le renvoi ;
+ *   — « À propos », qui dit qui vend. Elle n'est due à aucun texte, mais sur un
+ *     marché où la contrefaçon est le premier frein, savoir à qui l'on achète
+ *     en est un autre : c'est la seule page de cette liste qu'on ouvre par
+ *     confiance et non par obligation. Elle vient donc en tête.
  *
- * Tout le reste est parti : le catalogue est dans l'en-tête, et « Notre
- * maison », « Le diagnostic », « Suivi de commande » et la FAQ se rejoignent
- * par la navigation ou depuis le compte.
+ * Tout le reste est parti : le catalogue est dans l'en-tête, et « Le
+ * diagnostic », « Suivi de commande » et la FAQ se rejoignent par la
+ * navigation ou depuis le compte.
  */
 const FOOTER_LEGAL = [
+  // Libellé aligné sur celui déclaré pour le slug dans content/legal/index.ts.
+  { label: "À propos", href: "/a-propos" },
   { label: "Mentions légales", href: "/mentions-legales" },
   { label: "CGV", href: "/cgv" },
   { label: "Confidentialité", href: "/confidentialite" },
@@ -115,39 +120,42 @@ export async function AnnouncementBar() {
 }
 
 /**
- * Mot-symbole composé.
+ * Logotype de la marque — le fichier officiel, pas une reconstitution.
  *
- * Il s'écrit « KossKoss » et non « KOSSKOSS » : Cinzel n'a pas de vraie
- * bas-de-casse, ses minuscules sont des petites capitales. La casse mixte rend
- * donc les deux K hauts suivis de « OSS » en petites capitales — exactement le
- * dessin du logo officiel (assets/marque/), que le tout-capitales aplatissait.
+ * Le lettrage était jusqu'ici recomposé en CSS : monogramme SVG + « KossKoss »
+ * en Cinzel + « Select » en interlettrage large. L'approximation tenait de
+ * loin, mais aucune fonte web ne redonne le dessin exact du logotype fourni —
+ * empattements, chasse des deux K, position de la ligne « SELECT ». On sert
+ * donc l'image de marque elle-même (`public/images/logo-full.png`).
  *
- * `aligne` place le sigle à gauche du lettrage, comme sur la maquette du
- * client, où l'en-tête porte le monogramme encadré suivi du nom sur deux
- * lignes. Le mode centré subsiste pour les pages transactionnelles, dont
- * l'en-tête minimal n'a que le logotype au milieu.
+ * `alt` vide et libellé porté par le lien : sans cela, un lecteur d'écran
+ * annonce deux fois le nom de la maison sur le seul lien du logo.
+ *
+ * `priority` : le logo est le premier élément peint de l'en-tête collant, sur
+ * toutes les pages. Le laisser en chargement paresseux fait apparaître un
+ * trou à l'endroit le plus visible du site.
+ *
+ * `aligne` sert l'en-tête boutique (logo calé à gauche, à côté du menu) ; le
+ * mode par défaut, centré, sert l'en-tête minimal des pages de paiement.
  */
-function Wordmark({ className = "", aligne = false }: { className?: string; aligne?: boolean }) {
-  if (aligne) {
-    return (
-      <Link href="/" className={`inline-flex items-center gap-2.5 ${className}`} aria-label={BRAND.name}>
-        <Monogram className="h-8 w-8 shrink-0 text-deep" title="" />
-        <span className="flex flex-col leading-none">
-          <span className="wordmark text-[1.05rem] text-deep sm:text-[1.15rem]">KossKoss</span>
-          <span className="mt-1 text-[0.52rem] font-medium uppercase tracking-[0.42em] text-deep">
-            Select
-          </span>
-        </span>
-      </Link>
-    );
-  }
+const LOGO_LARGEUR = 1070;
+const LOGO_HAUTEUR = 306;
 
+function Wordmark({ className = "", aligne = false }: { className?: string; aligne?: boolean }) {
   return (
-    <Link href="/" className={`inline-flex flex-col items-center leading-none ${className}`} aria-label={BRAND.name}>
-      <span className="wordmark text-[1.2rem] text-deep sm:text-[1.4rem]">KossKoss</span>
-      <span className="mt-1 text-[0.55rem] font-medium uppercase tracking-[0.42em] text-deep">
-        Select
-      </span>
+    <Link
+      href="/"
+      className={`inline-flex ${aligne ? "items-center" : "flex-col items-center"} ${className}`}
+      aria-label={BRAND.name}
+    >
+      <Image
+        src="/images/logo-full.png"
+        alt=""
+        width={LOGO_LARGEUR}
+        height={LOGO_HAUTEUR}
+        priority
+        className={aligne ? "h-9 w-auto sm:h-10" : "h-10 w-auto sm:h-11"}
+      />
     </Link>
   );
 }
@@ -185,7 +193,7 @@ export async function SiteHeader() {
      * panier — montent eux à z-60, portés dans <body>.
      */
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background lg:bg-background/85 lg:backdrop-blur-md">
-      {/* Une seule rangée : sigle à gauche, navigation au centre, actions à
+      {/* Une seule rangée : logo à gauche, navigation au centre, actions à
           droite — la composition de la maquette du client.
           L'en-tête précédent centrait le logotype et repoussait la navigation
           sur une seconde ligne : il occupait deux fois la hauteur pour la même

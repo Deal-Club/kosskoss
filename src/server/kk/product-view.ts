@@ -1,4 +1,5 @@
 import type { KKBadge, KKProductView, KKTone } from "@/types/kk";
+import { normaliserBadge } from "@/lib/kk/badges";
 import { packshot } from "@/lib/kk/packshot";
 
 /**
@@ -18,8 +19,15 @@ export function toneAt(index: number): KKTone {
   return TONES[index % TONES.length];
 }
 
+/**
+ * Badge affichable à partir de ce qui est stocké.
+ *
+ * La reconnaissance vit dans `lib/kk/badges` — clés, libellés et saisies
+ * acceptées y sont réunis. Cette fonction n'est plus qu'un point d'entrée,
+ * conservé parce que six appelants l'utilisent déjà.
+ */
 export function toBadge(value: string | null): KKBadge {
-  return value === "bestseller" || value === "nouveau" ? value : null;
+  return normaliserBadge(value);
 }
 
 /**

@@ -68,12 +68,17 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
             const active = c.slug === currentCategory;
             return (
               <li key={c.slug}>
+                {/* Le nombre de produits par catégorie a été retiré du filtre.
+                    Sur un catalogue de cette taille, il chiffrait surtout ce
+                    qui manque — « Solaires 3 » se lit comme un rayon vide — et
+                    ajoutait une colonne de chiffres à droite d'une liste qu'on
+                    parcourt à gauche. Une catégorie sans produit est de toute
+                    façon écartée en amont, jamais affichée. */}
                 <a
                   href={`/${groupSlug}/${c.slug}`}
-                  className={`flex items-center justify-between text-sm transition hover:text-deep ${active ? "font-semibold text-deep" : "text-foreground"}`}
+                  className={`block text-sm transition hover:text-deep ${active ? "font-semibold text-deep" : "text-foreground"}`}
                 >
-                  <span>{c.label}</span>
-                  <span className="figure text-xs text-muted-foreground">{c.count}</span>
+                  {c.label}
                 </a>
               </li>
             );

@@ -3,6 +3,7 @@
 import { ChevronRight, ShieldCheck, Star, Truck } from "lucide-react";
 import { PreviewImage } from "@/components/admin/PreviewImage";
 import { formatRating } from "@/lib/formatRating";
+import { BADGE_LABEL, normaliserBadge } from "@/lib/kk/badges";
 
 export type ProductPreviewView = "detail" | "card";
 
@@ -71,6 +72,11 @@ export function ProductPreview({
   const views = [mainImage, ...images.filter((entry) => entry && entry !== mainImage)].filter(
     Boolean,
   );
+  // L'aperçu montrait la CLÉ enregistrée (« bestseller ») là où la boutique
+  // affiche son libellé (« Meilleure vente ») : un aperçu qui ne ressemble pas
+  // à la page ne sert à rien.
+  const cleBadge = normaliserBadge(badge);
+  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge] : "";
   const ratingValue = parseRating(rating);
   const inStock = stock === null || stock > 0;
   const lowStock =
@@ -84,9 +90,9 @@ export function ProductPreview({
         <div className="mx-auto max-w-[220px]">
           <div className="flex h-full flex-col rounded-sm border border-border bg-white p-3 shadow-sm">
             <div className="relative mb-2 min-h-5">
-              {badge.trim() && (
+              {libelleBadge && (
                 <span className="absolute top-0 left-0 rounded-sm bg-badge px-2 py-0.5 text-[11px] font-bold text-badge-foreground">
-                  {badge}
+                  {libelleBadge}
                 </span>
               )}
             </div>
@@ -201,9 +207,9 @@ export function ProductPreview({
               <p className="text-2xl font-black text-primary">
                 {price.trim() || <Placeholder>Prix</Placeholder>}
               </p>
-              {badge.trim() && (
+              {libelleBadge && (
                 <span className="rounded-sm bg-badge px-2 py-0.5 text-[11px] font-bold text-badge-foreground">
-                  {badge}
+                  {libelleBadge}
                 </span>
               )}
             </div>

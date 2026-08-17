@@ -96,16 +96,18 @@ export function Hero() {
                 Les délais d'apparition ont donc tous remonté d'un cran (80 ms),
                 sans quoi la page resterait vide le temps du palier laissé
                 vacant. */}
-            {/* Titre en crème sur la photo voilée. Le second membre passe au
-                blanc pur : la maquette le distingue déjà par la graisse, la
-                valeur redouble l'écart sans changer de couleur.
-                Le crème plutôt que le blanc sur le premier membre — sur une
-                photo, un blanc pur en serif de 44 px vibre au bord des
-                lettres ; la nuance de la marque tient la même lisibilité en
+            {/* Titre d'un seul tenant : une famille, une graisse, une couleur.
+                Il était coupé en deux — « Des soins conçus pour sublimer » en
+                600, « les peaux noires & métissées » en 400 et en blanc pur —
+                pour reprendre le contraste de la maquette. Sur la photo voilée,
+                cette rupture au milieu d'une phrase se lit moins comme un effet
+                que comme un accident de rendu : deux moitiés qui semblent ne pas
+                appartenir au même titre. Le crème plutôt que le blanc pur : sur
+                une photo, un blanc pur en serif de 41 px vibre au bord des
+                lettres, la nuance de la marque tient la même lisibilité en
                 restant posée. */}
             <h1 className="kk-rise text-primary-foreground" style={{ "--d": "0ms" } as React.CSSProperties}>
-              Des soins conçus pour sublimer{" "}
-              <span className="title-soft text-white">les peaux noires &amp; métissées</span>
+              Des soins conçus pour sublimer les peaux noires &amp; métissées
             </h1>
 
             {/* Le chapô quitte le gris d'encre de `.lead`, illisible sur une
@@ -118,35 +120,40 @@ export function Hero() {
               composées, pour ne pas avoir à choisir seul.
             </p>
 
-            {/* Deux portes, dans l'ordre de la maquette : la boutique pour qui
-                sait ce qu'il veut, la routine pour qui ne le sait pas. */}
+            {/* Deux portes, dans l'ordre d'engagement décroissant.
+                « Trouvez votre routine » passe en tête et prend le laiton plein :
+                c'est la promesse du chapô — « des routines déjà composées, pour
+                ne pas avoir à choisir seul » —, donc la suite naturelle du
+                titre. Le diagnostic reste offert juste à côté, en contour, pour
+                qui veut d'abord être conseillé. Un hero ne doit porter qu'une
+                seule action dominante : deux boutons d'égale force ne
+                partageraient pas les clics, ils les feraient hésiter. */}
             <div
               className="kk-rise mt-8 flex flex-wrap items-center gap-4"
               style={{ "--d": "160ms" } as React.CSSProperties}
             >
-              {/* Bouton d'action en laiton plein, comme « Commencer le
-                  diagnostic » sur l'autre section sombre du site. Il se remplit
-                  de vert profond au survol (`kk-fill-deep`) — l'effet inverse
-                  serait illisible sur un fond déjà sombre.
+              {/* Bouton d'action en laiton plein. Il se remplit de vert profond
+                  au survol (`kk-fill-deep`) — l'effet inverse serait illisible
+                  sur un fond déjà sombre.
                   Le texte du bouton ne prend pas l'ombre du hero : posé sur un
                   aplat laiton, il n'en a pas besoin et elle l'empâterait. */}
               <Link
-                href="/soins-visage"
+                href="/routines"
                 className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep [text-shadow:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
               >
-                Découvrir la boutique
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                Trouvez votre routine
+                <Sparkles className="h-4 w-4 shrink-0" />
               </Link>
               {/* Contour clair à 55 %, au-dessus des 3:1 qu'un contrôle doit
                   tenir sur son fond pour qu'on voie où l'on clique. Il se
                   remplit d'un blanc très dilué au survol plutôt que de changer
                   de couleur : sur une photo, un aplat franc trancherait. */}
               <Link
-                href="/routines"
-                className="inline-flex items-center gap-2 rounded-full border border-primary-foreground/55 px-7 py-3.5 text-sm font-semibold text-primary-foreground backdrop-blur-[2px] transition hover:border-primary-foreground hover:bg-primary-foreground/10"
+                href="/diagnostic"
+                className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/55 px-7 py-3.5 text-sm font-semibold text-primary-foreground backdrop-blur-[2px] transition hover:border-primary-foreground hover:bg-primary-foreground/10"
               >
-                Trouvez votre routine
-                <Sparkles className="h-4 w-4 text-gold-soft" />
+                Commencer le diagnostic
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>

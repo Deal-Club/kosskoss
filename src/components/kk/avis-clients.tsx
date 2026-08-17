@@ -103,18 +103,24 @@ function CarteAvis({ avis }: { avis: KKTestimonialView }) {
     /* Carte blanche sur fond blanc : c'est le filet et l'ombre qui la
        détachent, pas un aplat. `--card` et `--background` valent la même
        valeur (#ffffff), un fond de carte ne servirait donc à rien. */
-    <article className="kk-lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-6 shadow-sm sm:p-7">
-      <Etoiles note={avis.rating} />
+    <article className="kk-lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-sm">
+      <Etoiles note={avis.rating} taille="h-4 w-4" />
 
       {avis.title && (
-        <h3 className="relative mt-4 font-display text-lg leading-snug text-deep">{avis.title}</h3>
+        <h3 className="relative mt-3 font-display text-base leading-snug text-deep">{avis.title}</h3>
       )}
 
-      {/* `line-clamp-6` : les avis vont de deux lignes à un paragraphe entier.
+      {/* `line-clamp-3` : les avis vont de deux lignes à un paragraphe entier.
           Sans plafond, une carte bavarde étirait toute la rangée et laissait
-          ses voisines à moitié vides. */}
+          ses voisines à moitié vides. Le plafond était à six lignes ; c'est la
+          citation qui fixait la hauteur de la section, et trois lignes suffisent
+          à donner le ton — l'avis entier se lit sur la page du produit. */}
+      {/* L'écart sous la citation est une MARGE et non un padding. Sur un bloc
+          coupé par `line-clamp` — un `-webkit-box` tronqué —, le padding
+          intérieur agrandit la fenêtre de clipping : la quatrième ligne
+          réapparaissait, tranchée en deux, sous les trois lignes autorisées. */}
       <blockquote
-        className={`relative line-clamp-6 pb-6 leading-relaxed text-foreground ${avis.title ? "mt-3" : "mt-4"}`}
+        className={`relative mb-4 line-clamp-3 text-sm leading-relaxed text-foreground ${avis.title ? "mt-2" : "mt-3"}`}
       >
         {avis.quote}
       </blockquote>
@@ -125,10 +131,10 @@ function CarteAvis({ avis }: { avis: KKTestimonialView }) {
           carte — l'écart résiduel s'ouvre entre la citation et le trait de
           séparation, où il se lit comme de la respiration et non comme un
           oubli. */}
-      <footer className="mt-auto flex items-center gap-3 border-t border-border pt-5">
+      <footer className="mt-auto flex items-center gap-3 border-t border-border pt-4">
         <span
           aria-hidden="true"
-          className={`grid h-11 w-11 shrink-0 place-items-center rounded-full font-display text-sm font-semibold text-deep ${teinte(avis.author)}`}
+          className={`grid h-9 w-9 shrink-0 place-items-center rounded-full font-display text-xs font-semibold text-deep ${teinte(avis.author)}`}
         >
           {initiales(avis.author)}
         </span>
@@ -148,13 +154,13 @@ function CarteAvis({ avis }: { avis: KKTestimonialView }) {
       {avis.href ? (
         <Link
           href={avis.href}
-          className="group mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-gold-ink transition hover:text-deep"
+          className="group mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-gold-ink transition hover:text-deep"
         >
           <span className="truncate">{avis.productName}</span>
           <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
         </Link>
       ) : (
-        <p className="mt-4 truncate text-xs text-muted-foreground">{avis.productName}</p>
+        <p className="mt-3 truncate text-xs text-muted-foreground">{avis.productName}</p>
       )}
     </article>
   );
@@ -177,98 +183,75 @@ export function AvisClients({
   const moyenne = resume.average.toFixed(1).replace(".", ",");
 
   return (
+    /*
+     * SECTION RAMENÉE À SA PLUS COURTE EXPRESSION.
+     *
+     * Elle se composait en deux colonnes côte à côte : à gauche un panneau de
+     * chiffres — sur-titre, titre en deux lignes de 36 px, moyenne en 60 px,
+     * puis l'histogramme des cinq notes ; à droite trois cartes dont la
+     * citation courait sur six lignes. Chacune tenait dans les 400 px, et la
+     * rangée prenait la hauteur de la plus haute : la preuve sociale occupait
+     * un écran entier au milieu du parcours.
+     *
+     * Ce qui a été coupé, dans l'ordre du gain :
+     *   — L'HISTOGRAMME (≈ 150 px). Il détaillait la répartition des notes
+     *     alors que la section n'a plus à convaincre à elle seule : la page
+     *     /avis le porte en entier, et le lien y mène.
+     *   — LA CITATION passe de six lignes à trois (≈ 70 px par carte, et
+     *     c'est la carte qui fixe la hauteur de la rangée).
+     *   — LE PANNEAU DE CHIFFRES devient une ligne : moyenne, étoiles et
+     *     nombre d'avis se lisent maintenant côte à côte sous le titre, au
+     *     lieu de s'empiler sur trois niveaux.
+     *   — LES MARGES : palier `section` au lieu de `section-wide`, cartes en
+     *     p-5 au lieu de p-7.
+     *
+     * Ce qui reste est ce qu'on vient chercher : la note, le volume, trois
+     * voix. Le reste est à un clic.
+     */
     <section className="bg-background">
-      <div className="section-wide mx-auto max-w-7xl px-6">
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] lg:gap-14">
-          {/* ─────────────────────────── LE CHIFFRE ─────────────────────── */}
-          <div className="lg:sticky lg:top-28 lg:self-start">
+      <div className="section mx-auto max-w-7xl px-6">
+        {/* En-tête sur une seule ligne à partir de `sm` : le titre à gauche, la
+            note à droite. Empilés, ils coûtaient deux blocs de hauteur pour
+            deux informations qui se lisent d'un seul regard. */}
+        <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <div>
             <p className="eyebrow">Avis clients</p>
-            <h2 className="mt-3 font-display text-3xl leading-tight text-deep sm:text-4xl">
-              Ce qu&rsquo;en disent{" "}
-              <span className="title-soft text-muted-foreground">celles et ceux qui ont essayé.</span>
+            <h2 className="mt-1.5 font-display text-2xl leading-tight text-deep sm:text-[1.75rem]">
+              Ce qu&rsquo;en disent celles et ceux qui ont essayé.
             </h2>
-
-            <div className="mt-8 flex items-end gap-4">
-              {/* La moyenne en corps de titre : c'est le chiffre qu'on vient
-                  chercher, il doit se lire avant le reste. `figure` aligne les
-                  chiffres sur une chasse fixe (voir globals.css). */}
-              <p className="figure font-display text-6xl leading-none text-deep">{moyenne}</p>
-              <div className="pb-1">
-                <Etoiles note={resume.average} taille="h-5 w-5" />
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  <span className="figure">{resume.total}</span> avis publié
-                  {resume.total > 1 ? "s" : ""}
-                </p>
-              </div>
-            </div>
-
-            {/* Répartition des notes. Elle est là pour une raison précise : une
-                moyenne seule ne dit pas si elle repose sur un consensus ou sur
-                deux extrêmes qui se compensent. Montrer les notes basses coûte
-                moins cher que de paraître les cacher. */}
-            <ul className="mt-8 space-y-2">
-              {resume.distribution.map(({ rating, count }) => {
-                const part = resume.total > 0 ? (count / resume.total) * 100 : 0;
-                return (
-                  <li key={rating} className="flex items-center gap-3 text-xs">
-                    <span className="figure w-3 shrink-0 text-muted-foreground">{rating}</span>
-                    <Star className="h-3 w-3 shrink-0 fill-gold text-gold" aria-hidden="true" />
-                    <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
-                      <span
-                        className="block h-full rounded-full bg-gold"
-                        style={{ width: `${part}%` }}
-                      />
-                    </span>
-                    <span className="figure w-8 shrink-0 text-right text-muted-foreground">
-                      {Math.round(part)}%
-                    </span>
-                  </li>
-                );
-              })}
-            </ul>
-
-            {/* La mention « Tous les avis sont relus avant publication. Nous
-                affichons les notes basses comme les hautes. » occupait ici
-                deux lignes et une icône. Retirée pour deux raisons qui vont
-                ensemble :
-
-                — ELLE FAISAIT DÉBORDER LA RANGÉE. Cette colonne est la plus
-                  haute des deux ; c'est elle qui fixait la hauteur de la
-                  ligne, et les cartes de droite s'étiraient de quelque
-                  quarante pixels pour la rattraper, laissant un vide sous le
-                  lien produit. Un bloc qu'on retire ici, c'est un vide qu'on
-                  supprime là-bas.
-
-                — ELLE DISAIT CE QUE LA RÉPARTITION MONTRE. Le graphique juste
-                  au-dessus affiche les notes de 5 à 1, part comprise : que les
-                  mauvaises notes soient publiées s'y lit, et une preuve vaut
-                  mieux que sa déclaration.
-
-                La modération elle-même n'a pas changé : `getReviewsSummary` et
-                `getHomeTestimonials` ne lisent que les avis au statut
-                « approuvé ». */}
           </div>
 
-          {/* ──────────────────────────── LES VOIX ──────────────────────── */}
-          {/* Rail à défilement sous `xl`, grille de trois au-delà — une seule
-              rangée dans les deux cas. Les marges négatives rendent les cartes
-              affleurantes au bord de l'écran : une carte coupée par la
-              gouttière se lit comme mal placée, coupée par le bord elle se lit
-              comme un rail. Même procédé que les routines.
-              `py-1` sur la piste : sans lui, l'ombre des cartes et leur
-              soulèvement au survol (`kk-lift`) seraient rognés par le cadre de
-              défilement. */}
-          <ul className="kk-piste -mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 py-1 pb-3 xl:mx-0 xl:grid xl:grid-cols-3 xl:gap-6 xl:overflow-visible xl:px-0 xl:pb-1">
-            {cartes.map((a) => (
-              <li
-                key={a.id}
-                className="w-[min(82vw,22rem)] shrink-0 snap-start xl:w-auto xl:shrink"
-              >
-                <CarteAvis avis={a} />
-              </li>
-            ))}
-          </ul>
+          {/* La moyenne reste le plus gros caractère du bloc — c'est le chiffre
+              qu'on vient chercher — mais en 36 px au lieu de 60. `figure`
+              aligne les chiffres sur une chasse fixe (voir globals.css). */}
+          <div className="flex items-center gap-3">
+            <p className="figure font-display text-4xl leading-none text-deep">{moyenne}</p>
+            <div>
+              <Etoiles note={resume.average} taille="h-4 w-4" />
+              <p className="mt-1 text-xs text-muted-foreground">
+                <span className="figure">{resume.total}</span> avis publié
+                {resume.total > 1 ? "s" : ""}
+              </p>
+            </div>
+          </div>
         </div>
+
+        {/* ──────────────────────────── LES VOIX ──────────────────────── */}
+        {/* Rail à défilement sous `xl`, grille de trois au-delà — une seule
+            rangée dans les deux cas. Les marges négatives rendent les cartes
+            affleurantes au bord de l'écran : une carte coupée par la gouttière
+            se lit comme mal placée, coupée par le bord elle se lit comme un
+            rail. Même procédé que les routines.
+            `py-1` sur la piste : sans lui, l'ombre des cartes et leur
+            soulèvement au survol (`kk-lift`) seraient rognés par le cadre de
+            défilement. */}
+        <ul className="kk-piste -mx-6 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 py-1 pb-3 xl:mx-0 xl:grid xl:grid-cols-3 xl:gap-5 xl:overflow-visible xl:px-0 xl:pb-1">
+          {cartes.map((a) => (
+            <li key={a.id} className="w-[min(82vw,20rem)] shrink-0 snap-start xl:w-auto xl:shrink">
+              <CarteAvis avis={a} />
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

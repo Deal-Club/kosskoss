@@ -1,31 +1,38 @@
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { PREOCCUPATIONS } from "@/lib/kk/besoins";
+import { ArrowRight } from "lucide-react";
+import type { BrandFocusView } from "@/server/kk/brand-focus";
 
 /**
- * « Une gamme pour chaque problème » — la section qui relie les préoccupations
- * au catalogue.
+ * FOCUS MARQUE — la maison mise en avant sur l'accueil, bloc 3 de la structure
+ * fournie par le client (« mise en avant Nubiance · storytelling + bénéfices »).
  *
- * ── Ce qu'elle fait, que les autres ne font pas ───────────────────────────
- * L'accueil dit ailleurs ce que la maison est (« Notre raison d'être ») et ce
- * qu'elle vend (routines, best-sellers). Celle-ci fait le lien entre les deux :
- * elle NOMME les problèmes, et montre qu'à chacun correspond une réponse
- * disponible. C'est le raccourci pour le visiteur qui sait ce qui le gêne mais
- * pas quoi acheter.
+ * ── Ce qu'elle était ──────────────────────────────────────────────────────
+ * Une section « Une gamme pour chaque problème » : sur-titre « Notre gamme »,
+ * titre « Un problème, une réponse qui existe. », un paragraphe sur les gênes
+ * de peau, puis quatre pastilles de préoccupations ouvrant chacune son rayon
+ * filtré. Le focus marque n'y était qu'un encadré, en cinquième position.
+ * Tout cela a été retiré : quatre niveaux de discours passaient avant le seul
+ * sujet du bloc, et la photo de fond montre des flacons Nubiance depuis le
+ * début.
  *
- * ── D'où viennent les entrées ─────────────────────────────────────────────
- * Des préoccupations réelles du diagnostic (`src/lib/kk/besoins.ts`), celles-là
- * mêmes qui filtrent le catalogue. Chaque pastille ouvre donc un rayon qui
- * contient effectivement des produits — vérifié à la mise en place, de 5 à 37
- * références selon le besoin. Rien n'est écrit en dur ici.
+ * ── Ce qu'elle est ────────────────────────────────────────────────────────
+ * Une seule prise de parole : la maison, son accroche, son argumentaire, le
+ * nombre de références disponibles, et deux portes — le diagnostic, les
+ * routines.
  *
- * ── Le bouton ─────────────────────────────────────────────────────────────
- * Le diagnostic est la porte pour qui ne sait pas se situer. Il vient APRÈS
- * les pastilles, pas avant : on laisse d'abord la chance de se reconnaître
- * dans un problème nommé, on propose l'accompagnement ensuite.
+ * Le nom, l'accroche et le texte viennent de `getBrandFocus`, pas d'ici, et le
+ * nombre de références est COMPTÉ EN BASE. Deux conséquences : le chiffre
+ * annoncé est toujours celui du catalogue servable, et le bloc disparaît de
+ * lui-même le jour où la maison n'est plus distribuée, au lieu de vanter une
+ * marque qu'on ne vend pas. Les deux boutons, eux, tiennent sans elle.
+ *
+ * ── Et l'entrée par préoccupation ? ───────────────────────────────────────
+ * Elle n'est pas perdue : le diagnostic pose les questions et mène au même
+ * rayon filtré, et le méga-menu de l'en-tête ouvre le catalogue par besoin.
+ * `PREOCCUPATIONS` (`src/lib/kk/besoins.ts`) reste la source de ces filtres.
  */
-export function GammeSection() {
+export function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
   return (
     <section className="relative overflow-hidden bg-deep text-primary-foreground">
       {/* La photo couvre TOUTE la section, bord à bord.
@@ -77,53 +84,99 @@ export function GammeSection() {
 
       <div className="section-wide relative mx-auto max-w-7xl px-6">
         <div className="max-w-xl">
-          <p className="eyebrow eyebrow-on-dark">Notre gamme</p>
+          {/* ─────────────────── LA MAISON MISE EN AVANT ───────────────────
+              Elle n'est plus un encadré au milieu de la section : ELLE EST LA
+              SECTION, cadre compris. Le sur-titre « Notre gamme », le titre
+              « Un problème, une réponse qui existe. », le paragraphe sur les
+              gênes et les quatre pastilles de préoccupations ont été retirés —
+              quatre niveaux de discours avant d'arriver au seul sujet du bloc.
 
-          <h2 className="mt-3 font-display text-3xl leading-tight text-white sm:text-4xl">
-            Un problème,{" "}
-            <span className="title-soft text-white/75">une réponse qui existe.</span>
-          </h2>
+              Les préoccupations restent joignables : le diagnostic, juste en
+              dessous, mène au même rayon filtré en posant les bonnes questions,
+              et le méga-menu de l'en-tête ouvre le catalogue par besoin. */}
+          {focus && (
+            /* SANS CADRE. Le bloc était posé dans un panneau — filet blanc,
+               fond noir à 25 %, flou d'arrière-plan, 28 px de padding. Sur une
+               photo déjà voilée, ce cadre ajoutait un second voile par-dessus
+               le premier et découpait un rectangle au milieu d'une image qui
+               court d'un bord à l'autre. Le texte se pose directement sur le
+               voile, comme celui du hero : c'est le dégradé de la section qui
+               porte la lisibilité, pas une boîte rapportée. */
+            <div>
+              {/* « La maison que nous mettons en avant » : sept mots pour dire
+                  ce que trois disent mieux, et une formule qui parlait de nous
+                  au moment de présenter quelqu'un d'autre. */}
+              <p className="eyebrow eyebrow-on-dark">Marque à l&rsquo;honneur</p>
 
-          <p className="mt-5 leading-relaxed text-white/85">
-            Taches qui persistent, boutons qui reviennent, teint qui s&rsquo;éteint,
-            peau qui tire : chacune de ces gênes a ses causes, et chacune a ses
-            soins. Nous avons construit le catalogue autour d&rsquo;elles plutôt
-            qu&rsquo;autour des marques — pour que vous partiez de ce que vous
-            vivez, pas d&rsquo;un nom de flacon.
-          </p>
+              {/* Le nom porte le titre de la section — c'est lui qu'on doit
+                  retenir. En Cinzel, la serif des logotypes de la maison : un
+                  nom de marque n'est pas une phrase, il se pose. */}
+              <h2 className="wordmark mt-2.5 text-3xl leading-none text-white sm:text-4xl">
+                {focus.brand}
+              </h2>
 
-          {/* Les préoccupations, cliquables : chacune ouvre son rayon filtré. */}
-          <ul className="mt-8 flex flex-wrap gap-2.5">
-            {PREOCCUPATIONS.map((besoin) => (
-              <li key={besoin.tag}>
-                <Link
-                  href={`/soins-visage?besoin=${besoin.tag}`}
-                  title={besoin.hint}
-                  className="group inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/[0.07] px-4 py-2 text-sm text-white backdrop-blur-sm transition hover:border-gold hover:bg-white/15"
-                >
-                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-gold transition-transform duration-300 group-hover:scale-150" />
-                  {besoin.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+              <p className="mt-3 font-display text-lg leading-snug text-white/90">{focus.claim}</p>
 
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <Link
-              href="/diagnostic"
-              className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep"
-            >
-              <Sparkles className="h-4 w-4" />
-              Faire mon diagnostic
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
+              <p className="mt-3.5 text-sm leading-relaxed text-white/80">{focus.description}</p>
+            </div>
+          )}
+
+          {/* LES DEUX ACTIONS SUR UNE SEULE LIGNE.
+              Le bouton de la marque vivait dans le bloc de texte et le lien des
+              routines huit pixels plus bas, dans sa propre rangée : deux
+              alignements pour deux liens voisins. Ils partagent maintenant la
+              même rangée — le plein d'abord, le lien ensuite —, et
+              `flex-wrap` les empile proprement quand la largeur manque.
+
+              « FAIRE MON DIAGNOSTIC » A ÉTÉ RETIRÉ de cette rangée : il portait
+              le laiton plein à côté du bouton blanc, et deux actions pleines
+              côte à côte se disputent le clic au lieu de le diriger. Le
+              diagnostic garde ses entrées dans le hero, la section avant/après
+              et la navigation de l'en-tête. */}
+          {/* LES ROUTINES PASSENT EN PREMIER, ET PRENNENT LE PLEIN.
+              L'ordre s'inverse : le lien des routines ouvre la rangée, le
+              catalogue de la maison le suit. Les deux rôles suivent la position
+              — un lien souligné placé devant un bouton plein resterait second
+              pour l'œil quoi qu'en dise l'ordre du DOM, et la rangée se lirait
+              de droite à gauche. C'est la même hiérarchie que dans le hero, où
+              « Trouvez votre routine » porte l'aplat et le reste suit. */}
+          <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
+            {/* « AVEC Nubiance », et non « routines Nubiance ».
+                Les routines ne sont pas composées par marque : `seed-routines`
+                les monte geste par geste, en piochant dans tout le catalogue
+                selon la catégorie et les tags. La Routine Acné, par exemple,
+                mêle deux références Nubiance et deux d'une autre maison.
+                « Nos routines Nubiance » annoncerait donc une composition qui
+                n'existe pas — la formule retenue nomme la maison sans
+                revendiquer l'exclusivité. Le jour où des routines réellement
+                mono-marque sont créées, le libellé peut devenir littéral. */}
             <Link
               href="/routines"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-white underline-offset-4 hover:underline"
+              className="group inline-flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-white"
             >
-              Voir les routines complètes
-              <ArrowRight className="h-4 w-4" />
+              Nos routines avec {focus?.brand ?? "cette maison"}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
+
+            {/* Le libellé annonçait « Voir les 9 références Nubiance ».
+                Le compte venait de la base et restait donc juste, mais un petit
+                nombre affiché sur un bouton se lit comme un catalogue maigre —
+                il dessert la maison qu'on met en avant.
+                `focus.productCount` sert toujours, en amont : `getBrandFocus`
+                renvoie `null` quand il tombe à zéro, et la section entière
+                disparaît plutôt que de vanter une marque sans stock.
+
+                Le lien passe par la recherche faute de page de marque — c'est
+                le chemin qu'emprunte déjà la page /marques. */}
+            {focus && (
+              <Link
+                href={`/recherche?q=${encodeURIComponent(focus.brand)}`}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-white underline-offset-4 hover:underline"
+              >
+                Voir les produits {focus.brand}
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
