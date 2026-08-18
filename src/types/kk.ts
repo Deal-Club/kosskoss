@@ -63,6 +63,11 @@ export type KKProductView = {
   /** Slug du produit, repris tel quel dans la ligne de panier. */
   slug?: string;
   /**
+   * Description courte, révélée au survol de la vignette. Facultative : une
+   * fiche sans résumé n'ouvre simplement pas le panneau.
+   */
+  shortDescription?: string;
+  /**
    * Stock connu au moment du rendu. Le serveur le recontrôle à la commande :
    * il ne sert ici qu'à griser l'ajout rapide et à borner la quantité.
    */

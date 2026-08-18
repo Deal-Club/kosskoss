@@ -5,13 +5,18 @@ import { parseProductInput } from "./productInput";
 
 test("parseProductInput accepte une liste de variations valides", () => {
   const { values, errors } = parseProductInput(
-    { variants: [{ label: "1 stère", price: "175,00 €" }, { label: "2 stères", price: "250,00 €" }] },
+    {
+      variants: [
+        { label: "100 ml", price: "17 500 FCFA" },
+        { label: "200 ml", price: "25 000 FCFA" },
+      ],
+    },
     "update",
   );
   assert.deepEqual(errors, []);
   assert.equal(values.variants?.length, 2);
   assert.equal(values.variants?.[0].priceCents, 17500);
-  assert.equal(values.variants?.[0].label, "1 stère");
+  assert.equal(values.variants?.[0].label, "100 ml");
 });
 
 test("parseProductInput rejette une variation sans libellé", () => {

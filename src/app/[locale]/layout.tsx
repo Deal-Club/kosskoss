@@ -8,6 +8,7 @@ import { CartDrawerKK } from "@/components/kk/cart-drawer";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SmartsuppChat } from "@/components/SmartsuppChat";
 import { CodeSnippets } from "@/components/CodeSnippets";
+import { CookieConsent } from "@/components/kk/cookie-consent";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -49,6 +50,9 @@ export default async function LocaleLayout({
             renseignée. */}
         <WhatsAppButton />
         <SmartsuppChat />
+        {/* Le bandeau est monté en dernier : il se superpose au reste et n'a
+            aucune raison d'entrer dans l'ordre de lecture avant le contenu. */}
+        <CookieConsent locale={locale} />
         <CodeSnippets placement="bodyEnd" />
       </CartProvider>
     </NextIntlClientProvider>

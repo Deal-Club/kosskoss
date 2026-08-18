@@ -117,7 +117,7 @@ export function RoutineAddToCart({
       {achatDirect ? (
         <>
           <Zap className="h-4 w-4 shrink-0" />
-          Acheter la routine
+          Acheter maintenant
         </>
       ) : ajoutee ? (
         <>

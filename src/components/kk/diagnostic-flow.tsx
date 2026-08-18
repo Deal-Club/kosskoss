@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LocalizedLink as Link } from "./localized-link";
+import { usePathname, useRouter } from "next/navigation";
+import { LocalizedLink as Link, withLocale } from "./localized-link";
 import Image from "next/image";
 import {
   Droplet,
@@ -18,8 +19,8 @@ import {
   Check,
   X,
   ArrowLeft,
-  ShoppingBag,
-  RefreshCw,
+  ArrowRight,
+  Zap,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
@@ -53,10 +54,11 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  *     acheté. L'écran d'analyse subsiste, mais il ne dure que le temps réel de
  *     la requête.
  *
- *  3. LE SECOND CLIC PAR QUESTION. Il fallait choisir sa réponse PUIS cliquer
- *     « Continuer » : dix clics pour cinq questions. La sélection fait
- *     désormais avancer d'elle-même. Le court délai avant le passage laisse
- *     voir la coche — sans lui, on doute d'avoir cliqué.
+ * (Le passage automatique à la question suivante, un temps en vigueur pour
+ * épargner un clic, a été REVENU à la demande du client : la sélection se
+ * contente d'enregistrer, et deux boutons « Précédent » / « Suivant » mènent
+ * le parcours. On y gagne la relecture — voir sa réponse avant de la valider,
+ * et revenir dessus — au prix d'un clic par question.)
  *
  * Les réponses sont conservées le temps de l'onglet : un rechargement, un
  * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
@@ -68,14 +70,15 @@ type Phase = "question" | "loading" | "result";
 const REPRISE = "kk-diagnostic";
 
 export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
-  const { add, openDrawer } = useCart();
+  const { add } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
   const [phase, setPhase] = useState<Phase>("question");
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DiagnosticResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   /** Passage automatique en cours : neutralise un second clic pendant le délai. */
-  const enCours = useRef<number | null>(null);
   /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
   const attenteAnalyse = useRef<number | null>(null);
 
@@ -108,26 +111,13 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 
   // Un passage automatique programmé ne doit pas survivre au démontage.
   useEffect(() => () => {
-    if (enCours.current !== null) window.clearTimeout(enCours.current);
     if (attenteAnalyse.current !== null) window.clearTimeout(attenteAnalyse.current);
   }, []);
 
-  /**
-   * Sélection d'une réponse : elle vaut validation.
-   *
-   * Le délai de 260 ms n'est pas un effet — c'est le temps de voir la coche se
-   * poser. Sans lui, l'écran change avant que le geste soit confirmé et le
-   * visiteur ne sait pas ce qu'il a répondu.
-   */
+  /** Sélection d'une réponse : elle enregistre, elle ne valide pas. */
   function choose(answerId: string) {
-    if (enCours.current !== null) return;
-    const suivant = { ...answers, [question.id]: answerId };
-    setAnswers(suivant);
+    setAnswers((actuelles) => ({ ...actuelles, [question.id]: answerId }));
     setError(null);
-    enCours.current = window.setTimeout(() => {
-      enCours.current = null;
-      avancer(suivant);
-    }, 260);
   }
 
   async function avancer(reponses: Record<string, string>) {
@@ -178,19 +168,21 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     }
   }
 
-  function restart() {
-    setAnswers({});
-    setQIndex(0);
-    setResult(null);
-    setPhase("question");
-    try {
-      sessionStorage.removeItem(REPRISE);
-    } catch {
-      /* sans conséquence */
-    }
-  }
-
-  function addRoutine() {
+  /**
+   * Achat direct de la routine recommandée.
+   *
+   * Le bouton déposait au panier et ouvrait le tiroir. Or on arrive ici APRÈS
+   * avoir répondu à cinq questions et lu la composition geste par geste : la
+   * décision est prise. Renvoyer vers un tiroir, puis vers le panier, puis vers
+   * le tunnel, c'est ajouter trois écrans à un achat déjà consenti — l'inverse
+   * de l'orientation conversion demandée.
+   *
+   * Le panier reste le passage obligé : c'est lui qui porte l'état de la
+   * commande et le tunnel le lit. Il est traversé, pas exposé. Même dispositif
+   * que le mode « achat » de `RoutineAddToCart` et que « Payer maintenant » sur
+   * une fiche produit.
+   */
+  function acheterRoutine() {
     if (!result) return;
     for (const step of result.steps) {
       const p = step.product;
@@ -208,7 +200,10 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
         1,
       );
     }
-    openDrawer();
+
+    // Ni confirmation ni tiroir : deux interruptions qui ne feraient que
+    // retarder le paiement.
+    router.push(withLocale(pathname, "/commande"));
   }
 
   /* ---------------------------------------------------------- Loading -- */
@@ -246,78 +241,122 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_22rem]">
             {/* Étapes */}
-            <ol className="space-y-6">
+            {/* Cartes compactes, alignées sur celles de la page routine.
+                Elles occupaient une hauteur d'image de 128 px pour quatre
+                lignes de texte empilées — numéro, geste, marque, nom — dans
+                20 px de marge intérieure. Sur une routine de cinq gestes, le
+                résultat du diagnostic demandait deux écrans de défilement. */}
+            <ol className="space-y-3">
               {result.steps.map((step) => {
                 const p = step.product;
                 const hasImage = typeof p.image === "string" && p.image.length > 0;
                 return (
-                  <li key={step.key} className="flex gap-5 rounded-2xl border border-border/70 bg-card p-5">
-                    <div className="relative hidden h-32 w-28 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab] sm:block">
+                  <li key={step.key} className="flex gap-4 rounded-2xl border border-border/70 bg-card p-4">
+                    <div className="relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab] sm:block">
                       {hasImage ? (
-                        <Image src={p.image as string} alt={p.name} fill sizes="120px" className="object-contain p-2" />
+                        <Image src={p.image as string} alt={p.name} fill sizes="80px" className="object-contain p-1.5" />
                       ) : (
                         <BottleMotif className="absolute inset-0 m-auto h-3/5 text-deep/60" />
                       )}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="grid h-6 w-6 place-items-center rounded-full bg-deep text-xs font-semibold text-primary-foreground">
+                    <div className="min-w-0 flex-1">
+                      {/* Numéro, geste et marque sur une seule ligne : trois
+                          informations courtes qui tenaient sur trois lignes. */}
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-deep text-[0.65rem] font-semibold text-primary-foreground">
                           {step.index}
                         </span>
-                        <span className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                        <span className="text-[0.7rem] font-semibold tracking-[0.14em] text-deep uppercase">
                           {step.label}
                         </span>
+                        <span aria-hidden="true" className="text-muted-foreground/40">
+                          ·
+                        </span>
+                        <span className="text-[0.7rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                          {p.brand}
+                        </span>
                       </div>
-                      <p className="mt-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                        {p.brand}
-                      </p>
-                      <Link href={p.href ?? "#"} className="font-display text-lg text-deep hover:underline">
-                        {p.name}
-                      </Link>
-                      {step.why && <p className="mt-1 text-sm text-muted-foreground">{step.why}</p>}
-                      <p className="figure mt-2 text-sm font-semibold text-deep">{formatFcfa(p.priceFcfa)}</p>
+
+                      <h3 className="mt-1.5 font-display text-[1.15rem] leading-snug">
+                        <Link href={p.href ?? "#"} className="text-deep transition hover:text-deep/70">
+                          {p.name}
+                        </Link>
+                      </h3>
+
+                      {step.why && (
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.why}</p>
+                      )}
+
+                      {/* Pas de prix à l'unité, comme sur la page routine : la
+                          routine se vend comme un tout, et aligner cinq montants
+                          invite à les additionner de tête au lieu de lire la
+                          composition. Le seul montant qui engage est celui du
+                          récapitulatif, à droite, qui reste sous les yeux
+                          pendant toute la lecture. */}
                     </div>
                   </li>
                 );
               })}
             </ol>
 
-            {/* Résumé routine */}
+            {/* Résumé routine, au vert profond.
+
+                Même raison que sur la fiche routine : il portait l'habillage
+                des cartes de produit qui le précèdent et se lisait comme l'une
+                d'elles, alors qu'il ne décrit rien — il totalise et il engage.
+                L'écran de résultat étant clair de bout en bout, le fond sombre
+                en fait le seul point d'ancrage, à l'endroit où l'on décide. */}
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">
-                  Votre routine complète
-                </h2>
-                <ul className="mt-4 space-y-3">
-                  {result.steps.map((step) => (
-                    <li key={step.key} className="flex justify-between gap-3 text-sm">
-                      <span className="text-foreground">
-                        <span className="text-muted-foreground">{step.index}. </span>
-                        {step.product.name}
-                      </span>
-                      <span className="figure shrink-0 text-deep">{formatFcfa(step.product.priceFcfa)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
-                  <span className="font-semibold text-deep">Total routine</span>
-                  <span className="figure text-xl font-semibold text-deep">{formatFcfa(result.totalFcfa)}</span>
+              <div className="overflow-hidden rounded-2xl bg-deep text-primary-foreground shadow-[0_18px_40px_-24px_rgba(17,41,45,0.7)]">
+                <div aria-hidden="true" className="h-0.5 w-full bg-gradient-to-r from-gold/70 via-gold to-gold/20" />
+
+                <div className="p-6">
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-gold-soft">
+                    Votre routine complète
+                  </h2>
+
+                  <ul className="mt-4 divide-y divide-white/10 border-y border-white/10">
+                    {result.steps.map((step) => (
+                      <li key={step.key} className="flex justify-between gap-3 py-3 text-sm">
+                        <span className="text-primary-foreground/90">
+                          <span className="figure text-primary-foreground/55">{step.index}. </span>
+                          {step.product.name}
+                        </span>
+                        <span className="figure shrink-0 text-primary-foreground/80">
+                          {formatFcfa(step.product.priceFcfa)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-5 flex items-baseline justify-between gap-3">
+                    <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
+                      Total routine
+                    </span>
+                    <span className="figure text-2xl font-semibold text-primary-foreground">
+                      {formatFcfa(result.totalFcfa)}
+                    </span>
+                  </div>
+
+                  {/* Bouton sable sur fond sombre, qui se remplit de vert au
+                      survol — la même inversion que sur la fiche routine. */}
+                  <button
+                    type="button"
+                    onClick={acheterRoutine}
+                    aria-label={`Commander la routine — ${result.steps.length} produits`}
+                    className="kk-fill kk-fill-deep mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-sand px-6 py-3.5 text-sm font-semibold text-deep"
+                  >
+                    <Zap className="h-4 w-4" />
+                    Commander la routine
+                  </button>
+
+                  {/* Le nombre de produits est dit sous le bouton : « Commander
+                      la routine » seul laisse croire à un article unique, et la
+                      surprise se paierait à l'écran suivant. */}
+                  <p className="mt-2.5 text-center text-xs text-primary-foreground/60">
+                    {result.steps.length} produits · paiement à l&apos;étape suivante
+                  </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={addRoutine}
-                  className="kk-fill mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground"
-                >
-                  <ShoppingBag className="h-4 w-4" />
-                  Ajouter toute la routine au panier
-                </button>
-                <button
-                  type="button"
-                  onClick={restart}
-                  className="mt-3 flex w-full items-center justify-center gap-1.5 text-sm font-medium text-deep hover:underline"
-                >
-                  <RefreshCw className="h-3.5 w-3.5" /> Refaire le diagnostic
-                </button>
               </div>
             </aside>
           </div>
@@ -350,16 +389,27 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
           />
         </div>
 
-        <h1 className="mt-8 text-center text-deep">{question.title}</h1>
-        <p className="lead mx-auto mt-2 max-w-md text-center">{question.subtitle}</p>
+        {/* La question garde son <h1> — c'est bien le titre de l'écran — mais
+            pas la TAILLE des titres de page.
 
-        {/* Une réponse = une validation : plus de bouton « Continuer ». Dit ici
-            pour que le visiteur sache que son clic engage la suite. */}
-        <p className="mt-2 text-center text-xs text-muted-foreground">
-          Choisissez une réponse pour passer à la suite
+            L'échelle globale monte le h1 jusqu'à 54 px, un calibre voulu pour
+            un titre de rayon ou de hero. Appliqué à une question de formulaire,
+            il occupait trois lignes et 180 px de haut avant même la première
+            réponse, et repoussait les cartes sous la ligne de flottaison. On
+            redescend ici, sans rien changer à l'échelle du site. */}
+        <h1 className="mt-6 text-center text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight text-deep">
+          {question.title}
+        </h1>
+        <p className="mx-auto mt-2 max-w-md text-center text-base text-muted-foreground">
+          {question.subtitle}
         </p>
 
-        <div className="mt-7 grid gap-4 sm:grid-cols-2">
+        {/* Cartes de réponse resserrées dans les mêmes proportions que la
+            question : quatre choix courts n'ont pas besoin de 20 px de marge
+            intérieure ni d'une pastille de 40 px. Les quatre tiennent
+            désormais dans l'écran avec la question, ce qui est tout l'enjeu
+            d'un questionnaire — voir ses options sans défiler. */}
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {question.answers.map((a) => {
             const active = selected === a.id;
             const A = Icon(a.icon);
@@ -369,18 +419,20 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
                 type="button"
                 onClick={() => choose(a.id)}
                 aria-pressed={active}
-                className={`flex items-start gap-4 rounded-2xl border p-5 text-left transition ${
+                className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition ${
                   active ? "border-deep bg-sand shadow-sm" : "border-border bg-card hover:border-deep/40"
                 }`}
               >
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-full ${active ? "bg-deep text-primary-foreground" : "bg-sand text-deep"}`}>
-                  <A className="h-5 w-5" />
+                <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-full ${active ? "bg-deep text-primary-foreground" : "bg-sand text-deep"}`}>
+                  <A className="h-4 w-4" />
                 </span>
-                <span className="flex-1">
-                  <span className="block font-medium text-deep">{a.label}</span>
-                  <span className="mt-0.5 block text-sm text-muted-foreground">{a.description}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.95rem] font-medium text-deep">{a.label}</span>
+                  <span className="mt-0.5 block text-[0.8125rem] leading-snug text-muted-foreground">
+                    {a.description}
+                  </span>
                 </span>
-                <span className={`mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${active ? "border-deep bg-deep text-primary-foreground" : "border-border"}`}>
+                <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${active ? "border-deep bg-deep text-primary-foreground" : "border-border"}`}>
                   {active && <Check className="h-3 w-3" />}
                 </span>
               </button>
@@ -390,17 +442,23 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 
         {error && <p role="alert" className="mt-4 text-center text-sm text-destructive">{error}</p>}
 
-        {/* Il ne reste que le retour. Le bouton « Continuer » a disparu avec le
-            second clic par question : c'est la sélection qui fait avancer.
-            Sur la première question, le retour quitte le diagnostic — plutôt
-            que de ramener sur un écran d'intro qui n'existe plus. */}
-        <div className="mt-8 flex items-center justify-center">
+        {/* Navigation explicite.
+
+            « Suivant » reste inactif tant qu'aucune réponse n'est choisie : le
+            questionnaire n'a pas de question facultative, et un bouton qui
+            n'avance pas quand on le presse est pire qu'un bouton grisé.
+
+            Sur la première question, « Précédent » quitte le diagnostic —
+            plutôt que de ramener sur un écran d'intro qui n'existe plus. Sur
+            la dernière, « Suivant » devient « Voir mon résultat » : le libellé
+            doit annoncer un changement d'écran, pas une question de plus. */}
+        <div className="mt-8 flex items-center justify-between gap-3">
           {qIndex === 0 ? (
             <Link
               href="/"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
             >
-              <ArrowLeft className="h-4 w-4" /> Retour à l&rsquo;accueil
+              <ArrowLeft className="h-4 w-4" /> Quitter
             </Link>
           ) : (
             <button
@@ -408,9 +466,19 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
               onClick={() => setQIndex((i) => i - 1)}
               className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
             >
-              <ArrowLeft className="h-4 w-4" /> Question précédente
+              <ArrowLeft className="h-4 w-4" /> Précédent
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => avancer(answers)}
+            disabled={!selected}
+            className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition disabled:pointer-events-none disabled:opacity-40"
+          >
+            {qIndex < questions.length - 1 ? "Suivant" : "Voir mon résultat"}
+            <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </section>
     </MinimalShell>
@@ -421,7 +489,15 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
 function MinimalShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex items-center justify-between border-b border-border/60 px-6 py-4">
+      {/* En-tête collant. Les écrans longs du parcours — la liste des produits
+          conseillés, surtout — éloignaient « Quitter le diagnostic » de
+          plusieurs hauteurs d'écran : la seule sortie du parcours immersif
+          demandait de remonter tout en haut pour être atteinte.
+
+          Le fond est OPAQUE et non transparent : sans lui, le contenu défile
+          visiblement sous le titre. `backdrop-blur` adoucit le passage des
+          visuels produits sous la barre. */}
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-background/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <Link href="/" className="wordmark text-sm text-deep">
           KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep">SELECT</span>
         </Link>

@@ -1,4 +1,6 @@
 import { getSnippetsFor } from "@/server/codeSnippets";
+import { readConsent } from "@/server/consent";
+import { allowsCategory } from "@/lib/consent";
 import { splitSnippetForHead, type SnippetPlacement } from "@/server/codeSnippetInput";
 
 /**
@@ -20,9 +22,22 @@ import { splitSnippetForHead, type SnippetPlacement } from "@/server/codeSnippet
  * rendus comme éléments React, que React remonte dans le `<head>`. Sans cela,
  * une balise de vérification de propriété resterait dans le corps de page, où
  * aucun moteur ne la lit.
+ *
+ * CONSENTEMENT. Chaque fragment déclare sa catégorie ; seuls ceux que le
+ * visiteur a acceptés sont rendus. Le filtre est appliqué ICI, au rendu serveur,
+ * et non par un script qui masquerait après coup : un pixel présent dans le HTML
+ * est un pixel déjà parti. Un fragment refusé n'atteint donc jamais le
+ * navigateur.
+ *
+ * Conséquence à connaître : la page rendue dépend du cookie de consentement.
+ * C'est aussi pourquoi le bandeau recharge la page après un choix — un fragment
+ * réinjecté par une simple actualisation React ne s'exécuterait pas, pour la
+ * raison expliquée juste au-dessus.
  */
 export async function CodeSnippets({ placement }: { placement: SnippetPlacement }) {
-  const snippets = await getSnippetsFor(placement);
+  const [tous, consent] = await Promise.all([getSnippetsFor(placement), readConsent()]);
+
+  const snippets = tous.filter((snippet) => allowsCategory(consent, snippet.category));
   if (snippets.length === 0) return null;
 
   return (

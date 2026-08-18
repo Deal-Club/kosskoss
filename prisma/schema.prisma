@@ -701,6 +701,15 @@ model CodeSnippet {
   // head | bodyStart | bodyEnd
   placement String
   content   String
+  // Catégorie de consentement : necessaire | mesure | marketing.
+  //
+  // Défaut volontairement RESTRICTIF. Un fragment collé dans cet écran est
+  // presque toujours un gestionnaire de balises ou un pixel : le supposer
+  // nécessaire au fonctionnement de la boutique reviendrait à le déclencher
+  // sans consentement, ce qui est précisément l'infraction que le bandeau
+  // évite. La migration reclasse donc les fragments existants en « marketing »,
+  // et ils cessent de partir tant que le visiteur n'a pas accepté.
+  category  String   @default("marketing")
   // Un fragment naît désactivé : on le colle, on le relit, puis on l'allume.
   enabled   Boolean  @default(false)
   // Ordre d'insertion à emplacement égal. Il compte : un mode consentement doit

@@ -1326,3 +1326,21 @@
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------------- */
+/* Bandeau de consentement aux cookies                                        */
+/* ------------------------------------------------------------------------- */
+
+/* Entrée par le bas avec une légère avance en échelle : le bandeau se pose,
+   il ne surgit pas. Enveloppé côté composant dans `motion-safe:`, donc inerte
+   pour qui a demandé moins d'animations. */
+@keyframes kk-consent-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

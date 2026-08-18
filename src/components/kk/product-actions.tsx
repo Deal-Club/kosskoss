@@ -75,7 +75,11 @@ function toFavoriteItem(product: FavoriteTarget): Omit<FavoriteItem, "addedAt"> 
 }
 
 const PASTILLE =
-  "grid h-11 w-11 place-items-center rounded-full shadow-lg shadow-deep/20 transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card";
+  // Le liseré clair n'est pas décoratif : au survol, le panneau d'information
+  // (vert profond) monte sous cette pastille, elle aussi verte. Sans contour,
+  // elle disparaîtrait dans l'aplat au moment précis où on veut la cliquer.
+  // Sur le cadre blanc, où le contraste suffit déjà, il ne se voit pas.
+  "grid h-11 w-11 place-items-center rounded-full shadow-lg shadow-deep/20 ring-1 ring-white/30 transition duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card";
 
 /** Apparition au survol sur écran large ; toujours visible au doigt. */
 const REVEAL =

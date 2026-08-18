@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { setRequestLocale } from "next-intl/server";
-import { ArrowRight, ChevronRight, Sparkles } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { RoutineAddToCart } from "@/components/kk/routine-add";
@@ -76,53 +76,48 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
         {/* En-tête sur la teinte de la routine : la couleur qui l'identifiait
             sur l'accueil la suit ici. C'est ce qui fait d'une teinte un repère
-            et non un ornement. */}
+            et non un ornement.
+
+            BANDEAU FIN, ET VOLONTAIREMENT. L'en-tête portait auparavant la
+            description, le prix et l'ajout au panier : il occupait la moitié de
+            l'écran, et repoussait sous la ligne de flottaison le contenu qui
+            justifie la page — la composition geste par geste.
+
+            Les trois éléments retirés ne sont pas perdus pour autant : le prix
+            et l'ajout au panier vivent dans le récapitulatif collant, qui suit
+            la lecture au lieu d'attendre en haut ; la description est reprise
+            en tête de la composition, là où on la lit vraiment. */}
         <section className={`${tintClass(routine.tint)}`}>
-          <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 py-12 lg:grid-cols-[1.1fr_1fr]">
-            <div className="max-w-xl">
-              <p className="eyebrow">{besoin ? libelleBesoin(besoin, locale) : "Routine complète"}</p>
-              <h1 className="mt-3 text-deep">{routine.name}</h1>
-              {routine.claim && (
-                <p className="mt-3 font-display text-xl text-deep">{routine.claim}</p>
-              )}
-              {routine.description && (
-                <p className="mt-5 leading-relaxed text-deep">{routine.description}</p>
-              )}
-
-              <p className="mt-7 text-sm text-deep">
-                {routine.steps.length} gestes ·{" "}
-                <span className="figure text-lg font-semibold text-deep">
-                  {formatFcfa(routine.totalFcfa)}
-                </span>
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+            <div className="max-w-2xl">
+              <p className="eyebrow">
+                {besoin ? libelleBesoin(besoin, locale) : "Routine complète"}
+                {" · "}
+                {routine.steps.length} gestes
               </p>
-
-              <div className="mt-5 flex flex-wrap items-center gap-4">
-                <RoutineAddToCart routine={routine} className="px-7 py-3.5" />
-                <Link
-                  href="/diagnostic"
-                  className="group inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  Je préfère un diagnostic
-                </Link>
-              </div>
+              <h1 className="mt-2 text-deep">{routine.name}</h1>
+              {routine.claim && (
+                <p className="mt-2 font-display text-lg text-deep">{routine.claim}</p>
+              )}
             </div>
 
-            {/* Les produits de la routine, en ligne. Visuel de la même famille
-                que la carte d'accueil : on reconnaît ce qu'on a choisi. */}
-            <div className="flex items-end justify-center gap-2" aria-hidden="true">
+            {/* Les produits de la routine, en ligne. Réduits de moitié : dans un
+                bandeau fin, ils signent la routine d'un coup d'œil, ils n'ont
+                plus à la mettre en scène — les mêmes visuels sont repris en
+                grand dans la composition. */}
+            <div className="flex shrink-0 items-end gap-1.5" aria-hidden="true">
               {routine.steps.map((step, i) => (
                 <div
                   key={step.id}
-                  className="relative h-40 w-1/4 shrink-0 sm:h-52"
-                  style={{ marginBottom: i % 2 === 1 ? "1.2rem" : 0 }}
+                  className="relative h-20 w-14 shrink-0 sm:h-24 sm:w-16"
+                  style={{ marginBottom: i % 2 === 1 ? "0.6rem" : 0 }}
                 >
                   {step.product.image ? (
                     <Image
                       src={step.product.image}
                       alt=""
                       fill
-                      sizes="140px"
+                      sizes="64px"
                       className="object-contain object-bottom"
                     />
                   ) : (
@@ -148,96 +143,180 @@ export default async function RoutinePage({ params }: { params: Params }) {
             <div>
               <p className="eyebrow">Le détail</p>
               <h2 className="mt-2 text-deep">Geste par geste</h2>
+              {routine.description && (
+                <p className="mt-4 max-w-2xl leading-relaxed text-foreground/85">
+                  {routine.description}
+                </p>
+              )}
 
-          <ol className="mt-8 space-y-5">
+          {/* Gestes resserrés.
+
+              Trois choses gonflaient ces cartes sans rien apporter : un carreau
+              d'image de 128 px qui imposait à lui seul la hauteur de la ligne,
+              un titre à la taille par défaut des h3 — celle des titres de
+              section, ici pour un nom de produit — et l'étiquette du geste
+              seule sur sa ligne, la marque seule sur la suivante, alors que la
+              largeur restait vide à droite.
+
+              Les deux libellés partagent donc maintenant la ligne du numéro,
+              l'image descend à 80 px, et le nom prend une taille de nom. La
+              carte perd environ un tiers de sa hauteur sans qu'aucune
+              information ne disparaisse. */}
+          <ol className="mt-8 space-y-3">
             {routine.steps.map((step, i) => {
               const p = step.product;
               return (
                 <li
                   key={step.id}
-                  className="flex gap-5 rounded-2xl border border-border/70 bg-card p-5"
+                  className="flex gap-4 rounded-2xl border border-border/70 bg-card p-4"
                 >
-                  <div className={`relative hidden h-32 w-28 shrink-0 overflow-hidden rounded-xl sm:block ${tintClass(routine.tint)}`}>
+                  <div className={`relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:block ${tintClass(routine.tint)}`}>
                     {p.image ? (
-                      <Image src={p.image} alt={p.name} fill sizes="120px" className="object-contain p-2" />
+                      <Image src={p.image} alt={p.name} fill sizes="80px" className="object-contain p-1.5" />
                     ) : (
                       <BottleMotif className="absolute inset-0 m-auto h-3/5 text-deep/50" />
                     )}
                   </div>
 
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-deep text-xs font-semibold text-primary-foreground">
+                  <div className="min-w-0 flex-1">
+                    {/* Numéro, geste et marque sur une seule ligne : trois
+                        informations courtes qui tenaient sur trois lignes. */}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-deep text-[0.65rem] font-semibold text-primary-foreground">
                         {i + 1}
                       </span>
-                      <span className="text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-deep">
                         {step.label}
+                      </span>
+                      <span aria-hidden="true" className="text-muted-foreground/40">
+                        ·
+                      </span>
+                      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                        {p.brand}
                       </span>
                     </div>
 
-                    <p className="mt-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                      {p.brand}
-                    </p>
-                    <h3 className="mt-0.5">
+                    <h3 className="mt-1.5 font-display text-[1.15rem] leading-snug">
                       <Link href={p.href ?? "#"} className="text-deep transition hover:text-deep/70">
                         {p.name}
                       </Link>
                     </h3>
 
-                    {step.why && <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.why}</p>}
+                    {step.why && (
+                      <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.why}</p>
+                    )}
 
-                    <p className="figure mt-2.5 text-sm font-semibold text-deep">
-                      {formatFcfa(p.priceFcfa)}
-                    </p>
+                    {/* Pas de prix à l'unité ici. La routine se vend comme un
+                        tout : afficher huit montants successifs invite à les
+                        additionner de tête et à comparer chaque geste au reste
+                        du catalogue, au lieu de lire la composition. Le seul
+                        montant qui engage est celui du récapitulatif, à droite,
+                        et il reste sous les yeux pendant toute la lecture. */}
                   </div>
                 </li>
               );
             })}
           </ol>
 
-              {/* Le rayon filtré, en second recours : pour qui veut composer sa
-                  propre suite. La routine reste la porte principale. */}
-              {besoin && (
-                <p className="mt-8 text-sm text-muted-foreground">
-                  Vous préférez choisir vous-même ?{" "}
-                  <Link
-                    href={`/soins-visage?besoin=${besoin.tag}`}
-                    className="font-medium text-deep kk-underline"
-                  >
-                    Voir tous les produits « {libelleBesoin(besoin, locale)} »
-                  </Link>
-                </p>
-              )}
+              {/* Deuxième porte, en une phrase : les autres routines toutes
+                  faites, ou le diagnostic qui en compose une sur mesure.
+                  Elle remplace le renvoi vers le rayon filtré, qui rendait une
+                  grille de produits à trier — c'est-à-dire le travail que la
+                  routine venait précisément d'épargner.
+
+                  Affichée sans condition : elle ne dépend plus du besoin
+                  associé à la routine. */}
+              <p className="mt-8 text-sm text-muted-foreground">
+                Parcourez{" "}
+                <Link href="/routines" className="font-medium text-deep kk-underline">
+                  nos autres routines
+                </Link>{" "}
+                ou faites le{" "}
+                <Link href="/diagnostic" className="font-medium text-deep kk-underline">
+                  diagnostic
+                </Link>{" "}
+                pour composer la vôtre.
+              </p>
             </div>
 
             {/* Récapitulatif collant. `self-start` est indispensable : sans lui,
                 la colonne des gestes étire celle-ci à sa hauteur et `sticky`
                 n'a plus de course. */}
+            {/* Le récapitulatif passe au vert profond.
+
+                Il portait exactement l'habillage des gestes de gauche — même
+                `bg-card`, même `border-border/70`, même `rounded-2xl` — et se
+                lisait donc comme une quatrième carte de la liste, alors qu'il
+                ne décrit rien : il totalise et il engage. La page étant claire
+                de bout en bout (hero, gestes, « autres routines » en sable), le
+                fond sombre en fait le seul point d'ancrage de l'écran, à
+                l'endroit exact où l'on décide.
+
+                Le filet de laiton en tête suit la règle de la palette : l'or
+                n'habille jamais du texte sur fond clair, il ne sert que de
+                trait décoratif. */}
             <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="rounded-2xl border border-border/70 bg-card p-6">
-                <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-deep">
-                  Votre routine
-                </h2>
-                <ul className="mt-5 space-y-3">
-                  {routine.steps.map((step, i) => (
-                    <li key={step.id} className="flex justify-between gap-3 text-sm">
-                      <span className="text-foreground">
-                        <span className="text-muted-foreground">{i + 1}. </span>
-                        {step.product.name}
-                      </span>
-                      <span className="figure shrink-0 text-deep">
-                        {formatFcfa(step.product.priceFcfa)}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-6 flex items-center justify-between border-t border-border pt-5">
-                  <span className="font-semibold text-deep">Total</span>
-                  <span className="figure text-xl font-semibold text-deep">
-                    {formatFcfa(routine.totalFcfa)}
-                  </span>
+              <div className="overflow-hidden rounded-2xl bg-deep text-primary-foreground shadow-[0_18px_40px_-24px_rgba(17,41,45,0.7)]">
+                <div aria-hidden="true" className="h-0.5 w-full bg-gradient-to-r from-gold/70 via-gold to-gold/20" />
+
+                <div className="p-6">
+                  <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-gold-soft">
+                    Votre routine
+                  </h2>
+                  <p className="mt-1 text-xs text-primary-foreground/60">
+                    {/* Gabarit plutôt que « {n} gestes » : JSX supprime l'espace
+                        qui suit une expression en fin de ligne, et le compte se
+                        collait au mot (« 3gestes »). */}
+                    {`${routine.steps.length} gestes, dans l’ordre`}
+                  </p>
+
+                  {/* Filets plutôt qu'espacements : sur un fond sombre, la ligne
+                      structure la lecture chiffrée mieux qu'un blanc, et donne
+                      au bloc son air de relevé. */}
+                  <ul className="mt-5 divide-y divide-white/10 border-y border-white/10">
+                    {routine.steps.map((step, i) => (
+                      <li key={step.id} className="flex justify-between gap-3 py-3 text-sm">
+                        <span className="text-primary-foreground/90">
+                          <span className="figure text-primary-foreground/55">{i + 1}. </span>
+                          {step.product.name}
+                        </span>
+                        <span className="figure shrink-0 text-primary-foreground/80">
+                          {formatFcfa(step.product.priceFcfa)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-5 flex items-baseline justify-between gap-3">
+                    <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
+                      Total
+                    </span>
+                    <span className="figure text-2xl font-semibold text-primary-foreground">
+                      {formatFcfa(routine.totalFcfa)}
+                    </span>
+                  </div>
+
+                  {/* `mode="achat"` : le clic file au tunnel de commande sans
+                      s'arrêter au panier. Le panier reste traversé — c'est lui
+                      qui porte les lignes que le tunnel relit — mais il n'est
+                      plus une étape que le visiteur voit.
+
+                      `variant="light"` = bouton sable, la variante prévue pour
+                      les fonds sombres ; il se remplit de vert profond au
+                      survol. */}
+                  <RoutineAddToCart
+                    routine={routine}
+                    variant="light"
+                    mode="achat"
+                    className="mt-5 w-full px-6 py-3.5"
+                  />
+
+                  {/* Ce que fait le bouton, dit avant le clic : sur une routine,
+                      un intitulé seul laisse croire à un article unique. */}
+                  <p className="mt-3 text-center text-xs text-primary-foreground/55">
+                    Les {routine.steps.length} produits en une seule commande.
+                  </p>
                 </div>
-                <RoutineAddToCart routine={routine} className="mt-5 w-full px-6 py-3.5" />
               </div>
             </aside>
           </div>

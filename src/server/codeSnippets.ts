@@ -12,6 +12,7 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
 import type { CodeSnippetInput, SnippetPlacement } from "@/server/codeSnippetInput";
+import { isConsentCategory } from "@/lib/consent";
 
 export interface CodeSnippet extends CodeSnippetInput {
   readonly id: string;
@@ -24,13 +25,20 @@ function versFragment(row: {
   id: string;
   name: string;
   placement: string;
+  category: string;
   content: string;
   enabled: boolean;
   position: number;
   updatedAt: Date;
   updatedBy: string;
 }): CodeSnippet {
-  return { ...row, placement: row.placement as SnippetPlacement };
+  return {
+    ...row,
+    placement: row.placement as SnippetPlacement,
+    // Une catégorie illisible en base retombe sur la plus restrictive : le
+    // fragment attend alors un consentement au lieu de partir librement.
+    category: isConsentCategory(row.category) ? row.category : "marketing",
+  };
 }
 
 /**

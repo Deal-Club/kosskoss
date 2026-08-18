@@ -4,7 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
-import { parseBesoin, parseBrands, parseSort } from "@/lib/kk/catalog-params";
+import { parseBesoin, parseBrands, parsePage, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -14,14 +14,26 @@ type Search = Promise<Record<string, string | string[] | undefined>>;
 
 export const dynamicParams = true;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: Search;
+}): Promise<Metadata> {
   const { locale, group, category } = await params;
-  const view = await getCatalog({ group, category });
+  const page = parsePage((await searchParams).page);
+  const view = await getCatalog({ group, category, page });
   if (!view || !view.category) return {};
+
+  // Voir la note de la page univers : chaque page de rayon se désigne
+  // elle-même comme canonique, sinon elle n'est jamais explorée.
+  const suffixe = view.page > 1 ? ` — Page ${view.page}` : "";
+  const requete = view.page > 1 ? `?page=${view.page}` : "";
   return {
-    title: `${view.category.label} — ${BRAND.name}`,
+    title: `${view.category.label}${suffixe} — ${BRAND.name}`,
     description: `${view.category.label} : notre sélection de soins ${view.category.label.toLowerCase()}, prix en FCFA, livraison au Cameroun.`,
-    alternates: alternatesFor(`/${group}/${category}`, locale),
+    alternates: alternatesFor(`/${group}/${category}`, locale, requete),
   };
 }
 
@@ -39,7 +51,8 @@ export default async function CategoryPage({
   const brands = parseBrands(sp.marque);
   const sort = parseSort(sp.tri);
   const besoin = parseBesoin(sp.besoin);
-  const view = await getCatalog({ group, category, brands, besoin, sort });
+  const page = parsePage(sp.page);
+  const view = await getCatalog({ group, category, brands, besoin, sort, page });
   if (!view) notFound();
 
   return (

@@ -20,7 +20,9 @@ import {
 } from "lucide-react";
 import { formatFcfa } from "@/lib/kk/format";
 import { useScrollLock } from "@/lib/kk/use-scroll-lock";
-import type { NavGroup, NavHighlight } from "@/server/kk/navigation";
+import type { NavGroup, NavHighlight, NavRoutine } from "@/server/kk/navigation";
+import { tintClass } from "./routine-card";
+import { BottleMotif } from "./motifs";
 
 /**
  * Les deux commandes interactives de l'en-tête : la recherche et le menu
@@ -361,16 +363,25 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
  * Liens d'univers du bandeau principal, avec soulignement de la rubrique
  * courante. Client, parce que l'état actif dépend de l'URL affichée.
  */
+/** Clés des deux panneaux de la barre. Une seule ouverte à la fois. */
+type Deroulant = "boutique" | "routines";
+
 export function DesktopNav({
   groups,
   highlights = [],
+  routines = [],
 }: {
   groups: NavGroup[];
   /** Deux produits montrés dans le panneau « Boutique ». */
   highlights?: NavHighlight[];
+  /** Routines montrées dans le panneau « Routines ». */
+  routines?: NavRoutine[];
 }) {
   const pathname = usePathname();
-  const [ouvert, setOuvert] = useState(false);
+  // Un seul panneau ouvert à la fois, désigné par sa clé. Un booléen ne
+  // suffisait plus dès qu'il y a eu deux entrées déroulantes : passer de
+  // « Boutique » à « Routines » les aurait affichées toutes les deux.
+  const [panneau, setPanneau] = useState<Deroulant | null>(null);
   const minuterie = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /**
@@ -382,14 +393,14 @@ export function DesktopNav({
    * le vide entre le lien et le panneau — c'est le délai qu'utilisent les
    * catalogues qui ne se referment pas au nez du visiteur.
    */
-  function ouvrir() {
+  function ouvrir(cle: Deroulant) {
     if (minuterie.current) clearTimeout(minuterie.current);
-    setOuvert(true);
+    setPanneau(cle);
   }
 
   function fermer(delai = 180) {
     if (minuterie.current) clearTimeout(minuterie.current);
-    minuterie.current = setTimeout(() => setOuvert(false), delai);
+    minuterie.current = setTimeout(() => setPanneau(null), delai);
   }
 
   useEffect(() => () => {
@@ -397,7 +408,7 @@ export function DesktopNav({
   }, []);
 
   // Échap referme, comme tout panneau superposé du site.
-  useDismiss(ouvert, () => setOuvert(false));
+  useDismiss(panneau !== null, () => setPanneau(null));
 
   // La fermeture après navigation est déclenchée par le clic sur chaque lien
   // (`onFermer`), et non par un effet sur l'URL : un effet qui appelle
@@ -405,7 +416,7 @@ export function DesktopNav({
   // visiteur reclique sur la page où il se trouve déjà. Même raison que dans
   // `MobileMenu`.
   // Les six entrées de la maquette, dans son ordre :
-  // Accueil · Boutique · Routines · Marques · Conseils · Diagnostic.
+  // Accueil · Boutique · Routines · Diagnostic.
   //
   // Les trois univers du catalogue étaient jusqu'ici déployés à plat dans la
   // barre, ce qui la portait à sept entrées et la faisait basculer d'une
@@ -416,13 +427,24 @@ export function DesktopNav({
 
   const entries = [
     { href: "/", label: "Accueil" },
-    { href: groups[0]?.href ?? "/soins-visage", label: "Boutique", deroulant: true },
+    { href: groups[0]?.href ?? "/soins-visage", label: "Boutique", deroulant: "boutique" as const },
     ...(homme ? [{ href: homme.href, label: homme.label }] : []),
-    { href: "/routines", label: "Routines" },
-    { href: "/marques", label: "Marques" },
-    // « Conseils » (la FAQ) a été retiré de la barre : cinq entrées se lisent
-    // d'un coup d'œil là où six commencent à se disputer l'attention, et la FAQ
-    // reste atteignable depuis le menu mobile, le pied de page et l'accueil.
+    // « Routines » s'ouvre à son tour : c'est la porte que la marque met en
+    // avant, et un simple lien obligeait à charger une page pour découvrir ce
+    // qu'elle contient. Le panneau ne s'ouvre que s'il y a de quoi le remplir.
+    {
+      href: "/routines",
+      label: "Routines",
+      ...(routines.length > 0 ? { deroulant: "routines" as const } : {}),
+    },
+    // « Conseils » (la FAQ), puis « Marques », ont été retirés de la barre :
+    // quatre entrées se lisent d'un coup d'œil là où six se disputent
+    // l'attention, et chaque entrée en moins profite au Diagnostic, qui est la
+    // porte d'entrée que la marque met en avant.
+    //
+    // Les deux rubriques restent atteignables : « Nos marques » et « Conseils &
+    // questions » figurent dans le menu mobile, et la page marques est aussi
+    // reprise depuis le bloc « marques » de l'accueil.
     { href: "/diagnostic", label: "Diagnostic" },
   ];
 
@@ -443,21 +465,24 @@ export function DesktopNav({
     <nav className="hidden flex-1 justify-center lg:flex">
       <ul className="flex items-center gap-7">
         {entries.map((entry) => {
-          const active = entry.deroulant ? boutiqueActive() : isActive(entry.href);
-          const deploye = Boolean(entry.deroulant) && ouvert;
+          // Capturé une fois : TypeScript garde ainsi le type restreint dans
+          // les gestionnaires ci-dessous, sans assertion non nulle.
+          const deroulant = entry.deroulant;
+          const active = deroulant === "boutique" ? boutiqueActive() : isActive(entry.href);
+          const deploye = deroulant !== undefined && panneau === deroulant;
           return (
             <li
               key={entry.href}
-              className={entry.deroulant ? "static" : undefined}
-              onMouseEnter={entry.deroulant ? ouvrir : undefined}
-              onMouseLeave={entry.deroulant ? () => fermer() : undefined}
+              className={deroulant ? "static" : undefined}
+              onMouseEnter={deroulant ? () => ouvrir(deroulant) : undefined}
+              onMouseLeave={deroulant ? () => fermer() : undefined}
               // Le focus clavier ouvre le panneau comme le survol ; il ne le
               // referme que lorsqu'il sort réellement de l'entrée — sinon
               // tabuler du lien vers la première catégorie le ferait
               // disparaître à l'instant où l'on entre dedans.
-              onFocus={entry.deroulant ? ouvrir : undefined}
+              onFocus={deroulant ? () => ouvrir(deroulant) : undefined}
               onBlur={
-                entry.deroulant
+                deroulant
                   ? (e) => {
                       if (!e.currentTarget.contains(e.relatedTarget as Node)) fermer(0);
                     }
@@ -466,16 +491,16 @@ export function DesktopNav({
             >
               <Link
                 href={entry.href}
-                onClick={entry.deroulant ? () => setOuvert(false) : undefined}
+                onClick={deroulant ? () => setPanneau(null) : undefined}
                 aria-current={active ? "page" : undefined}
-                aria-expanded={entry.deroulant ? deploye : undefined}
-                aria-haspopup={entry.deroulant ? true : undefined}
+                aria-expanded={deroulant ? deploye : undefined}
+                aria-haspopup={deroulant ? true : undefined}
                 className={`group/lien relative inline-flex items-center gap-1 py-2 text-[0.82rem] font-medium tracking-[0.02em] transition-colors hover:text-deep ${
                   active || deploye ? "text-deep" : "text-muted-foreground"
                 }`}
               >
                 {entry.label}
-                {entry.deroulant && (
+                {deroulant && (
                   <ChevronDown
                     className={`h-3.5 w-3.5 transition-transform duration-200 ${deploye ? "rotate-180" : ""}`}
                     aria-hidden="true"
@@ -493,12 +518,20 @@ export function DesktopNav({
                 />
               </Link>
 
-              {entry.deroulant && groups.length > 0 && (
+              {deroulant === "boutique" && groups.length > 0 && (
                 <MegaMenu
                   groups={groups}
                   highlights={highlights}
                   ouvert={deploye}
-                  onFermer={() => setOuvert(false)}
+                  onFermer={() => setPanneau(null)}
+                />
+              )}
+
+              {deroulant === "routines" && (
+                <RoutinesMenu
+                  routines={routines}
+                  ouvert={deploye}
+                  onFermer={() => setPanneau(null)}
                 />
               )}
             </li>
@@ -506,6 +539,147 @@ export function DesktopNav({
         })}
       </ul>
     </nav>
+  );
+}
+
+/**
+ * Panneau « Routines ».
+ *
+ * Volontairement construit à l'inverse de celui de la boutique. « Boutique »
+ * répond à « où est le rayon ? » : une table des matières, donc du texte
+ * hiérarchisé. « Routines » répond à « laquelle est pour moi ? », qui n'est pas
+ * une question de rangement mais de reconnaissance — d'où des vignettes portant
+ * chacune sa teinte et son visuel, comme sur l'accueil. La couleur est ici
+ * l'index : c'est elle qu'on retient d'une routine, avant son nom.
+ *
+ * Le panneau ne montre pas de prix. Une routine se choisit sur le besoin
+ * qu'elle traite ; le montant se lit sur sa page, où le détail des gestes le
+ * justifie.
+ *
+ * Le repli visuel est le MOTIF sur l'aplat teinté, jamais le packshot du
+ * premier geste — même règle que la carte d'accueil, et pour la même raison :
+ * un flacon isolé se lit comme LE produit vendu, alors qu'une routine est un
+ * ensemble de trois à cinq gestes. Le motif ne prétend rien et s'effacera dès
+ * qu'un visuel de coffret sera renseigné sur `Routine.image`.
+ *
+ * Dernière colonne : le diagnostic. C'est la réponse honnête au visiteur qui
+ * hésite entre cinq routines — plutôt que de le laisser en essayer une au
+ * hasard, on lui propose l'outil qui choisit pour lui.
+ */
+function RoutinesMenu({
+  routines,
+  ouvert,
+  onFermer,
+}: {
+  routines: NavRoutine[];
+  ouvert: boolean;
+  onFermer: () => void;
+}) {
+  return (
+    <div
+      className={`absolute inset-x-0 top-full z-50 pt-2 transition duration-200 ${
+        ouvert ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"
+      }`}
+    >
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="overflow-hidden rounded-2xl border border-border/70 bg-background shadow-2xl shadow-deep/15">
+          <div className="grid gap-6 p-5 lg:grid-cols-[minmax(0,1fr)_17rem]">
+            {/* Les routines, EN LISTE et non en grille.
+                Trois vignettes côte à côte laissaient moins de treize rem à
+                chacune : « Routine Taches & Hyperpigmentation » y passait à la
+                ligne et repoussait son accroche. Une ligne pleine largeur donne
+                au nom et à l'accroche une ligne chacun, ce qui se lit d'un coup
+                d'œil — ce qu'on attend d'un menu. */}
+            <div>
+              <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-gold-ink uppercase">
+                Nos routines prêtes à l&apos;emploi
+              </p>
+
+              <ul className="mt-3 space-y-1.5">
+                {routines.map((routine) => (
+                  <li key={routine.slug}>
+                    <Link
+                      href={routine.href}
+                      onClick={onFermer}
+                      className="group/routine flex items-center gap-3.5 rounded-xl px-2.5 py-2 transition hover:bg-sand"
+                    >
+                      {/* La teinte occupe la vignette même sans visuel : elle
+                          est le repère, l'image n'est qu'un renfort. */}
+                      <span
+                        className={`relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg ${tintClass(routine.tint)}`}
+                      >
+                        {routine.image ? (
+                          <Image
+                            src={routine.image}
+                            alt=""
+                            fill
+                            sizes="48px"
+                            className="object-cover transition-transform duration-500 group-hover/routine:scale-105"
+                          />
+                        ) : (
+                          <BottleMotif className="h-[70%] w-auto text-deep/30 transition-transform duration-500 group-hover/routine:scale-105" />
+                        )}
+                      </span>
+
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm leading-snug font-medium text-deep">
+                          {routine.name}
+                        </span>
+                        {routine.claim ? (
+                          <span className="mt-0.5 block truncate text-xs leading-snug text-muted-foreground">
+                            {routine.claim}
+                          </span>
+                        ) : null}
+                      </span>
+
+                      {/* Le nombre de gestes passe à droite : c'est une
+                          métadonnée, elle n'a pas à s'intercaler entre le nom et
+                          l'accroche. */}
+                      <span className="shrink-0 text-[0.62rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
+                        {routine.stepCount} gestes
+                      </span>
+
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 text-deep/40 transition-transform duration-200 group-hover/routine:translate-x-0.5" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Un vrai bouton, pas un lien discret : c'est la sortie de ce
+                  panneau volontairement partiel. */}
+              <Link
+                href="/routines"
+                onClick={onFermer}
+                className="group/toutes mt-3 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[0.7rem] font-semibold tracking-[0.12em] text-deep uppercase transition hover:border-deep hover:bg-sand"
+              >
+                Voir toutes les routines
+                <ChevronRight className="h-3 w-3 transition-transform duration-200 group-hover/toutes:translate-x-0.5" />
+              </Link>
+            </div>
+
+            {/* Le diagnostic. `self-start` : sans lui, l'encart s'étirait sur
+                toute la hauteur de la colonne des routines et se lisait comme
+                un grand aplat vide. */}
+            <aside className="self-start rounded-xl bg-sand p-4">
+              <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-gold-ink uppercase">
+                Vous hésitez ?
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-deep">
+                Cinq questions sur votre peau, et nous composons la routine qui lui correspond.
+              </p>
+              <Link
+                href="/diagnostic"
+                onClick={onFermer}
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-deep px-5 py-2.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Faire le diagnostic
+              </Link>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

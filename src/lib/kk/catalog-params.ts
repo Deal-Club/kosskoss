@@ -27,3 +27,14 @@ export function parseBrands(value: string | string[] | undefined): string[] {
 export function parseBesoin(value: string | string[] | undefined): string | undefined {
   return besoinParTag(one(value))?.tag;
 }
+
+/**
+ * Page demandée (`?page=2`). Une valeur absurde — « 0 », « abc », « -3 » —
+ * ramène à la première page plutôt qu'à une erreur : une URL malformée doit
+ * afficher le rayon, pas un 500. Le plafond, lui, est appliqué par getCatalog,
+ * seul à connaître le nombre de pages.
+ */
+export function parsePage(value: string | string[] | undefined): number {
+  const parsed = Number.parseInt(one(value) ?? "1", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+}

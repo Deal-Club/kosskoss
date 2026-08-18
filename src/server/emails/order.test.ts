@@ -28,7 +28,7 @@ function order(overrides: Partial<OrderRecord> = {}): OrderRecord {
     email: "anne.exemple@example.fr",
     phone: "+33 1 23 45 67 89",
     billing: {
-      salutation: "frau",
+      salutation: "mme",
       firstName: "Anne",
       lastName: "Exemple",
       company: "",
@@ -39,7 +39,7 @@ function order(overrides: Partial<OrderRecord> = {}): OrderRecord {
     },
     shippingSameAsBilling: true,
     shipping: {
-      salutation: "frau",
+      salutation: "mme",
       firstName: "Anne",
       lastName: "Exemple",
       company: "",

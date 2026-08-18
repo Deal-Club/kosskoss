@@ -4,6 +4,7 @@ import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
 import { FavoriteHeart, QuickAddButton } from "./product-actions";
+import { ProductHoverPanel } from "./product-hover-panel";
 
 // Libellés partagés avec la fiche produit et le back-office : voir
 // `lib/kk/badges`. Ils étaient recopiés dans chaque composant, et « Bestseller »
@@ -50,10 +51,13 @@ export function ProductCard({ product }: { product: KKProductView }) {
               // cadre est en 4/5. En `cover`, le flacon était rogné d'un
               // cinquième — bouchons et bas d'étiquette coupés sur toute la
               // grille.
-              className="object-contain p-2 transition-transform duration-700 ease-out group-hover:scale-105"
+              // L'envol : le flacon s'élève et s'incline pendant que le
+              // panneau sable monte sous lui. Ce sont ces deux mouvements
+              // opposés qui donnent l'impression qu'il sort du soin.
+              className="object-contain p-2 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-[6%] group-hover:scale-105 group-hover:-rotate-2 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 motion-reduce:group-hover:rotate-0"
             />
           ) : (
-            <BottleMotif className="h-3/5 w-auto text-deep transition-transform duration-700 ease-out group-hover:scale-105" />
+            <BottleMotif className="h-3/5 w-auto text-deep transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-[6%] group-hover:scale-105 group-hover:-rotate-2 motion-reduce:transition-none" />
           )}
 
           {/* LA PASTILLE.
@@ -78,11 +82,19 @@ export function ProductCard({ product }: { product: KKProductView }) {
               {BADGE_LABEL[product.badge]}
             </span>
           )}
+
+          {/* La bande d'information, dans le lien : le survol de n'importe
+              quelle partie du cadre l'ouvre, et un clic dessus mène à la fiche
+              — ce qu'annonce « Voir la fiche ». */}
+          <ProductHoverPanel product={product} />
         </a>
 
         {/* Les deux pastilles sont posées hors du lien : cliquer sur le cœur ou
             sur le « + » ne doit pas ouvrir la fiche produit. */}
         <FavoriteHeart product={product} className="absolute right-3 top-3" />
+
+        {/* Rendue APRÈS le panneau : la pastille se pose donc dessus, dans la
+            réserve que le panneau lui laisse à droite. */}
         <QuickAddButton product={product} />
       </div>
 

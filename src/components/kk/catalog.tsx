@@ -1,9 +1,10 @@
 import { LocalizedLink as Link } from "./localized-link";
-import { SlidersHorizontal, RotateCcw, Sparkles, ArrowRight, Check, X } from "lucide-react";
+import { SlidersHorizontal, RotateCcw, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
 import { besoinParTag } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
 import { PatternBackdrop } from "./pattern-backdrop";
+import { DiagnosticFlottant } from "./diagnostic-flottant";
 
 const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "pertinence", label: "Pertinence" },
@@ -12,18 +13,136 @@ const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "prix-desc", label: "Prix décroissant" },
 ];
 
+/**
+ * URL d'un état du rayon : filtres, tri, page.
+ *
+ * La page n'est PAS reportée par les liens de filtre ou de tri, et c'est
+ * voulu : changer de marque depuis la page 3 doit ramener page 1, sinon on
+ * atterrit sur une grille vide quand le nouveau filtre rend moins de trois
+ * pages. Seuls les liens de pagination passent `page`.
+ */
 function withParams(
   basePath: string,
   brands: string[],
   sort: CatalogSort,
   besoin?: string,
+  page?: number,
 ): string {
   const sp = new URLSearchParams();
   if (brands.length) sp.set("marque", brands.join(","));
   if (besoin) sp.set("besoin", besoin);
   if (sort !== "pertinence") sp.set("tri", sort);
+  // La page 1 reste l'URL nue : deux adresses pour une même grille dilueraient
+  // le référencement du rayon.
+  if (page && page > 1) sp.set("page", String(page));
   const qs = sp.toString();
   return qs ? `${basePath}?${qs}` : basePath;
+}
+
+/**
+ * Numéros à afficher : toujours la première et la dernière page, la page
+ * courante et ses voisines, un « … » pour les trous. Sur vingt pages, aligner
+ * vingt numéros donne une barre plus large que la grille.
+ */
+function numerosDePage(page: number, pageCount: number): (number | "gap")[] {
+  if (pageCount <= 7) return Array.from({ length: pageCount }, (_, i) => i + 1);
+
+  const autour = new Set([1, pageCount, page, page - 1, page + 1]);
+  if (page <= 3) [2, 3, 4].forEach((n) => autour.add(n));
+  if (page >= pageCount - 2) [pageCount - 3, pageCount - 2, pageCount - 1].forEach((n) => autour.add(n));
+
+  const retenus = [...autour].filter((n) => n >= 1 && n <= pageCount).sort((a, b) => a - b);
+  const sortie: (number | "gap")[] = [];
+  let precedent = 0;
+  for (const n of retenus) {
+    if (precedent && n - precedent > 1) sortie.push("gap");
+    sortie.push(n);
+    precedent = n;
+  }
+  return sortie;
+}
+
+function Pagination({
+  view,
+  basePath,
+  brands,
+  sort,
+  besoin,
+}: {
+  view: CatalogView;
+  basePath: string;
+  brands: string[];
+  sort: CatalogSort;
+  besoin?: string;
+}) {
+  if (view.pageCount <= 1) return null;
+
+  const lien = (n: number) => withParams(basePath, brands, sort, besoin, n);
+  const base =
+    "inline-flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm transition";
+
+  return (
+    <nav aria-label="Pagination des produits" className="mt-12 flex flex-col items-center gap-4">
+      <ul className="flex flex-wrap items-center justify-center gap-1.5">
+        <li>
+          {view.page > 1 ? (
+            <a href={lien(view.page - 1)} rel="prev" className={`${base} gap-1 text-deep hover:bg-cream`}>
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Précédent</span>
+              <span className="sr-only sm:hidden">Page précédente</span>
+            </a>
+          ) : (
+            // Désactivé = absent du parcours au clavier, mais la place reste
+            // prise : sinon la barre saute latéralement d'une page à l'autre.
+            <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
+              <ChevronLeft className="h-4 w-4" />
+              <span className="hidden sm:inline">Précédent</span>
+            </span>
+          )}
+        </li>
+
+        {numerosDePage(view.page, view.pageCount).map((n, i) =>
+          n === "gap" ? (
+            <li key={`gap-${i}`} aria-hidden="true" className="px-1 text-muted-foreground">
+              &hellip;
+            </li>
+          ) : (
+            <li key={n}>
+              {n === view.page ? (
+                <span aria-current="page" className={`${base} bg-deep font-semibold text-primary-foreground`}>
+                  {n}
+                </span>
+              ) : (
+                <a href={lien(n)} className={`${base} text-foreground hover:bg-cream hover:text-deep`}>
+                  <span className="sr-only">Page </span>
+                  {n}
+                </a>
+              )}
+            </li>
+          ),
+        )}
+
+        <li>
+          {view.page < view.pageCount ? (
+            <a href={lien(view.page + 1)} rel="next" className={`${base} gap-1 text-deep hover:bg-cream`}>
+              <span className="hidden sm:inline">Suivant</span>
+              <span className="sr-only sm:hidden">Page suivante</span>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </a>
+          ) : (
+            <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
+              <span className="hidden sm:inline">Suivant</span>
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          )}
+        </li>
+      </ul>
+
+      <p className="text-xs text-muted-foreground">
+        Page {view.page} sur {view.pageCount}
+      </p>
+    </nav>
+  );
 }
 
 type FilterState = {
@@ -141,50 +260,6 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
   );
 }
 
-/**
- * Appel au diagnostic, glissé en troisième position de la grille produits.
- *
- * ── Pourquoi il tient toute la largeur sur téléphone ──────────────────────
- * La grille du catalogue est à DEUX colonnes sur mobile. Cette carte y
- * occupait une demi-colonne, soit 161 px sur un écran de 390 — dont 48 partent
- * en padding : il restait 113 px de texte. À cette largeur, « Besoin d'aide ? »
- * renvoyait le point d'interrogation seul à la ligne, et le titre en 20 px se
- * brisait après chaque mot, sur cinq lignes. Une carte produit s'accommode
- * d'une colonne étroite — elle est faite d'une image et de deux lignes ; un
- * bloc de discours, non.
- *
- * Elle passe donc en BANDEAU pleine largeur sous 640 px, avec le pictogramme
- * ramené à gauche du texte plutôt qu'au-dessus : 258 px de texte utile, le
- * titre tient en trois lignes, et le bloc cesse d'être plus haut que les
- * produits qu'il accompagne.
- *
- * Au-delà de 640 px il redevient une cellule de la grille, où il retrouve sa
- * composition verticale et la hauteur minimale qui l'aligne sur les cartes
- * produit voisines.
- */
-function DiagnosticCell() {
-  return (
-    <div className="col-span-2 flex items-center gap-4 rounded-2xl bg-deep p-5 text-primary-foreground sm:col-span-1 sm:min-h-[18rem] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6">
-      <Sparkles className="h-7 w-7 shrink-0 opacity-90" />
-      <div className="min-w-0">
-        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-primary-foreground">
-          Besoin d&rsquo;aide ?
-        </p>
-        <h3 className="mt-1.5 font-display text-lg leading-snug sm:mt-2 sm:text-xl">
-          Trouvez les produits faits pour votre peau
-        </h3>
-        <Link
-          href="/diagnostic"
-          className="group mt-3 inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground sm:mt-4"
-        >
-          Faire le diagnostic
-          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
 export function CatalogView({
   view,
   groupSlug,
@@ -205,13 +280,10 @@ export function CatalogView({
   const filterState: FilterState = { view, groupSlug, currentCategory, brands, besoin, sort, basePath };
   const besoinActif = besoinParTag(besoin);
 
-  // Grille : la carte diagnostic s'insère en 3e position.
-  const cells: React.ReactNode[] = [];
-  view.products.forEach((p, i) => {
-    if (i === 2) cells.push(<DiagnosticCell key="promo" />);
-    cells.push(<ProductCard key={p.id} product={p} />);
-  });
-  if (view.products.length > 0 && view.products.length < 3) cells.push(<DiagnosticCell key="promo" />);
+  // Grille : rien que des produits. L'appel au diagnostic occupait ici une
+  // cellule entière ; il flotte désormais (voir DiagnosticFlottant), ce qui
+  // rend sa place à un produit et le garde visible pendant tout le défilement.
+  const cells = view.products.map((p) => <ProductCard key={p.id} product={p} />);
 
   return (
     <>
@@ -262,9 +334,23 @@ export function CatalogView({
           </div>
         </details>
 
-        {/* Filtres desktop */}
+        {/* Filtres desktop.
+
+            La colonne défile pour son propre compte : collée à 6rem du haut
+            (top-24), elle dépassait le bas de l'écran dès que la liste des
+            marques s'allongeait, et le bas restait inatteignable — la page,
+            elle, était déjà en butée. D'où max-h = 100vh moins les 6rem de
+            décalage et 1rem de respiration.
+
+            `overscroll-contain` empêche la molette de repartir sur la page
+            quand on arrive au bout de la liste ; `pr-2` garde la barre de
+            défilement à l'écart du texte.
+
+            `pb-16` réserve la hauteur de la pastille diagnostic, qui flotte en
+            bas à gauche, donc juste au-dessus de cette colonne : sans cette
+            réserve, elle masquait les derniers critères de tri. */}
         <aside className="hidden w-60 shrink-0 lg:block">
-          <div className="sticky top-24">
+          <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pr-2 pb-16">
             <FiltersPanel {...filterState} />
           </div>
         </aside>
@@ -272,7 +358,20 @@ export function CatalogView({
         {/* Grille */}
         <div className="flex-1">
           <p className="mb-6 text-sm text-muted-foreground">
-            {view.total} produit{view.total > 1 ? "s" : ""}
+            {/* Sur un rayon paginé, « 60 produits » seul induit en erreur : on
+                en voit trente. On situe donc la tranche dès qu'il y a plus
+                d'une page. */}
+            {view.pageCount > 1 ? (
+              <>
+                Produits <span className="font-semibold text-foreground">{view.firstItem}</span>
+                {"\u2013"}
+                <span className="font-semibold text-foreground">{view.lastItem}</span> sur {view.total}
+              </>
+            ) : (
+              <>
+                {view.total} produit{view.total > 1 ? "s" : ""}
+              </>
+            )}
           </p>
           {view.products.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center">
@@ -282,10 +381,23 @@ export function CatalogView({
               </a>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-3">{cells}</div>
+            <>
+              <div className="grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-3">{cells}</div>
+              <Pagination
+                view={view}
+                basePath={basePath}
+                brands={brands}
+                sort={sort}
+                besoin={besoin}
+              />
+            </>
           )}
         </div>
       </div>
+
+      {/* Raccourci vers le diagnostic : hors flux, donc sans cellule volée à la
+          grille, et visible pendant tout le défilement. */}
+      <DiagnosticFlottant />
     </>
   );
 }

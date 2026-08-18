@@ -6,6 +6,9 @@ describe("normalizeCodeSnippet", () => {
   const valide = {
     name: "Google Tag Manager",
     placement: "head",
+    // Un gestionnaire de balises dépose des traceurs : sa catégorie n'est pas
+    // « nécessaire », et le normalisateur exige désormais qu'elle soit dite.
+    category: "marketing",
     content: "<script>console.log(1)</script>",
     enabled: true,
     position: 0,
@@ -25,6 +28,23 @@ describe("normalizeCodeSnippet", () => {
   it("refuse un emplacement inconnu", () => {
     const resultat = normalizeCodeSnippet({ ...valide, placement: "sidebar" });
     assert.equal(resultat.ok, false);
+  });
+
+  it("conserve la catégorie de consentement", () => {
+    const resultat = normalizeCodeSnippet({ ...valide, category: "mesure" });
+    assert.equal(resultat.ok && resultat.snippet.category, "mesure");
+  });
+
+  it("refuse une catégorie inconnue plutôt que de la reclasser", () => {
+    // Le repli permissif serait le pire des comportements ici : il ferait
+    // partir un pixel sans consentement.
+    assert.equal(normalizeCodeSnippet({ ...valide, category: "analytics" }).ok, false);
+  });
+
+  it("refuse une catégorie absente", () => {
+    const sansCategorie: Record<string, unknown> = { ...valide };
+    delete sansCategorie.category;
+    assert.equal(normalizeCodeSnippet(sansCategorie).ok, false);
   });
 
   it("refuse un fragment vide", () => {

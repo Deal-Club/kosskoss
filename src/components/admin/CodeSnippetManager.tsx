@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Pencil, Plus, Trash2 } from "lucide-react";
+import { CONSENT_CATEGORIES, type ConsentCategory } from "@/lib/consent";
 import {
+  CATEGORY_LABELS,
   PLACEMENT_LABELS,
   SNIPPET_PLACEMENTS,
   type CodeSnippetInput,
@@ -20,9 +22,26 @@ export interface SnippetRow extends CodeSnippetInput {
 const VIDE: CodeSnippetInput = {
   name: "",
   placement: "head",
+  category: "marketing",
   content: "",
   enabled: false,
   position: 0,
+};
+
+/**
+ * Explication affichée sous le choix de catégorie.
+ *
+ * « Nécessaire » fait partir le fragment SANS attendre l'accord du visiteur.
+ * La formulation insiste là-dessus : c'est la seule case de cet écran qui
+ * engage la responsabilité de la boutique.
+ */
+const AIDE_CATEGORIE: Readonly<Record<ConsentCategory, string>> = {
+  necessaire:
+    "Part immédiatement, sans consentement. À réserver à ce qui casse la boutique en son absence — une balise de vérification de propriété, par exemple. Un gestionnaire de balises ou un pixel n'entre PAS dans cette catégorie.",
+  mesure:
+    "Ne part que si le visiteur a accepté la mesure d'audience. C'est la catégorie des outils de statistiques.",
+  marketing:
+    "Ne part que si le visiteur a accepté la publicité. C'est la catégorie des pixels publicitaires, du remarketing et des boutons de réseaux sociaux — et le choix par défaut, volontairement le plus restrictif.",
 };
 
 /** Explication affichée sous le choix d'emplacement. */
@@ -122,6 +141,27 @@ export function CodeSnippetManager({ snippets }: { snippets: readonly SnippetRow
         </label>
         <p className="mb-4 text-xs text-muted-foreground">{AIDE_EMPLACEMENT[valeurs.placement]}</p>
 
+        {/* Catégorie de consentement.
+            Ce n'est pas un classement documentaire : c'est ce qui décide si le
+            fragment part avant ou après l'accord du visiteur. */}
+        <label className="mb-1 block text-sm">
+          <span className="mb-1 block font-semibold text-foreground">Consentement requis</span>
+          <select
+            value={valeurs.category}
+            onChange={(e) => modifier({ category: e.target.value as ConsentCategory })}
+            className="w-full rounded-sm border border-border px-3 py-2 text-sm outline-none focus:border-primary"
+          >
+            {CONSENT_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {CATEGORY_LABELS[category]}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="mb-4 text-xs text-muted-foreground">
+          {AIDE_CATEGORIE[valeurs.category]}
+        </p>
+
         <label className="mb-4 block text-sm">
           <span className="mb-1 block font-semibold text-foreground">Code</span>
           <textarea
@@ -216,6 +256,7 @@ export function CodeSnippetManager({ snippets }: { snippets: readonly SnippetRow
               <tr className="border-b border-border bg-muted/60 text-left">
                 <th className="px-4 py-3 font-black text-foreground">Fragment</th>
                 <th className="px-4 py-3 font-black text-foreground">Emplacement</th>
+                <th className="px-4 py-3 font-black text-foreground">Consentement</th>
                 <th className="px-4 py-3 font-black text-foreground">État</th>
                 <th className="px-4 py-3 font-black text-foreground">Dernière modification</th>
                 <th className="px-4 py-3" />
@@ -232,6 +273,9 @@ export function CodeSnippetManager({ snippets }: { snippets: readonly SnippetRow
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {PLACEMENT_LABELS[ligne.placement]}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {CATEGORY_LABELS[ligne.category]}
                     <span className="mt-0.5 block text-xs">ordre {ligne.position}</span>
                   </td>
                   <td className="px-4 py-3">
@@ -263,6 +307,7 @@ export function CodeSnippetManager({ snippets }: { snippets: readonly SnippetRow
                             valeurs: {
                               name: ligne.name,
                               placement: ligne.placement,
+                              category: ligne.category,
                               content: ligne.content,
                               enabled: ligne.enabled,
                               position: ligne.position,

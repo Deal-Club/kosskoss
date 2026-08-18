@@ -32,6 +32,8 @@
  */
 
 /** Emplacements proposés dans le formulaire. */
+import { isConsentCategory, type ConsentCategory } from "@/lib/consent";
+
 export type SnippetPlacement = "head" | "bodyStart" | "bodyEnd";
 
 export const SNIPPET_PLACEMENTS: readonly SnippetPlacement[] = ["head", "bodyStart", "bodyEnd"];
@@ -46,10 +48,25 @@ export const PLACEMENT_LABELS: Readonly<Record<SnippetPlacement, string>> = {
 export interface CodeSnippetInput {
   name: string;
   placement: SnippetPlacement;
+  /** Catégorie de consentement — voir src/lib/consent.ts. */
+  category: ConsentCategory;
   content: string;
   enabled: boolean;
   position: number;
 }
+
+/**
+ * Intitulés des catégories, côté back-office.
+ *
+ * « Nécessaire » n'est pas une commodité de classement : cocher cette case fait
+ * partir le fragment SANS consentement. Elle ne se justifie que pour ce qui
+ * casse la boutique en son absence.
+ */
+export const CATEGORY_LABELS: Readonly<Record<ConsentCategory, string>> = {
+  necessaire: "Nécessaire au fonctionnement",
+  mesure: "Mesure d'audience",
+  marketing: "Publicité et réseaux sociaux",
+};
 
 export const SNIPPET_LIMITS = {
   name: 120,
@@ -84,6 +101,13 @@ export function normalizeCodeSnippet(raw: unknown): SnippetResult {
     return { ok: false, error: "Emplacement inconnu." };
   }
 
+  // Aucun repli permissif : une catégorie absente ou fantaisiste n'est pas
+  // reclassée en « nécessaire », elle est refusée. Se tromper ici ferait partir
+  // un pixel sans consentement.
+  if (!isConsentCategory(input.category)) {
+    return { ok: false, error: "Catégorie de consentement inconnue." };
+  }
+
   // Seules les fins de ligne sont normalisées : l'indentation d'un fragment
   // collé depuis un tableau de bord tiers ne nous regarde pas.
   const content = typeof input.content === "string" ? input.content.replace(/\r\n?/g, "\n").trim() : "";
@@ -101,7 +125,14 @@ export function normalizeCodeSnippet(raw: unknown): SnippetResult {
 
   return {
     ok: true,
-    snippet: { name, placement: input.placement, content, enabled: input.enabled === true, position },
+    snippet: {
+      name,
+      placement: input.placement,
+      category: input.category,
+      content,
+      enabled: input.enabled === true,
+      position,
+    },
   };
 }
 

@@ -2,7 +2,7 @@ import { User, Phone, MessageCircle, ChevronLeft, ShieldCheck } from "lucide-rea
 import Image from "next/image";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
-import { getShopNavigation, getNavHighlights } from "@/server/kk/navigation";
+import { getShopNavigation, getNavHighlights, getNavRoutines } from "@/server/kk/navigation";
 import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
 import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
@@ -10,6 +10,7 @@ import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
 import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
 import { PatternBackdrop } from "./pattern-backdrop";
+import { CookiePreferencesButton } from "@/components/kk/cookie-consent";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -168,7 +169,11 @@ function Wordmark({ className = "", aligne = false }: { className?: string; alig
  * à traverser la frontière client.
  */
 export async function SiteHeader() {
-  const [groups, highlights] = await Promise.all([getShopNavigation(), getNavHighlights()]);
+  const [groups, highlights, routines] = await Promise.all([
+    getShopNavigation(),
+    getNavHighlights(),
+    getNavRoutines(),
+  ]);
 
   return (
     /*
@@ -205,7 +210,7 @@ export async function SiteHeader() {
           <Wordmark aligne className="shrink-0" />
         </div>
 
-        <DesktopNav groups={groups} highlights={highlights} />
+        <DesktopNav groups={groups} highlights={highlights} routines={routines} />
 
         <div className="ml-auto flex items-center justify-end gap-1">
           <SearchAction variant="icon" />
@@ -411,6 +416,12 @@ export function SiteFooter() {
                 </Link>
               </li>
             ))}
+            {/* Rouvre le bandeau de consentement. C'est le chemin de retour
+                que le bandeau lui-même annonce : les deux doivent rester
+                d'accord. */}
+            <li>
+              <CookiePreferencesButton />
+            </li>
           </ul>
         </div>
       </div>

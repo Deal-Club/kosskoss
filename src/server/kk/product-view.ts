@@ -51,6 +51,9 @@ export interface ProductViewRow {
   badge: string | null;
   image: string | null;
   stock: number;
+  /** Résumé affiché au survol de la vignette. Colonne déjà chargée par
+   *  `include` : aucun élargissement de requête. */
+  shortDescription?: string;
   category: { slug: string; group: { slug: string } };
   /** Absent si la requête n'a pas inclus les variations : on suppose alors aucune. */
   variants?: { id: string }[];
@@ -62,6 +65,7 @@ export function toProductView(row: ProductViewRow, index = 0): KKProductView {
     slug: row.slug,
     brand: row.brand,
     name: row.name,
+    shortDescription: row.shortDescription?.trim() || undefined,
     priceFcfa: row.priceCents,
     oldPriceFcfa: row.oldPriceCents ?? undefined,
     badge: toBadge(row.badge),

@@ -5,25 +5,55 @@ import type { KKProductView } from "@/types/kk";
 
 export type CatalogSort = "pertinence" | "prix-asc" | "prix-desc" | "nouveautes";
 
+/**
+ * Produits par page du catalogue.
+ *
+ * Le découpage se fait en BASE (skip/take), pas en mémoire comme pour les
+ * tableaux du back-office : une page de rayon charge des fiches complètes
+ * — variantes, avis, images — et en rapatrier soixante pour n'en montrer
+ * trente coûte la bande passante et le temps de rendu de trente fiches
+ * inutiles, à chaque visite.
+ */
+export const CATALOG_PAGE_SIZE = 30;
+
 export type CatalogView = {
   group: { slug: string; label: string; intro?: string };
   category?: { slug: string; label: string };
   categories: { slug: string; label: string; count: number }[];
   brands: string[];
+  /** Produits de la page courante uniquement. */
   products: KKProductView[];
+  /** Total correspondant aux filtres, toutes pages confondues. */
   total: number;
+  /** Page affichée, toujours comprise entre 1 et pageCount. */
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  /** Rang du premier produit affiché, à partir de 1 (0 si aucun). */
+  firstItem: number;
+  lastItem: number;
 };
 
-function orderByFor(sort: CatalogSort): Prisma.ProductOrderByWithRelationInput {
+/**
+ * Ordre de tri, avec l'identifiant en départage systématique.
+ *
+ * Ce second critère n'est pas cosmétique : dès qu'on pagine, un tri ambigu
+ * devient faux. Deux produits au même prix — le cas courant sur un catalogue
+ * où les prix sont ronds — peuvent sortir dans un ordre différent d'une
+ * requête à l'autre ; l'un se retrouve alors en fin de page 1 ET en tête de
+ * page 2, pendant qu'un autre n'apparaît nulle part. L'identifiant, unique,
+ * fige l'ordre.
+ */
+function orderByFor(sort: CatalogSort): Prisma.ProductOrderByWithRelationInput[] {
   switch (sort) {
     case "prix-asc":
-      return { priceCents: "asc" };
+      return [{ priceCents: "asc" }, { id: "asc" }];
     case "prix-desc":
-      return { priceCents: "desc" };
+      return [{ priceCents: "desc" }, { id: "asc" }];
     case "nouveautes":
-      return { createdAt: "desc" };
+      return [{ createdAt: "desc" }, { id: "asc" }];
     default:
-      return { createdAt: "asc" };
+      return [{ createdAt: "asc" }, { id: "asc" }];
   }
 }
 
@@ -43,6 +73,8 @@ export async function getCatalog(opts: {
   brands?: string[];
   besoin?: string;
   sort?: CatalogSort;
+  /** Page demandée, 1 par défaut. Hors bornes, on ramène à la dernière page. */
+  page?: number;
 }): Promise<CatalogView | null> {
   const group = await prisma.group.findUnique({
     where: { slug: opts.group },
@@ -72,11 +104,21 @@ export async function getCatalog(opts: {
     ...(opts.besoin ? { tags: { contains: `"${opts.besoin}"` } } : {}),
   };
 
+  // Deux temps, et c'est nécessaire : il faut connaître le total AVANT de
+  // décider quelle tranche lire. Sinon un `?page=99` sur un rayon de deux
+  // pages renverrait une grille vide au lieu de la dernière page.
+  const total = await prisma.product.count({ where });
+  const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
+  const page = Math.min(Math.max(opts.page ?? 1, 1), pageCount);
+  const skip = (page - 1) * CATALOG_PAGE_SIZE;
+
   const [rows, brandRows, counts] = await Promise.all([
     prisma.product.findMany({
       where,
       include: PRODUCT_VIEW_INCLUDE,
       orderBy: orderByFor(opts.sort ?? "pertinence"),
+      skip,
+      take: CATALOG_PAGE_SIZE,
     }),
     // Marques disponibles dans la portée, indépendamment du filtre courant.
     prisma.product.findMany({
@@ -105,6 +147,11 @@ export async function getCatalog(opts: {
     })),
     brands: brandRows.map((b) => b.brand),
     products: rows.map(toProductView),
-    total: rows.length,
+    total,
+    page,
+    pageCount,
+    pageSize: CATALOG_PAGE_SIZE,
+    firstItem: total === 0 ? 0 : skip + 1,
+    lastItem: skip + rows.length,
   };
 }

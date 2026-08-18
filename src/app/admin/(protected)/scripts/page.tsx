@@ -19,6 +19,7 @@ export default async function AdminScriptsPage() {
     id: snippet.id,
     name: snippet.name,
     placement: snippet.placement,
+    category: snippet.category,
     content: snippet.content,
     enabled: snippet.enabled,
     position: snippet.position,

@@ -17,15 +17,28 @@ export function localizedUrl(href: string, locale: Locale): string {
  * Bloc « alternates » prêt pour l'API Metadata de Next.
  * `x-default` pointe vers le français, langue par défaut de la boutique.
  */
-export function alternatesFor(href: string, locale: Locale): Metadata["alternates"] {
+export function alternatesFor(
+  href: string,
+  locale: Locale,
+  /**
+   * Suffixe de requête à recoller aux URL produites, `?page=2` par exemple.
+   *
+   * Il ne peut pas passer par `href` : `getPathname` ne traite qu'un chemin et
+   * emporterait la chaîne de requête dans son calcul de préfixe de langue. Or
+   * une page 2 de rayon doit se désigner elle-même comme canonique — sans quoi
+   * Google la replie sur la page 1 et n'explore jamais les produits qu'elle
+   * seule contient.
+   */
+  query = "",
+): Metadata["alternates"] {
   const languages: Record<string, string> = {};
   for (const code of routing.locales) {
-    languages[code] = localizedUrl(href, code);
+    languages[code] = localizedUrl(href, code) + query;
   }
-  languages["x-default"] = localizedUrl(href, routing.defaultLocale);
+  languages["x-default"] = localizedUrl(href, routing.defaultLocale) + query;
 
   return {
-    canonical: localizedUrl(href, locale),
+    canonical: localizedUrl(href, locale) + query,
     languages,
   };
 }

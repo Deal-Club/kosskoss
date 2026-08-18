@@ -126,3 +126,62 @@ export const getShopBrands = cache(async (): Promise<string[]> => {
   });
   return rows.map((row) => row.brand).filter((brand) => brand.length > 0);
 });
+
+/** Routine telle qu'annoncée dans le méga-menu. */
+export interface NavRoutine {
+  slug: string;
+  name: string;
+  /** Accroche d'une ligne : le besoin auquel la routine répond. */
+  claim: string;
+  /** Jeton de teinte — l'un des `--tint-*` de globals.css. */
+  tint: string;
+  image: string | null;
+  href: string;
+  /** Nombre de gestes, seule quantité utile au visiteur à ce stade. */
+  stepCount: number;
+}
+
+/**
+ * Routines actives, pour le panneau « Routines » de la barre.
+ *
+ * Requête volontairement maigre : l'en-tête est rendu sur CHAQUE page, et
+ * `getRoutines` charge les produits complets de chaque geste — prix, stock,
+ * variations, catégorie — pour n'en afficher ici que le nombre. On ne lit donc
+ * que les colonnes montrées, plus un comptage.
+ *
+ * Une routine sans geste est écartée : elle ouvrirait une page vide, comme une
+ * catégorie sans produit.
+ *
+ * TROIS PAR DÉFAUT, et pas davantage. Un panneau de navigation n'est pas la
+ * page « Routines » : il donne un aperçu et un chemin. Les cinq routines
+ * tenaient sur deux rangées de vignettes serrées, où les noms longs passaient à
+ * la ligne — on y lisait moins bien que sur la page elle-même, qui reste à un
+ * clic par le bouton « Voir toutes les routines ».
+ */
+export const getNavRoutines = cache(async (limit = 3): Promise<NavRoutine[]> => {
+  const rows = await prisma.routine.findMany({
+    where: { active: true },
+    orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+    select: {
+      slug: true,
+      name: true,
+      claim: true,
+      tint: true,
+      image: true,
+      _count: { select: { steps: true } },
+    },
+  });
+
+  return rows
+    .filter((row) => row._count.steps > 0)
+    .slice(0, limit)
+    .map((row) => ({
+      slug: row.slug,
+      name: row.name,
+      claim: row.claim,
+      tint: row.tint,
+      image: packshot(row.image) || null,
+      href: `/routines/${row.slug}`,
+      stepCount: row._count.steps,
+    }));
+});
