@@ -9,6 +9,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SmartsuppChat } from "@/components/SmartsuppChat";
 import { CodeSnippets } from "@/components/CodeSnippets";
 import { CookieConsent } from "@/components/kk/cookie-consent";
+import { tracageActif } from "@/server/consent";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -51,8 +52,14 @@ export default async function LocaleLayout({
         <WhatsAppButton />
         <SmartsuppChat />
         {/* Le bandeau est monté en dernier : il se superpose au reste et n'a
-            aucune raison d'entrer dans l'ordre de lecture avant le contenu. */}
-        <CookieConsent locale={locale} />
+            aucune raison d'entrer dans l'ordre de lecture avant le contenu.
+
+            Et il n'est monté QUE si la boutique dépose autre chose que du
+            strictement nécessaire — c'est-à-dire si un fragment de mesure ou de
+            publicité est actif au back-office. Sans traceur, il n'y a rien à
+            faire consentir : demander quand même reviendrait à déranger chaque
+            visiteur pour une question sans objet. Voir `tracageActif`. */}
+        {(await tracageActif()) && <CookieConsent locale={locale} />}
         <CodeSnippets placement="bodyEnd" />
       </CartProvider>
     </NextIntlClientProvider>

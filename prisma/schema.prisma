@@ -126,6 +126,101 @@ model Product {
   @@index([brand])
 }
 
+// ---- Paiement ----
+//
+// Deux tables exigées par le cahier des charges (docs/13 §3) et absentes
+// jusqu'ici : l'état du paiement était porté par la seule commande.
+//
+// Ce que ça change concrètement : une commande ne dit pas COMBIEN de tentatives
+// de paiement elle a connues, ni laquelle a abouti, ni ce que le prestataire a
+// répondu. Sur du Mobile Money, où l'abandon en cours de paiement est la norme
+// et où le client réessaie souvent, cette histoire est le premier outil du
+// service client.
+
+/**
+ * Une tentative de paiement auprès du prestataire.
+ *
+ * Une commande peut en compter plusieurs : chaque reprise en crée une nouvelle
+ * plutôt que d'écraser la précédente. Seule celle qui aboutit fait basculer la
+ * commande en « payée ».
+ */
+model PaymentTransaction {
+  id      String @id @default(cuid())
+  orderId String
+
+  /** Prestataire : « geniuspay ». Nommé pour qu'un changement reste traçable. */
+  provider String
+  /** Référence rendue par le prestataire (`MTX-…`), sa clé primaire chez lui. */
+  reference String @unique
+  /** Moyen choisi par le client : wave, orange_money, mtn_money, card… */
+  method String @default("")
+
+  /** Montant en FCFA ENTIERS, jamais en centimes. Voir docs/13 §5.1. */
+  amount   Int
+  currency String @default("XAF")
+  /** Commission du prestataire et net versé, quand il les communique. */
+  fees      Int @default(0)
+  netAmount Int @default(0)
+
+  /** pending · processing · completed · failed · cancelled · refunded */
+  status String @default("pending")
+
+  /** URL vers laquelle le client a été envoyé pour payer. */
+  checkoutUrl String @default("")
+  /** sandbox | live — pour ne jamais confondre un test et un encaissement. */
+  environment String @default("sandbox")
+
+  /** Dernière réponse brute du prestataire, en JSON. Sert au diagnostic. */
+  rawResponse String @default("")
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@index([status])
+}
+
+/**
+ * Journal des webhooks reçus.
+ *
+ * C'est le support de l'IDEMPOTENCE, et ce n'est pas une précaution théorique :
+ * GeniusPay réessaie cinq fois en cas d'échec — immédiatement, puis à 5 min,
+ * 30 min, 2 h et 6 h. Sans ce journal, un traitement lent renvoyant 500 après
+ * avoir travaillé ferait encaisser la même commande plusieurs fois.
+ *
+ * `deliveryId` porte l'en-tête `X-Webhook-Delivery` quand il est présent, et à
+ * défaut l'identifiant d'événement du corps. L'unicité est posée dessus : un
+ * second passage est reconnu avant tout traitement.
+ */
+model WebhookEvent {
+  id       String @id @default(cuid())
+  provider String
+
+  /** Identifiant de livraison, unique par nature. Clé de l'idempotence. */
+  deliveryId String @unique
+  /** payment.success, payment.failed, webhook.test… */
+  event String
+  /** Référence de transaction concernée, quand l'événement en porte une. */
+  reference String @default("")
+
+  /** Corps reçu, tel quel. On ne réécrit jamais ce qu'un tiers nous a envoyé. */
+  payload String
+
+  /** recu | traite | ignore | erreur */
+  status String @default("recu")
+  /** Message d'erreur si le traitement a échoué, pour la reprise manuelle. */
+  error String @default("")
+
+  receivedAt  DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([provider, event])
+  @@index([reference])
+}
+
 // ---- Newsletter ----
 //
 // Bloc 12 de la structure fournie par le client. Un formulaire de newsletter
@@ -371,7 +466,10 @@ model Order {
   gatewaySecurityToken String?
 
   // recue | en_traitement | expediee | livree | annulee
-  status        String @default("recue")
+  // Statuts du CDC KossKoss — voir src/lib/orderStatus.ts.
+  // Le défaut était « recue », hérité de mlcbois, alors que le tunnel écrivait
+  // déjà « en_attente_paiement » : les deux valeurs coexistaient.
+  status        String @default("en_attente_paiement")
   // en_attente | payee | remboursee | echouee
   paymentStatus String @default("en_attente")
 
@@ -428,6 +526,8 @@ model Order {
   @@index([paymentStatus])
   @@index([createdAt])
   @@index([customerId])
+  transactions PaymentTransaction[]
+
   @@index([campaignId])
 }
 

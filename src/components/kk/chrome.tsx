@@ -8,9 +8,10 @@ import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
 import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
-import { VisaMark, OrangeMoneyMark, MoovMoneyMark } from "@/components/PaymentIcons";
+import { VisaMark, OrangeMoneyMark, MtnMoneyMark } from "@/components/PaymentIcons";
 import { PatternBackdrop } from "./pattern-backdrop";
 import { CookiePreferencesButton } from "@/components/kk/cookie-consent";
+import { tracageActif } from "@/server/consent";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -306,7 +307,11 @@ export function CheckoutHeader() {
  * Tout tient désormais en trois rangées, et plus aucune n'est une colonne de
  * liens : le catalogue est dans l'en-tête, c'est là qu'on navigue.
  */
-export function SiteFooter() {
+export async function SiteFooter() {
+  // Même condition qu'au layout : sans traceur actif, pas de bandeau, donc pas
+  // de lien pour le rouvrir.
+  const tracage = await tracageActif();
+
   return (
     <footer className="relative overflow-hidden bg-footer text-footer-foreground">
       {/* Motif de marque en fond. Le pied de page est bien plus court qu'avant
@@ -390,7 +395,13 @@ export function SiteFooter() {
                 officiels. Un cran plus petites qu'avant, où elles occupaient
                 leur propre rangée. */}
             <ul className="flex flex-wrap items-center justify-center gap-3 [&_svg]:h-8 [&_svg]:w-12">
-              {[VisaMark, OrangeMoneyMark, MoovMoneyMark].map((Mark, i) => (
+              {/* Les trois marques correspondent aux moyens réellement actifs en base :
+                Orange Money, MTN Mobile Money et la carte. Le pied de page
+                affichait « Moov Money », qui n'opère pas au Cameroun, et
+                omettait MTN — pourtant le second opérateur du pays. Annoncer un
+                moyen de paiement qu'on n'accepte pas est le meilleur moyen de
+                perdre celui qui l'utilise. */}
+              {[VisaMark, OrangeMoneyMark, MtnMoneyMark].map((Mark, i) => (
                 <li key={i} className="transition-transform duration-300 hover:-translate-y-0.5">
                   <Mark />
                 </li>
@@ -418,10 +429,13 @@ export function SiteFooter() {
             ))}
             {/* Rouvre le bandeau de consentement. C'est le chemin de retour
                 que le bandeau lui-même annonce : les deux doivent rester
-                d'accord. */}
-            <li>
-              <CookiePreferencesButton />
-            </li>
+                d'accord — d'où la même condition qu'au layout. Sans traceur
+                actif, le bandeau n'est pas monté et ce lien n'ouvrirait rien. */}
+            {tracage && (
+              <li>
+                <CookiePreferencesButton />
+              </li>
+            )}
           </ul>
         </div>
       </div>

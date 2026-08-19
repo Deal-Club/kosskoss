@@ -44,8 +44,21 @@ export const CONSENT_COOKIE = "kk_consent";
  */
 export const CONSENT_VERSION = 1;
 
-/** Six mois — durée de conservation recommandée par la CNIL. */
-export const CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 182;
+/**
+ * Treize mois — le maximum retenu par la CNIL pour la durée de vie d'un cookie
+ * de consentement.
+ *
+ * C'était six mois, la durée qu'elle *recommande* pour re-solliciter. Mais un
+ * visiteur régulier se voyait alors redemander son avis deux fois par an, y
+ * compris après avoir refusé : la définition même de l'agacement, pour une
+ * réponse qui n'avait pas changé. Treize mois reste dans le cadre et divise
+ * cette fréquence par plus de deux.
+ *
+ * Ce qui ne change pas : le choix reste révocable à tout moment depuis le pied
+ * de page, et incrémenter `CONSENT_VERSION` le réinitialise immédiatement le
+ * jour où une nouvelle catégorie de traceurs apparaît.
+ */
+export const CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 396;
 
 /**
  * `necessaire`  session, panier, langue, panier d'achat — jamais négociable

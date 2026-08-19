@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Link2, MessageCircle } from "lucide-react";
+import { Check, Link2 } from "lucide-react";
+import { WhatsAppGlyph } from "@/components/WhatsAppButton";
 
 /**
  * Partage d'un article.
@@ -45,14 +46,17 @@ const XIcon: Glyph = ({ className }) => (
 
 interface ShareTarget {
   label: string;
-  icon: Glyph | typeof MessageCircle;
+  icon: Glyph;
   href: (url: string, title: string) => string;
 }
 
 const TARGETS: ShareTarget[] = [
   {
     label: "WhatsApp",
-    icon: MessageCircle,
+    // Le mark officiel, partagé avec le bouton flottant. C'était jusqu'ici la
+    // bulle générique de lucide : une icône qui ne ressemble pas à la marque
+    // qu'elle nomme fait douter du lien plus qu'elle ne l'annonce.
+    icon: WhatsAppGlyph,
     href: (url, title) => `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
   },
   {

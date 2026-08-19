@@ -122,16 +122,23 @@ export interface CartTotals {
 // ---- Calculs ----
 
 /**
- * Formatage identique à `formatPrice` de src/server/store.ts, mais utilisable
- * dans un composant client : ce module n'importe pas Prisma.
- * Le format reste français dans les deux langues, comme partout dans la
- * boutique — c'est un magasin français, les prix sont en euros.
+ * Formatage monétaire utilisable dans un composant client : ce module
+ * n'importe pas Prisma.
+ *
+ * ⚠️ LE NOM MENT, ET C'EST VOULU POUR L'INSTANT. « cents » vient de mlcbois,
+ * où les montants étaient des centimes d'euro. Ici l'entier est un FCFA
+ * entier : on ne divise pas par cent et on n'affiche pas de décimales — le
+ * XAF n'a pas de sous-unité (docs/13 §5.1).
+ *
+ * La fonction affichait « 165,00 € » pour un article à 16 500 FCFA : faux sur
+ * le montant ET sur la devise. Elle alimente les écrans de campagnes du
+ * back-office.
+ *
+ * Le renommage de `*Cents` en `*Fcfa` dans tout le projet est un chantier à
+ * part ; en attendant, le comportement est correct et le piège est signalé.
  */
 export function formatCents(cents: number): string {
-  return `${(cents / 100).toLocaleString("fr-FR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })} €`;
+  return `${Math.round(cents).toLocaleString("fr-FR").replace(/\s/g, " ")} FCFA`;
 }
 
 /**

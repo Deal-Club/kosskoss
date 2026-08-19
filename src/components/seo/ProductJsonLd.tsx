@@ -77,7 +77,9 @@ export async function ProductJsonLd({ product }: ProductJsonLdProps) {
   const referencePriceCents = merchantReferencePriceCents(row);
   const onSale = referencePriceCents > currentPriceCents;
   // L'ancien prix devient un StrikethroughPrice, comme le demande Google.
-  const currentPrice = (currentPriceCents / 100).toFixed(2);
+  // Aucune division, aucune décimale : le XAF est sans sous-unité et les
+  // entiers stockés sont des FCFA entiers. Voir MERCHANT_CURRENCY.
+  const currentPrice = String(Math.round(currentPriceCents));
 
   const offer: Record<string, JsonLdValue | undefined> = {
     "@type": "Offer",
@@ -94,7 +96,7 @@ export async function ProductJsonLd({ product }: ProductJsonLdProps) {
     offer.priceSpecification = {
       "@type": "UnitPriceSpecification",
       priceType: "https://schema.org/StrikethroughPrice",
-      price: (referencePriceCents / 100).toFixed(2),
+      price: String(Math.round(referencePriceCents)),
       priceCurrency: MERCHANT_CURRENCY,
     };
   }
@@ -104,7 +106,7 @@ export async function ProductJsonLd({ product }: ProductJsonLdProps) {
       "@type": "OfferShippingDetails",
       shippingRate: {
         "@type": "MonetaryAmount",
-        value: "0.00",
+        value: "0",
         currency: MERCHANT_CURRENCY,
       },
       shippingDestination: {

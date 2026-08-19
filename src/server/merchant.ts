@@ -27,9 +27,20 @@ export type { GoogleCategory } from "@/lib/googleTaxonomy";
 // ---- Paramètres de la boutique ----
 
 /** Pays ciblé par le flux (ISO 3166-1 alpha-2). */
-export const MERCHANT_COUNTRY = "FR";
-/** Devise du flux (ISO 4217). Les prix stockés incluent déjà la TVA. */
-export const MERCHANT_CURRENCY = "EUR";
+export const MERCHANT_COUNTRY = "CM";
+/**
+ * Devise du flux (ISO 4217). Les prix stockés incluent déjà la TVA.
+ *
+ * XAF — franc CFA d'Afrique centrale, la devise du Cameroun. Le flux annonçait
+ * « EUR » et le pays « FR », tous deux hérités de mlcbois : un produit à
+ * 16 500 FCFA partait chez Google en « 165.00 EUR », faux sur les trois plans
+ * — montant, devise et pays de vente.
+ *
+ * ⚠️ XAF EST SANS SOUS-UNITÉ. Les entiers stockés dans `priceCents` sont des
+ * FCFA entiers ; on ne divise jamais par cent et on n'écrit pas de décimales.
+ * Voir `formatFeedPrice` plus bas et docs/13 §5.1.
+ */
+export const MERCHANT_CURRENCY = "XAF";
 /** Langue du contenu du flux. */
 export const MERCHANT_LANGUAGE = "fr";
 /**
@@ -227,9 +238,16 @@ export function conditionFor(value: string): MerchantCondition {
   return value === "refurbished" || value === "used" ? value : "new";
 }
 
-/** Prix au format attendu par Google : point décimal puis code ISO 4217. */
-export function formatFeedPrice(cents: number): string {
-  return `${(cents / 100).toFixed(2)} ${MERCHANT_CURRENCY}`;
+/**
+ * Prix au format attendu par Google : montant puis code ISO 4217.
+ *
+ * AUCUNE DÉCIMALE, AUCUNE DIVISION. Le XAF n'a pas de sous-unité : Google
+ * attend « 16500 XAF », pas « 165.00 ». La version précédente divisait par cent
+ * et forçait deux décimales — le prix annoncé au flux valait donc le centième
+ * du prix réel.
+ */
+export function formatFeedPrice(amount: number): string {
+  return `${Math.round(amount)} ${MERCHANT_CURRENCY}`;
 }
 
 /**

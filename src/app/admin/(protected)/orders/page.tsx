@@ -77,10 +77,14 @@ export default async function AdminOrdersPage({
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-black text-foreground">Commandes</h1>
-        {counts.recue > 0 && (
+        {/* « Nouvelle commande » = en attente de paiement. Le compteur visait
+            « reçue », un statut qui n'existe plus depuis l'alignement sur le
+            CDC : c'est bien la commande non encore payée qui appelle une
+            action de la boutique. */}
+        {counts.en_attente_paiement > 0 && (
           <span className="rounded-sm bg-accent px-3 py-1 text-sm font-bold text-accent-foreground">
-            {counts.recue} nouvelle{counts.recue === 1 ? "" : "s"} commande
-            {counts.recue === 1 ? "" : "s"}
+            {counts.en_attente_paiement} commande
+            {counts.en_attente_paiement === 1 ? "" : "s"} en attente de paiement
           </span>
         )}
       </div>

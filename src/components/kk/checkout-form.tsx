@@ -325,7 +325,7 @@ export function CheckoutForm({
         }),
       });
       const data = (await res.json()) as
-        | { ok: true; orderNumber: string; accessToken: string }
+        | { ok: true; orderNumber: string; accessToken: string; urlPaiement?: string }
         | { ok: false; error: string };
       if (!data.ok) {
         setError(ERRORS[data.error] ?? "Une erreur est survenue.");
@@ -333,6 +333,21 @@ export function CheckoutForm({
         return;
       }
       clear();
+
+      // Paiement en ligne ouvert : on sort du site vers la page du prestataire.
+      //
+      // `window.location.href` et non `router.push` : la destination est un
+      // domaine tiers, que le routeur de Next ne sait pas atteindre. Et on ne
+      // relâche PAS `submitting` — le formulaire doit rester verrouillé pendant
+      // la redirection, sinon un double clic ouvre deux paiements.
+      if (data.urlPaiement) {
+        window.location.href = data.urlPaiement;
+        return;
+      }
+
+      // Pas de paiement en ligne : passerelle non configurée, ou moyen choisi
+      // qui n'en demande pas (paiement à la livraison). La commande existe, la
+      // confirmation prend le relais avec le bouton WhatsApp.
       const prefix = locale === "en" ? "/en" : "";
       router.push(`${prefix}/confirmation/${data.orderNumber}?t=${data.accessToken}`);
     } catch {

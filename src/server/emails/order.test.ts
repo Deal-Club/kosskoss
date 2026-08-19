@@ -53,14 +53,14 @@ function order(overrides: Partial<OrderRecord> = {}): OrderRecord {
     paymentMethodFee: "",
     shippingMethodKey: "standard",
     shippingMethodLabel: "Livraison standard",
-    status: "recue",
+    status: "en_attente_paiement",
     paymentStatus: "en_attente",
     subtotalCents: 89900,
     shippingCents: 495,
     taxCents: 8218,
     totalCents: 90395,
     taxRatePercent: 10,
-    currency: "EUR",
+    currency: "XAF",
     customerNote: "",
     adminNote: "",
     createdAt: "2026-07-30T09:24:00.000Z",
@@ -96,9 +96,9 @@ describe("Confirmation à l'acheteur", () => {
       // Total, sous-total et port : le décompte exigé par l'article L221-13 du
       // Code de la consommation, au format français. La TVA a été retirée du
       // système, elle n'apparaît donc plus.
-      assert.match(part, /903,95 €/);
-      assert.match(part, /899,00 €/);
-      assert.match(part, /4,95 €/);
+      assert.match(part, /90\u202f395 FCFA/);
+      assert.match(part, /89\u202f900 FCFA/);
+      assert.match(part, /495 FCFA/);
       assert.match(part, /12 rue des Tilleuls/);
       assert.match(part, /Virement bancaire préalable/);
     }
@@ -135,7 +135,7 @@ describe("Confirmation à l'acheteur", () => {
   it("annonce le port offert plutôt qu'un montant nul", () => {
     const mail = buildOrderConfirmationEmail(order({ shippingCents: 0 }));
     assert.match(mail.html, /offerte/);
-    assert.doesNotMatch(mail.text, /Livraison : 0,00 €/);
+    assert.doesNotMatch(mail.text, /Livraison : 0 FCFA/);
   });
 
   it("n'affiche l'adresse de facturation que si elle diffère", () => {
@@ -164,7 +164,7 @@ describe("Confirmation à l'acheteur", () => {
     const en = buildOrderConfirmationEmail(express);
     assert.match(en.html, /Express delivery \(24–48 hours\)/);
     // Le supplément doit apparaître comme un montant, jamais comme « free ».
-    assert.match(en.html, /70,00 €/);
+    assert.match(en.html, /7\u202f000 FCFA/);
     assert.doesNotMatch(en.text, /Shipping — Express delivery \(24–48 hours\) : free/);
   });
 
@@ -181,7 +181,7 @@ describe("Notification au vendeur", () => {
   it("annonce le numéro et le montant dès l'objet", () => {
     const mail = buildOrderNotificationEmail(order());
     assert.match(mail.subject, /Nouvelle commande MLC-2026-000042/);
-    assert.match(mail.subject, /903,95 €/);
+    assert.match(mail.subject, /90\u202f395 FCFA/);
   });
 
   it("donne les coordonnées du client et le lien back-office", () => {
@@ -190,7 +190,7 @@ describe("Notification au vendeur", () => {
       assert.match(part, /anne\.exemple@example\.fr/);
       assert.match(part, /\+33 1 23 45 67 89/);
       assert.match(part, /Hêtre 33 cm/);
-      assert.match(part, /903,95 €/);
+      assert.match(part, /90\u202f395 FCFA/);
     }
     // Le lien pointe la fiche interne par identifiant, pas la page publique :
     // le vendeur doit atterrir là où il peut agir sur la commande.

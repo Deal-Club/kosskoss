@@ -39,7 +39,7 @@ import {
   type EmailLocale,
 } from "@/server/emails/customerAccount";
 import { getOrderByNumber, type OrderRecord } from "@/server/orders";
-import { isOrderStatus, isPaymentStatus } from "@/lib/orderStatus";
+import { isOrderStatus, ORDER_STATUS_INITIAL, isPaymentStatus } from "@/lib/orderStatus";
 import type { OrderStatus, PaymentStatus } from "@/lib/orderStatus";
 import { COUNTRY_CODES, DEFAULT_COUNTRY, isValidPostalCode } from "@/lib/countries";
 
@@ -689,7 +689,7 @@ export async function listCustomerOrders(
   return rows.map((row) => ({
     orderNumber: row.orderNumber,
     createdAt: row.createdAt.toISOString(),
-    status: isOrderStatus(row.status) ? row.status : "recue",
+    status: isOrderStatus(row.status) ? row.status : ORDER_STATUS_INITIAL,
     paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "en_attente",
     totalCents: row.totalCents,
     currency: row.currency,

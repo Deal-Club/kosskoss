@@ -4,14 +4,15 @@ import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome"
 import { Hero, ProductRail } from "@/components/kk/home";
 import { InsightsSection, PromisesRow } from "@/components/kk/home-sections";
 import { RoutinesRail } from "@/components/kk/routines";
-import { AvantApresSection } from "@/components/kk/avant-apres-section";
+import { RaisonDetre } from "@/components/kk/raison-detre";
 import { GammeSection } from "@/components/kk/gamme-section";
 import { AvisClients } from "@/components/kk/avis-clients";
 import { getHomeProducts, getHomeTestimonials, getReviewsSummary } from "@/server/kk/home";
 import { getHomeFaq } from "@/server/kk/home-faq";
 import { getRoutines } from "@/server/kk/routines";
 import { getBrandFocus } from "@/server/kk/brand-focus";
-import { AVANT_APRES, AVANT_APRES_CAS } from "@/data/kk/avant-apres";
+import { getRaisonDetre } from "@/server/kk/raison-detre";
+import { AVANT_APRES } from "@/data/kk/avant-apres";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { CONTACT } from "@/config/brand";
 import { alternatesFor } from "@/lib/hreflang";
@@ -53,7 +54,7 @@ export default async function Home({ params }: { params: HomeParams }) {
   // `getShopNavigation` et `getBrandShowcase` ne sont plus appelés ici : la
   // carte des catégories et la section « Nos maisons » ont été retirées de
   // l'accueil. Deux requêtes de moins à chaque rendu de la page la plus vue.
-  const [products, testimonials, avisResume, faq, routines, focus] = await Promise.all([
+  const [products, testimonials, avisResume, faq, routines, focus, raisonDetre] = await Promise.all([
     getHomeProducts(12),
     // Trois, et pas un de plus : la section les montre sur UNE SEULE rangée.
     // À six, la grille repassait à la ligne et la section doublait de hauteur
@@ -66,6 +67,10 @@ export default async function Home({ params }: { params: HomeParams }) {
     // La maison mise en avant dans « Notre gamme ». Renvoie `null` si elle n'a
     // plus aucune référence servable : le bloc se masque alors tout seul.
     getBrandFocus(),
+    // Chiffres du catalogue et routine d'exemple pour « Notre raison d'être ».
+    // Comptés en base : « 71 références » ne peut pas se désaligner du jour où
+    // l'on en retire dix.
+    getRaisonDetre(),
   ]);
 
   // Un seul rail produit désormais, contre deux auparavant : le second faisait
@@ -110,14 +115,17 @@ export default async function Home({ params }: { params: HomeParams }) {
             entièrement, et le cœur de la promesse de marque. */}
         <RoutinesRail routines={routines} />
 
-        {/* Preuve par l'image, à la place du focus marque.
-            Même rôle dans la page : un fond vert profond qui sépare deux zones
-            claires et fait reprendre son souffle au milieu du parcours. Mais
-            une preuve visuelle porte plus loin qu'un nom de maison auprès d'une
-            clientèle qui a déjà vu beaucoup de promesses.
-            Le comparateur ne s'affiche que si un cas réel est fourni ; sinon
-            la colonne de texte tient seule (voir avant-apres-section.tsx). */}
-        <AvantApresSection cas={AVANT_APRES_CAS} />
+        {/* Notre raison d'être — trois obstacles, trois réponses chiffrées,
+            puis l'anatomie d'une routine réelle.
+
+            Elle remplace un comparateur à curseur sur un visage, refusé par le
+            client : le visuel promettait un résultat cutané là où la section
+            promet un parcours d'achat simplifié. Voir raison-detre.tsx.
+
+            Elle garde le même rôle dans la page : un fond vert profond qui
+            sépare deux zones claires et fait reprendre son souffle au milieu du
+            parcours. */}
+        <RaisonDetre data={raisonDetre} />
 
         {/* Les best-sellers, seuls et pleine largeur.
 

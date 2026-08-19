@@ -12,7 +12,7 @@ import {
 } from "@/lib/cart";
 import type { CartLine, ShippingMethodKey } from "@/lib/cart";
 import { discountedVariantCents } from "@/lib/variantPricing";
-import { isOrderStatus, isPaymentStatus } from "@/lib/orderStatus";
+import { isOrderStatus, isPaymentStatus, ORDER_STATUSES, ORDER_STATUS_INITIAL } from "@/lib/orderStatus";
 import type { OrderStatus, PaymentStatus } from "@/lib/orderStatus";
 
 // Commandes de la boutique.
@@ -172,7 +172,7 @@ function toRecord(row: NonNullable<OrderRow>): OrderRecord {
       ? row.shippingMethodKey
       : DEFAULT_SHIPPING_METHOD_KEY,
     shippingMethodLabel: row.shippingMethodLabel,
-    status: isOrderStatus(row.status) ? row.status : "recue",
+    status: isOrderStatus(row.status) ? row.status : ORDER_STATUS_INITIAL,
     paymentStatus: isPaymentStatus(row.paymentStatus) ? row.paymentStatus : "en_attente",
     subtotalCents: row.subtotalCents,
     shippingCents: row.shippingCents,
@@ -290,14 +290,12 @@ export async function listOrders(filter: OrderListFilter = {}): Promise<OrderLis
 
 export async function countOrdersByStatus(): Promise<Record<OrderStatus | "total", number>> {
   const grouped = await prisma.order.groupBy({ by: ["status"], _count: { _all: true } });
-  const counts: Record<OrderStatus | "total", number> = {
-    recue: 0,
-    en_traitement: 0,
-    expediee: 0,
-    livree: 0,
-    annulee: 0,
-    total: 0,
-  };
+  // Construit depuis ORDER_STATUSES : une liste écrite à la main ici avait
+  // déjà divergé de la source une fois.
+  const counts = Object.fromEntries([
+    ...ORDER_STATUSES.map((statut) => [statut, 0]),
+    ["total", 0],
+  ]) as Record<OrderStatus | "total", number>;
   for (const entry of grouped) {
     counts.total += entry._count._all;
     if (isOrderStatus(entry.status)) counts[entry.status] = entry._count._all;
@@ -743,7 +741,8 @@ export async function updateOrderStatus(
     data: {
       status,
       stockRestored,
-      shippedAt: status === "expediee" ? new Date() : undefined,
+      // « Expédiée » s'appelle désormais « en acheminement » (statuts du CDC).
+      shippedAt: status === "en_acheminement" ? new Date() : undefined,
       events: {
         create: {
           kind: "status",

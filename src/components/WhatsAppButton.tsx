@@ -1,18 +1,37 @@
 import { COMPANY } from "@/content/legal";
 
 /**
- * Bouton d'appel WhatsApp, fixé en bas à gauche de toutes les pages boutique.
+ * Bouton d'appel WhatsApp, fixé en bas à droite de toutes les pages boutique.
  *
  * Le numéro par défaut est celui de la société (COMPANY.phone) ; il peut être
  * remplacé par une ligne WhatsApp dédiée via NEXT_PUBLIC_WHATSAPP_NUMBER
  * (chiffres uniquement, au format international, ex. « 33635013557 »).
- * Smartsupp occupant le coin bas-droite, WhatsApp prend le coin opposé.
  */
 const WHATSAPP_NUMBER =
   process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") ||
   COMPANY.phone.replace(/\D/g, "");
 
 const PREFILL = encodeURIComponent("Bonjour, j'ai une question sur un produit KossKoss Select.");
+
+/**
+ * Le glyphe OFFICIEL de WhatsApp.
+ *
+ * Celui d'avant était redessiné à la main : la bulle et le combiné y étaient
+ * approximés, et à 28 px l'écart se voyait — combiné trop épais, bulle trop
+ * fine, queue mal raccordée. Un logo de marque ne se redessine pas de mémoire ;
+ * on sert le tracé de référence (simple-icons, identique au mark officiel), qui
+ * est un chemin unique conçu pour être rempli d'une seule couleur.
+ *
+ * lucide-react v1 a retiré ses icônes de marque pour des raisons d'usage des
+ * marques déposées — d'où ce tracé posé ici plutôt qu'un import.
+ */
+export function WhatsAppGlyph({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+    </svg>
+  );
+}
 
 export function WhatsAppButton() {
   if (!WHATSAPP_NUMBER) return null;
@@ -22,30 +41,61 @@ export function WhatsAppButton() {
       href={`https://wa.me/${WHATSAPP_NUMBER}?text=${PREFILL}`}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Nous contacter sur WhatsApp"
+      aria-label="Nous écrire sur WhatsApp"
       // Coin bas-DROITE, et au ras du bord.
       //
       // Il a longtemps été à gauche, pour laisser le coin droit à Smartsupp.
       // Ce partage coûtait cher sur mobile : le coin bas-gauche est le DÉBUT
       // de chaque ligne de texte. Relevé au balayage de la page d'accueil sur
       // un écran de 390 px, 42 blocs distincts passaient sous le bouton au fil
-      // du défilement — cinq titres de section, les boutons « Ajouter la
-      // routine » et « Détail », quatre liens d'action, la note des avis et
-      // deux questions de la FAQ. À droite, il ne recouvre que des fins de
-      // ligne, presque toujours vides.
+      // du défilement. À droite, il ne recouvre que des fins de ligne, presque
+      // toujours vides.
       //
-      // La cohabitation avec Smartsupp se règle maintenant à la verticale : ce
-      // bouton garde le ras du coin, le lanceur Smartsupp se place au-dessus
-      // (voir `SmartsuppLauncher`). L'ordre compte — si Smartsupp est absent,
-      // faute de clé, il ne reste aucun trou sous le bouton WhatsApp.
+      // La cohabitation avec Smartsupp se règle à la verticale : ce bouton
+      // garde le ras du coin, le lanceur Smartsupp se place au-dessus (voir
+      // `SmartsuppLauncher`).
       //
       // Le retrait intègre la zone sûre de l'écran, sans quoi il se coince
       // derrière la barre gestuelle iOS.
-      className="fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+      className={[
+        "group fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-5 z-40",
+        "flex h-14 items-center rounded-full bg-[#25D366] text-white",
+        // Anneau blanc translucide : le bouton se pose souvent sur une
+        // photographie de peau, dont les tons chauds affaiblissent le contour
+        // du disque vert. L'anneau le détache quel que soit le fond.
+        "ring-1 ring-white/25",
+        // Ombre TEINTÉE du vert de la marque plutôt qu'un `shadow-lg` gris :
+        // une ombre neutre sous un aplat saturé se lit comme une salissure.
+        "shadow-[0_10px_28px_-8px_rgba(37,211,102,0.65)]",
+        "transition-[box-shadow,transform] duration-200",
+        "hover:-translate-y-0.5 hover:shadow-[0_14px_34px_-8px_rgba(37,211,102,0.75)]",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-deep",
+      ].join(" ")}
     >
-      <svg viewBox="0 0 32 32" className="h-7 w-7" fill="currentColor" aria-hidden="true">
-        <path d="M16.004 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.257.59 4.463 1.712 6.41L3.2 28.8l6.57-1.72a12.74 12.74 0 0 0 6.234 1.588h.005c7.06 0 12.8-5.74 12.8-12.8 0-3.42-1.332-6.635-3.75-9.053A12.72 12.72 0 0 0 16.004 3.2zm0 2.133c2.848 0 5.523 1.11 7.537 3.124a10.58 10.58 0 0 1 3.126 7.543c0 5.885-4.788 10.667-10.668 10.667h-.004a10.6 10.6 0 0 1-5.4-1.48l-.387-.23-4.003 1.05 1.068-3.903-.252-.4a10.57 10.57 0 0 1-1.62-5.637c0-5.885 4.787-10.667 10.667-10.667zm-5.83 5.74c-.276 0-.724.104-1.104.518-.38.414-1.45 1.417-1.45 3.457 0 2.04 1.485 4.01 1.692 4.287.207.276 2.92 4.46 7.078 6.253.99.427 1.762.682 2.365.873.993.316 1.897.271 2.612.164.797-.119 2.454-1.003 2.8-1.972.345-.97.345-1.8.242-1.972-.104-.173-.38-.276-.795-.483-.414-.207-2.454-1.212-2.834-1.35-.38-.14-.656-.207-.932.207-.276.414-1.07 1.35-1.312 1.627-.242.276-.483.31-.897.104-.414-.207-1.75-.645-3.332-2.057-1.232-1.099-2.064-2.456-2.306-2.87-.242-.414-.026-.638.181-.844.187-.186.414-.483.622-.725.207-.242.276-.414.414-.69.138-.276.07-.518-.035-.725-.104-.207-.913-2.257-1.283-3.086-.318-.712-.646-.73-.932-.742a13.9 13.9 0 0 0-.275-.005z" />
-      </svg>
+      {/* Le disque garde toujours ses 56 px : c'est la cible tactile, elle ne
+          doit pas dépendre de l'état de survol. */}
+      <span className="grid h-14 w-14 shrink-0 place-items-center">
+        <WhatsAppGlyph className="h-7 w-7" />
+      </span>
+
+      {/* Libellé qui se déplie au survol et au focus clavier.
+          Une pastille ronde ne dit pas ce qu'elle fait — surtout à côté d'un
+          second bouton de discussion. Le libellé le dit, sans occuper la place
+          en permanence.
+          Masqué sous `sm` : sur téléphone, la largeur manque et le logo
+          WhatsApp est de toute façon reconnu sans légende.
+          `max-w` plutôt que `width` : la transition porte alors sur une valeur
+          animable, et le texte n'est jamais recalculé. */}
+      <span
+        className={[
+          "hidden overflow-hidden whitespace-nowrap text-sm font-semibold sm:block",
+          "max-w-0 opacity-0 transition-all duration-300 ease-out",
+          "group-hover:mr-5 group-hover:max-w-[10rem] group-hover:opacity-100",
+          "group-focus-visible:mr-5 group-focus-visible:max-w-[10rem] group-focus-visible:opacity-100",
+        ].join(" ")}
+      >
+        Écrivez-nous
+      </span>
     </a>
   );
 }

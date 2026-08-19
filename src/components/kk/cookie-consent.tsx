@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { LogoImage } from "@/components/brand/Logo";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
+import { Monogram } from "@/components/kk/motifs";
 import { cn } from "@/lib/utils";
 import {
   CONSENT_COOKIE,
@@ -19,17 +19,42 @@ import {
 /**
  * Bandeau de consentement aux traceurs.
  *
- * ── CE QUI EST NÉGOCIÉ, ET CE QUI NE L'EST PAS ───────────────────────────────
+ * ── IL NE S'AFFICHE QUE S'IL SERT À QUELQUE CHOSE ────────────────────────────
  *
- * Trois boutons de MÊME POIDS : « Non merci », « Je choisis », « OK pour moi ».
- * Refuser coûte exactement un clic, comme accepter. Ce n'est pas un choix
- * esthétique — un « tout accepter » mis en avant face à un refus caché derrière
- * deux écrans est précisément ce que la CNIL sanctionne. Le bouton d'acceptation
- * n'est donc pas plus coloré ni plus gros que celui de refus.
+ * Le layout ne le monte que lorsqu'un fragment de mesure ou de publicité est
+ * réellement actif au back-office (voir `tracageActif`). Sans traceur, la
+ * boutique ne pose que le panier, la session et la langue — dispensés de
+ * consentement par l'article 82 — et le bandeau ne paraît pas du tout.
+ *
+ * ── UNE PETITE CARTE, EN BAS À GAUCHE ────────────────────────────────────────
+ *
+ * Le bandeau était une carte de la hauteur d'un demi-écran : salutation, titre,
+ * logo, trois paragraphes et un lien avant d'arriver aux boutons. Beaucoup de
+ * cérémonie pour une question à deux issues.
+ *
+ * Il garde sa POSITION d'origine — coin bas gauche, hors du chemin du bouton
+ * WhatsApp qui occupe le coin droit — mais tient désormais dans une vignette de
+ * 21 rem : une phrase, deux boutons, un lien. Une barre pleine largeur avait
+ * été essayée entre-temps ; elle barrait le hero de bout en bout, ce qui est
+ * plus envahissant qu'une carte qu'on peut ignorer du coin de l'œil.
+ *
+ * ── CE QUI N'EST PAS NÉGOCIABLE ──────────────────────────────────────────────
+ *
+ * DEUX boutons de MÊME POIDS : « Refuser » et « Accepter ». Refuser coûte
+ * exactement un clic, comme accepter, et le bouton d'acceptation n'est ni plus
+ * gros ni plus coloré. Ce n'est pas une préférence de design : un « tout
+ * accepter » mis en avant face à un refus caché derrière un second écran est
+ * précisément ce que la CNIL sanctionne. Un bandeau à bouton unique, si
+ * tentant soit-il pour ne plus déranger personne, serait un vice de
+ * consentement — le refus doit rester aussi simple que l'accord.
+ *
+ * Le réglage fin passe en LIEN et non en troisième bouton : ceux qui veulent
+ * trier catégorie par catégorie sont rares, et leur donner un bouton de même
+ * poids qu'aux deux réponses franches allongeait la barre pour rien.
  *
  * Aucune croix de fermeture : fermer sans choisir laisserait le visiteur croire
  * qu'il a tranché alors que rien ne serait enregistré, et le bandeau
- * reviendrait à chaque page. Les trois boutons sont les seules sorties.
+ * reviendrait à chaque page.
  *
  * ── POURQUOI UN RECHARGEMENT APRÈS LE CHOIX ──────────────────────────────────
  *
@@ -39,6 +64,9 @@ import {
  * afficherait donc un consentement accepté sans que la moindre balise démarre.
  * D'où le rechargement complet — le seul moyen honnête de faire correspondre
  * l'état affiché et l'état réel.
+ *
+ * Le rechargement n'a lieu QUE si le choix change ce qui est chargé : refuser
+ * quand rien n'était accepté ne recharge rien.
  */
 
 /** Événement écouté pour rouvrir le bandeau depuis le pied de page. */
@@ -46,65 +74,55 @@ export const COOKIE_PREFERENCES_EVENT = "kk:cookies:open";
 
 const COPY = {
   fr: {
-    greeting: "Bonjour,",
-    title: "Parlons cookies.",
-    intro:
-      "Les cookies indispensables au panier, à votre compte et à la langue du site sont déjà là : sans eux, la boutique ne fonctionne pas.",
-    ask: "Pour le reste — mesurer l'audience, mesurer nos publicités — nous ne déposons rien sans votre accord.",
-    later:
-      "Vous pourrez revenir sur ce choix à tout moment depuis le lien « Préférences de cookies », en bas de chaque page.",
-    refuse: "Non merci",
-    choose: "Je choisis",
-    accept: "OK pour moi",
-    save: "Enregistrer mes choix",
+    /** Une phrase courte : ce qu'on dépose, et sous quelle condition. Elle tient
+     *  dans une carte de 21 rem sans dépasser trois lignes. */
+    line: "Nous mesurons l'audience du site. Rien n'est déposé sans votre accord.",
+    refuse: "Refuser",
+    choose: "Choisir",
+    accept: "Accepter",
+    save: "Enregistrer",
     back: "Retour",
     privacy: "Politique de confidentialité",
     panelTitle: "Vos préférences",
     categories: {
       necessaire: {
         label: "Strictement nécessaires",
-        help: "Panier, connexion à votre compte, langue d'affichage, sécurité. Toujours actifs : la boutique ne fonctionne pas sans eux.",
+        help: "Panier, compte, langue, sécurité. Sans eux, la boutique ne fonctionne pas.",
         locked: "Toujours actifs",
       },
       mesure: {
         label: "Mesure d'audience",
-        help: "Compter les visites et comprendre quelles pages servent, pour améliorer la boutique.",
+        help: "Compter les visites, pour améliorer la boutique.",
       },
       marketing: {
         label: "Publicité et réseaux sociaux",
-        help: "Mesurer l'efficacité de nos publicités et vous présenter des offres plus proches de vos besoins.",
+        help: "Mesurer nos publicités et vous proposer des offres pertinentes.",
       },
     },
     open: "Préférences de cookies",
   },
   en: {
-    greeting: "Hello,",
-    title: "Let's talk cookies.",
-    intro:
-      "The cookies your basket, your account and the site language depend on are already here: without them the shop does not work.",
-    ask: "For everything else — measuring traffic, measuring our advertising — we store nothing without your agreement.",
-    later:
-      "You can change your mind at any time from the “Cookie preferences” link at the bottom of every page.",
-    refuse: "No thanks",
-    choose: "Let me choose",
-    accept: "That's fine",
-    save: "Save my choices",
+    line: "We measure site traffic. Nothing is stored without your agreement.",
+    refuse: "Decline",
+    choose: "Choose",
+    accept: "Accept",
+    save: "Save",
     back: "Back",
     privacy: "Privacy policy",
     panelTitle: "Your preferences",
     categories: {
       necessaire: {
         label: "Strictly necessary",
-        help: "Basket, account sign-in, display language, security. Always on: the shop does not work without them.",
+        help: "Basket, account, language, security. The shop needs them.",
         locked: "Always on",
       },
       mesure: {
         label: "Audience measurement",
-        help: "Counting visits and understanding which pages help, so we can improve the shop.",
+        help: "Counting visits, so we can improve the shop.",
       },
       marketing: {
         label: "Advertising and social media",
-        help: "Measuring how well our advertising works and showing offers closer to what you need.",
+        help: "Measuring our advertising and showing relevant offers.",
       },
     },
     open: "Cookie preferences",
@@ -167,14 +185,14 @@ function Toggle({
   lockedLabel?: string;
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-border/60 py-4 last:border-0">
+    <div className="flex items-start justify-between gap-3 border-b border-border/60 py-3 last:border-0">
       <div className="min-w-0">
-        <p className="text-sm font-bold text-deep">{label}</p>
-        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{help}</p>
+        <p className="text-[0.8rem] font-semibold text-deep">{label}</p>
+        <p className="mt-0.5 text-[0.7rem] leading-snug text-muted-foreground">{help}</p>
       </div>
 
       {locked ? (
-        <span className="mt-1 shrink-0 rounded-full bg-cream px-3 py-1 text-[11px] font-bold tracking-wide text-deep/60 uppercase">
+        <span className="mt-0.5 shrink-0 rounded-full bg-cream px-2 py-0.5 text-[10px] font-bold tracking-wide text-deep/60 uppercase">
           {lockedLabel}
         </span>
       ) : (
@@ -241,8 +259,23 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
   }, [visible]);
 
   function decide(consent: Consent) {
+    const avant = readConsentCookie();
     writeConsentCookie(consent);
     setClosing(true);
+
+    // Le rechargement n'existe que pour laisser DÉMARRER des balises qui
+    // n'étaient pas dans le flux HTML. Si le choix n'ouvre aucune catégorie qui
+    // n'était pas déjà ouverte — un refus, ou un simple resserrement des
+    // réglages — il n'y a rien à faire partir, et recharger la page ne ferait
+    // que punir le visiteur d'avoir répondu.
+    const ouvreQuelqueChose =
+      (consent.mesure && !avant?.mesure) || (consent.marketing && !avant?.marketing);
+
+    if (!ouvreQuelqueChose) {
+      window.setTimeout(() => setRouvert(false), 260);
+      return;
+    }
+
     // On laisse l'animation de sortie se jouer avant de recharger : sans ce
     // délai, le bandeau disparaît d'un coup et le rechargement paraît être un
     // bogue plutôt qu'une confirmation.
@@ -252,12 +285,18 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
   if (!visible) return null;
 
   const buttonBase =
-    "flex-1 rounded-full border px-5 py-3 text-sm font-bold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:outline-none";
+    "rounded-full border px-4 py-2 text-[0.8rem] font-semibold transition-all duration-200 focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:outline-none";
 
   return (
     <div
       className={cn(
-        "fixed inset-x-3 bottom-3 z-[70] sm:inset-x-auto sm:left-6 sm:bottom-6 sm:max-w-md",
+        // Coin bas gauche : le coin droit est pris par le bouton WhatsApp, et
+        // une carte étroite laisse la page lisible derrière elle.
+        // `w-[calc(100vw-2rem)]` plafonné à 21 rem : sur téléphone la carte
+        // occupe la largeur moins ses marges, sur bureau elle s'arrête net.
+        "fixed bottom-4 left-4 z-[70] w-[calc(100vw-2rem)] max-w-[21rem]",
+        // La barre de gestes iOS mange sinon le bas de la carte.
+        "mb-[env(safe-area-inset-bottom)]",
         "motion-safe:transition-all motion-safe:duration-300",
         closing
           ? "translate-y-3 opacity-0"
@@ -269,17 +308,31 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
         tabIndex={-1}
         role="dialog"
         aria-modal="false"
-        aria-label={copy.title}
-        className="rounded-3xl border border-border/70 bg-white p-6 shadow-[0_18px_50px_-12px_rgba(15,59,70,0.35)] outline-none sm:p-7"
+        aria-label={copy.line}
+        className="rounded-2xl border border-border/70 bg-white p-4 shadow-[0_12px_36px_-12px_rgba(15,59,70,0.35)] outline-none"
       >
+        {/* En-tête de marque, en registre de papier à lettres : le monogramme
+            de la charte, puis un filet doré qui s'éteint vers la droite.
+            LE MONOGRAMME PLUTÔT QUE LE LETTRAGE COMPLET. Le logotype officiel
+            est au format 1070 × 306 : ramené à la hauteur admissible ici, il
+            ferait 60 px de large et « SELECT » y deviendrait illisible. Le
+            monogramme, lui, est dessiné pour tenir dans un carré — c'est
+            précisément son usage.
+            `title=""` : le nom de la maison est déjà annoncé par le `aria-label`
+            du dialogue, l'annoncer deux fois n'apprend rien à qui écoute. */}
+        <div className="mb-3 flex items-center gap-2.5">
+          <Monogram className="h-6 w-6 shrink-0 text-deep" title="" />
+          <span
+            aria-hidden="true"
+            className="h-px flex-1 bg-gradient-to-r from-gold/60 via-gold/20 to-transparent"
+          />
+        </div>
+
         {panel ? (
           <>
-            <div className="flex items-start justify-between gap-4">
-              <h2 className="font-display text-xl font-bold text-deep">{copy.panelTitle}</h2>
-              <LogoImage tone="dark" className="h-9 shrink-0" />
-            </div>
+            <h2 className="font-display text-base font-bold text-deep">{copy.panelTitle}</h2>
 
-            <div className="mt-4 max-h-[45vh] overflow-y-auto pr-1">
+            <div className="mt-2 max-h-[45vh] overflow-y-auto pr-1">
               <Toggle
                 checked
                 locked
@@ -301,73 +354,65 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
               />
             </div>
 
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+            <div className="mt-4 flex gap-2">
               <button
                 type="button"
                 onClick={() => setPanel(false)}
-                className={cn(buttonBase, "border-border text-deep hover:border-deep hover:bg-cream")}
+                className={cn(buttonBase, "flex-1 border-border text-deep hover:border-deep hover:bg-cream")}
               >
                 {copy.back}
               </button>
               <button
                 type="button"
                 onClick={() => decide(customConsent(mesure, marketing))}
-                className={cn(buttonBase, "border-deep bg-deep text-white hover:brightness-110")}
+                className={cn(buttonBase, "flex-1 border-deep bg-deep text-white hover:brightness-110")}
               >
                 {copy.save}
               </button>
             </div>
           </>
         ) : (
+          /* Trois niveaux, du plus lu au moins lu : la phrase, les deux
+             réponses, le réglage fin. */
           <>
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <p className="font-display text-xl leading-tight font-bold text-deep">
-                  {copy.greeting}
-                </p>
-                <h2 className="font-display text-xl leading-tight font-bold text-deep">
-                  {copy.title}
-                </h2>
-              </div>
-              <LogoImage tone="dark" className="h-10 shrink-0" />
-            </div>
+            <p className="text-[0.8rem] leading-snug text-foreground/85">
+              {copy.line}{" "}
+              <Link
+                href="/confidentialite"
+                className="font-medium text-deep underline underline-offset-2"
+              >
+                {copy.privacy}
+              </Link>
+            </p>
 
-            <p className="mt-4 text-sm leading-relaxed text-foreground/85">{copy.intro}</p>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/85">{copy.ask}</p>
-            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">{copy.later}</p>
-
-            <Link
-              href="/confidentialite"
-              className="mt-2 inline-block text-xs font-medium text-deep underline underline-offset-2 hover:text-gold-ink"
-            >
-              {copy.privacy}
-            </Link>
-
-            {/* Trois boutons de même poids visuel : refuser n'est pas plus
-                difficile qu'accepter. */}
-            <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+            {/* Refuser et accepter : même largeur, même graisse, un clic
+                chacun. Le bouton d'acceptation n'est pas mis en avant. */}
+            <div className="mt-3.5 flex items-center gap-2">
               <button
                 type="button"
                 onClick={() => decide(rejectAll())}
-                className={cn(buttonBase, "border-border text-deep hover:border-deep hover:bg-cream")}
+                className={cn(buttonBase, "flex-1 border-border text-deep hover:border-deep hover:bg-cream")}
               >
                 {copy.refuse}
               </button>
               <button
                 type="button"
-                onClick={() => setPanel(true)}
-                className={cn(buttonBase, "border-border text-deep hover:border-deep hover:bg-cream")}
-              >
-                {copy.choose}
-              </button>
-              <button
-                type="button"
                 onClick={() => decide(acceptAll())}
-                className={cn(buttonBase, "border-deep bg-deep text-white hover:brightness-110")}
+                className={cn(buttonBase, "flex-1 border-deep bg-deep text-white hover:brightness-110")}
               >
                 {copy.accept}
               </button>
             </div>
+
+            {/* Le réglage fin en lien : utile à quelques-uns, il n'a pas à
+                peser autant que les deux réponses franches. */}
+            <button
+              type="button"
+              onClick={() => setPanel(true)}
+              className="mt-2.5 text-[0.72rem] font-medium text-muted-foreground underline underline-offset-2 transition hover:text-deep"
+            >
+              {copy.choose}
+            </button>
           </>
         )}
       </div>

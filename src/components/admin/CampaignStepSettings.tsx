@@ -139,16 +139,19 @@ export function CampaignStepSettings({
 
         {draft.discountKind === "amount" && (
           <label className="block max-w-xs text-sm">
-            <span className="mb-1 block font-semibold text-foreground">Remise (€)</span>
+            {/* FCFA, pas euros : la saisie divisait par cent à l'affichage et
+                remultipliait à la volée, ce qui n'a plus de sens sur une devise
+                sans sous-unité. Une remise de 5 000 s'écrit « 5000 ». */}
+            <span className="mb-1 block font-semibold text-foreground">Remise (FCFA)</span>
             <input
               type="number"
               min={0}
-              step={0.01}
-              value={draft.discountValue ? draft.discountValue / 100 : ""}
+              step={1}
+              value={draft.discountValue || ""}
               onChange={(event) => {
-                const euros = Number.parseFloat(event.target.value);
+                const montant = Number.parseInt(event.target.value, 10);
                 onChange({
-                  discountValue: Number.isFinite(euros) ? Math.round(euros * 100) : 0,
+                  discountValue: Number.isFinite(montant) ? Math.max(0, montant) : 0,
                 });
               }}
               className={`${inputClass} w-full`}

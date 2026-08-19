@@ -197,8 +197,9 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         paymentMethodLabel: payment.label,
         shippingMethodKey: "whatsapp",
         shippingMethodLabel: "Livraison coordonnée via WhatsApp",
-        // Statuts KossKoss (voir docs/13). Le paiement Mobile Money reste à
-        // brancher (CinetPay) : la commande naît en attente de paiement.
+        // Statuts KossKoss (voir docs/13). La commande naît TOUJOURS en attente
+        // de paiement : c'est le webhook signé de la passerelle, et lui seul,
+        // qui la fera basculer en « payée » (voir server/kk/paiement.ts).
         status: "en_attente_paiement",
         paymentStatus: "en_attente",
         subtotalCents: subtotal,

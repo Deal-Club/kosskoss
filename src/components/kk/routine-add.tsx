@@ -112,7 +112,12 @@ export function RoutineAddToCart({
           ? `Acheter la ${routine.name} — ${routine.steps.length} produits`
           : `Ajouter la ${routine.name} au panier — ${routine.steps.length} produits`
       }
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${base} ${className}`}
+      // `whitespace-nowrap` : dans une carte de routine, le bouton n'a que
+      // ~15 rem de large et « Acheter maintenant » se coupait en deux lignes,
+      // ce qui doublait sa hauteur et désalignait les cinq cartes de la rangée.
+      // La gouttière descend de 5 à 4 pour lui rendre la place que le retour à
+      // la ligne lui prenait.
+      className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${base} ${className}`}
     >
       {achatDirect ? (
         <>
