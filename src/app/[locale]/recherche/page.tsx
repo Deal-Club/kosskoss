@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { CategoryProductBrowser } from "@/components/CategoryProductBrowser";
 import { getCategoryPages } from "@/server/store";
 import { loadCatalogTranslations, localizeCategoryPages } from "@/server/localizedContent";
+import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
 import type { Locale } from "@/i18n/routing";
 import type { Product } from "@/types/home";
 
@@ -81,7 +82,13 @@ export default async function RecherchePage({
   const query = firstValue((await searchParams).q).trim();
   const common = await getTranslations("common");
   const t = await getTranslations("recherche");
-  const results = query ? await searchResults(locale, query) : [];
+  // Le vocabulaire n'est utile qu'avec des résultats à filtrer : une page
+  // « recherche vide » n'affiche pas CategoryProductBrowser, inutile d'aller
+  // en base pour rien.
+  const [results, facettes] = await Promise.all([
+    query ? searchResults(locale, query) : Promise.resolve([]),
+    query ? lireVocabulaire(locale) : Promise.resolve([]),
+  ]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -107,7 +114,7 @@ export default async function RecherchePage({
                   {t("resultats", { count: results.length })}
                 </p>
               </div>
-              <CategoryProductBrowser products={results} />
+              <CategoryProductBrowser products={results} facettes={facettes} />
             </>
           ) : (
             <p className="py-12 text-center text-sm text-muted-foreground">{t("vide")}</p>

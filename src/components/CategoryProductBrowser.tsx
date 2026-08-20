@@ -9,6 +9,7 @@ import { Reveal } from "@/components/Reveal";
 import { parsePrice } from "@/lib/price";
 import { normaliserBadge } from "@/lib/kk/badges";
 import { useDismissable } from "@/lib/useDismissable";
+import { produitCorrespond, FAMILLE_PEAU, FAMILLE_PREOCCUPATION, type OptionFacette } from "@/lib/kk/facettes";
 import type { Product } from "@/types/home";
 
 // Valeurs internes : elles ne sont jamais affichées, seul le libellé est traduit.
@@ -21,9 +22,17 @@ const SORT_OPTIONS: { value: SortOption; labelKey: string }[] = [
   { value: "newest", labelKey: "sortNewest" },
 ];
 
-export function CategoryProductBrowser({ products }: { products: Product[] }) {
+export function CategoryProductBrowser({
+  products,
+  facettes,
+}: {
+  products: Product[];
+  facettes: OptionFacette[];
+}) {
   const t = useTranslations("category");
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedPeau, setSelectedPeau] = useState<string[]>([]);
+  const [selectedPreoccupation, setSelectedPreoccupation] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<string | null>(null);
   const [minRatings, setMinRatings] = useState<number[]>([]);
   const [inStockOnly, setInStockOnly] = useState(false);
@@ -71,6 +80,8 @@ export function CategoryProductBrowser({ products }: { products: Product[] }) {
 
     const filtered = products.filter((product) => {
       if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
+      if (!produitCorrespond(product.tags ?? [], selectedPeau)) return false;
+      if (!produitCorrespond(product.tags ?? [], selectedPreoccupation)) return false;
       if (activePriceRange) {
         const price = parsePrice(product.price);
         if (price < activePriceRange.min || price > activePriceRange.max) return false;
@@ -96,15 +107,41 @@ export function CategoryProductBrowser({ products }: { products: Product[] }) {
       sorted.sort((a, b) => estNouveau(b) - estNouveau(a));
     }
     return sorted;
-  }, [products, selectedBrands, activePriceRange, minRatings, inStockOnly, sortBy]);
+  }, [
+    products,
+    selectedBrands,
+    selectedPeau,
+    selectedPreoccupation,
+    activePriceRange,
+    minRatings,
+    inStockOnly,
+    sortBy,
+  ]);
 
   const activeFilterCount =
-    selectedBrands.length + (priceRange !== null ? 1 : 0) + minRatings.length + (inStockOnly ? 1 : 0);
+    selectedBrands.length +
+    selectedPeau.length +
+    selectedPreoccupation.length +
+    (priceRange !== null ? 1 : 0) +
+    minRatings.length +
+    (inStockOnly ? 1 : 0);
   const hasActiveFilters = activeFilterCount > 0;
 
   function toggleBrand(brand: string) {
     setSelectedBrands((current) =>
       current.includes(brand) ? current.filter((item) => item !== brand) : [...current, brand],
+    );
+  }
+
+  function togglePeau(key: string) {
+    setSelectedPeau((current) =>
+      current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
+    );
+  }
+
+  function togglePreoccupation(key: string) {
+    setSelectedPreoccupation((current) =>
+      current.includes(key) ? current.filter((item) => item !== key) : [...current, key],
     );
   }
 
@@ -116,15 +153,26 @@ export function CategoryProductBrowser({ products }: { products: Product[] }) {
 
   function resetFilters() {
     setSelectedBrands([]);
+    setSelectedPeau([]);
+    setSelectedPreoccupation([]);
     setPriceRange(null);
     setMinRatings([]);
     setInStockOnly(false);
   }
 
+  const optionsPeau = facettes.filter((f) => f.family === FAMILLE_PEAU);
+  const optionsPreoccupation = facettes.filter((f) => f.family === FAMILLE_PREOCCUPATION);
+
   const filtersProps = {
     brandOptions,
     selectedBrands,
     onToggleBrand: toggleBrand,
+    optionsPeau,
+    selectedPeau,
+    onTogglePeau: togglePeau,
+    optionsPreoccupation,
+    selectedPreoccupation,
+    onTogglePreoccupation: togglePreoccupation,
     priceRange,
     onSelectPriceRange: setPriceRange,
     minRatings,

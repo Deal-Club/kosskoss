@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { SlidersHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { OptionFacette } from "@/lib/kk/facettes";
 
 // L'identifiant "id" est stable et sert d'état ; seul le libellé est traduit,
 // via "category.priceRanges.<id>".
@@ -37,6 +38,12 @@ export function CategoryFilters({
   brandOptions,
   selectedBrands,
   onToggleBrand,
+  optionsPeau,
+  selectedPeau,
+  onTogglePeau,
+  optionsPreoccupation,
+  selectedPreoccupation,
+  onTogglePreoccupation,
   priceRange,
   onSelectPriceRange,
   minRatings,
@@ -51,6 +58,12 @@ export function CategoryFilters({
   brandOptions: BrandOption[];
   selectedBrands: string[];
   onToggleBrand: (brand: string) => void;
+  optionsPeau: OptionFacette[];
+  selectedPeau: string[];
+  onTogglePeau: (key: string) => void;
+  optionsPreoccupation: OptionFacette[];
+  selectedPreoccupation: string[];
+  onTogglePreoccupation: (key: string) => void;
   priceRange: string | null;
   onSelectPriceRange: (id: string | null) => void;
   minRatings: number[];
@@ -117,6 +130,55 @@ export function CategoryFilters({
             ))}
           </ul>
         </fieldset>
+
+        {/* Un groupe sans option ne s'affiche pas : une catégorie dont aucun
+            produit ne porte de tag de cette famille ne doit pas montrer un
+            bloc vide dans les filtres. */}
+        {optionsPeau.length > 0 && (
+          <fieldset>
+            <legend className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              {t("filterSkinType")}
+            </legend>
+            <ul className="space-y-1.5">
+              {optionsPeau.map(({ key, label }) => (
+                <li key={key}>
+                  <label className="flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={selectedPeau.includes(key)}
+                      onChange={() => onTogglePeau(key)}
+                      className="h-4 w-4 rounded-sm border-border accent-primary"
+                    />
+                    {label}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+        )}
+
+        {optionsPreoccupation.length > 0 && (
+          <fieldset>
+            <legend className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
+              {t("filterConcern")}
+            </legend>
+            <ul className="space-y-1.5">
+              {optionsPreoccupation.map(({ key, label }) => (
+                <li key={key}>
+                  <label className="flex items-center gap-2 text-sm text-foreground">
+                    <input
+                      type="checkbox"
+                      checked={selectedPreoccupation.includes(key)}
+                      onChange={() => onTogglePreoccupation(key)}
+                      className="h-4 w-4 rounded-sm border-border accent-primary"
+                    />
+                    {label}
+                  </label>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+        )}
 
         <fieldset>
           <legend className="mb-2 text-xs font-bold tracking-wide text-muted-foreground uppercase">
