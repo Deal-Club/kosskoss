@@ -26,14 +26,20 @@ function parseItem(raw: unknown): ProductTagAdmin | null {
   if (typeof r.labelFr !== "string") return null;
   if (typeof r.labelEn !== "string") return null;
   if (typeof r.family !== "string" || !r.family.trim()) return null;
-  if (typeof r.position !== "number" || !Number.isFinite(r.position)) return null;
+  // `Number.isInteger` et non `isFinite` : la colonne `position` est un `Int`.
+  // Un 1.5 passait la validation et n'échouait qu'au fond de Prisma, en 500 nu.
+  if (typeof r.position !== "number" || !Number.isInteger(r.position)) return null;
   if (typeof r.active !== "boolean") return null;
 
   return {
-    key: r.key,
+    // `key` et `family` sont validées APRÈS `.trim()` : les stocker brutes
+    // laissait passer un `family: " peau "` qui, validé, ne correspondait plus
+    // jamais à la famille des facettes — le tag disparaissait du catalogue sans
+    // qu'aucune erreur ne le signale.
+    key: r.key.trim(),
     labelFr: r.labelFr,
     labelEn: r.labelEn,
-    family: r.family,
+    family: r.family.trim(),
     position: r.position,
     active: r.active,
   };

@@ -27,8 +27,8 @@ describe("numeroFactureSuivant", () => {
   });
 
   it("expose un préfixe distinct de celui des commandes", () => {
-    // Les commandes sont en « KK- » : confondre les deux numéros dans un
-    // échange avec le service client coûte cher.
+    // Les commandes du tunnel KossKoss sont en « KOSS- » (server/kk/checkout.ts) :
+    // confondre les deux numéros dans un échange avec le service client coûte cher.
     assert.equal(PREFIXE_FACTURE, "FAC-");
   });
 });
