@@ -5,18 +5,25 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Save, Loader2, ArrowLeft } from "lucide-react";
 import type { ProductTagRow } from "@/server/kk/product-tags";
-
-// Vocabulaire de tags utilisé par le questionnaire (repère pour l'admin).
-const VOCAB = [
-  "peau_grasse", "peau_seche", "peau_mixte", "peau_normale", "peau_sensible",
-  "hydratation", "imperfections", "matifiant", "eclat", "anti_age", "apaisant",
-  "nettoyage", "traitement", "solaire", "protection", "budget_eco", "premium",
-];
+import type { ProductTagAdmin } from "@/server/kk/vocabulaire-tags";
 
 const inputCls =
   "w-full rounded border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary";
 
-export function ProductTagsAdmin({ initial }: { initial: ProductTagRow[] }) {
+/**
+ * `vocabulaire` vient de la base (lireVocabulaireAdmin), pas d'une liste figée
+ * dans ce fichier. La liste en dur qui occupait cette place mentait déjà — elle
+ * annonçait « protection », absent du catalogue, et taisait « toner », « corps »,
+ * « homme » et « hygiene » — et elle serait devenue franchement fausse dès la
+ * première retouche du client dans /admin/products/tags.
+ */
+export function ProductTagsAdmin({
+  initial,
+  vocabulaire,
+}: {
+  initial: ProductTagRow[];
+  vocabulaire: ProductTagAdmin[];
+}) {
   const router = useRouter();
   const [rows, setRows] = useState<ProductTagRow[]>(initial);
   const [saving, setSaving] = useState(false);
@@ -86,7 +93,18 @@ export function ProductTagsAdmin({ initial }: { initial: ProductTagRow[] }) {
       </div>
 
       <div className="rounded-lg border border-border bg-muted/40 p-4 text-xs text-muted-foreground">
-        <span className="font-semibold text-foreground">Tags reconnus :</span> {VOCAB.join(" · ")}
+        <span className="font-semibold text-foreground">Tags reconnus :</span>{" "}
+        {vocabulaire.length > 0 ? (
+          vocabulaire.map((t) => t.key).join(" · ")
+        ) : (
+          <>
+            aucun tag au vocabulaire. Renseignez-le depuis{" "}
+            <Link href="/admin/products/tags" className="underline hover:text-primary">
+              Vocabulaire des tags
+            </Link>
+            .
+          </>
+        )}
       </div>
 
       {[...grouped.entries()].map(([group, cats]) => (
