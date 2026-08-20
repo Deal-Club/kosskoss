@@ -10,6 +10,8 @@ import type { OrderRecord } from "@/server/orders";
 // `paymentStatus === "payee"` voisin dans updatePaymentStatus — au lieu de
 // laisser doitEmettreFacture cesser silencieusement d'émettre des factures.
 import type { PaymentStatus } from "@/lib/orderStatus";
+import { buildInvoicePdf, invoiceFilename } from "@/server/invoice";
+import { sendPaymentReceivedEmail } from "./emails";
 
 /**
  * Émission de la facture.
@@ -81,4 +83,29 @@ export async function emettreFacture(order: OrderRecord): Promise<string | null>
   }
 
   return null;
+}
+
+/**
+ * Émet la facture, puis l'envoie au client.
+ *
+ * Les deux moitiés sont séparées volontairement : l'écriture en base doit
+ * réussir ou être signalée, l'envoi peut échouer sans conséquence — la facture
+ * reste réémettable depuis le back-office.
+ */
+export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void> {
+  const numero = await emettreFacture(order);
+  // `null` : une facture existait déjà. Ne pas renvoyer d'e-mail, le client
+  // l'a reçue la première fois.
+  if (!numero) return;
+
+  const pdf = await buildInvoicePdf(order, numero);
+  await sendPaymentReceivedEmail({
+    to: order.email,
+    firstName: order.billing.firstName,
+    orderNumber: order.orderNumber,
+    numeroFacture: numero,
+    totalFcfa: order.totalCents,
+    facturePdf: pdf,
+    nomFichier: invoiceFilename(numero),
+  });
 }

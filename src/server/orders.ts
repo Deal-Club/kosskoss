@@ -14,7 +14,7 @@ import type { CartLine, ShippingMethodKey } from "@/lib/cart";
 import { discountedVariantCents } from "@/lib/variantPricing";
 import { isOrderStatus, isPaymentStatus, ORDER_STATUSES, ORDER_STATUS_INITIAL } from "@/lib/orderStatus";
 import type { OrderStatus, PaymentStatus } from "@/lib/orderStatus";
-import { doitEmettreFacture, emettreFacture } from "@/server/kk/facture";
+import { doitEmettreFacture, emettreEtEnvoyerFacture } from "@/server/kk/facture";
 
 // Commandes de la boutique.
 //
@@ -819,7 +819,7 @@ export async function updatePaymentStatus(
       // recordOrderEvent juste en dessous.
       const record = await getOrder(id);
       if (record) {
-        await emettreFacture(record);
+        await emettreEtEnvoyerFacture(record);
       } else {
         // Silence impossible : le paiement est marqué encaissé mais aucune
         // facture n'a pu être tentée. Même trace que le cas d'échec, pour
