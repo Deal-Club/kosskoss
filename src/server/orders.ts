@@ -798,34 +798,60 @@ export async function updatePaymentStatus(
   // faudrait un second chemin d'émission, donc un second endroit où oublier un
   // cas.
   //
-  // L'idempotence est acquise sans effort : la fonction est déjà sortie plus
-  // haut si le statut ne change pas.
-  if (doitEmettreFacture(current.paymentStatus, paymentStatus)) {
-    const record = await getOrder(id);
-    if (record) {
-      try {
+  // La sortie anticipée ci-dessus (ligne 773) filtre déjà le cas le plus
+  // fréquent — un statut qui ne bouge pas — mais elle n'est pas atomique :
+  // deux webhooks simultanés pour la même commande peuvent tous deux la
+  // franchir et arriver ici. La vraie garantie d'unicité est la contrainte
+  // `Invoice.orderId @unique` couplée à la reprise sur P2002 dans
+  // emettreFacture ; c'est elle qui empêche une double facture, pas cette
+  // sortie anticipée. Ne pas la retirer en pensant qu'elle suffit seule.
+  // `current.paymentStatus` vient d'une lecture Prisma typée `string` (la
+  // colonne n'est pas un enum base) : on le fait rentrer dans l'union par la
+  // même garde que `getOrder` (ligne 177) avant de le passer à une fonction
+  // qui, elle, est maintenant typée sur `PaymentStatus`.
+  const ancienPaymentStatus = isPaymentStatus(current.paymentStatus) ? current.paymentStatus : "en_attente";
+  if (doitEmettreFacture(ancienPaymentStatus, paymentStatus)) {
+    try {
+      // `getOrder(id)` est une lecture base ajoutée par ce point d'accroche :
+      // elle doit rester dans le même filet que `emettreFacture`, sinon une
+      // base injoignable la ferait échouer hors du try et remonterait
+      // jusqu'au webhook — le même trou que celui refermé pour
+      // recordOrderEvent juste en dessous.
+      const record = await getOrder(id);
+      if (record) {
         await emettreFacture(record);
-      } catch (error) {
-        // Ne JAMAIS faire échouer la bascule : le paiement est encaissé chez le
-        // prestataire. Lever ici ferait répondre 500 au webhook, qui
-        // relancerait pour retomber sur la sortie anticipée. La trace part dans
-        // l'historique de commande, là où le commerçant la verra.
-        const message = error instanceof Error ? error.message : String(error);
-        // Le console.error passe en premier, avant tout appel base : la trace
-        // doit survivre même si la base ne répond pas.
-        console.error("[facture] émission échouée", { orderId: id, message });
-        try {
-          await recordOrderEvent(
-            id,
-            "paiement",
-            `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
-          );
-        } catch {
-          // recordOrderEvent écrit dans la même base dont l'indisponibilité a
-          // pu causer l'échec de emettreFacture : elle ne doit pas être ce qui
-          // casse à son tour la garantie qu'elle est censée consigner. Le
-          // console.error ci-dessus reste la seule trace dans ce cas.
-        }
+      } else {
+        // Silence impossible : le paiement est marqué encaissé mais aucune
+        // facture n'a pu être tentée. Même trace que le cas d'échec, pour
+        // que le commerçant le voie aussi.
+        console.error("[facture] commande introuvable après bascule de paiement", { orderId: id });
+        await recordOrderEvent(
+          id,
+          "paiement",
+          `⚠️ Facture non émise : commande introuvable après le passage à « payée ». À reprendre à la main.`,
+        );
+      }
+    } catch (error) {
+      // Ne JAMAIS faire échouer la bascule : le paiement est encaissé chez le
+      // prestataire. Lever ici ferait répondre 500 au webhook, qui
+      // relancerait pour retomber sur la sortie anticipée. La trace part dans
+      // l'historique de commande, là où le commerçant la verra.
+      const message = error instanceof Error ? error.message : String(error);
+      // Le console.error passe en premier, avant tout appel base : la trace
+      // doit survivre même si la base ne répond pas.
+      console.error("[facture] émission échouée", { orderId: id, message });
+      try {
+        await recordOrderEvent(
+          id,
+          "paiement",
+          `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
+        );
+      } catch {
+        // recordOrderEvent écrit dans la même base dont l'indisponibilité a
+        // pu causer l'échec de emettreFacture (ou de getOrder ci-dessus) :
+        // elle ne doit pas être ce qui casse à son tour la garantie qu'elle
+        // est censée consigner. Le console.error ci-dessus reste la seule
+        // trace dans ce cas.
       }
     }
   }

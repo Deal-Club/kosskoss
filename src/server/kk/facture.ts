@@ -4,6 +4,12 @@ import { numeroFactureSuivant, PREFIXE_FACTURE } from "./facture-numero";
 // créerait un cycle à l'exécution. Un import de type est effacé à la
 // compilation, donc il n'y en a pas.
 import type { OrderRecord } from "@/server/orders";
+// Module feuille déjà importé par orders.ts : aucun cycle introduit. Typer sur
+// l'union plutôt que sur `string` fait qu'un renommage de statut dans
+// PAYMENT_STATUSES casse la compilation ici, comme il casse déjà le
+// `paymentStatus === "payee"` voisin dans updatePaymentStatus — au lieu de
+// laisser doitEmettreFacture cesser silencieusement d'émettre des factures.
+import type { PaymentStatus } from "@/lib/orderStatus";
 
 /**
  * Émission de la facture.
@@ -22,7 +28,7 @@ const TENTATIVES = 5;
  * Seule la transition VERS « payée », depuis un autre statut, la déclenche. Un
  * remboursement appellera un avoir, prévu au lot 3, pas une nouvelle facture.
  */
-export function doitEmettreFacture(ancien: string, nouveau: string): boolean {
+export function doitEmettreFacture(ancien: PaymentStatus, nouveau: PaymentStatus): boolean {
   return nouveau === "payee" && ancien !== "payee";
 }
 
