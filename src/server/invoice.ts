@@ -68,7 +68,10 @@ const PIED_RESERVE = 128;
  * Ramène le texte au jeu WinAnsi accepté par les polices standard.
  * Les tirets longs et guillemets typographiques viennent des libellés produits
  * rédigés pour le site ; sans cette conversion, pdf-lib refuse la ligne. Les
- * lettres accentuées et le signe euro appartiennent à WinAnsi et sont gardés.
+ * lettres accentuées appartiennent à WinAnsi et sont gardées. Le signe euro a
+ * été retiré de la liste autorisée : plus aucune chaîne imprimée sur la
+ * facture n'en contient depuis le passage au FCFA, et l'exclure ici rend
+ * visible toute fuite future plutôt que de la laisser s'imprimer en silence.
  */
 function winAnsi(valeur: string): string {
   return (valeur ?? "")
@@ -80,7 +83,7 @@ function winAnsi(valeur: string): string {
     // une U+202F, absente de WinAnsi — sans cette conversion, « 1 845,00 » se
     // serait écrit « 1845,00 ».
     .replace(/[    ]/g, " ")
-    .replace(/[^\x20-\x7E€¡-ÿ]/g, "");
+    .replace(/[^\x20-\x7E¡-ÿ]/g, "");
 }
 
 /**
@@ -561,9 +564,11 @@ export async function buildInvoicePdf(
       ? `Paiement : payée le ${dateFrancaise(order.paidAt)} par ${order.paymentMethodLabel}.`
       : `Paiement : ${order.paymentMethodLabel}. Payable comptant, sans escompte.`,
   );
-  pied(
-    "En cas de retard de paiement : pénalités au taux de trois fois l'intérêt légal et indemnité forfaitaire de 40 € pour frais de recouvrement.",
-  );
+  // La pénalité de 40 € et le taux de trois fois l'intérêt légal (art. L441-10
+  // du code de commerce) venaient de l'activité française précédente : cette
+  // sanction n'existe pas en droit camerounais. Retirée plutôt que traduite,
+  // en attendant les mentions obligatoires propres au Cameroun, à trancher par
+  // le comptable.
   // Identité complète de l'émetteur sur une ligne : raison sociale, forme
   // sociale, adresse, moyens de contact et immatriculation.
   //
@@ -577,26 +582,12 @@ export async function buildInvoicePdf(
     7,
   );
 
-  const mentionTva = `TVA intracommunautaire : ${COMPANY.vatId}`;
-  const largeurMention = grasse.widthOfTextAtSize(winAnsi(mentionTva), 10);
-  const largeurCadre = largeurMention + 40;
-  const hauteurCadre = 26;
-  const yCadre = 52;
-  f.page.drawRectangle({
-    x: CENTRE - largeurCadre / 2,
-    y: yCadre,
-    width: largeurCadre,
-    height: hauteurCadre,
-    borderColor: NOIR,
-    borderWidth: 1,
-  });
-  texte(f, mentionTva, {
-    x: CENTRE,
-    y: yCadre + 9,
-    ancrage: "centre",
-    taille: 10,
-    gras: true,
-  });
+  // L'encadré « TVA intracommunautaire » qui occupait cet espace venait lui
+  // aussi de l'activité française précédente : la TVA intracommunautaire est
+  // une notion propre à l'Union européenne, sans équivalent au Cameroun — et
+  // le système n'affiche de toute façon plus de TVA (voir l'en-tête du
+  // fichier). Retiré plutôt que traduit, en attendant que le comptable
+  // arrête les mentions obligatoires camerounaises.
 
   const octets = await doc.save();
   return Buffer.from(octets);
