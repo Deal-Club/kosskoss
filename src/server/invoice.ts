@@ -3,16 +3,17 @@
  *
  * Mise en page : logo, bloc client à gauche et bloc vendeur à droite, références
  * de facture au centre, tableau des articles avec vignette produit, totaux à
- * droite, puis les coordonnées de paiement centrées et l'encadré de TVA
- * intracommunautaire en pied de page.
+ * droite, puis le mode de paiement centré et les mentions d'identité du vendeur
+ * en pied de page.
  *
  * Mentions reprises : nom et adresse complets du vendeur et de l'acheteur,
  * date d'émission et numéro de facture unique, quantité et désignation de
  * chaque article, date de livraison ou mention qu'elle suivra, et le total.
  *
- * La TVA a été retirée du système : la facture ne présente ni taux ni montant
- * de taxe, seulement les prix réglés. Le numéro de TVA intracommunautaire du
- * vendeur reste affiché, il est exigé quel que soit le régime.
+ * La TVA a été retirée du système : la facture ne présente ni taux, ni montant
+ * de taxe, ni numéro de TVA. L'encadré « TVA intracommunautaire » de l'ancienne
+ * activité française n'a pas été repris — cette notion est propre à l'Union
+ * européenne et n'a pas d'équivalent camerounais (voir le pied de page).
  *
  * pdf-lib n'embarque que les polices WinAnsi : tout caractère hors de ce jeu
  * doit être translittéré avant écriture, sinon la génération échoue.
@@ -57,8 +58,8 @@ const COL_TOTAL = DROITE;
 const COL_TOTAUX = 400;
 
 /**
- * Hauteur réservée au pied de page sur chaque page : mentions obligatoires et
- * encadré de TVA. Le flux ne descend jamais en dessous. Serré volontairement :
+ * Hauteur réservée au pied de page sur chaque page : livraison, paiement et
+ * identité de l'émetteur. Le flux ne descend jamais en dessous. Serré volontairement :
  * une commande de trois ou quatre lignes doit tenir sur une seule page, comme
  * le modèle dont la facture reprend la mise en page.
  */
@@ -69,9 +70,12 @@ const PIED_RESERVE = 128;
  * Les tirets longs et guillemets typographiques viennent des libellés produits
  * rédigés pour le site ; sans cette conversion, pdf-lib refuse la ligne. Les
  * lettres accentuées appartiennent à WinAnsi et sont gardées. Le signe euro a
- * été retiré de la liste autorisée : plus aucune chaîne imprimée sur la
- * facture n'en contient depuis le passage au FCFA, et l'exclure ici rend
- * visible toute fuite future plutôt que de la laisser s'imprimer en silence.
+ * été retiré de la liste autorisée : plus aucune chaîne imprimée sur la facture
+ * n'en contient depuis le passage au FCFA. Attention, ce filtre ne SIGNALE
+ * rien — un « € » qui réapparaîtrait serait effacé sans bruit, laissant un
+ * montant nu. C'est délibéré : cette fonction s'exécute sur le chemin d'un
+ * paiement déjà encaissé, où lever ferait redélivrer le webhook. Le garde-fou
+ * qui, lui, doit alerter est le test de formatage (lib/kk/format.test.ts).
  */
 function winAnsi(valeur: string): string {
   return (valeur ?? "")
@@ -111,17 +115,44 @@ function civilite(code: string): string {
   return "";
 }
 
+/**
+ * Code pays de la commande rendu lisible.
+ *
+ * Imprimer « CM » sur une facture, c'est afficher une donnée technique à un
+ * client. Le tunnel KossKoss n'écrit que « CM » ; « FR » subsiste sur les
+ * commandes de l'activité précédente, encore en base.
+ */
+function nomPays(code: string): string {
+  if (code === "CM") return COMPANY.country;
+  if (code === "FR") return "France";
+  return code;
+}
+
+/**
+ * Bloc adresse du client.
+ *
+ * Le tunnel KossKoss ne collecte qu'un champ de localisation libre, recopié à
+ * l'identique dans `billingStreet` ET `billingCity`, avec un code postal vide
+ * (voir server/kk/checkout.ts) : sans déduplication, la facture imprimait deux
+ * fois de suite la même ligne. On écarte donc toute ligne identique à la
+ * précédente plutôt que de coder en dur la forme camerounaise — l'ancien modèle
+ * d'adresse, où rue et ville diffèrent, continue de s'imprimer entièrement.
+ */
 function lignesAdresse(adresse: OrderAddress): string[] {
   const nom = [civilite(adresse.salutation), adresse.firstName, adresse.lastName]
     .filter(Boolean)
     .join(" ");
-  return [
+  const lignes = [
     adresse.company,
     nom,
     adresse.street,
     `${adresse.postalCode} ${adresse.city}`.trim(),
-    adresse.country === "FR" ? "France" : adresse.country,
-  ].filter((ligne) => ligne && ligne.trim().length > 0);
+    nomPays(adresse.country),
+  ]
+    .map((ligne) => (ligne ?? "").trim())
+    .filter((ligne) => ligne.length > 0);
+
+  return lignes.filter((ligne, index) => index === 0 || ligne !== lignes[index - 1]);
 }
 
 /* ------------------------------------------------------------------ */
@@ -562,7 +593,7 @@ export async function buildInvoicePdf(
   });
   f.y -= 20;
 
-  // ---- Pied de page : mentions obligatoires, puis encadré de TVA ----
+  // ---- Pied de page : livraison, paiement, identité de l'émetteur ----
   let yPied = 118;
   const pied = (contenu: string, taille = 7.5) => {
     texte(f, contenu, { y: yPied, taille, couleur: GRIS });
