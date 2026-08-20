@@ -98,8 +98,9 @@ function montant(francs: number): string {
   return formatFcfa(francs);
 }
 
-function dateFrancaise(iso: string): string {
-  const d = new Date(iso);
+/** Accepte l'ISO stocké sur la commande comme le `Date` rendu par Prisma. */
+function dateFrancaise(valeur: string | Date): string {
+  const d = valeur instanceof Date ? valeur : new Date(valeur);
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
@@ -334,10 +335,18 @@ function decouper(
  * `numeroFacture` est le numéro séquentiel et chronologique attribué par
  * server/kk/facture-numero.ts (format FAC-AAAA-NNNNNN) ; le numéro de commande
  * reste imprimé à part, pour le rapprochement.
+ *
+ * `dateEmission` est l'`issuedAt` de la ligne `Invoice`, jamais la date de la
+ * commande : les deux se séparent dès que l'encaissement est différé (paiement
+ * à la livraison). Une commande passée le 30/12 et payée le 04/01 reçoit un
+ * numéro « FAC-2027-000001 » — le dater du 30/12/2026 ferait dire à la facture
+ * une année et à son numéro une autre, exactement la rupture de chronologie que
+ * la séquence dédiée existe pour empêcher.
  */
 export async function buildInvoicePdf(
   order: OrderRecord,
   numeroFacture: string,
+  dateEmission: Date,
 ): Promise<Buffer> {
   const doc = await PDFDocument.create();
   const normale = await doc.embedFont(StandardFonts.Helvetica);
@@ -352,7 +361,9 @@ export async function buildInvoicePdf(
 
   doc.setTitle(`Facture ${numeroFacture}`);
   doc.setProducer(COMPANY.name);
-  doc.setCreationDate(new Date(order.createdAt));
+  // Métadonnée PDF alignée sur la date imprimée : un lecteur qui trie par date
+  // de création ne doit pas classer la facture avant son émission.
+  doc.setCreationDate(dateEmission);
 
   // ---- Logo ----
   const logo = await chargerLogo(doc);
@@ -406,7 +417,11 @@ export async function buildInvoicePdf(
   // Numéro de commande mentionné à part : c'est lui qui sert au rapprochement
   // avec le back-office, le numéro de facture étant une séquence distincte.
   reference("Commande n° :", order.orderNumber);
-  reference("Date de facture :", dateFrancaise(order.createdAt));
+  // Deux dates distinctes, et non deux fois la même : la facture est datée du
+  // jour de son émission (encaissement), la commande du jour où elle a été
+  // passée. Elles coïncident sur un paiement immédiat, jamais sur un paiement
+  // à la livraison.
+  reference("Date de facture :", dateFrancaise(dateEmission));
   reference("Date de commande :", dateFrancaise(order.createdAt));
 
   // ---- Tableau des articles ----

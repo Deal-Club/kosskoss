@@ -41,15 +41,26 @@ export function doitEmettreFacture(ancien: PaymentStatus, nouveau: PaymentStatus
   return nouveau === "payee" && ancien !== "payee";
 }
 
+/** Facture fraîchement écrite : son numéro et sa date d'émission. */
+export interface FactureEmise {
+  numero: string;
+  /**
+   * `Invoice.issuedAt`, relu de la ligne créée plutôt que recalculé ici : c'est
+   * l'horloge de la base qui fait foi, et c'est cette date — pas celle de la
+   * commande — que le PDF doit imprimer.
+   */
+  issuedAt: Date;
+}
+
 /**
- * Alloue un numéro et écrit la facture. Rend le numéro, ou `null` si une
- * facture existait déjà pour cette commande.
+ * Alloue un numéro et écrit la facture. Rend le numéro et sa date d'émission,
+ * ou `null` si une facture existait déjà pour cette commande.
  *
  * L'unicité réelle vient de la contrainte en base, pas de la lecture : deux
  * encaissements simultanés liraient le même « dernier numéro ». On réessaie
  * sur collision, exactement comme le fait la création de commande.
  */
-export async function emettreFacture(order: OrderRecord): Promise<string | null> {
+export async function emettreFacture(order: OrderRecord): Promise<FactureEmise | null> {
   const annee = new Date().getFullYear();
 
   for (let tentative = 0; tentative < TENTATIVES; tentative += 1) {
@@ -69,9 +80,9 @@ export async function emettreFacture(order: OrderRecord): Promise<string | null>
           totalCents: order.totalCents,
           currency: order.currency || "XAF",
         },
-        select: { number: true },
+        select: { number: true, issuedAt: true },
       });
-      return creee.number;
+      return { numero: creee.number, issuedAt: creee.issuedAt };
     } catch (error) {
       const code = (error as { code?: string }).code;
       if (code !== "P2002") throw error;
@@ -107,17 +118,19 @@ export async function emettreFacture(order: OrderRecord): Promise<string | null>
  * chaque futur appelant pour l'ajouter.
  */
 export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void> {
-  const numero = await emettreFacture(order);
+  const facture = await emettreFacture(order);
   // `null` : une facture existait déjà. Ne pas renvoyer d'e-mail, le client
   // l'a reçue la première fois.
-  if (!numero) return;
+  if (!facture) return;
+
+  const { numero, issuedAt } = facture;
 
   // Sans SMTP configuré, sendPaymentReceivedEmail serait un no-op silencieux :
   // inutile de payer le coût de générer un PDF pour un envoi qui n'aura pas lieu.
   if (!isMailConfigured()) return;
 
   try {
-    const pdf = await buildInvoicePdf(order, numero);
+    const pdf = await buildInvoicePdf(order, numero, issuedAt);
     await sendPaymentReceivedEmail({
       to: order.email,
       firstName: order.billing.firstName,
