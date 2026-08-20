@@ -1,9 +1,15 @@
 import { prisma } from "@/server/prisma";
 import { numeroFactureSuivant, PREFIXE_FACTURE } from "./facture-numero";
-// `import type` et non `import` : orders.ts importe ce module, l'inverse
-// créerait un cycle à l'exécution. Un import de type est effacé à la
-// compilation, donc il n'y en a pas.
+// `import type` pour OrderRecord : orders.ts importe ce module, l'inverse
+// créerait un cycle à l'exécution qu'un import de type évite puisqu'il est
+// effacé à la compilation. `recordOrderEvent`, juste en dessous, est en
+// revanche un import de VALEUR : il referme le cycle orders.ts → facture.ts →
+// orders.ts. Ça reste sans danger ici parce qu'aucun des deux modules
+// n'appelle l'export de l'autre pendant l'évaluation du module (au niveau
+// racine) — seulement depuis l'intérieur de fonctions, exécutées après que les
+// deux modules sont entièrement chargés.
 import type { OrderRecord } from "@/server/orders";
+import { recordOrderEvent } from "@/server/orders";
 // Module feuille déjà importé par orders.ts : aucun cycle introduit. Typer sur
 // l'union plutôt que sur `string` fait qu'un renommage de statut dans
 // PAYMENT_STATUSES casse la compilation ici, comme il casse déjà le
@@ -11,6 +17,7 @@ import type { OrderRecord } from "@/server/orders";
 // laisser doitEmettreFacture cesser silencieusement d'émettre des factures.
 import type { PaymentStatus } from "@/lib/orderStatus";
 import { buildInvoicePdf, invoiceFilename } from "@/server/invoice";
+import { isMailConfigured } from "@/lib/mailer";
 import { sendPaymentReceivedEmail } from "./emails";
 
 /**
@@ -89,8 +96,15 @@ export async function emettreFacture(order: OrderRecord): Promise<string | null>
  * Émet la facture, puis l'envoie au client.
  *
  * Les deux moitiés sont séparées volontairement : l'écriture en base doit
- * réussir ou être signalée, l'envoi peut échouer sans conséquence — la facture
- * reste réémettable depuis le back-office.
+ * réussir ou être signalée, l'envoi peut échouer sans faire perdre la facture
+ * elle-même — la ligne `Invoice` créée par `emettreFacture` reste en base même
+ * si la génération du PDF ou l'envoi échouent ensuite. Attention : le renvoi
+ * manuel depuis le back-office n'est PAS implémenté (il est prévu dans un lot
+ * ultérieur) — en attendant, un échec à ce stade doit rester visible dans
+ * l'historique de la commande, avec un message qui dit la vérité : la facture
+ * a été émise, seule sa livraison a raté. D'où le try/catch local ci-dessous,
+ * qui porte lui-même la garantie « n'échoue jamais » au lieu de compter sur
+ * chaque futur appelant pour l'ajouter.
  */
 export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void> {
   const numero = await emettreFacture(order);
@@ -98,14 +112,39 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
   // l'a reçue la première fois.
   if (!numero) return;
 
-  const pdf = await buildInvoicePdf(order, numero);
-  await sendPaymentReceivedEmail({
-    to: order.email,
-    firstName: order.billing.firstName,
-    orderNumber: order.orderNumber,
-    numeroFacture: numero,
-    totalFcfa: order.totalCents,
-    facturePdf: pdf,
-    nomFichier: invoiceFilename(numero),
-  });
+  // Sans SMTP configuré, sendPaymentReceivedEmail serait un no-op silencieux :
+  // inutile de payer le coût de générer un PDF pour un envoi qui n'aura pas lieu.
+  if (!isMailConfigured()) return;
+
+  try {
+    const pdf = await buildInvoicePdf(order, numero);
+    await sendPaymentReceivedEmail({
+      to: order.email,
+      firstName: order.billing.firstName,
+      orderNumber: order.orderNumber,
+      numeroFacture: numero,
+      totalFcfa: order.totalCents,
+      facturePdf: pdf,
+      nomFichier: invoiceFilename(numero),
+    });
+  } catch (error) {
+    // La facture EXISTE déjà en base à ce stade (numero non nul, retourné par
+    // emettreFacture) : ce qui vient d'échouer, c'est sa livraison, pas son
+    // émission. Le message doit le dire explicitement — sinon l'opérateur lit
+    // « facture non émise » pour une commande qui, elle, a bel et bien une
+    // facture, seulement pas encore reçue par le client.
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("[facture] livraison échouée après émission", { orderId: order.id, numero, message });
+    try {
+      await recordOrderEvent(
+        order.id,
+        "paiement",
+        `⚠️ Facture ${numero} émise mais non livrée au client (${message}). Le renvoi manuel depuis le back-office n'est pas encore outillé : à traiter à la main.`,
+      );
+    } catch {
+      // recordOrderEvent écrit dans la même base dont l'indisponibilité peut
+      // avoir causé l'échec ci-dessus ; son propre échec ne doit pas remonter
+      // à son tour. Le console.error précédent reste la seule trace ici.
+    }
+  }
 }
