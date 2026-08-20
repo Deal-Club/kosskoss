@@ -27,8 +27,8 @@ import {
   type PDFImage,
   type PDFPage,
 } from "pdf-lib";
+import { formatFcfa } from "@/lib/kk/format";
 import { COMPANY } from "@/content/legal";
-import type { BankTransferSettings } from "@/server/bankTransfer";
 import type { OrderAddress, OrderRecord } from "@/server/orders";
 
 const MARGE = 50;
@@ -83,9 +83,16 @@ function winAnsi(valeur: string): string {
     .replace(/[^\x20-\x7E€¡-ÿ]/g, "");
 }
 
-/** « 129900 » -> « 1 299,00 € », au format français. */
-function euros(cents: number): string {
-  return `${(cents / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+/**
+ * « 129900 » -> « 129 900 FCFA ».
+ *
+ * Le franc CFA n'a PAS de sous-unité : l'entier stocké est un montant de francs
+ * entiers, jamais des centimes. L'ancienne version divisait par 100 et
+ * imprimait « € » — héritage de l'activité précédente. Une commande de 31 000 F
+ * en sortait à « 310,00 € ».
+ */
+function montant(francs: number): string {
+  return formatFcfa(francs);
 }
 
 function dateFrancaise(iso: string): string {
@@ -321,15 +328,13 @@ function decouper(
 
 /**
  * Compose la facture d'une commande et renvoie le PDF prêt à être joint.
- * Le numéro de facture reprend celui de la commande : il est déjà séquentiel,
- * chronologique et sans rupture, ce qu'exige l'article 242 nonies A.
- *
- * `bank` n'est transmis que pour une commande réglée par virement : les
- * coordonnées du compte n'ont rien à faire sur une facture réglée par carte.
+ * `numeroFacture` est le numéro séquentiel et chronologique attribué par
+ * server/kk/facture-numero.ts (format FAC-AAAA-NNNNNN) ; le numéro de commande
+ * reste imprimé à part, pour le rapprochement.
  */
 export async function buildInvoicePdf(
   order: OrderRecord,
-  bank?: BankTransferSettings,
+  numeroFacture: string,
 ): Promise<Buffer> {
   const doc = await PDFDocument.create();
   const normale = await doc.embedFont(StandardFonts.Helvetica);
@@ -342,7 +347,7 @@ export async function buildInvoicePdf(
     grasse,
   };
 
-  doc.setTitle(`Facture ${order.orderNumber}`);
+  doc.setTitle(`Facture ${numeroFacture}`);
   doc.setProducer(COMPANY.name);
   doc.setCreationDate(new Date(order.createdAt));
 
@@ -394,7 +399,10 @@ export async function buildInvoicePdf(
     texte(f, valeur, { x: 430, y: yReference, taille: 9.5, gras: true });
     yReference -= 15;
   };
-  reference("Facture n° :", order.orderNumber);
+  reference("Facture n° :", numeroFacture);
+  // Numéro de commande mentionné à part : c'est lui qui sert au rapprochement
+  // avec le back-office, le numéro de facture étant une séquence distincte.
+  reference("Commande n° :", order.orderNumber);
   reference("Date de facture :", dateFrancaise(order.createdAt));
   reference("Date de commande :", dateFrancaise(order.createdAt));
 
@@ -469,13 +477,13 @@ export async function buildInvoicePdf(
       ancrage: "centre",
       taille: 9,
     });
-    texte(f, euros(article.unitPriceCents), {
+    texte(f, montant(article.unitPriceCents), {
       x: COL_UNITAIRE,
       y: milieu,
       ancrage: "droite",
       taille: 9,
     });
-    texte(f, euros(article.lineTotalCents), {
+    texte(f, montant(article.lineTotalCents), {
       x: COL_TOTAL,
       y: milieu,
       ancrage: "droite",
@@ -507,8 +515,8 @@ export async function buildInvoicePdf(
     f.y -= 16;
   };
 
-  totalLigne("SOUS-TOTAL", euros(order.subtotalCents));
-  totalLigne("LIVRAISON", order.shippingCents === 0 ? "OFFERTE" : euros(order.shippingCents));
+  totalLigne("SOUS-TOTAL", montant(order.subtotalCents));
+  totalLigne("LIVRAISON", order.shippingCents === 0 ? "OFFERTE" : montant(order.shippingCents));
   texte(f, order.shippingMethodKey === "express" ? "(24 à 48 h)" : "(3 à 5 jours ouvrés)", {
     x: COL_TOTAL,
     ancrage: "droite",
@@ -518,21 +526,12 @@ export async function buildInvoicePdf(
   f.y -= 12;
   filet(f, f.y + 4, COL_TOTAUX, DROITE);
   f.y -= 12;
-  totalLigne("TOTAL", euros(order.totalCents), true);
+  totalLigne("TOTAL", montant(order.totalCents), true);
 
-  // ---- Moyen de paiement et coordonnées du virement ----
-  const virement: Array<[string, string]> =
-    bank && bank.iban.trim().length > 0
-      ? ([
-          ["Titulaire du compte :", bank.holder],
-          ["IBAN :", bank.iban],
-          ["BIC :", bank.bic],
-          ["Type de virement :", bank.transferType],
-          ["Référence :", order.orderNumber],
-        ] as Array<[string, string]>).filter(([, valeur]) => valeur.trim().length > 0)
-      : [];
-
-  assurerEspace(f, 34 + virement.length * 14);
+  // ---- Moyen de paiement ----
+  // Le virement n'est pas un moyen de paiement de cette boutique : pas de
+  // coordonnées bancaires à afficher, seul le libellé du moyen utilisé compte.
+  assurerEspace(f, 34);
   f.y -= 8;
   filet(f, f.y);
   f.y -= 20;
@@ -544,17 +543,6 @@ export async function buildInvoicePdf(
     gras: true,
   });
   f.y -= 20;
-
-  if (virement.length > 0) {
-    // Libellés alignés à droite sur un axe commun, valeurs à sa droite : le
-    // bloc reste lisible même quand les libellés n'ont pas la même longueur.
-    const AXE = CENTRE - 30;
-    for (const [etiquette, valeur] of virement) {
-      texte(f, etiquette, { x: AXE, ancrage: "droite", taille: 9.5, gras: true });
-      texte(f, valeur, { x: AXE + 10, taille: 9.5 });
-      f.y -= 14;
-    }
-  }
 
   // ---- Pied de page : mentions obligatoires, puis encadré de TVA ----
   let yPied = 118;
@@ -615,6 +603,6 @@ export async function buildInvoicePdf(
 }
 
 /** Nom du fichier joint, lisible dans la boîte de réception du client. */
-export function invoiceFilename(order: OrderRecord): string {
-  return `Facture-${order.orderNumber}.pdf`;
+export function invoiceFilename(numeroFacture: string): string {
+  return `${numeroFacture}.pdf`;
 }
