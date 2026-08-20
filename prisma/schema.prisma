@@ -537,7 +537,7 @@ model Order {
 // Elle porte sa PROPRE séquence, distincte du numéro de commande : la facture
 // n'existant qu'après paiement, réutiliser le numéro de commande laisserait un
 // trou dans la numérotation à chaque panier abandonné — ce qu'un comptable
-// refuse. Voir docs/superpowers/specs/2026-08-20-lot1-…-design.md.
+// refuse. Voir docs/superpowers/specs/2026-08-20-lot1-facturation-telephone-facettes-design.md.
 //
 // Le montant est RECOPIÉ et non lu sur la commande : une correction ultérieure
 // de la commande ne doit pas modifier ce qui a été facturé.
@@ -653,6 +653,28 @@ model DiagAnswer {
   question DiagQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
+}
+
+// Vocabulaire des tags produits, partagé par le catalogue et le diagnostic.
+//
+// La CLÉ est l'identifiant : ces clés sont déjà écrites dans Product.tags et
+// dans les pondérations des réponses du diagnostic. Un cuid séparé imposerait
+// une reprise de données sans rien apporter.
+//
+// Les libellés FR et EN règlent le critère 10 pour ces facettes : sans eux, le
+// catalogue afficherait « peau_grasse » au visiteur.
+model ProductTag {
+  key      String  @id
+  labelFr  String
+  labelEn  String  @default("")
+  // « peau » ou « preoccupation » : détermine le groupe de facettes où le tag
+  // apparaît. Un tag d'une autre famille (budget_eco, premium…) reste utile au
+  // diagnostic sans être proposé en facette.
+  family   String
+  position Int     @default(0)
+  active   Boolean @default(true)
+
+  @@index([family, position])
 }
 
 // ---- Stock ----
