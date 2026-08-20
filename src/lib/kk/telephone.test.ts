@@ -20,6 +20,23 @@ describe("normaliserTelephone", () => {
     assert.equal(normaliserTelephone("237677123456"), "+237677123456");
   });
 
+  it("ne confond jamais un fixe de neuf chiffres avec un indicatif", () => {
+    // 237222333 est un numéro national complet (fixe : premier chiffre 2), pas
+    // un « 237 » suivi d'un numéro à six chiffres : neuf chiffres ≠ douze, le
+    // dépouillement de l'indicatif ne se déclenche donc pas. C'est exactement
+    // l'ambiguïté que la longueur est censée lever — sans ce cas, un futur
+    // changement de la garde de longueur pourrait la casser sans faire échouer
+    // aucun autre test.
+    assert.equal(normaliserTelephone("237222333"), "+237237222333");
+  });
+
+  it("refuse un indicatif 00237 suivi de moins de neuf chiffres", () => {
+    // L'indicatif explicite ne dispense pas d'un numéro national complet :
+    // accepter silencieusement un reliquat trop court masquerait une saisie
+    // tronquée plutôt que de la signaler.
+    assert.equal(normaliserTelephone("0023712345"), null);
+  });
+
   it("ignore espaces, points, tirets et parenthèses", () => {
     assert.equal(normaliserTelephone("+237 6 77 12 34 56"), "+237677123456");
     assert.equal(normaliserTelephone("677-12-34-56"), "+237677123456");
