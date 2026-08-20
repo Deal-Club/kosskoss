@@ -1,4 +1,13 @@
 /**
+ * ⚠️ AVERTISSEMENT (tâche 10) — le vocabulaire ci-dessous est désormais
+ * modifiable par le client depuis /admin/products/tags (libellés FR/EN,
+ * famille, ordre, activation). Ce seed écrase `family`, `labelFr` et `labelEn`
+ * à chaque exécution (seule `position` et `active` sont protégés, voir plus
+ * bas) : relancer `npm run db:seed` après que le client a modifié un libellé
+ * ou une famille depuis l'écran d'administration effacera silencieusement sa
+ * modification. Ne pas relancer ce script en aveugle une fois le site en
+ * production.
+ *
  * Vocabulaire des tags produits, relevé sur les données existantes.
  *
  * Les clés ci-dessous ne sont pas inventées : elles sont le résultat de la

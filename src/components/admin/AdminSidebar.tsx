@@ -19,6 +19,7 @@ import {
   Sparkles,
   Star,
   Store,
+  Tag,
   Tags,
   Ticket,
   Users,
@@ -63,6 +64,9 @@ export function AdminSidebar({
         { label: "Univers produits", href: "/admin/groups", icon: Layers },
         { label: "Catégories", href: "/admin/categories", icon: Tags },
         { label: "Produits", href: "/admin/products", icon: Package },
+        // Vocabulaire des tags (types de peau, préoccupations…) : labels FR/EN,
+        // famille et activation, éditables sans redéploiement (tâche 10).
+        { label: "Tags produits", href: "/admin/products/tags", icon: Tag },
         { label: "Stock", href: "/admin/stock", icon: Warehouse },
         { label: "Diagnostic beauté", href: "/admin/diagnostic", icon: Sparkles },
       ],
