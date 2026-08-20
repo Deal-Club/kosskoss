@@ -547,7 +547,14 @@ model Invoice {
   // Une facture par commande, jamais deux. C'est la ceinture qui accompagne la
   // sortie anticipée de updatePaymentStatus.
   orderId    String   @unique
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  // Restrict, pas Cascade : une facture est une pièce comptable, sa séquence
+  // doit rester chronologique et sans rupture. Supprimer une commande déjà
+  // facturée effacerait la facture en silence et ouvrirait un trou dans la
+  // numérotation — précisément ce que la séquence dédiée existe pour
+  // empêcher. La base refuse donc la suppression tant qu'une facture existe ;
+  // deleteOrder() ne cible que des commandes de test, non payées, donc
+  // jamais facturées.
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Restrict)
   issuedAt   DateTime @default(now())
   // FCFA entiers, comme partout : le nom « Cents » est hérité, il ment.
   totalCents Int
