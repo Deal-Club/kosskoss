@@ -24,6 +24,7 @@ import {
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
+import { normaliserTelephone } from "@/lib/kk/telephone";
 import type { PaymentMethodView } from "@/server/kk/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import { BottleMotif } from "./motifs";
@@ -31,6 +32,11 @@ import { BottleMotif } from "./motifs";
 const ERRORS: Record<string, string> = {
   panier_vide: "Votre panier est vide.",
   champs_invalides: "Merci de vérifier les champs du formulaire.",
+  // La route accepte n'importe quel corps JSON : le message nomme le format
+  // attendu plutôt que de dire « invalide », pour le cas — rare mais réel —
+  // où ce message serveur est ce que le client voit (validation client
+  // contournée, JS désactivé…).
+  telephone_invalide: "Numéro de téléphone invalide : neuf chiffres, commençant par 6 (mobile) ou 2 (fixe).",
   paiement_invalide: "Sélectionnez un moyen de paiement.",
   produit_indisponible: "Un produit de votre panier n'est plus disponible.",
   variante_indisponible: "Une variante sélectionnée n'est plus disponible.",
@@ -77,9 +83,12 @@ function validate(field: FieldName, value: string): string | null {
       // de l'adresse — ce qu'aucune expression régulière ne sait faire.
       return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Vérifiez votre adresse e-mail.";
     case "phone":
-      // Au moins huit chiffres : un numéro camerounais en compte neuf, et le
-      // client peut le saisir avec ou sans indicatif, avec ou sans espaces.
-      return (v.match(/\d/g) ?? []).length >= 8 ? null : "Un numéro joignable sur WhatsApp.";
+      // Format camerounais : neuf chiffres, mobile en 6 ou fixe en 2,
+      // l'indicatif étant accepté sous toutes ses formes. Le message nomme le
+      // format attendu — « numéro invalide » laisserait le client deviner.
+      return normaliserTelephone(v)
+        ? null
+        : "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56";
     case "location":
       return v.length >= 3 ? null : "Quartier et ville, au minimum.";
   }

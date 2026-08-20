@@ -5,6 +5,7 @@ import { openCustomerSession } from "@/server/customerSession";
 import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/emails";
 import { resolvePaymentMethod } from "@/server/kk/payments";
 import { consommerCoupon, validerCoupon } from "@/server/coupons";
+import { normaliserTelephone } from "@/lib/kk/telephone";
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -45,8 +46,17 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   if (!Array.isArray(input.items) || input.items.length === 0) {
     return { ok: false, error: "panier_vide" };
   }
-  if (!input.fullName?.trim() || !isValidEmail(input.email ?? "") || !input.phone?.trim() || !input.location?.trim()) {
+  if (!input.fullName?.trim() || !isValidEmail(input.email ?? "") || !input.location?.trim()) {
     return { ok: false, error: "champs_invalides" };
+  }
+  // Le numéro stocké est TOUJOURS en +237XXXXXXXXX, quelle que soit la saisie :
+  // le service client, les rappels et l'export ne doivent pas avoir à deviner
+  // le format. Refuser ici et non seulement dans le formulaire — la route
+  // accepte n'importe quel corps JSON, la validation du formulaire ne protège
+  // de rien.
+  const telephone = normaliserTelephone(input.phone ?? "");
+  if (!telephone) {
+    return { ok: false, error: "telephone_invalide" };
   }
   // Le moyen de paiement est revalidé contre la base : une clé désactivée
   // depuis le back-office, ou fabriquée par le navigateur, est refusée ici.
@@ -158,7 +168,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
           passwordHash: await hashPassword(tempPassword),
           firstName,
           lastName,
-          phone: input.phone.trim(),
+          phone: telephone,
           billingCountry: "CM",
           shippingCountry: "CM",
           locale: input.locale === "en" ? "en" : "fr",
@@ -184,7 +194,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         customerId,
         locale: input.locale === "en" ? "en" : "fr",
         email: input.email.trim(),
-        phone: input.phone.trim(),
+        phone: telephone,
         billingFirstName: firstName,
         billingLastName: lastName,
         billingStreet: input.location.trim(),
