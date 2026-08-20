@@ -95,22 +95,24 @@ export async function ouvrirPaiement(
       email: commande.email,
       telephone: commande.phone,
     },
-    // ── LE JETON D'ACCÈS EST INDISPENSABLE DANS L'URL DE RETOUR ─────────────
+    // ── AUCUN JETON DANS L'URL CONFIÉE AU PRESTATAIRE ───────────────────────
     //
-    // La page de confirmation exige `?t=<accessToken>` et répond 404 sans lui
-    // (voir getKossOrder). Sans ce paramètre, le client revenait de la page de
-    // paiement sur une page introuvable : le paiement passait, la commande
-    // basculait bien en « payée », mais l'acheteur voyait une erreur — la pire
-    // impression possible juste après avoir réglé.
+    // La page de confirmation demande une preuve d'accès, sans quoi n'importe
+    // qui lirait la commande de n'importe qui à partir de son seul numéro.
+    // Cette preuve a d'abord été mise ici, en `?t=<accessToken>` — et c'était
+    // une faute : le prestataire ENREGISTRE cette URL chez lui, elle apparaît
+    // dans ses réponses d'API et dans ses journaux, puis elle se dépose dans
+    // l'historique du navigateur et dans l'en-tête `Referer` des requêtes
+    // suivantes. Un jeton de consultation n'a rien à faire dans tout cela.
     //
-    // Le jeton transite par le prestataire, qui le voit donc passer. C'est
-    // acceptable : il détient déjà le nom, l'e-mail, le téléphone et le montant
-    // de cette commande, et ce jeton n'ouvre rien d'autre que la consultation
-    // de celle-ci.
+    // Le jeton voyage désormais dans un cookie `httpOnly` posé au moment de la
+    // commande (voir la route /api/kk/checkout). Le retour de paiement est une
+    // navigation de premier niveau : un cookie `SameSite=Lax` est donc bien
+    // transmis, et le prestataire ne voit qu'une adresse nue.
     //
     // Le préfixe de langue suit la commande : un acheteur venu de /en doit
     // revenir sur /en, pas basculer en français au retour du paiement.
-    urlSucces: `${urlBase}${prefixe}/confirmation/${commande.orderNumber}?t=${encodeURIComponent(commande.accessToken)}`,
+    urlSucces: `${urlBase}${prefixe}/confirmation/${commande.orderNumber}`,
     urlEchec: `${urlBase}${prefixe}/commande?paiement=echec`,
   });
 

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createKossOrder, type CheckoutItemInput, type KKPaymentMethod } from "@/server/kk/checkout";
 import { demandePaiementEnLigne, ouvrirPaiement, paiementDisponible } from "@/server/kk/paiement";
+import { poserAccesCommande } from "@/server/kk/acces-commande";
 
 /**
  * Validation de commande.
@@ -41,6 +42,12 @@ export async function POST(request: Request) {
   if (!result.ok) {
     return NextResponse.json(result, { status: 400 });
   }
+
+  // Preuve d'accès à la commande, dans un cookie httpOnly plutôt que dans
+  // l'adresse. C'est elle qui permettra à la page de confirmation de s'ouvrir
+  // au retour du paiement, sans que le jeton ait à transiter par le
+  // prestataire. Voir server/kk/acces-commande.ts.
+  await poserAccesCommande(result.orderNumber, result.accessToken);
 
   // Ouverture du paiement. Toute erreur est absorbée : la commande est déjà
   // enregistrée, et la perdre pour une passerelle indisponible serait absurde.

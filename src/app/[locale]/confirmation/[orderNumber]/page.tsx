@@ -5,6 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { getKossOrder } from "@/server/kk/checkout";
+import { lireAccesCommande } from "@/server/kk/acces-commande";
 import { getCurrentCustomer } from "@/server/customerSession";
 import { formatFcfa } from "@/lib/kk/format";
 import { BRAND, CONTACT } from "@/config/brand";
@@ -48,8 +49,18 @@ export default async function ConfirmationPage({
   const sp = await searchParams;
   setRequestLocale(locale);
 
-  const token = Array.isArray(sp.t) ? sp.t[0] : sp.t;
-  const order = await getKossOrder(orderNumber, token ?? "");
+  // Deux preuves d'accès acceptées, dans cet ordre.
+  //
+  // Le COOKIE d'abord : c'est la voie normale depuis que le retour de paiement
+  // ne peut plus emporter le jeton dans l'adresse — le prestataire enregistre
+  // cette adresse chez lui, un jeton n'y a pas sa place.
+  //
+  // Le paramètre `?t=` ensuite, pour les accès qui ne viennent pas du
+  // navigateur d'achat : lien de suivi reçu par e-mail, commande rouverte
+  // depuis un autre appareil.
+  const parUrl = Array.isArray(sp.t) ? sp.t[0] : sp.t;
+  const parCookie = await lireAccesCommande(orderNumber);
+  const order = await getKossOrder(orderNumber, parCookie ?? parUrl ?? "");
   if (!order) notFound();
 
   const account = order.customerId
