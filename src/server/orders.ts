@@ -927,10 +927,37 @@ export async function updateAdminNote(
   return getOrder(id);
 }
 
-/** Suppression réservée aux commandes de test du back-office. */
-export async function deleteOrder(id: string): Promise<boolean> {
+/**
+ * Issue d'une tentative de suppression : réussite, commande introuvable, ou
+ * refus motivé. Un booléen ne suffit plus depuis que la facture existe.
+ */
+export type DeleteOrderResult = "supprimee" | "introuvable" | "facturee";
+
+/**
+ * Suppression réservée aux commandes de test du back-office.
+ *
+ * Une commande facturée est refusée AVANT le `delete` : la relation
+ * `Invoice.order` est en `onDelete: Restrict` (voir prisma/schema.prisma), donc
+ * la base rejetterait de toute façon — mais par une P2003 non typée, que la
+ * route rendrait en 500 nu. L'opérateur ne saurait alors pas que c'est la
+ * facture qui bloque, ni que le blocage est voulu : une pièce comptable ne
+ * disparaît pas, sa séquence doit rester continue.
+ *
+ * La vérification n'est pas atomique — une facture peut naître entre la lecture
+ * et la suppression, si un webhook de paiement arrive pile à ce moment. La
+ * contrainte base reste le garde-fou dans ce cas ; ce test-ci n'est là que pour
+ * rendre le cas courant lisible.
+ */
+export async function deleteOrder(id: string): Promise<DeleteOrderResult> {
   const current = await prisma.order.findUnique({ where: { id }, select: { id: true } });
-  if (!current) return false;
+  if (!current) return "introuvable";
+
+  const facture = await prisma.invoice.findUnique({
+    where: { orderId: id },
+    select: { number: true },
+  });
+  if (facture) return "facturee";
+
   await prisma.order.delete({ where: { id } });
-  return true;
+  return "supprimee";
 }
