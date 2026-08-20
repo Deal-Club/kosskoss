@@ -14,6 +14,7 @@ import type { CartLine, ShippingMethodKey } from "@/lib/cart";
 import { discountedVariantCents } from "@/lib/variantPricing";
 import { isOrderStatus, isPaymentStatus, ORDER_STATUSES, ORDER_STATUS_INITIAL } from "@/lib/orderStatus";
 import type { OrderStatus, PaymentStatus } from "@/lib/orderStatus";
+import { doitEmettreFacture, emettreFacture } from "@/server/kk/facture";
 
 // Commandes de la boutique.
 //
@@ -787,6 +788,38 @@ export async function updatePaymentStatus(
       },
     },
   });
+
+  // ── Émission de la facture ────────────────────────────────────────────────
+  //
+  // ICI et nulle part ailleurs. C'est le passage obligé de toute bascule de
+  // paiement : le webhook GeniusPay (kk/paiement.ts), le back-office
+  // (api/admin/orders/[id]) et l'ancien webhook y aboutissent tous. Le paiement
+  // à la livraison ne déclenche AUCUN webhook — sans ce point commun, il
+  // faudrait un second chemin d'émission, donc un second endroit où oublier un
+  // cas.
+  //
+  // L'idempotence est acquise sans effort : la fonction est déjà sortie plus
+  // haut si le statut ne change pas.
+  if (doitEmettreFacture(current.paymentStatus, paymentStatus)) {
+    const record = await getOrder(id);
+    if (record) {
+      try {
+        await emettreFacture(record);
+      } catch (error) {
+        // Ne JAMAIS faire échouer la bascule : le paiement est encaissé chez le
+        // prestataire. Lever ici ferait répondre 500 au webhook, qui
+        // relancerait pour retomber sur la sortie anticipée. La trace part dans
+        // l'historique de commande, là où le commerçant la verra.
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("[facture] émission échouée", { orderId: id, message });
+        await recordOrderEvent(
+          id,
+          "paiement",
+          `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
+        );
+      }
+    }
+  }
 
   return getOrder(id);
 }
