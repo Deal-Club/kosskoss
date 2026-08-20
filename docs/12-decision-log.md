@@ -58,3 +58,27 @@ Format : Décision · Raison · Statut · Réversibilité.
 
 ## Incohérences Figma
 Voir `06`. **Aucune incohérence corrigée en silence.** Table de décisions Figma en attente de l'inventaire complet (bloqué, Q-FIGMA). La **charte** (couleurs, typo, logo, ton) est en revanche connue et actée (`13`).
+
+## Dépendances
+
+| # | Décision | Raison | Statut |
+|---|---|---|---|
+| D32 | **Ne jamais lancer `npm audit fix --force`** sur ce dépôt | Il propose `prisma@6.12.0`, une **rétrogradation** depuis la 7.9.x. Le schéma utilise le générateur v7 `prisma-client`, le client est généré dans `src/generated/prisma`, et 15 migrations en dépendent. La commande casserait la génération, le client et l'historique de migrations d'un seul coup. | Actée |
+| D33 | Forcer `deepmerge-ts` en `^8.0.1` via `overrides` dans `package.json` | Voir ci-dessous. | Actée |
+
+### D33 — pourquoi cet `overrides` doit rester
+
+`@prisma/config` épingle **exactement** `deepmerge-ts@7.1.5`, et toute la série `<8.0.0`
+est vulnérable (GHSA-ggr8-5vv4-36mx, épuisement de pile sur des objets récursifs).
+Comme la dépendance est épinglée au patch près, aucune montée de `prisma` ne la
+corrigera : le seul remède que npm propose est la rétrogradation interdite par D32.
+
+L'`overrides` impose donc la 8.0.1. Le saut de version majeure est sans danger ici :
+`@prisma/config` n'importe qu'un seul symbole, `deepmerge`, qu'il passe en `merger` à
+c12 — l'API la plus stable de la bibliothèque — et la 8.0.1 garde le même emballage
+(double ESM/CJS) et le même prérequis Node que la 7.1.5. Vérifié après coup :
+`prisma generate`, `prisma validate` et `prisma --version` chargent bien
+`prisma.config.ts`, donc le chemin de code concerné est réellement emprunté.
+
+Retirer cette ligne rouvre une alerte haute sans rien gagner. À supprimer seulement
+le jour où `@prisma/config` épinglera lui-même une version `>= 8.0.0`.
