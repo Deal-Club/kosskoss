@@ -1,4 +1,5 @@
 import { prisma } from "@/server/prisma";
+import { parseTags } from "@/lib/kk/tags";
 
 export type ProductTagRow = {
   id: string;
@@ -8,15 +9,6 @@ export type ProductTagRow = {
   group: string;
   tagsText: string;
 };
-
-function parseTags(value: string): string[] {
-  try {
-    const v: unknown = JSON.parse(value);
-    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
-  } catch {
-    return [];
-  }
-}
 
 function splitTags(text: string): string[] {
   return [

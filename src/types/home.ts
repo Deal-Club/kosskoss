@@ -48,6 +48,8 @@ export interface Product {
   reviewCount?: number;
   stock?: number;
   inStock?: boolean;
+  /** Clés de tags, pour les facettes de catalogue et le diagnostic */
+  tags?: string[];
   /** Variations de volume proposées ; vide pour un produit simple. */
   variants?: VariantView[];
 }
