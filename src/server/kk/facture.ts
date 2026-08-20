@@ -127,7 +127,16 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
 
   // Sans SMTP configuré, sendPaymentReceivedEmail serait un no-op silencieux :
   // inutile de payer le coût de générer un PDF pour un envoi qui n'aura pas lieu.
-  if (!isMailConfigured()) return;
+  if (!isMailConfigured()) {
+    // Mais la facture, elle, EXISTE : la taire ferait croire à l'opérateur
+    // qu'aucun document n'a été émis, alors que la séquence a bien consommé un
+    // numéro qu'il devra justifier auprès du comptable.
+    await consigner(
+      order.id,
+      `Facture ${numero} émise, non envoyée : aucun SMTP configuré. À transmettre au client à la main.`,
+    );
+    return;
+  }
 
   try {
     const pdf = await buildInvoicePdf(order, numero, issuedAt);
@@ -140,6 +149,11 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
       facturePdf: pdf,
       nomFichier: invoiceFilename(numero),
     });
+    // Le succès aussi se consigne. Le back-office n'a ni écran des factures ni
+    // renvoi manuel : l'historique de la commande est la SEULE surface où
+    // l'opérateur peut lire qu'une facture est partie, et vers quelle adresse.
+    // N'y écrire que les échecs laisserait le cas nominal muet.
+    await consigner(order.id, `Facture ${numero} émise et envoyée à ${order.email}.`);
   } catch (error) {
     // La facture EXISTE déjà en base à ce stade (numero non nul, retourné par
     // emettreFacture) : ce qui vient d'échouer, c'est sa livraison, pas son
@@ -148,16 +162,26 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
     // facture, seulement pas encore reçue par le client.
     const message = error instanceof Error ? error.message : String(error);
     console.error("[facture] livraison échouée après émission", { orderId: order.id, numero, message });
-    try {
-      await recordOrderEvent(
-        order.id,
-        "paiement",
-        `⚠️ Facture ${numero} émise mais non livrée au client (${message}). Le renvoi manuel depuis le back-office n'est pas encore outillé : à traiter à la main.`,
-      );
-    } catch {
-      // recordOrderEvent écrit dans la même base dont l'indisponibilité peut
-      // avoir causé l'échec ci-dessus ; son propre échec ne doit pas remonter
-      // à son tour. Le console.error précédent reste la seule trace ici.
-    }
+    await consigner(
+      order.id,
+      `⚠️ Facture ${numero} émise mais non livrée au client (${message}). Le renvoi manuel depuis le back-office n'est pas encore outillé : à traiter à la main.`,
+    );
+  }
+}
+
+/**
+ * Écrit un événement « paiement » sur la commande sans jamais lever.
+ *
+ * Tous les appels de ce module sont sur le chemin d'un paiement déjà encaissé :
+ * une écriture d'historique qui échoue ne doit pas faire répondre 500 au
+ * webhook, qui redéliverait. `recordOrderEvent` touche par ailleurs la même
+ * base dont l'indisponibilité a pu causer l'échec qu'on cherche à consigner —
+ * le `console.error` de l'appelant reste alors la seule trace.
+ */
+async function consigner(orderId: string, note: string): Promise<void> {
+  try {
+    await recordOrderEvent(orderId, "paiement", note);
+  } catch (error) {
+    console.error("[facture] historique non écrit", { orderId, note, error });
   }
 }
