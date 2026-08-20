@@ -2,16 +2,7 @@ import { prisma } from "@/server/prisma";
 import { aggregateProfileFromAnswers } from "./diagnostic-data";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
 import type { KKProductView } from "@/types/kk";
-
-function parseTags(value: string | null): string[] {
-  if (!value) return [];
-  try {
-    const v: unknown = JSON.parse(value);
-    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
-  } catch {
-    return [];
-  }
-}
+import { parseTags } from "@/lib/kk/tags";
 
 // Routine en 4 gestes, chaque geste puisé dans une catégorie du visage.
 //

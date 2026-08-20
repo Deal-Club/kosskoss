@@ -55,6 +55,8 @@
     "filtersApply": "{count, plural, =0 {View products} one {View # product} other {View # products}}",
     "filterBrand": "Brand",
     "filterPrice": "Price",
+    "filterSkinType": "Skin type",
+    "filterConcern": "Concern",
     "filterRating": "Rating",
     "filterMinStars": "{rating} stars and up",
     "filterInStockOnly": "In stock only",

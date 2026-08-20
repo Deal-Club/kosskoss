@@ -97,8 +97,22 @@ export async function DELETE(_request: Request, { params }: { params: Params }) 
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
-  const deleted = await deleteOrder(id);
-  if (!deleted) return NextResponse.json({ error: "Introuvable." }, { status: 404 });
+  const resultat = await deleteOrder(id);
+  if (resultat === "introuvable") {
+    return NextResponse.json({ error: "Introuvable." }, { status: 404 });
+  }
+  // 409 et non 400 : la requête est bien formée, c'est l'état de la ressource
+  // qui l'interdit. Sans ce cas, la contrainte `onDelete: Restrict` de la
+  // facture remontait en P2003 non rattrapée, donc en 500 nu côté opérateur.
+  if (resultat === "facturee") {
+    return NextResponse.json(
+      {
+        error:
+          "Cette commande a été facturée : elle ne peut plus être supprimée, une facture est une pièce comptable dont la séquence doit rester continue.",
+      },
+      { status: 409 },
+    );
+  }
 
   revalidatePath("/", "layout");
   return NextResponse.json({ success: true });

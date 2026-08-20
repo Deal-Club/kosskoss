@@ -16,9 +16,20 @@ export function DeleteButton({ action, confirmLabel }: { action: string; confirm
     setPending(false);
     if (response.ok) {
       router.refresh();
-    } else {
-      window.alert("Échec de la suppression.");
+      return;
     }
+    // Le refus a souvent une raison que seul le serveur connaît — une commande
+    // déjà facturée, par exemple, répond 409 avec un motif rédigé. L'écraser
+    // par un message générique la rendrait indéchiffrable pour l'opérateur.
+    const motif = await response
+      .json()
+      .then((corps: unknown) =>
+        typeof corps === "object" && corps !== null && typeof (corps as { error?: unknown }).error === "string"
+          ? ((corps as { error: string }).error)
+          : "",
+      )
+      .catch(() => "");
+    window.alert(motif.trim() || "Échec de la suppression.");
   }
 
   return (

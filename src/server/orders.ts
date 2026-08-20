@@ -14,6 +14,7 @@ import type { CartLine, ShippingMethodKey } from "@/lib/cart";
 import { discountedVariantCents } from "@/lib/variantPricing";
 import { isOrderStatus, isPaymentStatus, ORDER_STATUSES, ORDER_STATUS_INITIAL } from "@/lib/orderStatus";
 import type { OrderStatus, PaymentStatus } from "@/lib/orderStatus";
+import { doitEmettreFacture, emettreEtEnvoyerFacture } from "@/server/kk/facture";
 
 // Commandes de la boutique.
 //
@@ -788,6 +789,73 @@ export async function updatePaymentStatus(
     },
   });
 
+  // ── Émission de la facture ────────────────────────────────────────────────
+  //
+  // ICI et nulle part ailleurs. C'est le passage obligé de toute bascule de
+  // paiement : le webhook GeniusPay (kk/paiement.ts), le back-office
+  // (api/admin/orders/[id]) et l'ancien webhook y aboutissent tous. Le paiement
+  // à la livraison ne déclenche AUCUN webhook — sans ce point commun, il
+  // faudrait un second chemin d'émission, donc un second endroit où oublier un
+  // cas.
+  //
+  // La sortie anticipée ci-dessus (ligne 773) filtre déjà le cas le plus
+  // fréquent — un statut qui ne bouge pas — mais elle n'est pas atomique :
+  // deux webhooks simultanés pour la même commande peuvent tous deux la
+  // franchir et arriver ici. La vraie garantie d'unicité est la contrainte
+  // `Invoice.orderId @unique` couplée à la reprise sur P2002 dans
+  // emettreFacture ; c'est elle qui empêche une double facture, pas cette
+  // sortie anticipée. Ne pas la retirer en pensant qu'elle suffit seule.
+  // `current.paymentStatus` vient d'une lecture Prisma typée `string` (la
+  // colonne n'est pas un enum base) : on le fait rentrer dans l'union par la
+  // même garde que `getOrder` (ligne 177) avant de le passer à une fonction
+  // qui, elle, est maintenant typée sur `PaymentStatus`.
+  const ancienPaymentStatus = isPaymentStatus(current.paymentStatus) ? current.paymentStatus : "en_attente";
+  if (doitEmettreFacture(ancienPaymentStatus, paymentStatus)) {
+    try {
+      // `getOrder(id)` est une lecture base ajoutée par ce point d'accroche :
+      // elle doit rester dans le même filet que `emettreFacture`, sinon une
+      // base injoignable la ferait échouer hors du try et remonterait
+      // jusqu'au webhook — le même trou que celui refermé pour
+      // recordOrderEvent juste en dessous.
+      const record = await getOrder(id);
+      if (record) {
+        await emettreEtEnvoyerFacture(record);
+      } else {
+        // Silence impossible : le paiement est marqué encaissé mais aucune
+        // facture n'a pu être tentée. Même trace que le cas d'échec, pour
+        // que le commerçant le voie aussi.
+        console.error("[facture] commande introuvable après bascule de paiement", { orderId: id });
+        await recordOrderEvent(
+          id,
+          "paiement",
+          `⚠️ Facture non émise : commande introuvable après le passage à « payée ». À reprendre à la main.`,
+        );
+      }
+    } catch (error) {
+      // Ne JAMAIS faire échouer la bascule : le paiement est encaissé chez le
+      // prestataire. Lever ici ferait répondre 500 au webhook, qui
+      // relancerait pour retomber sur la sortie anticipée. La trace part dans
+      // l'historique de commande, là où le commerçant la verra.
+      const message = error instanceof Error ? error.message : String(error);
+      // Le console.error passe en premier, avant tout appel base : la trace
+      // doit survivre même si la base ne répond pas.
+      console.error("[facture] émission échouée", { orderId: id, message });
+      try {
+        await recordOrderEvent(
+          id,
+          "paiement",
+          `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
+        );
+      } catch {
+        // recordOrderEvent écrit dans la même base dont l'indisponibilité a
+        // pu causer l'échec de emettreFacture (ou de getOrder ci-dessus) :
+        // elle ne doit pas être ce qui casse à son tour la garantie qu'elle
+        // est censée consigner. Le console.error ci-dessus reste la seule
+        // trace dans ce cas.
+      }
+    }
+  }
+
   return getOrder(id);
 }
 
@@ -859,10 +927,37 @@ export async function updateAdminNote(
   return getOrder(id);
 }
 
-/** Suppression réservée aux commandes de test du back-office. */
-export async function deleteOrder(id: string): Promise<boolean> {
+/**
+ * Issue d'une tentative de suppression : réussite, commande introuvable, ou
+ * refus motivé. Un booléen ne suffit plus depuis que la facture existe.
+ */
+export type DeleteOrderResult = "supprimee" | "introuvable" | "facturee";
+
+/**
+ * Suppression réservée aux commandes de test du back-office.
+ *
+ * Une commande facturée est refusée AVANT le `delete` : la relation
+ * `Invoice.order` est en `onDelete: Restrict` (voir prisma/schema.prisma), donc
+ * la base rejetterait de toute façon — mais par une P2003 non typée, que la
+ * route rendrait en 500 nu. L'opérateur ne saurait alors pas que c'est la
+ * facture qui bloque, ni que le blocage est voulu : une pièce comptable ne
+ * disparaît pas, sa séquence doit rester continue.
+ *
+ * La vérification n'est pas atomique — une facture peut naître entre la lecture
+ * et la suppression, si un webhook de paiement arrive pile à ce moment. La
+ * contrainte base reste le garde-fou dans ce cas ; ce test-ci n'est là que pour
+ * rendre le cas courant lisible.
+ */
+export async function deleteOrder(id: string): Promise<DeleteOrderResult> {
   const current = await prisma.order.findUnique({ where: { id }, select: { id: true } });
-  if (!current) return false;
+  if (!current) return "introuvable";
+
+  const facture = await prisma.invoice.findUnique({
+    where: { orderId: id },
+    select: { number: true },
+  });
+  if (facture) return "facturee";
+
   await prisma.order.delete({ where: { id } });
-  return true;
+  return "supprimee";
 }

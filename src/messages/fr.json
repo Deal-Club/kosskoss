@@ -55,6 +55,8 @@
     "filtersApply": "{count, plural, =0 {Voir les produits} one {Voir # produit} other {Voir # produits}}",
     "filterBrand": "Marque",
     "filterPrice": "Prix",
+    "filterSkinType": "Type de peau",
+    "filterConcern": "Préoccupation",
     "filterRating": "Note",
     "filterMinStars": "à partir de {rating} étoiles",
     "filterInStockOnly": "Disponible immédiatement uniquement",

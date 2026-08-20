@@ -66,17 +66,68 @@ export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promis
       )}</td></tr>
     </table>
     <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
-      Le paiement Mobile Money et la livraison sont ensuite coordonnés avec vous via WhatsApp.
+      Dès réception de votre paiement, nous vous envoyons votre facture et nous
+      vous contactons sur WhatsApp pour organiser la livraison.
     </div>`;
   const text = `Merci pour votre commande ${input.orderNumber}. Total : ${formatFcfa(
     input.totalFcfa,
-  )}. Le paiement et la livraison sont coordonnés via WhatsApp.`;
+  )}. Votre facture vous parviendra dès réception du paiement.`;
   try {
     await sendMail({
       to: input.to,
       subject: `Votre commande ${input.orderNumber} — ${BRAND.name}`,
       html: shell("Merci pour votre commande !", inner),
       text,
+    });
+  } catch {
+    /* best-effort */
+  }
+}
+
+export interface PaymentReceivedInput {
+  to: string;
+  firstName: string;
+  orderNumber: string;
+  numeroFacture: string;
+  totalFcfa: number;
+  facturePdf: Buffer;
+  nomFichier: string;
+}
+
+/**
+ * Paiement reçu, avec la facture jointe.
+ *
+ * Second e-mail du tunnel : l'accusé de réception part à la commande, celui-ci
+ * à l'encaissement. C'est le seul qui porte un document comptable, parce que
+ * c'est le seul qui suit un paiement réel.
+ *
+ * Best-effort, comme les autres : une panne SMTP ne doit pas faire échouer le
+ * webhook. La facture est en base, donc réémettable.
+ */
+export async function sendPaymentReceivedEmail(input: PaymentReceivedInput): Promise<void> {
+  if (!isMailConfigured()) return;
+  const inner = `
+    <p style="margin:0 0 16px">Bonjour ${esc(input.firstName)}, nous avons bien reçu votre paiement.</p>
+    <p style="margin:0 0 16px;color:#6a7a7d">Commande <strong style="color:${DEEP}">${esc(
+      input.orderNumber,
+    )}</strong> · Facture <strong style="color:${DEEP}">${esc(input.numeroFacture)}</strong></p>
+    <p style="margin:0 0 16px">Montant réglé : <strong>${esc(formatFcfa(input.totalFcfa))}</strong></p>
+    <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
+      Votre facture est jointe à ce message. Nous vous contactons sur WhatsApp
+      pour convenir de la livraison.
+    </div>`;
+  const text = `Paiement reçu pour la commande ${input.orderNumber}. Facture ${
+    input.numeroFacture
+  }, montant ${formatFcfa(input.totalFcfa)}. La facture est jointe à ce message.`;
+  try {
+    await sendMail({
+      to: input.to,
+      subject: `Paiement reçu — facture ${input.numeroFacture}`,
+      html: shell("Paiement bien reçu", inner),
+      text,
+      attachments: [
+        { filename: input.nomFichier, content: input.facturePdf, contentType: "application/pdf" },
+      ],
     });
   } catch {
     /* best-effort */

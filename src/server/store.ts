@@ -5,6 +5,7 @@ import { getActivePromotions, type ProductPromotion } from "@/server/promotions"
 import type { CategoryGuide, CategoryRecord, ProductGroup, ProductRecord } from "@/server/types";
 import type { Product } from "@/types/home";
 import { discountedVariantCents, minActivePriceCents, type VariantInput, type VariantView } from "@/lib/variantPricing";
+import { parseTags } from "@/lib/kk/tags";
 
 // L'interface publique ne change pas : les catégories restent adressées par
 // "groupe/slug" et les prix circulent en chaînes formatées ("349,00 €").
@@ -85,6 +86,8 @@ interface ProductRow {
   stock: number;
   lowStockThreshold: number;
   active: boolean;
+  /** Clés de tags JSON — voir Product.tags côté Prisma */
+  tags: string;
   gtin: string | null;
   mpn: string | null;
   condition: string;
@@ -549,6 +552,7 @@ function toViewProduct(
     reviewCount: approved?.count ?? 0,
     stock: row.stock,
     inStock: row.stock > 0,
+    tags: parseTags(row.tags),
     href: `/${groupSlug}/${row.category.slug}/${row.slug}`,
     variants: row.variants
       .filter((v) => v.active)

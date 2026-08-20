@@ -527,8 +527,41 @@ model Order {
   @@index([createdAt])
   @@index([customerId])
   transactions PaymentTransaction[]
+  invoice      Invoice?
 
   @@index([campaignId])
+}
+
+// Facture émise à l'encaissement, jamais avant.
+//
+// Elle porte sa PROPRE séquence, distincte du numéro de commande : la facture
+// n'existant qu'après paiement, réutiliser le numéro de commande laisserait un
+// trou dans la numérotation à chaque panier abandonné — ce qu'un comptable
+// refuse. Voir docs/superpowers/specs/2026-08-20-lot1-facturation-telephone-facettes-design.md.
+//
+// Le montant est RECOPIÉ et non lu sur la commande : une correction ultérieure
+// de la commande ne doit pas modifier ce qui a été facturé.
+model Invoice {
+  id         String   @id @default(cuid())
+  number     String   @unique
+  // Une facture par commande, jamais deux. C'est la ceinture qui accompagne la
+  // sortie anticipée de updatePaymentStatus.
+  orderId    String   @unique
+  // Restrict, pas Cascade : une facture est une pièce comptable, sa séquence
+  // doit rester chronologique et sans rupture. Supprimer une commande déjà
+  // facturée effacerait la facture en silence et ouvrirait un trou dans la
+  // numérotation — précisément ce que la séquence dédiée existe pour
+  // empêcher. La base refuse donc la suppression tant qu'une facture existe ;
+  // deleteOrder() ne cible que des commandes de test, non payées, donc
+  // jamais facturées.
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  issuedAt   DateTime @default(now())
+  // FCFA entiers, comme partout : le nom « Cents » est hérité, il ment.
+  totalCents Int
+  currency   String   @default("XAF")
+  createdAt  DateTime @default(now())
+
+  @@index([issuedAt])
 }
 
 model OrderItem {
@@ -620,6 +653,28 @@ model DiagAnswer {
   question DiagQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   @@index([questionId])
+}
+
+// Vocabulaire des tags produits, partagé par le catalogue et le diagnostic.
+//
+// La CLÉ est l'identifiant : ces clés sont déjà écrites dans Product.tags et
+// dans les pondérations des réponses du diagnostic. Un cuid séparé imposerait
+// une reprise de données sans rien apporter.
+//
+// Les libellés FR et EN règlent le critère 10 pour ces facettes : sans eux, le
+// catalogue afficherait « peau_grasse » au visiteur.
+model ProductTag {
+  key      String  @id
+  labelFr  String
+  labelEn  String  @default("")
+  // « peau » ou « preoccupation » : détermine le groupe de facettes où le tag
+  // apparaît. Un tag d'une autre famille (budget_eco, premium…) reste utile au
+  // diagnostic sans être proposé en facette.
+  family   String
+  position Int     @default(0)
+  active   Boolean @default(true)
+
+  @@index([family, position])
 }
 
 // ---- Stock ----

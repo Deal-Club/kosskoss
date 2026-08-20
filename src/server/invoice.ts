@@ -3,16 +3,17 @@
  *
  * Mise en page : logo, bloc client à gauche et bloc vendeur à droite, références
  * de facture au centre, tableau des articles avec vignette produit, totaux à
- * droite, puis les coordonnées de paiement centrées et l'encadré de TVA
- * intracommunautaire en pied de page.
+ * droite, puis le mode de paiement centré et les mentions d'identité du vendeur
+ * en pied de page.
  *
  * Mentions reprises : nom et adresse complets du vendeur et de l'acheteur,
  * date d'émission et numéro de facture unique, quantité et désignation de
  * chaque article, date de livraison ou mention qu'elle suivra, et le total.
  *
- * La TVA a été retirée du système : la facture ne présente ni taux ni montant
- * de taxe, seulement les prix réglés. Le numéro de TVA intracommunautaire du
- * vendeur reste affiché, il est exigé quel que soit le régime.
+ * La TVA a été retirée du système : la facture ne présente ni taux, ni montant
+ * de taxe, ni numéro de TVA. L'encadré « TVA intracommunautaire » de l'ancienne
+ * activité française n'a pas été repris — cette notion est propre à l'Union
+ * européenne et n'a pas d'équivalent camerounais (voir le pied de page).
  *
  * pdf-lib n'embarque que les polices WinAnsi : tout caractère hors de ce jeu
  * doit être translittéré avant écriture, sinon la génération échoue.
@@ -27,8 +28,8 @@ import {
   type PDFImage,
   type PDFPage,
 } from "pdf-lib";
+import { formatFcfa } from "@/lib/kk/format";
 import { COMPANY } from "@/content/legal";
-import type { BankTransferSettings } from "@/server/bankTransfer";
 import type { OrderAddress, OrderRecord } from "@/server/orders";
 
 const MARGE = 50;
@@ -57,8 +58,8 @@ const COL_TOTAL = DROITE;
 const COL_TOTAUX = 400;
 
 /**
- * Hauteur réservée au pied de page sur chaque page : mentions obligatoires et
- * encadré de TVA. Le flux ne descend jamais en dessous. Serré volontairement :
+ * Hauteur réservée au pied de page sur chaque page : livraison, paiement et
+ * identité de l'émetteur. Le flux ne descend jamais en dessous. Serré volontairement :
  * une commande de trois ou quatre lignes doit tenir sur une seule page, comme
  * le modèle dont la facture reprend la mise en page.
  */
@@ -68,7 +69,13 @@ const PIED_RESERVE = 128;
  * Ramène le texte au jeu WinAnsi accepté par les polices standard.
  * Les tirets longs et guillemets typographiques viennent des libellés produits
  * rédigés pour le site ; sans cette conversion, pdf-lib refuse la ligne. Les
- * lettres accentuées et le signe euro appartiennent à WinAnsi et sont gardés.
+ * lettres accentuées appartiennent à WinAnsi et sont gardées. Le signe euro a
+ * été retiré de la liste autorisée : plus aucune chaîne imprimée sur la facture
+ * n'en contient depuis le passage au FCFA. Attention, ce filtre ne SIGNALE
+ * rien — un « € » qui réapparaîtrait serait effacé sans bruit, laissant un
+ * montant nu. C'est délibéré : cette fonction s'exécute sur le chemin d'un
+ * paiement déjà encaissé, où lever ferait redélivrer le webhook. Le garde-fou
+ * qui, lui, doit alerter est le test de formatage (lib/kk/format.test.ts).
  */
 function winAnsi(valeur: string): string {
   return (valeur ?? "")
@@ -80,16 +87,24 @@ function winAnsi(valeur: string): string {
     // une U+202F, absente de WinAnsi — sans cette conversion, « 1 845,00 » se
     // serait écrit « 1845,00 ».
     .replace(/[    ]/g, " ")
-    .replace(/[^\x20-\x7E€¡-ÿ]/g, "");
+    .replace(/[^\x20-\x7E¡-ÿ]/g, "");
 }
 
-/** « 129900 » -> « 1 299,00 € », au format français. */
-function euros(cents: number): string {
-  return `${(cents / 100).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} €`;
+/**
+ * « 129900 » -> « 129 900 FCFA ».
+ *
+ * Le franc CFA n'a PAS de sous-unité : l'entier stocké est un montant de francs
+ * entiers, jamais des centimes. L'ancienne version divisait par 100 et
+ * imprimait « € » — héritage de l'activité précédente. Une commande de 31 000 F
+ * en sortait à « 310,00 € ».
+ */
+function montant(francs: number): string {
+  return formatFcfa(francs);
 }
 
-function dateFrancaise(iso: string): string {
-  const d = new Date(iso);
+/** Accepte l'ISO stocké sur la commande comme le `Date` rendu par Prisma. */
+function dateFrancaise(valeur: string | Date): string {
+  const d = valeur instanceof Date ? valeur : new Date(valeur);
   return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
 }
 
@@ -100,17 +115,44 @@ function civilite(code: string): string {
   return "";
 }
 
+/**
+ * Code pays de la commande rendu lisible.
+ *
+ * Imprimer « CM » sur une facture, c'est afficher une donnée technique à un
+ * client. Le tunnel KossKoss n'écrit que « CM » ; « FR » subsiste sur les
+ * commandes de l'activité précédente, encore en base.
+ */
+function nomPays(code: string): string {
+  if (code === "CM") return COMPANY.country;
+  if (code === "FR") return "France";
+  return code;
+}
+
+/**
+ * Bloc adresse du client.
+ *
+ * Le tunnel KossKoss ne collecte qu'un champ de localisation libre, recopié à
+ * l'identique dans `billingStreet` ET `billingCity`, avec un code postal vide
+ * (voir server/kk/checkout.ts) : sans déduplication, la facture imprimait deux
+ * fois de suite la même ligne. On écarte donc toute ligne identique à la
+ * précédente plutôt que de coder en dur la forme camerounaise — l'ancien modèle
+ * d'adresse, où rue et ville diffèrent, continue de s'imprimer entièrement.
+ */
 function lignesAdresse(adresse: OrderAddress): string[] {
   const nom = [civilite(adresse.salutation), adresse.firstName, adresse.lastName]
     .filter(Boolean)
     .join(" ");
-  return [
+  const lignes = [
     adresse.company,
     nom,
     adresse.street,
     `${adresse.postalCode} ${adresse.city}`.trim(),
-    adresse.country === "FR" ? "France" : adresse.country,
-  ].filter((ligne) => ligne && ligne.trim().length > 0);
+    nomPays(adresse.country),
+  ]
+    .map((ligne) => (ligne ?? "").trim())
+    .filter((ligne) => ligne.length > 0);
+
+  return lignes.filter((ligne, index) => index === 0 || ligne !== lignes[index - 1]);
 }
 
 /* ------------------------------------------------------------------ */
@@ -321,15 +363,21 @@ function decouper(
 
 /**
  * Compose la facture d'une commande et renvoie le PDF prêt à être joint.
- * Le numéro de facture reprend celui de la commande : il est déjà séquentiel,
- * chronologique et sans rupture, ce qu'exige l'article 242 nonies A.
+ * `numeroFacture` est le numéro séquentiel et chronologique attribué par
+ * server/kk/facture-numero.ts (format FAC-AAAA-NNNNNN) ; le numéro de commande
+ * reste imprimé à part, pour le rapprochement.
  *
- * `bank` n'est transmis que pour une commande réglée par virement : les
- * coordonnées du compte n'ont rien à faire sur une facture réglée par carte.
+ * `dateEmission` est l'`issuedAt` de la ligne `Invoice`, jamais la date de la
+ * commande : les deux se séparent dès que l'encaissement est différé (paiement
+ * à la livraison). Une commande passée le 30/12 et payée le 04/01 reçoit un
+ * numéro « FAC-2027-000001 » — le dater du 30/12/2026 ferait dire à la facture
+ * une année et à son numéro une autre, exactement la rupture de chronologie que
+ * la séquence dédiée existe pour empêcher.
  */
 export async function buildInvoicePdf(
   order: OrderRecord,
-  bank?: BankTransferSettings,
+  numeroFacture: string,
+  dateEmission: Date,
 ): Promise<Buffer> {
   const doc = await PDFDocument.create();
   const normale = await doc.embedFont(StandardFonts.Helvetica);
@@ -342,9 +390,11 @@ export async function buildInvoicePdf(
     grasse,
   };
 
-  doc.setTitle(`Facture ${order.orderNumber}`);
+  doc.setTitle(`Facture ${numeroFacture}`);
   doc.setProducer(COMPANY.name);
-  doc.setCreationDate(new Date(order.createdAt));
+  // Métadonnée PDF alignée sur la date imprimée : un lecteur qui trie par date
+  // de création ne doit pas classer la facture avant son émission.
+  doc.setCreationDate(dateEmission);
 
   // ---- Logo ----
   const logo = await chargerLogo(doc);
@@ -394,8 +444,15 @@ export async function buildInvoicePdf(
     texte(f, valeur, { x: 430, y: yReference, taille: 9.5, gras: true });
     yReference -= 15;
   };
-  reference("Facture n° :", order.orderNumber);
-  reference("Date de facture :", dateFrancaise(order.createdAt));
+  reference("Facture n° :", numeroFacture);
+  // Numéro de commande mentionné à part : c'est lui qui sert au rapprochement
+  // avec le back-office, le numéro de facture étant une séquence distincte.
+  reference("Commande n° :", order.orderNumber);
+  // Deux dates distinctes, et non deux fois la même : la facture est datée du
+  // jour de son émission (encaissement), la commande du jour où elle a été
+  // passée. Elles coïncident sur un paiement immédiat, jamais sur un paiement
+  // à la livraison.
+  reference("Date de facture :", dateFrancaise(dateEmission));
   reference("Date de commande :", dateFrancaise(order.createdAt));
 
   // ---- Tableau des articles ----
@@ -469,13 +526,13 @@ export async function buildInvoicePdf(
       ancrage: "centre",
       taille: 9,
     });
-    texte(f, euros(article.unitPriceCents), {
+    texte(f, montant(article.unitPriceCents), {
       x: COL_UNITAIRE,
       y: milieu,
       ancrage: "droite",
       taille: 9,
     });
-    texte(f, euros(article.lineTotalCents), {
+    texte(f, montant(article.lineTotalCents), {
       x: COL_TOTAL,
       y: milieu,
       ancrage: "droite",
@@ -507,8 +564,8 @@ export async function buildInvoicePdf(
     f.y -= 16;
   };
 
-  totalLigne("SOUS-TOTAL", euros(order.subtotalCents));
-  totalLigne("LIVRAISON", order.shippingCents === 0 ? "OFFERTE" : euros(order.shippingCents));
+  totalLigne("SOUS-TOTAL", montant(order.subtotalCents));
+  totalLigne("LIVRAISON", order.shippingCents === 0 ? "OFFERTE" : montant(order.shippingCents));
   texte(f, order.shippingMethodKey === "express" ? "(24 à 48 h)" : "(3 à 5 jours ouvrés)", {
     x: COL_TOTAL,
     ancrage: "droite",
@@ -518,21 +575,12 @@ export async function buildInvoicePdf(
   f.y -= 12;
   filet(f, f.y + 4, COL_TOTAUX, DROITE);
   f.y -= 12;
-  totalLigne("TOTAL", euros(order.totalCents), true);
+  totalLigne("TOTAL", montant(order.totalCents), true);
 
-  // ---- Moyen de paiement et coordonnées du virement ----
-  const virement: Array<[string, string]> =
-    bank && bank.iban.trim().length > 0
-      ? ([
-          ["Titulaire du compte :", bank.holder],
-          ["IBAN :", bank.iban],
-          ["BIC :", bank.bic],
-          ["Type de virement :", bank.transferType],
-          ["Référence :", order.orderNumber],
-        ] as Array<[string, string]>).filter(([, valeur]) => valeur.trim().length > 0)
-      : [];
-
-  assurerEspace(f, 34 + virement.length * 14);
+  // ---- Moyen de paiement ----
+  // Le virement n'est pas un moyen de paiement de cette boutique : pas de
+  // coordonnées bancaires à afficher, seul le libellé du moyen utilisé compte.
+  assurerEspace(f, 34);
   f.y -= 8;
   filet(f, f.y);
   f.y -= 20;
@@ -545,18 +593,7 @@ export async function buildInvoicePdf(
   });
   f.y -= 20;
 
-  if (virement.length > 0) {
-    // Libellés alignés à droite sur un axe commun, valeurs à sa droite : le
-    // bloc reste lisible même quand les libellés n'ont pas la même longueur.
-    const AXE = CENTRE - 30;
-    for (const [etiquette, valeur] of virement) {
-      texte(f, etiquette, { x: AXE, ancrage: "droite", taille: 9.5, gras: true });
-      texte(f, valeur, { x: AXE + 10, taille: 9.5 });
-      f.y -= 14;
-    }
-  }
-
-  // ---- Pied de page : mentions obligatoires, puis encadré de TVA ----
+  // ---- Pied de page : livraison, paiement, identité de l'émetteur ----
   let yPied = 118;
   const pied = (contenu: string, taille = 7.5) => {
     texte(f, contenu, { y: yPied, taille, couleur: GRIS });
@@ -573,9 +610,11 @@ export async function buildInvoicePdf(
       ? `Paiement : payée le ${dateFrancaise(order.paidAt)} par ${order.paymentMethodLabel}.`
       : `Paiement : ${order.paymentMethodLabel}. Payable comptant, sans escompte.`,
   );
-  pied(
-    "En cas de retard de paiement : pénalités au taux de trois fois l'intérêt légal et indemnité forfaitaire de 40 € pour frais de recouvrement.",
-  );
+  // La pénalité de 40 € et le taux de trois fois l'intérêt légal (art. L441-10
+  // du code de commerce) venaient de l'activité française précédente : cette
+  // sanction n'existe pas en droit camerounais. Retirée plutôt que traduite,
+  // en attendant les mentions obligatoires propres au Cameroun, à trancher par
+  // le comptable.
   // Identité complète de l'émetteur sur une ligne : raison sociale, forme
   // sociale, adresse, moyens de contact et immatriculation.
   //
@@ -589,32 +628,18 @@ export async function buildInvoicePdf(
     7,
   );
 
-  const mentionTva = `TVA intracommunautaire : ${COMPANY.vatId}`;
-  const largeurMention = grasse.widthOfTextAtSize(winAnsi(mentionTva), 10);
-  const largeurCadre = largeurMention + 40;
-  const hauteurCadre = 26;
-  const yCadre = 52;
-  f.page.drawRectangle({
-    x: CENTRE - largeurCadre / 2,
-    y: yCadre,
-    width: largeurCadre,
-    height: hauteurCadre,
-    borderColor: NOIR,
-    borderWidth: 1,
-  });
-  texte(f, mentionTva, {
-    x: CENTRE,
-    y: yCadre + 9,
-    ancrage: "centre",
-    taille: 10,
-    gras: true,
-  });
+  // L'encadré « TVA intracommunautaire » qui occupait cet espace venait lui
+  // aussi de l'activité française précédente : la TVA intracommunautaire est
+  // une notion propre à l'Union européenne, sans équivalent au Cameroun — et
+  // le système n'affiche de toute façon plus de TVA (voir l'en-tête du
+  // fichier). Retiré plutôt que traduit, en attendant que le comptable
+  // arrête les mentions obligatoires camerounaises.
 
   const octets = await doc.save();
   return Buffer.from(octets);
 }
 
 /** Nom du fichier joint, lisible dans la boîte de réception du client. */
-export function invoiceFilename(order: OrderRecord): string {
-  return `Facture-${order.orderNumber}.pdf`;
+export function invoiceFilename(numeroFacture: string): string {
+  return `${numeroFacture}.pdf`;
 }
