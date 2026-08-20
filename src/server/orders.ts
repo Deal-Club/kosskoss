@@ -811,12 +811,21 @@ export async function updatePaymentStatus(
         // relancerait pour retomber sur la sortie anticipée. La trace part dans
         // l'historique de commande, là où le commerçant la verra.
         const message = error instanceof Error ? error.message : String(error);
+        // Le console.error passe en premier, avant tout appel base : la trace
+        // doit survivre même si la base ne répond pas.
         console.error("[facture] émission échouée", { orderId: id, message });
-        await recordOrderEvent(
-          id,
-          "paiement",
-          `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
-        );
+        try {
+          await recordOrderEvent(
+            id,
+            "paiement",
+            `⚠️ Facture non émise pour cette commande payée : ${message}. À reprendre à la main.`,
+          );
+        } catch {
+          // recordOrderEvent écrit dans la même base dont l'indisponibilité a
+          // pu causer l'échec de emettreFacture : elle ne doit pas être ce qui
+          // casse à son tour la garantie qu'elle est censée consigner. Le
+          // console.error ci-dessus reste la seule trace dans ce cas.
+        }
       }
     }
   }
