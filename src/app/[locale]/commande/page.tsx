@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { CheckoutForm } from "@/components/kk/checkout-form";
+import { paiementDisponible } from "@/server/kk/paiement";
 import { getEnabledPaymentMethods } from "@/server/kk/payments";
 import type { Locale } from "@/i18n/routing";
 
@@ -24,7 +25,7 @@ export default async function CheckoutPage({ params }: { params: Params }) {
     <div className="flex min-h-screen flex-col">
       <CheckoutHeader />
       <main className="flex-1">
-        <CheckoutForm locale={locale} payments={payments} />
+        <CheckoutForm locale={locale} payments={payments} passerelleActive={paiementDisponible()} />
       </main>
       <SiteFooter />
     </div>

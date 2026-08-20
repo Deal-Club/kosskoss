@@ -88,10 +88,18 @@ function validate(field: FieldName, value: string): string | null {
 export function CheckoutForm({
   locale,
   payments,
+  passerelleActive,
 }: {
   locale: string;
   /** Moyens de paiement activés au back-office, lus en base par la page. */
   payments: PaymentMethodView[];
+  /**
+   * La passerelle de paiement est-elle configurée côté serveur ?
+   *
+   * Le navigateur ne peut pas le savoir : les clés vivent dans
+   * l'environnement du serveur. La page le lui dit (voir la page /commande).
+   */
+  passerelleActive: boolean;
 }) {
   const router = useRouter();
   const { lines, ready, clear } = useCart();
@@ -106,11 +114,16 @@ export function CheckoutForm({
   });
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [followOrder, setFollowOrder] = useState(true);
-  // Le paiement à la livraison est le seul moyen qui aboutit aujourd'hui : il
-  // ne demande aucune passerelle, l'argent est encaissé à la remise du colis.
-  // Les autres attendent le branchement d'un prestataire — les proposer sans
-  // le dire enverrait le client dans une impasse au dernier clic.
-  const paiementDisponible = (cle: string) => CLES_HORS_LIGNE.includes(cle);
+  // Un moyen aboutit s'il ne demande aucune passerelle — le paiement à la
+  // livraison, encaissé à la remise du colis — ou si la passerelle est
+  // réellement configurée côté serveur.
+  //
+  // Cette seconde branche est nouvelle : le formulaire refusait TOUS les
+  // moyens en ligne, une garde écrite quand aucun prestataire n'était raccordé.
+  // Elle est restée après le branchement de GeniusPay, et bloquait donc des
+  // paiements qui fonctionnaient parfaitement.
+  const paiementDisponible = (cle: string) =>
+    CLES_HORS_LIGNE.includes(cle) || passerelleActive;
 
   /**
    * Les deux options présentées, construites à partir des moyens réellement
