@@ -79,6 +79,9 @@ export async function ouvrirPaiement(
   const commande = await getOrderByNumber(orderNumber);
   if (!commande) return null;
 
+  // Le français vit à la racine, l'anglais sous /en (localePrefix « as-needed »).
+  const prefixe = commande.locale === "en" ? "/en" : "";
+
   const paiement = await creerPaiement(config, {
     // `totalCents` porte des FCFA entiers dans cette boutique — le nom vient de
     // mlcbois et ment (voir docs/13 §5.1). Aucune division.
@@ -92,8 +95,23 @@ export async function ouvrirPaiement(
       email: commande.email,
       telephone: commande.phone,
     },
-    urlSucces: `${urlBase}/confirmation/${commande.orderNumber}`,
-    urlEchec: `${urlBase}/commande?paiement=echec`,
+    // ── LE JETON D'ACCÈS EST INDISPENSABLE DANS L'URL DE RETOUR ─────────────
+    //
+    // La page de confirmation exige `?t=<accessToken>` et répond 404 sans lui
+    // (voir getKossOrder). Sans ce paramètre, le client revenait de la page de
+    // paiement sur une page introuvable : le paiement passait, la commande
+    // basculait bien en « payée », mais l'acheteur voyait une erreur — la pire
+    // impression possible juste après avoir réglé.
+    //
+    // Le jeton transite par le prestataire, qui le voit donc passer. C'est
+    // acceptable : il détient déjà le nom, l'e-mail, le téléphone et le montant
+    // de cette commande, et ce jeton n'ouvre rien d'autre que la consultation
+    // de celle-ci.
+    //
+    // Le préfixe de langue suit la commande : un acheteur venu de /en doit
+    // revenir sur /en, pas basculer en français au retour du paiement.
+    urlSucces: `${urlBase}${prefixe}/confirmation/${commande.orderNumber}?t=${encodeURIComponent(commande.accessToken)}`,
+    urlEchec: `${urlBase}${prefixe}/commande?paiement=echec`,
   });
 
   await prisma.paymentTransaction.create({

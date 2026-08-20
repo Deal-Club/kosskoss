@@ -56,6 +56,20 @@ export default async function ConfirmationPage({
     ? { loggedIn: Boolean(await getCurrentCustomer()) }
     : null;
 
+  // ── LA PAGE DOIT DIRE CE QUI S'EST RÉELLEMENT PASSÉ ──────────────────────
+  //
+  // Elle sert deux parcours devenus très différents depuis le branchement de
+  // la passerelle :
+  //   — le client a payé en ligne et revient de GeniusPay ; le webhook a déjà
+  //     fait basculer la commande en « payée » ;
+  //   — le client a choisi le paiement à la livraison, ou la passerelle n'était
+  //     pas configurée : le règlement se cale par WhatsApp.
+  //
+  // Le texte était écrit pour le second cas uniquement. Il disait à quelqu'un
+  // QUI VENAIT DE PAYER d'aller « organiser le paiement » par WhatsApp —
+  // c'est-à-dire l'invitait à régler une seconde fois.
+  const payee = order.paymentStatus === "payee";
+
   return (
     <div className="flex min-h-screen flex-col">
       <CheckoutHeader />
@@ -67,8 +81,10 @@ export default async function ConfirmationPage({
             </span>
             <h1 className="mt-6 text-deep">Merci pour votre commande !</h1>
             <p className="mt-3 text-muted-foreground">
-              Votre commande <span className="font-semibold text-deep">{order.orderNumber}</span> est
-              enregistrée. Confirmez-la via WhatsApp pour organiser le paiement et la livraison.
+              Votre commande <span className="font-semibold text-deep">{order.orderNumber}</span>{" "}
+              {payee
+                ? "est payée. Nous vous contactons sur WhatsApp pour organiser la livraison."
+                : "est enregistrée. Confirmez-la via WhatsApp pour organiser le paiement et la livraison."}
             </p>
           </div>
 
@@ -101,14 +117,15 @@ export default async function ConfirmationPage({
             className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 text-sm font-semibold text-white transition hover:brightness-95"
           >
             <MessageCircle className="h-5 w-5" />
-            Confirmer ma commande via WhatsApp
+            {payee ? "Organiser la livraison via WhatsApp" : "Confirmer ma commande via WhatsApp"}
           </a>
 
           <div className="mt-6 flex items-start gap-3 rounded-2xl bg-sand/60 p-5 text-sm text-deep">
             <Clock className="mt-0.5 h-5 w-5 shrink-0" />
             <p>
-              Le paiement Mobile Money (Orange Money / MTN) sera finalisé lors de la confirmation. La
-              livraison est ensuite coordonnée avec vous via WhatsApp.
+              {payee
+                ? "Votre paiement est bien reçu — vous n'avez plus rien à régler. La livraison est coordonnée avec vous via WhatsApp."
+                : "Le paiement Mobile Money (Orange Money / MTN) sera finalisé lors de la confirmation. La livraison est ensuite coordonnée avec vous via WhatsApp."}
             </p>
           </div>
 
