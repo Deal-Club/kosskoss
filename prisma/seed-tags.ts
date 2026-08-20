@@ -1,12 +1,12 @@
 /**
  * ⚠️ AVERTISSEMENT (tâche 10) — le vocabulaire ci-dessous est désormais
  * modifiable par le client depuis /admin/products/tags (libellés FR/EN,
- * famille, ordre, activation). Ce seed écrase `family`, `labelFr` et `labelEn`
- * à chaque exécution (seule `position` et `active` sont protégés, voir plus
- * bas) : relancer `npm run db:seed` après que le client a modifié un libellé
- * ou une famille depuis l'écran d'administration effacera silencieusement sa
- * modification. Ne pas relancer ce script en aveugle une fois le site en
- * production.
+ * famille, ordre, activation). Ce seed réécrit `labelFr` et `labelEn` à chaque
+ * exécution ; `family`, `position` et `active` sont protégés, ils ne sont
+ * posés qu'à la création (voir plus bas). Relancer `npm run db:seed` après que
+ * le client a retouché un libellé depuis l'écran d'administration effacera
+ * donc silencieusement cette retouche — pas sa recatégorisation. Ne pas
+ * relancer ce script en aveugle une fois le site en production.
  *
  * Vocabulaire des tags produits, relevé sur les données existantes.
  *
@@ -62,6 +62,10 @@ const VOCABULAIRE: { key: string; labelFr: string; labelEn: string; family: stri
   { key: "hydratation", labelFr: "Hydratation", labelEn: "Hydration", family: "preoccupation" },
   { key: "anti_age", labelFr: "Anti-âge", labelEn: "Anti-ageing", family: "preoccupation" },
   { key: "apaisant", labelFr: "Apaisant", labelEn: "Soothing", family: "preoccupation" },
+  // Porté par dix produits du catalogue (kk-catalog.json) et absent du premier
+  // relevé : sans lui, l'hyperpigmentation — première préoccupation de ce
+  // marché — n'existait tout simplement pas comme facette.
+  { key: "taches", labelFr: "Taches", labelEn: "Dark spots", family: "preoccupation" },
 
   // ---- budget : préférence de gamme, lue par buildRoutine() pour départager
   // des candidats à score de tags égal — jamais affichée en facette.
@@ -88,10 +92,12 @@ async function main() {
   for (const [index, tag] of VOCABULAIRE.entries()) {
     await prisma.productTag.upsert({
       where: { key: tag.key },
-      // Le seed est rejouable : il met à jour les libellés sans écraser
-      // l'ordre choisi par l'administrateur (position n'est fixée qu'à la
-      // création).
-      update: { labelFr: tag.labelFr, labelEn: tag.labelEn, family: tag.family },
+      // Le seed est rejouable : il rafraîchit les libellés sans toucher à ce
+      // qui décide du comportement — `family` (qui fait, ou non, d'un tag une
+      // facette de catalogue), `position` et `active` ne sont fixés qu'à la
+      // création. Réécrire `family` ici suffirait à dé-facetter en silence un
+      // tag que le client vient de reclasser depuis l'écran d'administration.
+      update: { labelFr: tag.labelFr, labelEn: tag.labelEn },
       create: { ...tag, position: index },
     });
   }
