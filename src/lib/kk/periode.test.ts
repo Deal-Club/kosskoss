@@ -120,4 +120,29 @@ describe("periodeDepuisUrl", () => {
     assert.equal(periodeDepuisUrl({ du: "2026-03-01" }, MAINTENANT).raccourci, "30j");
     assert.equal(periodeDepuisUrl({ au: "2026-03-31" }, MAINTENANT).raccourci, "30j");
   });
+
+  it("retombe sur le défaut quand une date est syntaxiquement valide mais n'existe pas au calendrier", () => {
+    // `new Date(2026, 1, 31)` glisse silencieusement au 3 mars sans prévenir.
+    // Une période qui commencerait trois jours après la date demandée serait
+    // fausse sans que rien ne le signale. La validation calendaire rejette ces
+    // cas plutôt que de produire une période involontaire.
+
+    // 31 février n'existe pas : retombe sur défaut
+    assert.equal(periodeDepuisUrl({ du: "2026-02-31", au: "2026-02-28" }, MAINTENANT).raccourci, "30j");
+
+    // 29 février 2026 n'existe pas (non-bissextile) : retombe sur défaut
+    assert.equal(periodeDepuisUrl({ du: "2026-02-29", au: "2026-02-28" }, MAINTENANT).raccourci, "30j");
+
+    // 13e mois n'existe pas : retombe sur défaut
+    assert.equal(periodeDepuisUrl({ du: "2026-13-01", au: "2026-12-31" }, MAINTENANT).raccourci, "30j");
+  });
+
+  it("accepte le 29 février d'une année bissextile pour éviter une fausse correction", () => {
+    // Sans ce test, on pourrait « corriger » la validation en refusant toutes
+    // les dates de février. Il faut que l'année bissextile soit acceptée.
+    const periode = periodeDepuisUrl({ du: "2028-02-29", au: "2028-02-29" }, MAINTENANT);
+    assert.equal(formatJourIso(periode.du), "2028-02-29");
+    assert.equal(formatJourIso(periode.au), "2028-02-29");
+    assert.equal(periode.raccourci, null);
+  });
 });
