@@ -140,11 +140,23 @@ export function DiagStepsAdmin({ initial }: { initial: GesteLigne[] }) {
         </div>
       </div>
 
-      <p className="text-sm text-muted-foreground">
-        <strong className="font-bold text-foreground">{actifs}</strong> geste
-        {actifs > 1 ? "s" : ""} actif{actifs > 1 ? "s" : ""} — le diagnostic proposera
-        {actifs > 1 ? " autant de produits" : " un produit"} à l&rsquo;issue du parcours.
-      </p>
+      {/* Le cas zéro a sa propre phrase : avec `actifs > 1` comme seul test, un
+          0 tombait dans la branche singulier et affichait « 0 geste actif — le
+          diagnostic proposera un produit », contredisant le 0 sous les yeux du
+          client au moment précis où il coupe tout et veut savoir ce qu'il en
+          résulte. */}
+      {actifs === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          <strong className="font-bold text-foreground">Aucun</strong> geste actif — le
+          diagnostic ne proposera aucun produit à l&rsquo;issue du parcours.
+        </p>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          <strong className="font-bold text-foreground">{actifs}</strong> geste
+          {actifs > 1 ? "s" : ""} actif{actifs > 1 ? "s" : ""} — le diagnostic proposera
+          {actifs > 1 ? " autant de produits" : " un produit"} à l&rsquo;issue du parcours.
+        </p>
+      )}
     </div>
   );
 }
