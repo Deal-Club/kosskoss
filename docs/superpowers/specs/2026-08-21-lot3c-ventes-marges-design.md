@@ -71,10 +71,11 @@ OR: [
 ]
 ```
 
-**Ce qui n'entre pas dans le chiffre d'affaires produit :** le port et la TVA. Le CA
+**Ce qui n'entre pas dans le chiffre d'affaires produit :** la livraison. Le CA
 de l'écran est la somme des `lineTotalCents`, pas des `totalCents` de commande — sans
-quoi la marge se comparerait à une assiette qui contient la livraison. Le total
-encaissé toutes taxes reste affiché à côté, comme un second chiffre nommé.
+quoi la marge se comparerait à une assiette qui contient la livraison. Cette
+boutique ne décompose pas ses prix en hors taxe et taxe : le montant affiché est
+celui réglé, tel quel, pas un sous-total qu'il faudrait encore taxer.
 
 ---
 
@@ -116,10 +117,10 @@ export interface LigneVente {
 }
 
 export interface TotauxVentes {
-  chiffreAffairesCents: number;   // somme des lignes, hors port et TVA
+  chiffreAffairesCents: number;   // somme des lignes de produits, livraison exclue
   quantite: number;
   nombreCommandes: number;        // commandes distinctes, pas lignes
-  panierMoyenCents: number;       // 0 si aucune commande
+  panierMoyenCents: number | null; // null si aucune commande — pas 0
   margeCents: number | null;      // null si aucune ligne n'a de coût
   tauxMarge: number | null;
   lignesAvecCout: number;

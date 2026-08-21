@@ -60,9 +60,10 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.panierMoyenCents, 35000);
   });
 
-  it("rend un panier moyen de zéro sans commande", () => {
-    // Diviser par zéro rendrait NaN, qui s'afficherait tel quel.
-    assert.equal(totaliserVentes([]).panierMoyenCents, 0);
+  it("rend un panier moyen nul — pas zéro — sans commande", () => {
+    // Diviser par zéro rendrait NaN ; un panier moyen à zéro se lirait comme
+    // une donnée (« les clients ne dépensent rien ») au lieu d'une absence.
+    assert.equal(totaliserVentes([]).panierMoyenCents, null);
   });
 
   it("additionne les quantités, pas les lignes", () => {
@@ -128,6 +129,7 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.chiffreAffairesCents, 0);
     assert.equal(totaux.nombreCommandes, 0);
     assert.equal(totaux.margeCents, null);
+    assert.equal(totaux.panierMoyenCents, null);
     assert.equal(totaux.lignesTotal, 0);
   });
 });

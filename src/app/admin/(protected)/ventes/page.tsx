@@ -47,13 +47,13 @@ export default async function AdminVentesPage({
 
   const lignesSansCout = totaux.lignesTotal - totaux.lignesAvecCout;
   // La marge se dit toujours avec son assiette : muette sur son incomplétude,
-  // elle mentirait.
+  // elle mentirait. Cette mention n'est lue que lorsque `margeCents` n'est pas
+  // `null`, ce qui implique déjà `lignesAvecCout > 0` et donc `lignesTotal > 0` :
+  // pas besoin d'un cas à part pour une période sans ligne.
   const mentionMarge =
-    totaux.lignesTotal === 0
-      ? undefined
-      : lignesSansCout === 0
-        ? `calculée sur les ${totaux.lignesTotal} lignes de la période`
-        : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} — le coût d’achat manque sur les autres`;
+    lignesSansCout === 0
+      ? `calculée sur les ${totaux.lignesTotal} lignes de la période`
+      : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} — le coût d’achat manque sur les autres`;
 
   const exportHref = `/api/admin/ventes/export?du=${formatJourIso(periode.du)}&au=${formatJourIso(periode.au)}`;
 
@@ -89,9 +89,11 @@ export default async function AdminVentesPage({
               : `${formatFcfa(totaux.margeCents)}${totaux.tauxMarge === null ? "" : ` (${totaux.tauxMarge.toString().replace(".", ",")} %)`}`
           }
           mention={
-            totaux.margeCents === null
-              ? "aucun coût d’achat renseigné sur la période"
-              : mentionMarge
+            totaux.margeCents !== null
+              ? mentionMarge
+              : totaux.lignesTotal === 0
+                ? "aucune vente sur la période"
+                : "aucun coût d’achat renseigné sur la période"
           }
         />
         <Carte
@@ -99,7 +101,13 @@ export default async function AdminVentesPage({
           valeur={totaux.nombreCommandes.toString()}
           mention={`${totaux.quantite} article${totaux.quantite > 1 ? "s" : ""} vendu${totaux.quantite > 1 ? "s" : ""}`}
         />
-        <Carte titre="Panier moyen" valeur={formatFcfa(totaux.panierMoyenCents)} />
+        <Carte
+          titre="Panier moyen"
+          valeur={
+            totaux.panierMoyenCents === null ? "—" : formatFcfa(totaux.panierMoyenCents)
+          }
+          mention={totaux.panierMoyenCents === null ? "aucune commande sur la période" : undefined}
+        />
       </div>
 
       {enCours.nombre > 0 ? (

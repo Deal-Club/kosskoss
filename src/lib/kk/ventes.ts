@@ -18,7 +18,17 @@
  * Un coût à `null` n'est pas un coût de zéro : c'est un coût qu'on ignore. Une
  * ligne sans coût entre dans le chiffre d'affaires et reste hors de la marge.
  * D'où `lignesAvecCout` / `lignesTotal`, que l'écran est tenu d'afficher : une
- * marge muette sur son incomplétude ment.
+ * marge muette sur son incomplétude ment. La même règle vaut pour
+ * `panierMoyenCents` : une moyenne sur zéro commande n'est pas nulle, elle
+ * n'existe pas.
+ *
+ * ── LA MARGE COMPARE DEUX MONTANTS, PAS FORCÉMENT SUR LA MÊME BASE ──────────
+ *
+ * `margeCents` soustrait un coût d'achat (`unitCostCents`) d'un prix de vente
+ * (`lineTotalCents`). Si ces deux montants ne sont pas saisis sur la même
+ * base, le taux qui en sort est approximatif. C'est une question qui relève
+ * du comptable, pas de ce module — elle est notée ici pour qui lira ce calcul
+ * plus tard.
  */
 
 export interface LigneVente {
@@ -38,11 +48,16 @@ export interface LigneVente {
 }
 
 export interface TotauxVentes {
-  /** Somme des lignes : hors port et hors TVA. */
+  /**
+   * Somme des lignes de produits, livraison exclue. Cette boutique ne
+   * décompose pas ses prix en hors taxe et taxe : le montant est celui
+   * réglé, tel quel.
+   */
   chiffreAffairesCents: number;
   quantite: number;
   nombreCommandes: number;
-  panierMoyenCents: number;
+  /** `null` sans commande : une moyenne sur zéro commande n'existe pas. */
+  panierMoyenCents: number | null;
   /** `null` quand aucune ligne de la période n'a de coût. */
   margeCents: number | null;
   /** Points de pourcentage, une décimale, rapportés au CA des seules lignes
@@ -126,7 +141,7 @@ export function totaliserVentes(lignes: LigneVente[]): TotauxVentes {
     quantite,
     nombreCommandes,
     panierMoyenCents:
-      nombreCommandes === 0 ? 0 : Math.round(chiffreAffairesCents / nombreCommandes),
+      nombreCommandes === 0 ? null : Math.round(chiffreAffairesCents / nombreCommandes),
     margeCents: lignesAvecCout === 0 ? null : margeCents,
     tauxMarge:
       lignesAvecCout === 0 || caAvecCout === 0
