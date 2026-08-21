@@ -203,19 +203,21 @@ Une entrée « Ventes » s'ajoute à la section *Boutique* de `AdminSidebar`, so
 
 Une ligne par ligne de commande, dans l'ordre chronologique. Colonnes :
 
-Date · N° commande · Statut · Statut paiement · Client · Marque · Produit · Variante ·
-SKU · Quantité · Prix unitaire · Total ligne · Coût unitaire · Coût total · Marge ·
-Taux de marge
+Date · N° commande · Marque · Produit · Variante · SKU · Quantité ·
+Prix unitaire · Total ligne · Coût unitaire · Coût total · Marge · Taux de marge
 
 Les montants sortent en **entiers FCFA sans séparateur ni symbole** : un tableur doit
-pouvoir les additionner, et « 12 000 FCFA » n'est pas un nombre. Les colonnes de coût
-et de marge restent **vides** — jamais zéro — quand le coût est inconnu ; un zéro s'y
-additionnerait et fausserait le total du comptable.
+pouvoir les additionner, et « 12 000 FCFA » n'est pas un nombre. La devise est dite
+une fois, dans l'en-tête de colonne. Les colonnes de coût et de marge restent
+**vides** — jamais zéro — quand le coût est inconnu ; un zéro s'y additionnerait et
+fausserait le total du comptable.
 
-La colonne **Client** porte l'adresse e-mail de la commande. Une commande anonymisée
-— compte client supprimé, `anonymizedAt` posé — sort avec la mention « (anonymisée) »
-plutôt qu'une adresse résiduelle : la commande reste au registre comptable, ses
-coordonnées non.
+**Ce que le fichier ne porte pas, et pourquoi.** Ni le statut de paiement, qui vaut
+« payée » sur toutes les lignes puisque l'export ne retient que l'encaissé — une
+colonne constante n'apprend rien. Ni l'identité du client : c'est un export de
+ventes et de marges, pas un fichier de clients, et faire sortir des adresses
+e-mail vers un tableur qui circule par courriel ne se justifie pas par le besoin
+comptable. La liste des commandes garde ces informations, avec ses propres règles.
 
 Nom du fichier : `ventes-AAAA-MM-JJ_AAAA-MM-JJ.csv`, les deux bornes de la période —
 un export sans sa période ne se relit pas six mois plus tard.
