@@ -59,38 +59,62 @@ commande.
 
 ## 3. À remplacer impérativement avant la mise en ligne
 
-Toutes ces valeurs vivent dans la constante `COMPANY`, en tête de
-`src/content/legal/fr.ts`. Elles alimentent aussi la **facture PDF**
+Toutes ces valeurs vivent dans la constante `COMPANY`, désormais isolée dans
+`src/content/legal/company.ts` — un module sans dépendance, réexporté par
+`fr.ts`. Elles alimentent les **pages légales**, la **facture PDF**
 (`src/server/invoice.ts`) et le **pied des e-mails de campagne**
-(`src/server/emails/campaign.ts`, constante `IMPRESSUM`) : les trois doivent être
-modifiées **ensemble**, sans quoi la facture et le site annonceraient des mentions
-différentes.
+(`src/server/emails/campaign.ts`).
 
-Renseigné depuis le registre (relevé du 30/07/2026) :
+Ces trois surfaces ne sont plus à modifier séparément : le pied des e-mails
+recopiait autrefois les coordonnées et avait déjà divergé de sa source. Il en
+dérive maintenant. **Un seul fichier à changer**, et c'est aussi le point unique
+à brancher le jour où ces valeurs passeront en base.
 
-| Champ | Valeur en place | Source |
+### État actuel : données de démonstration
+
+`COMPANY.provisoire` vaut `true`. Les valeurs en place sont des **données de
+test** et ne désignent aucune société immatriculée :
+
+| Champ | Valeur de test | À remplacer par |
 | --- | --- | --- |
-| `name` | MLC BOIS | Registre |
-| `legalForm` | SASU | Registre |
-| `street`, `city` | 27 Grande Rue, 21700 Villebichot | Registre |
-| `register` | RCS Dijon 990 527 871 | SIREN + greffe de la Côte-d'Or |
-| `siren` | 990 527 871 | Registre |
-| `siret` | 990 527 871 00018 | Registre (siège) |
-| `vatId` | FR71990527871 | Registre |
+| `legalForm` | SARL | Forme réelle (OHADA : SARL, SA, SAS…) |
+| `street`, `city` | Rue Njo-Njo, Bonapriso · Douala | Siège réel |
+| `register` | RC/DLA/2026/B/00000 | RCCM délivré par le greffe |
+| `capital` | 1 000 000 FCFA | Statuts |
+| `vatId` | M000000000000X | NIU, Direction générale des impôts |
+| `managingDirector` | La gérance | Gérant ou fonction, selon la forme retenue |
+| `email`, `phone` | contact@kosskoss.cm · +237 658 01 36 46 | Boîte et ligne réellement relevées |
+| `host` | Vercel Inc., Walnut, Californie | Exact tant que l'hébergement est sur Vercel |
 
-**Reste à compléter** — ces champs ne figurent pas au registre public :
+Les identifiants sont **à zéros** délibérément : la facture porte ces mentions
+jusque chez le client, et une suite de zéros se repère au premier coup d'œil là
+où un numéro crédible finirait par être pris pour vrai. La gérance est désignée
+par sa fonction plutôt que par un nom, pour ne fabriquer aucune identité.
 
-| Champ | Valeur en place | Où la trouver |
-| --- | --- | --- |
-| `capital` | à compléter | Statuts / Kbis |
-| `managingDirector` | Prénom Nom (à compléter) | Président, Kbis |
-| `phone` | 01 23 45 67 89 (fictif) | Ligne réellement décrochée |
-| `email` | contact@mlc-bois.fr | Boîte réellement relevée |
-| `host` | Hetzner Online GmbH… | Hébergeur réel — mention obligatoire (art. 6 III 1° LCEN) |
+Tant que `provisoire` vaut `true` :
 
-Le **greffe** (`RCS Dijon`) est déduit du code postal 21700 (Côte-d'Or) : à
-confirmer sur le Kbis, c'est la seule valeur du premier tableau qui ne vienne pas
-directement du registre.
+- les **pages légales** portent en tête un avertissement disant que ces mentions
+  sont des données de démonstration ;
+- la **facture** ajoute une ligne en pied déclarant qu'elle est un document de
+  démonstration.
+
+Les deux disparaissent en passant `provisoire` à `false` — ce qui doit se faire
+**en même temps** que la saisie des vraies valeurs, jamais avant.
+
+Les champs `siren` et `siret`, hérités de l'activité française, ont été retirés :
+ils n'avaient aucun usage et n'ont pas d'équivalent camerounais.
+
+### Avertissement sur le reste de ce document
+
+Les points ci-dessous, et une grande partie des sections suivantes, invoquent
+encore le **droit français** — LCEN, Code de la consommation, médiateur de la
+consommation, code APE/NAF, greffe du tribunal de commerce. Ils viennent de
+l'activité précédente et **n'ont pas été transposés au Cameroun**. Ils ne sont
+donc pas une liste de tâches valide en l'état : chaque point demande d'abord de
+savoir si l'obligation existe en droit camerounais, et sous quelle forme.
+
+C'est le même arbitrage que celui déjà consigné pour les mentions obligatoires
+de la facture, à trancher avec le comptable et un juriste local.
 
 Autres éléments à vérifier au cas par cas :
 

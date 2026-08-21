@@ -21,44 +21,22 @@ const UPDATED_AT = "2026-08-06";
 
 /**
  * Coordonnées de l'entreprise.
- * Exportées : la facture et les pages légales y puisent une source unique —
- * deux jeux de coordonnées qui divergeraient seraient pires qu'un seul faux.
  *
- * Identité, adresse, RCCM et NIU restent à compléter à partir du registre
- * camerounais — voir docs/LEGAL.md § 3.
+ * Elles vivaient ici, au milieu de 34 Ko de texte juridique, si bien que tout
+ * module qui les voulait héritait du corpus entier — ce qui avait poussé les
+ * e-mails de campagne à en recopier une seconde version, déjà divergente.
+ * Elles sont désormais dans `./company`, sans dépendance, et réexportées ici
+ * pour que rien de ce qui les importait déjà ne change.
  */
-export const COMPANY = {
-  name: "KossKoss Select",
-  /** Forme sociale — à renseigner selon l'immatriculation camerounaise. */
-  legalForm: "À compléter",
-  street: "À compléter",
-  city: "À compléter",
-  country: "Cameroun",
-  email: "contact@kosskoss.cm",
-  phone: "+237 658 01 36 46",
-  /** Directeur de la publication. À COMPLÉTER. */
-  managingDirector: "À compléter",
-  /** Registre du commerce et du crédit mobilier (RCCM). À COMPLÉTER. */
-  register: "RCCM à compléter",
-  /** Champ hérité (SIREN, France) — sans objet au Cameroun. À COMPLÉTER. */
-  siren: "À compléter",
-  /** Champ hérité (SIRET, France) — sans objet au Cameroun. À COMPLÉTER. */
-  siret: "À compléter",
-  /** Capital social. À COMPLÉTER. */
-  capital: "À compléter",
-  /** Numéro d'identifiant unique (NIU). À COMPLÉTER. */
-  vatId: "NIU à compléter",
-  domain: "kosskoss.vercel.app",
-  /** Hébergeur. */
-  host: "Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, États-Unis",
-} as const;
+export { COMPANY } from "./company";
+import { COMPANY } from "./company";
 
 /** Adresse de retour (identique au siège dans ce modèle). */
 const RETURN_ADDRESS = `${COMPANY.name}, service retours, ${COMPANY.street}, ${COMPANY.city}, ${COMPANY.country}`;
 
 /** Avertissement placé en tête de chaque page juridique. */
 const DISCLAIMER =
-  "Avertissement : contenu juridique provisoire pour la boutique en ligne KossKoss Select (marché Cameroun). L'identité de la société, l'adresse, l'immatriculation (RCCM) et le NIU restent à renseigner avant publication, puis à faire relire par un juriste — c'est à cette condition seulement que ce texte est utilisable.";
+  "Avertissement : contenu juridique provisoire pour la boutique en ligne KossKoss Select (marché Cameroun). L'identité de la société, l'adresse, l'immatriculation (RCCM), le capital et le NIU affichés sont des DONNÉES DE DÉMONSTRATION et ne désignent aucune société réelle. Elles doivent être remplacées par les mentions du registre camerounais, puis l'ensemble relu par un juriste, avant toute mise en ligne — c'est à cette condition seulement que ce texte est utilisable.";
 
 /** Assemble le chapeau : avertissement puis texte d'introduction. */
 function intro(lead: string): string {

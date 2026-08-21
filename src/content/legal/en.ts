@@ -27,7 +27,7 @@ const RETURN_ADDRESS = `${COMPANY.name}, returns department, ${COMPANY.street}, 
 
 /** Notice placed at the top of every legal page. */
 const DISCLAIMER =
-  "Notice: provisional legal content for the KossKoss Select online shop (Cameroon market). The company identity, address, registration (RCCM) and NIU still have to be filled in before publication, and the text then reviewed by a lawyer — only on that condition is it fit for use. This English version is a translation for information; the French text is the binding one.";
+  "Notice: provisional legal content for the KossKoss Select online shop (Cameroon market). The company identity, address, registration (RCCM), share capital and NIU shown here are DEMONSTRATION DATA and refer to no real company. They must be replaced with the entries from the Cameroonian register, and the whole text then reviewed by a lawyer, before any public launch — only on that condition is it fit for use. This English version is a translation for information; the French text is the binding one.";
 
 /** Builds the lead paragraph: notice followed by the introduction. */
 function intro(lead: string): string {

@@ -29,22 +29,31 @@ import {
   type TemplateVariable,
 } from "@/lib/campaigns";
 import { siteUrl } from "@/server/emails/customerAccount";
+import { COMPANY } from "@/content/legal/company";
 
 /**
- * Identification du fournisseur reprise de src/content/legal/fr.ts.
+ * Identification du fournisseur, en pied des e-mails de campagne.
  *
- * Recopiée ici et non importée : ce module ne doit dépendre d'aucun contenu de
- * page. Toute modification doit donc être répercutée ici EN MÊME TEMPS que dans
- * les pages légales — voir docs/LEGAL.md.
+ * Elle était RECOPIÉE ici, au motif que ce module ne devait dépendre d'aucun
+ * contenu de page — le vrai coût étant le poids : les coordonnées vivaient au
+ * milieu de 34 Ko de texte juridique. La copie avait déjà divergé : elle gardait
+ * ses propres « À compléter » quand la source ne les avait plus.
+ *
+ * Les coordonnées ont donc été extraites dans `@/content/legal/company`, un
+ * module sans dépendance. L'import ne traîne plus le corpus, et il n'y a plus
+ * deux jeux de mentions légales à tenir synchronisés à la main.
+ *
+ * Seule la casse du nom reste propre à ce pied de page, qui l'affiche en
+ * capitales.
  */
 const IMPRESSUM = {
-  name: "KOSSKOSS SELECT",
-  street: "À compléter",
-  city: "À compléter",
-  country: "Cameroun",
-  managingDirector: "À compléter",
-  register: "RCCM à compléter",
-  vatId: "NIU à compléter",
+  name: COMPANY.name.toUpperCase(),
+  street: COMPANY.street,
+  city: COMPANY.city,
+  country: COMPANY.country,
+  managingDirector: COMPANY.managingDirector,
+  register: COMPANY.register,
+  vatId: COMPANY.vatId,
 } as const;
 
 // ---- Entrées ----

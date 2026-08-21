@@ -628,6 +628,24 @@ export async function buildInvoicePdf(
     7,
   );
 
+  // Tant que l'identité de l'émetteur est une donnée de démonstration, la
+  // facture le dit.
+  //
+  // Une page légale peut porter un long avertissement en tête ; une facture,
+  // non — et elle QUITTE le système pour arriver chez un client, qui la
+  // conserve. Sans cette ligne, un document portant un RCCM et un NIU
+  // fabriqués circulerait comme s'il était authentique.
+  //
+  // La mention disparaît d'elle-même le jour où `COMPANY.provisoire` passe à
+  // `false`, c'est-à-dire quand les vraies mentions du registre camerounais
+  // seront renseignées. Rien d'autre n'est à retirer.
+  if (COMPANY.provisoire) {
+    pied(
+      "Document de démonstration : l'identité de l'émetteur ci-dessus est une donnée de test et ne désigne aucune société immatriculée.",
+      7,
+    );
+  }
+
   // L'encadré « TVA intracommunautaire » qui occupait cet espace venait lui
   // aussi de l'activité française précédente : la TVA intracommunautaire est
   // une notion propre à l'Union européenne, sans équivalent au Cameroun — et
