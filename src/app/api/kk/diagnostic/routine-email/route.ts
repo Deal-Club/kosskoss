@@ -3,13 +3,30 @@ import { buildRoutine } from "@/server/kk/diagnostic";
 import { sendRoutineEmail } from "@/server/kk/emails";
 import { choisirLangue } from "@/lib/kk/langue";
 import { adresseEmailValide } from "@/lib/kk/email-valide";
+import { customerRoutineEmailRate } from "@/server/customerRate";
 
 /**
  * Envoi de la routine par e-mail.
  *
  * Même règle de validation d'adresse que la route newsletter — voir
  * `src/lib/kk/email-valide.ts`, qui explique pourquoi elle est partagée.
+ *
+ * Route publique, sans compte requis, qui envoie vers une adresse arbitraire :
+ * sans frein, n'importe qui pourrait mailbomber un tiers sous la réputation
+ * d'envoi de la boutique — la même que celle des confirmations de commande et
+ * des factures. Même limiteur que « mot de passe oublié »
+ * (`src/app/api/account/password/forgot/route.ts`), qui affronte le même
+ * risque et la même contrainte de ne rien révéler sur l'adresse.
  */
+
+/**
+ * Borne haute sur le nombre de réponses. Le questionnaire ne compte
+ * aujourd'hui que cinq questions à réponse unique : même avec de la marge
+ * pour son évolution, un tableau de cette taille ne peut pas rejeter un vrai
+ * visiteur. Elle protège la requête Prisma qui suit (`id: { in: answerIds }`)
+ * d'un tableau démesuré.
+ */
+const REPONSES_MAX = 20;
 
 export async function POST(request: Request) {
   let corps: unknown;
@@ -26,11 +43,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Adresse e-mail invalide." }, { status: 400 });
   }
 
+  // Le blocage porte sur l'adresse dans tous les cas, qu'elle corresponde ou
+  // non à un client ou un abonné existant : un 429 qui ne surviendrait que
+  // sur les adresses connues serait un aveu.
+  const rate = customerRoutineEmailRate.check(adresse);
+  if (!rate.allowed) {
+    return NextResponse.json(
+      {
+        error: "Trop de tentatives. Merci de patienter un instant avant de réessayer.",
+        retryAfterSeconds: rate.retryAfterSeconds,
+      },
+      { status: 429 },
+    );
+  }
+  customerRoutineEmailRate.register(adresse);
+
   const reponses = Array.isArray(answers)
     ? answers.filter((x): x is string => typeof x === "string")
     : [];
   if (reponses.length === 0) {
     return NextResponse.json({ error: "Réponses manquantes." }, { status: 400 });
+  }
+  if (reponses.length > REPONSES_MAX) {
+    return NextResponse.json({ error: "Trop de réponses." }, { status: 400 });
   }
 
   const langue = choisirLangue(typeof locale === "string" ? locale : undefined);

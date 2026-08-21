@@ -256,14 +256,14 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
         : "Voici la routine que nous avons composée pour vous."
     }</p>
     <table style="width:100%;border-collapse:collapse;font-size:14px">${lignes}
-      <tr><td style="padding:12px 0;font-weight:bold">${en ? "Total" : "Total"}</td><td style="padding:12px 0;text-align:right;font-weight:bold">${esc(
+      <tr><td style="padding:12px 0;font-weight:bold">Total</td><td style="padding:12px 0;text-align:right;font-weight:bold">${esc(
         formatFcfa(input.totalFcfa),
       )}</td></tr>
     </table>
     <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
       ${
         en
-          ? "These products are chosen from what is in stock today. Prices may change."
+          ? "These products were selected from what's currently in stock; prices may change."
           : "Ces produits sont choisis parmi ceux disponibles aujourd'hui. Les prix peuvent évoluer."
       }
     </div>`;
