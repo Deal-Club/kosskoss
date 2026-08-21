@@ -44,6 +44,22 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.panierMoyenCents, 15000);
   });
 
+  it("divise par le nombre de commandes, jamais par le nombre de lignes", () => {
+    // Deux lignes d'une seule commande (cmd1) : CA 30 000.
+    // Une ligne d'une autre commande (cmd2) : CA 40 000.
+    // Panier moyen = (30 000 + 40 000) / 2 = 35 000.
+    // Une fausse division par 3 lignes donnerait (70 000 / 3) = 23 333,
+    // qui est très différent et clairement faux.
+    const totaux = totaliserVentes([
+      ligne({ lineTotalCents: 10000 }),
+      ligne({ orderId: "cmd1", name: "Sérum", lineTotalCents: 20000 }),
+      ligne({ orderId: "cmd2", lineTotalCents: 40000 }),
+    ]);
+    assert.equal(totaux.nombreCommandes, 2);
+    assert.equal(totaux.lignesTotal, 3);
+    assert.equal(totaux.panierMoyenCents, 35000);
+  });
+
   it("rend un panier moyen de zéro sans commande", () => {
     // Diviser par zéro rendrait NaN, qui s'afficherait tel quel.
     assert.equal(totaliserVentes([]).panierMoyenCents, 0);
@@ -166,6 +182,20 @@ describe("classerParProduit", () => {
     );
     assert.equal(classement.length, 2);
   });
+
+  it("sépare les produits de marques différentes portant le même nom", () => {
+    // « Crème hydratante » chez Nivea et chez Eucerin ne sont pas le même
+    // produit : leurs prix et coûts diffèrent. Retirer brand de cleProduit
+    // les fondrait mécaniquement.
+    const classement = classerParProduit(
+      [
+        ligne({ brand: "Nivea", lineTotalCents: 12000 }),
+        ligne({ brand: "Eucerin", name: "Crème hydratante", lineTotalCents: 15000 }),
+      ],
+      10,
+    );
+    assert.equal(classement.length, 2);
+  });
 });
 
 describe("ventesParJour", () => {
@@ -194,6 +224,22 @@ describe("ventesParJour", () => {
       new Date(2026, 7, 19, 23, 59, 59),
     );
     assert.equal(points[0].nombreCommandes, 1);
+  });
+
+  it("dédoublonne par orderId : trois lignes de deux commandes donnent 2, pas 3", () => {
+    // Test du dédoublonnage : deux lignes de cmd1, une ligne de cmd2, tous le
+    // même jour. Compter naïvement les lignes donne 3 ; compter les orderId
+    // distincts donne 2. Un Set oublié compterait 3 et échouerait ici.
+    const points = ventesParJour(
+      [
+        ligne({ date: new Date(2026, 7, 19, 9, 0), orderId: "cmd1" }),
+        ligne({ date: new Date(2026, 7, 19, 10, 0), orderId: "cmd1", name: "Sérum" }),
+        ligne({ date: new Date(2026, 7, 19, 11, 0), orderId: "cmd2" }),
+      ],
+      new Date(2026, 7, 19),
+      new Date(2026, 7, 19, 23, 59, 59),
+    );
+    assert.equal(points[0].nombreCommandes, 2);
   });
 
   it("range la vente au jour local, pas au jour UTC", () => {
