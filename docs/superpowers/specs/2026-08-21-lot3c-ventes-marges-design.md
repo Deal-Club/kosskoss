@@ -56,8 +56,17 @@ Deux chiffres distincts, jamais additionnés :
 
 | Chiffre | Définition | Pourquoi séparé |
 |---|---|---|
-| **Encaissé** | commandes dont `paymentStatus = "payee"` | le seul argent réellement entré |
-| **En cours** | commandes ni payées ni annulées | le paiement à la livraison n'a pas encore de webhook ; ce montant existe mais n'est pas acquis |
+| **Encaissé** | commandes dont `paymentStatus = "payee"` et `status != "annulee"` | le seul argent réellement entré et non annulé |
+| **En cours** | commandes ni payées ni annulées ni remboursées | le paiement à la livraison n'a pas encore de webhook ; ce montant existe mais n'est pas acquis |
+
+**Annulée sort, remboursée reste.** Une commande payée puis annulée remet la
+marchandise en stock — elle n'est jamais partie — et doit donc sortir du chiffre
+d'affaires. Une commande remboursée, elle, a bien été encaissée puis rendue : les
+avoirs comptables sont hors périmètre de ce lot, et la retirer de l'historique
+serait un trou que rien ne signalerait. C'est un choix, pas un oubli — et c'est
+pour cela que `lireVentes` filtre `status: { not: "annulee" }` quand `lireEnCours`
+filtre plus largement `status: { notIn: ["annulee", "remboursee"] }` : les deux
+listes ne répondent pas à la même question.
 
 **Date de référence :** `paidAt` quand il est posé, `createdAt` sinon. `paidAt` n'est
 renseigné que depuis le passage au statut « payée » (`orders.ts:779`) ; les commandes
@@ -71,11 +80,29 @@ OR: [
 ]
 ```
 
-**Ce qui n'entre pas dans le chiffre d'affaires produit :** la livraison. Le CA
-de l'écran est la somme des `lineTotalCents`, pas des `totalCents` de commande — sans
-quoi la marge se comparerait à une assiette qui contient la livraison. Cette
-boutique ne décompose pas ses prix en hors taxe et taxe : le montant affiché est
-celui réglé, tel quel, pas un sous-total qu'il faudrait encore taxer.
+**Ce qui n'entre pas dans le chiffre d'affaires produit :** la livraison, et les
+remises accordées. Le CA de l'écran est la somme NETTE des lignes — le `lineTotalCents`
+de chacune, moins sa part de remise — jamais le `totalCents` de commande, sans quoi
+la marge se comparerait à une assiette qui contient la livraison. Cette boutique ne
+décompose pas ses prix en hors taxe et taxe : le montant affiché est celui réglé, tel
+quel, pas un sous-total qu'il faudrait encore taxer.
+
+**La remise est répartie au prorata des lignes.** Un code promo réduit
+`Order.totalCents`, jamais les `lineTotalCents` de chaque ligne : les sommer telles
+quelles surévaluerait le chiffre d'affaires et la marge du montant exact des remises.
+`repartirRemise` (dans `src/lib/kk/ventes.ts`, pur et testé sans base) donne donc à
+chaque ligne sa part, proportionnelle à son total brut :
+
+```
+part brute = discountCents × lineTotalCents / subtotalCents
+```
+
+Chaque part est arrondie à l'entier inférieur, et le reste — la différence entre la
+remise réelle et la somme des parts arrondies — va entièrement à la **dernière ligne**
+de la commande, pour que la somme des parts vaille EXACTEMENT `discountCents` : un
+écart d'un franc en comptabilité se cherche pendant une heure. `subtotalCents` à 0 rend
+une remise nulle sur chaque ligne (jamais de division par zéro), et la part d'une ligne
+ne dépasse jamais son propre total brut.
 
 ---
 
@@ -112,16 +139,19 @@ inversées retombent sur le défaut plutôt que de rendre un écran vide.
 export interface LigneVente {
   orderId: string; orderNumber: string; date: Date;
   brand: string; name: string; variantLabel: string; sku: string;
-  quantity: number; unitPriceCents: number; lineTotalCents: number;
+  quantity: number; unitPriceCents: number;
+  lineTotalCents: number;        // BRUT : prix unitaire × quantité
+  remiseCents: number;           // part de la remise de commande, au prorata — voir repartirRemise
   unitCostCents: number | null;
 }
 
 export interface TotauxVentes {
-  chiffreAffairesCents: number;   // somme des lignes de produits, livraison exclue
+  chiffreAffairesCents: number;   // NET : somme des lignes, remises déduites, livraison exclue
+  remisesCents: number;           // remises accordées sur la période, déjà déduites ci-dessus
   quantite: number;
   nombreCommandes: number;        // commandes distinctes, pas lignes
-  panierMoyenCents: number | null; // null si aucune commande — pas 0
-  margeCents: number | null;      // null si aucune ligne n'a de coût
+  panierMoyenCents: number | null; // null si aucune commande — pas 0, sur le CA net
+  margeCents: number | null;      // null si aucune ligne n'a de coût — calculée sur le NET
   tauxMarge: number | null;
   lignesAvecCout: number;
   lignesTotal: number;
@@ -131,17 +161,18 @@ export interface VenteProduit {
   cle: string;                    // marque + nom + variante — le produit peut avoir disparu
   brand: string; name: string; variantLabel: string;
   quantite: number;
-  chiffreAffairesCents: number;
+  chiffreAffairesCents: number;   // NET
   margeCents: number | null;
   lignesSansCout: number;
 }
 
 export interface PointJour {
   jour: string;                   // « AAAA-MM-JJ »
-  chiffreAffairesCents: number;
+  chiffreAffairesCents: number;   // NET
   nombreCommandes: number;
 }
 
+export function repartirRemise(lignes: { lineTotalCents: number }[], discountCents: number, subtotalCents: number): number[]
 export function totaliserVentes(lignes: LigneVente[]): TotauxVentes
 export function classerParProduit(lignes: LigneVente[], limite: number): VenteProduit[]
 export function ventesParJour(lignes: LigneVente[], du: Date, au: Date): PointJour[]
@@ -152,7 +183,8 @@ Le classement se fait sur la **clé recopiée** — marque, nom, variante — et
 à `null`, et grouper là-dessus fondrait tous les produits disparus en un seul.
 
 Point délicat : `margeCents` ne totalise que les lignes qui ont un coût, et
-`tauxMarge` rapporte cette marge **au CA de ces mêmes lignes** — pas au CA total.
+`tauxMarge` rapporte cette marge **au CA NET de ces mêmes lignes** — pas au CA total,
+et pas au brut.
 Rapporter une marge partielle à une assiette complète produirait un taux
 mécaniquement sous-évalué, et d'autant plus faux que le catalogue est peu renseigné.
 
@@ -177,9 +209,18 @@ export async function lireVentes(periode: Periode): Promise<LigneVente[]>
 export async function lireEnCours(periode: Periode): Promise<{ nombre: number; totalCents: number }>
 ```
 
-Une seule requête `orderItem.findMany` avec le filtre porté sur la commande liée, et
-`orderBy` par date. Pas d'agrégation SQL : le volume d'une jeune boutique tient en
-mémoire, et le calcul en TypeScript est celui que les tests couvrent.
+Une seule requête `orderItem.findMany` avec le filtre porté sur la commande liée
+(`paymentStatus: "payee"`, `status: { not: "annulee" }`), et un `orderBy` sur
+`(order.paidAt, order.createdAt, id)` qui rend le résultat SQL déterministe. La date
+de référence reste un choix TypeScript (`paidAt ?? createdAt`, un COALESCE que Prisma
+ne sait pas exprimer dans un `orderBy`) : le tri final se fait donc en mémoire sur
+cette date, et la stabilité de `Array.prototype.sort` préserve, pour deux lignes de
+même date, l'ordre déterministe que l'`orderBy` SQL leur a donné — deux exports de la
+même période rendent ainsi toujours le même fichier.
+
+Les lignes sont regroupées par commande pour répartir la remise (`repartirRemise`,
+§3) avant d'être aplaties. Pas d'agrégation SQL : le volume d'une jeune boutique tient
+en mémoire, et le calcul en TypeScript est celui que les tests couvrent.
 
 ### 4.5 L'écran `/admin/ventes`
 
@@ -187,10 +228,13 @@ Composant serveur, état dans l'URL (`?p=30j` ou `?du=…&au=…`) — même pat
 reste du back-office. Contenu :
 
 1. **Barre de période** — quatre raccourcis et deux champs de dates.
-2. **Quatre cartes** — encaissé (hors port), marge, commandes, panier moyen. La carte
-   marge porte sa propre mention : « calculée sur 42 lignes sur 57 ».
+2. **Quatre cartes** — encaissé (net des remises, hors port), marge, commandes, panier
+   moyen. La carte encaissé porte le montant des remises accordées quand il n'est pas
+   nul ; la carte marge porte sa propre mention : « calculée sur 42 lignes sur 57 ».
 3. **Bloc « en cours »** — nombre et montant des commandes non payées, avec un lien
-   vers la liste filtrée. Séparé visuellement, jamais additionné à l'encaissé.
+   vers *toutes* les commandes en attente : la liste des commandes ne filtre pas par
+   période, et le libellé le dit plutôt que de laisser croire à un même comptage.
+   Séparé visuellement, jamais additionné à l'encaissé.
 4. **Histogramme par jour** — SVG à la main, dans le style des graphiques existants
    (`DashboardCharts.tsx`) ; le projet n'a pas de bibliothèque de graphiques et n'en
    gagne pas une pour ce lot.
@@ -205,7 +249,13 @@ Une entrée « Ventes » s'ajoute à la section *Boutique* de `AdminSidebar`, so
 Une ligne par ligne de commande, dans l'ordre chronologique. Colonnes :
 
 Date · N° commande · Marque · Produit · Variante · SKU · Quantité ·
-Prix unitaire · Total ligne · Coût unitaire · Coût total · Marge · Taux de marge
+Prix unitaire · Total ligne · Remise · Total ligne net · Coût unitaire · Coût total ·
+Marge · Taux de marge
+
+« Total ligne » reste le BRUT (prix unitaire × quantité) ; « Remise » est la part de
+la remise de commande attribuée à cette ligne (§3) ; « Total ligne net » est leur
+différence, et c'est sur lui — jamais sur le brut — que se calculent la marge et le
+taux de marge.
 
 Les montants sortent en **entiers FCFA sans séparateur ni symbole** : un tableur doit
 pouvoir les additionner, et « 12 000 FCFA » n'est pas un nombre. La devise est dite
@@ -240,8 +290,12 @@ Modules purs, couverts sans base :
 - **periode** — défaut 30 jours ; chaque raccourci ; fin de journée incluse ; dates
   illisibles ; dates inversées.
 - **ventes** — totaux ; marge partielle et son assiette ; aucune ligne avec coût
-  (marge `null`, pas `0`) ; commandes distinctes comptées une fois ; panier moyen à
-  zéro commande ; jours creux présents dans la série ; classement par CA.
+  (marge `null`, pas `0`) ; commandes distinctes comptées une fois ; panier moyen
+  `null` (pas `0`) sans commande ; jours creux présents dans la série ; classement par
+  CA ; répartition d'une remise sur deux lignes et CA net qui en résulte ; marge
+  calculée sur le net et non le brut ; remise nulle sans effet ; arrondi de répartition
+  qui ne tombe pas juste, avec vérification que la somme des parts vaut exactement la
+  remise.
 - **csv** — cellule contenant un point-virgule, un guillemet, un retour à la ligne ;
   BOM présent ; fins de ligne CRLF.
 

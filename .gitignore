@@ -61,6 +61,3 @@ yarn-error.log*
 
 # Variables de production préparées pour Hostinger — contient les secrets
 /hostinger-env.txt
-
-# Espace de travail des plans superpowers (brouillon, jamais versionné)
-.superpowers/

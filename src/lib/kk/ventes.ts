@@ -25,10 +25,20 @@
  * ── LA MARGE COMPARE DEUX MONTANTS, PAS FORCÉMENT SUR LA MÊME BASE ──────────
  *
  * `margeCents` soustrait un coût d'achat (`unitCostCents`) d'un prix de vente
- * (`lineTotalCents`). Si ces deux montants ne sont pas saisis sur la même
- * base, le taux qui en sort est approximatif. C'est une question qui relève
- * du comptable, pas de ce module — elle est notée ici pour qui lira ce calcul
- * plus tard.
+ * (le total NET de la ligne). Si ces deux montants ne sont pas saisis sur la
+ * même base, le taux qui en sort est approximatif. C'est une question qui
+ * relève du comptable, pas de ce module — elle est notée ici pour qui lira ce
+ * calcul plus tard.
+ *
+ * ── BRUT, REMISE, NET : TROIS GRANDEURS, JAMAIS CONFONDUES ──────────────────
+ *
+ * Une ligne porte `lineTotalCents` (le total BRUT, prix unitaire × quantité)
+ * et `remiseCents` (sa part de la remise de la commande). Leur différence est
+ * le CA NET de la ligne — c'est LUI, jamais le brut, qui entre dans
+ * `chiffreAffairesCents`, dans la marge et dans le panier moyen : c'est
+ * l'argent réellement reçu, celui qui doit couvrir le coût d'achat. Confondre
+ * brut et net revient à afficher un chiffre d'affaires et une marge
+ * surévalués du montant exact des remises accordées.
  */
 
 export interface LigneVente {
@@ -42,26 +52,37 @@ export interface LigneVente {
   sku: string;
   quantity: number;
   unitPriceCents: number;
+  /** Total BRUT de la ligne, avant remise : prix unitaire × quantité. */
   lineTotalCents: number;
+  /**
+   * Part de la remise de commande attribuée à cette ligne, au prorata de son
+   * total brut — voir `repartirRemise`. Toujours 0 sur une commande sans code
+   * promo.
+   */
+  remiseCents: number;
   /** `null` = coût inconnu au moment de la vente. Jamais confondu avec 0. */
   unitCostCents: number | null;
 }
 
 export interface TotauxVentes {
   /**
-   * Somme des lignes de produits, livraison exclue. Cette boutique ne
-   * décompose pas ses prix en hors taxe et taxe : le montant est celui
-   * réglé, tel quel.
+   * Chiffre d'affaires NET : somme des lignes de produits (brut MOINS les
+   * remises réparties dessus), livraison exclue. Cette boutique ne décompose
+   * pas ses prix en hors taxe et taxe : le montant est celui réglé, tel quel.
+   * C'est ce total, net des remises, qui est comparable à l'encaissé compté
+   * par ailleurs (`Order.totalCents`).
    */
   chiffreAffairesCents: number;
+  /** Remises accordées sur la période, déjà déduites de `chiffreAffairesCents` ci-dessus. */
+  remisesCents: number;
   quantite: number;
   nombreCommandes: number;
   /** `null` sans commande : une moyenne sur zéro commande n'existe pas. */
   panierMoyenCents: number | null;
-  /** `null` quand aucune ligne de la période n'a de coût. */
+  /** `null` quand aucune ligne de la période n'a de coût. Calculée sur le NET. */
   margeCents: number | null;
-  /** Points de pourcentage, une décimale, rapportés au CA des seules lignes
-   *  qui ont un coût. */
+  /** Points de pourcentage, une décimale, rapportés au CA NET des seules
+   *  lignes qui ont un coût. */
   tauxMarge: number | null;
   lignesAvecCout: number;
   lignesTotal: number;
@@ -73,6 +94,7 @@ export interface VenteProduit {
   name: string;
   variantLabel: string;
   quantite: number;
+  /** NET : brut moins la part de remise de chaque ligne du produit. */
   chiffreAffairesCents: number;
   margeCents: number | null;
   lignesSansCout: number;
@@ -85,10 +107,69 @@ export interface PointJour {
   nombreCommandes: number;
 }
 
-/** Marge d'une ligne, ou `null` si son coût est inconnu. */
+/** CA NET d'une ligne : son total brut, moins la part de remise reçue. */
+function caNetLigne(ligne: LigneVente): number {
+  return ligne.lineTotalCents - ligne.remiseCents;
+}
+
+/**
+ * Marge d'une ligne, ou `null` si son coût est inconnu.
+ *
+ * Calculée sur le CA NET, pas sur le brut : c'est l'argent réellement reçu
+ * après remise qui doit couvrir le coût d'achat. La calculer sur le brut
+ * surévaluerait la marge du montant exact de la remise.
+ */
 function margeLigne(ligne: LigneVente): number | null {
   if (ligne.unitCostCents === null) return null;
-  return ligne.lineTotalCents - ligne.unitCostCents * ligne.quantity;
+  return caNetLigne(ligne) - ligne.unitCostCents * ligne.quantity;
+}
+
+/**
+ * Répartit la remise d'une commande sur ses lignes, au prorata du total brut
+ * de chacune.
+ *
+ * ── POURQUOI LA DERNIÈRE LIGNE ABSORBE LE RESTE D'ARRONDI ───────────────────
+ *
+ * Chaque part est arrondie à l'entier inférieur ; la somme de ces parts
+ * arrondies peut alors tomber quelques francs en-dessous de la remise
+ * réellement accordée. Donner ce reste à la DERNIÈRE ligne — plutôt que de le
+ * perdre, ou de le répartir une seconde fois au prorata — garantit que la
+ * somme des parts vaut EXACTEMENT `discountCents`. Un écart d'un franc dans
+ * une comptabilité se cherche pendant une heure ; il ne doit jamais
+ * apparaître ici.
+ *
+ * `subtotalCents` à 0 rend une remise nulle sur chaque ligne : diviser par
+ * zéro n'a pas de sens, et une commande sans sous-total n'a rien à répartir.
+ *
+ * Garde-fou : la part d'une ligne ne dépasse jamais son propre total brut —
+ * une remise mal saisie en base ne doit pas rendre une ligne négative. Dans
+ * l'usage réel, `discountCents` ne dépasse jamais `subtotalCents` (le calcul
+ * du coupon le plafonne déjà), ce qui laisse toujours assez de marge à la
+ * dernière ligne pour absorber le reste sans toucher ce plafond.
+ */
+export function repartirRemise(
+  lignes: { lineTotalCents: number }[],
+  discountCents: number,
+  subtotalCents: number,
+): number[] {
+  if (lignes.length === 0 || discountCents === 0 || subtotalCents === 0) {
+    return lignes.map(() => 0);
+  }
+
+  const parts = lignes.map((ligne) =>
+    Math.min(ligne.lineTotalCents, Math.floor((discountCents * ligne.lineTotalCents) / subtotalCents)),
+  );
+
+  const reparti = parts.reduce((total, part) => total + part, 0);
+  const reste = discountCents - reparti;
+  if (reste > 0) {
+    const derniere = parts.length - 1;
+    // Voir le commentaire de tête : le reste va à la DERNIÈRE ligne, jamais
+    // ailleurs, pour que le résultat soit reproductible.
+    parts[derniere] = Math.min(lignes[derniere].lineTotalCents, parts[derniere] + reste);
+  }
+
+  return parts;
 }
 
 /**
@@ -112,41 +193,47 @@ function jourLocal(date: Date): string {
 
 export function totaliserVentes(lignes: LigneVente[]): TotauxVentes {
   const commandes = new Set<string>();
-  let chiffreAffairesCents = 0;
+  // Les trois grandeurs, jamais confondues : voir l'en-tête du module.
+  let brutCents = 0;
+  let remisesCents = 0;
   let quantite = 0;
   let lignesAvecCout = 0;
   let margeCents = 0;
-  // Assiette de la marge : le CA des SEULES lignes qui ont un coût. Rapporter
-  // une marge partielle au CA total donnerait un taux sous-évalué, d'autant
-  // plus faux que le catalogue est peu renseigné.
-  let caAvecCout = 0;
+  // Assiette de la marge : le CA NET des SEULES lignes qui ont un coût.
+  // Rapporter une marge partielle à une assiette complète donnerait un taux
+  // sous-évalué, d'autant plus faux que le catalogue est peu renseigné.
+  let caNetAvecCout = 0;
 
   for (const ligne of lignes) {
     commandes.add(ligne.orderId);
-    chiffreAffairesCents += ligne.lineTotalCents;
+    brutCents += ligne.lineTotalCents;
+    remisesCents += ligne.remiseCents;
     quantite += ligne.quantity;
 
     const marge = margeLigne(ligne);
     if (marge !== null) {
       lignesAvecCout += 1;
       margeCents += marge;
-      caAvecCout += ligne.lineTotalCents;
+      caNetAvecCout += caNetLigne(ligne);
     }
   }
 
+  // Chiffre d'affaires NET : c'est lui, jamais le brut, qui est exposé.
+  const chiffreAffairesCents = brutCents - remisesCents;
   const nombreCommandes = commandes.size;
 
   return {
     chiffreAffairesCents,
+    remisesCents,
     quantite,
     nombreCommandes,
     panierMoyenCents:
       nombreCommandes === 0 ? null : Math.round(chiffreAffairesCents / nombreCommandes),
     margeCents: lignesAvecCout === 0 ? null : margeCents,
     tauxMarge:
-      lignesAvecCout === 0 || caAvecCout === 0
+      lignesAvecCout === 0 || caNetAvecCout === 0
         ? null
-        : Math.round((margeCents / caAvecCout) * 1000) / 10,
+        : Math.round((margeCents / caNetAvecCout) * 1000) / 10,
     lignesAvecCout,
     lignesTotal: lignes.length,
   };
@@ -174,7 +261,9 @@ export function classerParProduit(lignes: LigneVente[], limite: number): VentePr
     }
 
     entree.quantite += ligne.quantity;
-    entree.chiffreAffairesCents += ligne.lineTotalCents;
+    // NET, comme partout : le brut surévaluerait le CA du produit du montant
+    // de sa part de remise.
+    entree.chiffreAffairesCents += caNetLigne(ligne);
 
     const marge = margeLigne(ligne);
     if (marge === null) {
@@ -205,7 +294,9 @@ export function ventesParJour(lignes: LigneVente[], du: Date, au: Date): PointJo
       entree = { ca: 0, commandes: new Set() };
       parJour.set(jour, entree);
     }
-    entree.ca += ligne.lineTotalCents;
+    // NET : un histogramme qui afficherait le brut ne correspondrait plus aux
+    // cartes de l'écran, qui montrent toutes le chiffre d'affaires net.
+    entree.ca += caNetLigne(ligne);
     entree.commandes.add(ligne.orderId);
   }
 

@@ -12,6 +12,19 @@ const JOURS_MAX_HISTOGRAMME = 92;
 
 const TOP_PRODUITS = 10;
 
+/**
+ * Nombre de jours d'une période, sans construire la série complète.
+ *
+ * Reprend le comptage de `ventesParJour` sans son travail : au-delà de
+ * `JOURS_MAX_HISTOGRAMME`, l'écran n'affiche pas l'histogramme, et calculer sa
+ * série jour par jour pour la jeter aussitôt serait du travail perdu.
+ */
+function joursDansPeriode(du: Date, au: Date): number {
+  const debut = new Date(du.getFullYear(), du.getMonth(), du.getDate());
+  const fin = new Date(au.getFullYear(), au.getMonth(), au.getDate());
+  return Math.round((fin.getTime() - debut.getTime()) / 86_400_000) + 1;
+}
+
 function Carte({
   titre,
   valeur,
@@ -43,7 +56,9 @@ export default async function AdminVentesPage({
 
   const totaux = totaliserVentes(lignes);
   const produits = classerParProduit(lignes, TOP_PRODUITS);
-  const points = ventesParJour(lignes, periode.du, periode.au);
+  const nombreJours = joursDansPeriode(periode.du, periode.au);
+  // Ne construit la série jour par jour que si l'histogramme va s'en servir.
+  const points = nombreJours <= JOURS_MAX_HISTOGRAMME ? ventesParJour(lignes, periode.du, periode.au) : [];
 
   const lignesSansCout = totaux.lignesTotal - totaux.lignesAvecCout;
   // La marge se dit toujours avec son assiette : muette sur son incomplétude,
@@ -56,6 +71,14 @@ export default async function AdminVentesPage({
       : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} — le coût d’achat manque sur les autres`;
 
   const exportHref = `/api/admin/ventes/export?du=${formatJourIso(periode.du)}&au=${formatJourIso(periode.au)}`;
+
+  // La carte dit toujours ce qui est retiré : la livraison, mais aussi les
+  // remises — sans quoi « produits seuls, hors livraison » laisserait croire
+  // qu'elles seules manquent au compte.
+  const mentionEncaisse =
+    totaux.remisesCents > 0
+      ? `produits seuls, remises déduites (${formatFcfa(totaux.remisesCents)}), livraison exclue`
+      : "produits seuls, remises déduites, livraison exclue";
 
   return (
     <div className="space-y-6">
@@ -79,7 +102,7 @@ export default async function AdminVentesPage({
         <Carte
           titre="Encaissé"
           valeur={formatFcfa(totaux.chiffreAffairesCents)}
-          mention="produits seuls, hors livraison"
+          mention={mentionEncaisse}
         />
         <Carte
           titre="Marge"
@@ -120,14 +143,17 @@ export default async function AdminVentesPage({
           {/* Volontairement séparé de l'encaissé : cet argent n'est pas entré. */}
           <p className="mt-1 text-xs text-muted-foreground">
             Ce montant n’est pas compris dans l’encaissé ci-dessus.{" "}
+            {/* Le libellé dit ce que le lien montre vraiment : la liste des
+                commandes ne filtre ni par période ni sur les annulées, donc
+                elle n'aligne pas forcément le même nombre que ci-dessus. */}
             <Link href="/admin/orders?paymentStatus=en_attente" className="underline">
-              Voir les commandes
+              Voir toutes les commandes en attente
             </Link>
           </p>
         </div>
       ) : null}
 
-      {points.length <= JOURS_MAX_HISTOGRAMME ? (
+      {nombreJours <= JOURS_MAX_HISTOGRAMME ? (
         <VentesHistogramme points={points} />
       ) : (
         <p className="rounded-sm border border-border p-4 text-sm text-muted-foreground">

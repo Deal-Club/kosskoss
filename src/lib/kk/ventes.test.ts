@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { classerParProduit, totaliserVentes, ventesParJour, type LigneVente } from "./ventes";
+import {
+  classerParProduit,
+  repartirRemise,
+  totaliserVentes,
+  ventesParJour,
+  type LigneVente,
+} from "./ventes";
 
 function ligne(partiel: Partial<LigneVente> = {}): LigneVente {
   return {
@@ -14,6 +20,7 @@ function ligne(partiel: Partial<LigneVente> = {}): LigneVente {
     quantity: 1,
     unitPriceCents: 12000,
     lineTotalCents: 12000,
+    remiseCents: 0,
     unitCostCents: 8000,
     ...partiel,
   };
@@ -132,6 +139,72 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.panierMoyenCents, null);
     assert.equal(totaux.lignesTotal, 0);
   });
+
+  it("répartit une remise sur deux lignes et calcule le CA net", () => {
+    // Une commande de 100 000 brut, remisée de 15 000 : le CA affiché doit
+    // être le NET (85 000), jamais le brut.
+    const totaux = totaliserVentes([
+      ligne({ lineTotalCents: 60000, remiseCents: 9000, unitCostCents: null }),
+      ligne({ name: "Sérum", lineTotalCents: 40000, remiseCents: 6000, unitCostCents: null }),
+    ]);
+    assert.equal(totaux.chiffreAffairesCents, 85000);
+    assert.equal(totaux.remisesCents, 15000);
+  });
+
+  it("calcule la marge sur le CA net, pas sur le brut", () => {
+    // 36 000 brut, remisé de 6 000 : net 30 000. Coût 3 × 8 000 = 24 000.
+    // Marge net = 30 000 − 24 000 = 6 000. Une marge calculée sur le brut
+    // donnerait à tort 36 000 − 24 000 = 12 000.
+    const totaux = totaliserVentes([
+      ligne({ quantity: 3, lineTotalCents: 36000, remiseCents: 6000, unitCostCents: 8000 }),
+    ]);
+    assert.equal(totaux.margeCents, 6000);
+  });
+
+  it("une remise nulle ne change rien au chiffre d'affaires ni à la marge", () => {
+    const totaux = totaliserVentes([
+      ligne({ lineTotalCents: 36000, remiseCents: 0, unitCostCents: 8000, quantity: 3 }),
+    ]);
+    assert.equal(totaux.chiffreAffairesCents, 36000);
+    assert.equal(totaux.remisesCents, 0);
+    assert.equal(totaux.margeCents, 12000);
+  });
+});
+
+describe("repartirRemise", () => {
+  it("répartit au prorata du total brut de chaque ligne", () => {
+    const parts = repartirRemise(
+      [{ lineTotalCents: 60000 }, { lineTotalCents: 40000 }],
+      30000,
+      100000,
+    );
+    assert.deepEqual(parts, [18000, 12000]);
+  });
+
+  it("ne divise jamais par un sous-total nul", () => {
+    const parts = repartirRemise([{ lineTotalCents: 10000 }, { lineTotalCents: 20000 }], 5000, 0);
+    assert.deepEqual(parts, [0, 0]);
+  });
+
+  it("rend une remise nulle telle quelle", () => {
+    const parts = repartirRemise([{ lineTotalCents: 10000 }, { lineTotalCents: 20000 }], 0, 30000);
+    assert.deepEqual(parts, [0, 0]);
+  });
+
+  it("donne le reste d'arrondi à la dernière ligne, pour que la somme tombe exactement juste", () => {
+    // floor(50000×30000/70000) = 21428, floor(50000×40000/70000) = 28571 :
+    // somme 49999, il manque 1 franc. La dernière ligne l'absorbe : 28572.
+    const parts = repartirRemise(
+      [{ lineTotalCents: 30000 }, { lineTotalCents: 40000 }],
+      50000,
+      70000,
+    );
+    assert.deepEqual(parts, [21428, 28572]);
+    assert.equal(
+      parts.reduce((total, part) => total + part, 0),
+      50000,
+    );
+  });
 });
 
 describe("classerParProduit", () => {
@@ -173,6 +246,14 @@ describe("classerParProduit", () => {
   it("rend une marge nulle pour un produit dont aucune ligne n'a de coût", () => {
     const classement = classerParProduit([ligne({ unitCostCents: null })], 10);
     assert.equal(classement[0].margeCents, null);
+  });
+
+  it("cumule le chiffre d'affaires net d'un produit, remise déduite", () => {
+    const classement = classerParProduit(
+      [ligne({ lineTotalCents: 12000, remiseCents: 2000, unitCostCents: null })],
+      10,
+    );
+    assert.equal(classement[0].chiffreAffairesCents, 10000);
   });
 
   it("ne fond pas ensemble les produits disparus du catalogue", () => {

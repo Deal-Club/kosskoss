@@ -33,6 +33,8 @@ const COLONNES = [
   "Quantité",
   "Prix unitaire (FCFA)",
   "Total ligne (FCFA)",
+  "Remise (FCFA)",
+  "Total ligne net (FCFA)",
   "Coût unitaire (FCFA)",
   "Coût total (FCFA)",
   "Marge (FCFA)",
@@ -63,12 +65,15 @@ export async function GET(request: Request): Promise<Response> {
   const lignes = await lireVentes(periode);
 
   const corps = lignes.map((ligne) => {
+    // Total ligne NET : le brut moins la part de remise de commande qui lui
+    // revient (voir `@/lib/kk/ventes`). La marge et le taux se calculent
+    // dessus — jamais sur le brut, qui surévaluerait les deux du montant
+    // exact de la remise.
+    const totalLigneNet = ligne.lineTotalCents - ligne.remiseCents;
     const coutTotal =
       ligne.unitCostCents === null ? null : ligne.unitCostCents * ligne.quantity;
-    const marge =
-      coutTotal === null ? null : margeUnitaire(ligne.lineTotalCents, coutTotal);
-    const taux =
-      coutTotal === null ? null : tauxMarge(ligne.lineTotalCents, coutTotal);
+    const marge = coutTotal === null ? null : margeUnitaire(totalLigneNet, coutTotal);
+    const taux = coutTotal === null ? null : tauxMarge(totalLigneNet, coutTotal);
 
     return [
       formatJourIso(ligne.date),
@@ -80,6 +85,8 @@ export async function GET(request: Request): Promise<Response> {
       ligne.quantity.toString(),
       ligne.unitPriceCents.toString(),
       ligne.lineTotalCents.toString(),
+      ligne.remiseCents.toString(),
+      totalLigneNet.toString(),
       // Vide, jamais zéro : la ligne n'a pas de coût connu.
       ligne.unitCostCents === null ? "" : ligne.unitCostCents.toString(),
       coutTotal === null ? "" : coutTotal.toString(),
