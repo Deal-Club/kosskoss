@@ -771,6 +771,27 @@ model Customer {
   passwordResets     CustomerPasswordReset[]
   campaignRecipients CampaignRecipient[]
   favorites          CustomerFavorite[]
+  diagProfile        CustomerDiagProfile?
+}
+
+// Profil Diagnostic d'un client connecté : ses RÉPONSES, pas sa routine.
+//
+// Les réponses restent valables dans le temps ; une routine calculée vieillit
+// avec le catalogue — ruptures, prix périmés, produits retirés. Stocker les
+// réponses évite d'avoir à gérer chacun de ces cas à l'affichage.
+//
+// `Cascade` et non `Restrict`, contrairement à la facture : un profil n'a
+// aucune valeur probante, il n'existe que pour servir son client.
+model CustomerDiagProfile {
+  id         String   @id @default(cuid())
+  // Un profil par client : un nouveau diagnostic remplace le précédent.
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Tableau JSON d'identifiants DiagAnswer. Lu en bloc, jamais interrogé entrée
+  // par entrée — comme les pondérations de DiagAnswer, déjà stockées ainsi.
+  answerIds  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // Produit mis en favori par un client connecté.
