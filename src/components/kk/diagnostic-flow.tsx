@@ -81,10 +81,10 @@ export function DiagnosticFlow({
    *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
    *  questionnaire — dans ce cas la page se comporte comme avant. */
   savedAnswerIds?: string[] | null;
-  /** Langue de la page, transmise aux deux routes appelées depuis l'écran de
-   *  résultat (envoi de la routine, inscription à la lettre d'information) —
-   *  même usage que sur `NewsletterBand`, qui ne s'en sert que pour l'appel
-   *  réseau, jamais pour changer le texte affiché. */
+  /** Langue de la page, transmise aux trois routes appelées depuis le parcours
+   *  (calcul de la routine, envoi de la routine par e-mail, inscription à la
+   *  lettre d'information) — même usage que sur `NewsletterBand`, qui ne s'en
+   *  sert que pour l'appel réseau, jamais pour changer le texte affiché. */
   locale?: string;
   /** Libellés des gestes actifs, dans l'ordre — voir `DiagnosticAnalyse`. */
   gestes: string[];
@@ -200,7 +200,12 @@ export function DiagnosticFlow({
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers: answerIds }),
+        // `locale` n'est pas décoratif : le moteur traduit les libellés de
+        // gestes (`libelleGeste`) avec ce qu'il reçoit ici. Sans lui, la route
+        // retombait sur le français, et l'écran de résultat affichait
+        // « Nettoyer » là où l'écran d'attente qui le précède — rendu côté
+        // serveur avec la langue de la page — venait d'annoncer « Cleanse ».
+        body: JSON.stringify({ answers: answerIds, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as DiagnosticResult;
