@@ -3,36 +3,9 @@ import { requireAdminApi } from "@/lib/adminApi";
 import {
   saveParametres,
   normaliserParametres,
-  numeroWhatsappValide,
-  lienEvaluationValide,
-  identifiantGa4Valide,
-  identifiantPixelValide,
+  CHAMPS_PARAMETRES,
   type ParametresBoutique,
 } from "@/server/kk/parametres";
-
-/**
- * Description de chaque champ, utilisée pour valider et pour composer un
- * message d'erreur qui nomme le format attendu — jamais un « données
- * invalides » qui laisse l'administrateur deviner.
- */
-const CHAMPS: {
-  cle: keyof ParametresBoutique;
-  valide: (valeur: string) => boolean;
-  format: string;
-}[] = [
-  {
-    cle: "whatsapp",
-    valide: numeroWhatsappValide,
-    format: "6 à 20 chiffres, indicatif compris (ex. 237658013646)",
-  },
-  {
-    cle: "formulaireEvaluation",
-    valide: lienEvaluationValide,
-    format: "une adresse https (ex. https://forms.gle/...)",
-  },
-  { cle: "ga4", valide: identifiantGa4Valide, format: "G-XXXXXXXXXX" },
-  { cle: "metaPixel", valide: identifiantPixelValide, format: "8 à 20 chiffres" },
-];
 
 export async function POST(request: Request) {
   const { unauthorized } = await requireAdminApi();
@@ -52,7 +25,10 @@ export async function POST(request: Request) {
 
   // Chaque champ présent doit être une chaîne : un nombre ou un booléen trahit
   // un appel direct malformé plutôt qu'un enregistrement fait depuis l'écran.
-  for (const { cle } of CHAMPS) {
+  // CHAMPS_PARAMETRES vient de @/lib/kk/parametres : c'est la même table que
+  // celle utilisée côté écran, pour que validateur et message de format ne
+  // divergent jamais entre les deux.
+  for (const { cle } of CHAMPS_PARAMETRES) {
     if (cle in raw && typeof raw[cle] !== "string") {
       return NextResponse.json({ error: `champ_invalide:${cle}` }, { status: 400 });
     }
@@ -70,8 +46,12 @@ export async function POST(request: Request) {
   // Les quatre champs sont facultatifs : un champ absent du corps ne doit pas
   // écraser le réglage déjà enregistré. On ne verse dans `partiel` que ce que
   // l'administrateur a explicitement soumis, validé APRÈS normalisation.
+  // L'écran, lui, ne soumet que les champs qu'il a effectivement modifiés
+  // (voir ParametresAdmin.tsx) : une valeur déjà en base qui ne passerait
+  // plus le validateur du jour, mais que personne n'a touchée, n'est donc
+  // jamais renvoyée ici et ne peut jamais bloquer l'enregistrement du reste.
   const partiel: Partial<ParametresBoutique> = {};
-  for (const { cle, valide, format } of CHAMPS) {
+  for (const { cle, valide, format } of CHAMPS_PARAMETRES) {
     if (!(cle in raw)) continue;
     const valeur = normalise[cle];
     if (!valide(valeur)) {

@@ -9,7 +9,7 @@ import { normaliserParametres, PARAMETRES_PAR_DEFAUT, type ParametresBoutique } 
  * `@/lib/kk/parametres`, que le back-office — composant client — peut importer.
  * On les réexporte ici pour que les appelants serveur n'aient qu'un import.
  */
-export type { ParametresBoutique } from "@/lib/kk/parametres";
+export type { ParametresBoutique, DescriptionChamp } from "@/lib/kk/parametres";
 export {
   PARAMETRES_PAR_DEFAUT,
   normaliserParametres,
@@ -17,6 +17,7 @@ export {
   lienEvaluationValide,
   identifiantGa4Valide,
   identifiantPixelValide,
+  CHAMPS_PARAMETRES,
 } from "@/lib/kk/parametres";
 
 const CLE_REGLAGES = "boutique.parametres";

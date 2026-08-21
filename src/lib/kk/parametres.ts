@@ -67,6 +67,37 @@ export function identifiantPixelValide(valeur: string): boolean {
   return valeur === "" || /^\d{8,20}$/.test(valeur);
 }
 
+/**
+ * Description partagée de chaque champ : son validateur et le message de
+ * format qu'un échec doit afficher.
+ *
+ * La route d'enregistrement et l'écran d'administration important tous les
+ * deux CETTE table plutôt que d'en tenir chacun une copie manuscrite — deux
+ * copies avaient déjà divergé une fois (le Pixel Meta : « 8 à 20 chiffres »
+ * côté route, « une suite de chiffres » côté écran, qui ne dit pas pourquoi
+ * cinq chiffres sont refusés).
+ */
+export interface DescriptionChamp {
+  cle: keyof ParametresBoutique;
+  valide: (valeur: string) => boolean;
+  format: string;
+}
+
+export const CHAMPS_PARAMETRES: DescriptionChamp[] = [
+  {
+    cle: "whatsapp",
+    valide: numeroWhatsappValide,
+    format: "6 à 20 chiffres, indicatif compris (ex. 237658013646)",
+  },
+  {
+    cle: "formulaireEvaluation",
+    valide: lienEvaluationValide,
+    format: "une adresse https (ex. https://forms.gle/...)",
+  },
+  { cle: "ga4", valide: identifiantGa4Valide, format: "G-XXXXXXXXXX" },
+  { cle: "metaPixel", valide: identifiantPixelValide, format: "8 à 20 chiffres" },
+];
+
 /** Lit un champ texte, rogné, ou rend la chaîne vide. */
 function texte(source: Record<string, unknown>, cle: string): string {
   const valeur = source[cle];
