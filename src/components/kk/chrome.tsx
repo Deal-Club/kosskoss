@@ -12,6 +12,7 @@ import { VisaMark, OrangeMoneyMark, MtnMoneyMark } from "@/components/PaymentIco
 import { PatternBackdrop } from "./pattern-backdrop";
 import { CookiePreferencesButton } from "@/components/kk/cookie-consent";
 import { tracageActif } from "@/server/consent";
+import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -93,17 +94,23 @@ const FOOTER_LEGAL = [
    mentions, porte son propre style en petit corps. */
 
 /**
- * Lien WhatsApp du pied de page. Même source que le bouton flottant : la ligne
- * dédiée si elle est configurée, sinon le téléphone de la société. Vide, le
- * bloc ne s'affiche pas plutôt que de proposer un lien creux.
+ * Lien WhatsApp du pied de page. Même source que le bouton flottant : le
+ * réglage en base (`numeroWhatsappEffectif`, avec repli sur la variable
+ * d'environnement), sinon le téléphone de la société. Vide, le bloc ne
+ * s'affiche pas plutôt que de proposer un lien creux.
+ *
+ * Calculé dans `SiteFooter` — composant serveur — plutôt qu'au niveau du
+ * module : la valeur dépend désormais de la base, elle ne peut plus être une
+ * constante figée à l'import.
  */
-const WHATSAPP_DIGITS =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER?.replace(/\D/g, "") || CONTACT.phone.replace(/\D/g, "");
-const WHATSAPP_LINK = WHATSAPP_DIGITS
-  ? `https://wa.me/${WHATSAPP_DIGITS}?text=${encodeURIComponent(
-      "Bonjour, j'ai une question sur un produit KossKoss Select.",
-    )}`
-  : "";
+function lienWhatsapp(numero: string): string {
+  const digits = numero || CONTACT.phone.replace(/\D/g, "");
+  return digits
+    ? `https://wa.me/${digits}?text=${encodeURIComponent(
+        "Bonjour, j'ai une question sur un produit KossKoss Select.",
+      )}`
+    : "";
+}
 
 /**
  * Bandeau d'annonce, lu en base.
@@ -311,6 +318,9 @@ export async function SiteFooter() {
   // Même condition qu'au layout : sans traceur actif, pas de bandeau, donc pas
   // de lien pour le rouvrir.
   const tracage = await tracageActif();
+  // `getParametres` est mémoïsé par requête : l'en-tête, le pied de page et le
+  // bouton flottant peuvent chacun l'appeler sans multiplier les requêtes.
+  const whatsappLink = lienWhatsapp(numeroWhatsappEffectif(await getParametres()));
 
   return (
     <footer className="relative overflow-hidden bg-footer text-footer-foreground">
@@ -343,9 +353,9 @@ export async function SiteFooter() {
           </Link>
 
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3">
-            {WHATSAPP_LINK && (
+            {whatsappLink && (
               <a
-                href={WHATSAPP_LINK}
+                href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"

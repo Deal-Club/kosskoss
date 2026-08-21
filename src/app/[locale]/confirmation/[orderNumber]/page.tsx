@@ -9,6 +9,7 @@ import { lireAccesCommande } from "@/server/kk/acces-commande";
 import { getCurrentCustomer } from "@/server/customerSession";
 import { formatFcfa } from "@/lib/kk/format";
 import { BRAND, CONTACT } from "@/config/brand";
+import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale; orderNumber: string }>;
@@ -19,9 +20,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-function whatsappHref(order: Awaited<ReturnType<typeof getKossOrder>>): string {
+function whatsappHref(order: Awaited<ReturnType<typeof getKossOrder>>, numero: string): string {
   if (!order) return "#";
-  const digits = (CONTACT.whatsapp || CONTACT.phone).replace(/\D/g, "");
+  const digits = numero || CONTACT.phone.replace(/\D/g, "");
   const lines = order.items
     .map((i) => `- ${i.quantity}× ${i.brand} ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}`)
     .join("\n");
@@ -62,6 +63,11 @@ export default async function ConfirmationPage({
   const parCookie = await lireAccesCommande(orderNumber);
   const order = await getKossOrder(orderNumber, parCookie ?? parUrl ?? "");
   if (!order) notFound();
+
+  // Même source que l'en-tête, le pied de page et le bouton flottant :
+  // `getParametres` est mémoïsé par requête, cet appel ne coûte donc rien de
+  // plus qu'une lecture déjà faite ailleurs sur la page.
+  const numeroWhatsapp = numeroWhatsappEffectif(await getParametres());
 
   const account = order.customerId
     ? { loggedIn: Boolean(await getCurrentCustomer()) }
@@ -122,7 +128,7 @@ export default async function ConfirmationPage({
 
           {/* Action WhatsApp */}
           <a
-            href={whatsappHref(order)}
+            href={whatsappHref(order, numeroWhatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 text-sm font-semibold text-white transition hover:brightness-95"
