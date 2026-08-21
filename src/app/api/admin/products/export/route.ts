@@ -3,6 +3,7 @@ import { requireAdminApi } from "@/lib/adminApi";
 import { listCategories, listProducts } from "@/server/store";
 import { filterAndSortProducts, isSortValue } from "@/server/productListing";
 import type { ProductRecord } from "@/server/types";
+import { buildCsv } from "@/lib/kk/csv";
 
 /**
  * Export de la liste des produits, au format tableur (CSV) ou imprimable (PDF).
@@ -68,26 +69,6 @@ function toRow(product: ProductRecord, categoryLabel: string): ExportRow {
     mpn: product.mpn ?? "",
     image: product.image ?? "",
   };
-}
-
-// ---- CSV ----
-
-/**
- * Le point-virgule est le séparateur attendu par Excel dans les environnements
- * français ; la virgule y couperait les prix (« 349,00 € »).
- */
-function csvCell(value: string): string {
-  const clean = value.replace(/\r?\n/g, " ").trim();
-  return /[";]/.test(clean) ? `"${clean.replace(/"/g, '""')}"` : clean;
-}
-
-function buildCsv(rows: ExportRow[]): string {
-  const lines = [
-    CSV_COLUMNS.map((column) => csvCell(column.label)).join(";"),
-    ...rows.map((row) => CSV_COLUMNS.map((column) => csvCell(row[column.key])).join(";")),
-  ];
-  // Le BOM évite qu'Excel n'affiche « HausgerÃ¤te » à l'ouverture.
-  return `﻿${lines.join("\r\n")}\r\n`;
 }
 
 // ---- PDF ----
@@ -263,13 +244,19 @@ export async function GET(request: Request): Promise<Response> {
   const filename = `produits-${today}.${format}`;
 
   if (format === "csv") {
-    return new Response(buildCsv(rows), {
-      headers: {
-        "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="${filename}"`,
-        "Cache-Control": "no-store",
+    return new Response(
+      buildCsv(
+        CSV_COLUMNS.map((column) => column.label),
+        rows.map((row) => CSV_COLUMNS.map((column) => row[column.key])),
+      ),
+      {
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="${filename}"`,
+          "Cache-Control": "no-store",
+        },
       },
-    });
+    );
   }
 
   // Rappel des filtres dans le PDF : un export imprimé sans son contexte ne se
