@@ -447,7 +447,7 @@ export function periodeDepuisUrl(
 node --test --import tsx src/lib/kk/periode.test.ts
 ```
 
-Attendu : SUCCÈS, 16 tests.
+Attendu : SUCCÈS, 17 tests.
 
 - [ ] **Étape 5 : vérifier la pureté du module**
 
@@ -949,7 +949,7 @@ export function ventesParJour(lignes: LigneVente[], du: Date, au: Date): PointJo
 node --test --import tsx src/lib/kk/ventes.test.ts
 ```
 
-Attendu : SUCCÈS, 22 tests.
+Attendu : SUCCÈS, 23 tests.
 
 - [ ] **Étape 5 : vérifier la pureté du module**
 
@@ -1881,8 +1881,8 @@ npx tsc --noEmit && npx eslint src --ext .ts,.tsx && npm test && npm run build
 
 - [ ] **Le compte des tests**
 
-Le lot ajoute 16 tests de période, 22 tests de ventes et 11 tests de CSV, soit
-**49 tests** de plus que la base du lot 3B.
+Le lot ajoute 17 tests de période, 23 tests de ventes et 11 tests de CSV, soit
+**51 tests** de plus que la base du lot 3B (484), donc **535**.
 
 - [ ] **Les trois modules purs sont restés purs**
 
