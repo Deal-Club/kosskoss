@@ -4,6 +4,8 @@ import { DiagnosticFlow } from "@/components/kk/diagnostic-flow";
 import { getQuestions } from "@/server/kk/diagnostic-data";
 import { getCurrentCustomer } from "@/server/customerSession";
 import { lireProfil } from "@/server/kk/profil-diagnostic";
+import { lireGestes } from "@/server/kk/gestes";
+import { gestesActifs, libelleGeste } from "@/lib/kk/gestes-selection";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
@@ -27,10 +29,18 @@ export default async function DiagnosticPage({ params }: { params: Params }) {
   const customer = await getCurrentCustomer();
   const savedAnswerIds = customer ? await lireProfil(customer.id) : [];
 
+  // Gestes actifs, dans l'ordre : c'est la même sélection que celle appliquée
+  // par `buildRoutine()`, lue ici pour que l'écran d'attente promette
+  // exactement les étapes que la routine contiendra — un geste désactivé au
+  // back-office disparaît des deux écrans à la fois.
+  const gestes = gestesActifs(await lireGestes()).map((g) => libelleGeste(g, locale));
+
   return (
     <DiagnosticFlow
       questions={questions}
       savedAnswerIds={savedAnswerIds.length > 0 ? savedAnswerIds : null}
+      locale={locale}
+      gestes={gestes}
     />
   );
 }

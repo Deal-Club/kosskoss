@@ -21,6 +21,7 @@ import {
   ArrowLeft,
   ArrowRight,
   Zap,
+  Loader2,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
@@ -72,12 +73,21 @@ const REPRISE = "kk-diagnostic";
 export function DiagnosticFlow({
   questions,
   savedAnswerIds,
+  locale = "fr",
+  gestes,
 }: {
   questions: ClientQuestion[];
   /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
    *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
    *  questionnaire — dans ce cas la page se comporte comme avant. */
   savedAnswerIds?: string[] | null;
+  /** Langue de la page, transmise aux deux routes appelées depuis l'écran de
+   *  résultat (envoi de la routine, inscription à la lettre d'information) —
+   *  même usage que sur `NewsletterBand`, qui ne s'en sert que pour l'appel
+   *  réseau, jamais pour changer le texte affiché. */
+  locale?: string;
+  /** Libellés des gestes actifs, dans l'ordre — voir `DiagnosticAnalyse`. */
+  gestes: string[];
 }) {
   const { add } = useCart();
   const router = useRouter();
@@ -87,9 +97,29 @@ export function DiagnosticFlow({
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DiagnosticResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** Réponses ayant produit `result` : distinctes de `answers`, qui reste vide
+   *  quand on arrive au résultat par « Revoir ma routine » sans repasser par
+   *  le QCM. C'est ce tableau, pas `answers`, qu'il faut renvoyer au serveur
+   *  pour que l'e-mail envoyé corresponde à la routine affichée. */
+  const [lastAnswerIds, setLastAnswerIds] = useState<string[]>([]);
   /** Passage automatique en cours : neutralise un second clic pendant le délai. */
   /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
   const attenteAnalyse = useRef<number | null>(null);
+
+  // Formulaire d'envoi de la routine par e-mail (écran de résultat).
+  //
+  // Deux consentements, deux actions : `routineEmail` sert aux deux appels,
+  // mais leur issue est suivie séparément (`envoiStatut`/`inscriptionStatut`)
+  // puisque l'un peut réussir quand l'autre échoue. `enCoursEnvoi` est le seul
+  // état qui pilote le bouton — un double clic ne doit pas partir même si un
+  // des deux appels a déjà répondu et que l'autre traîne encore.
+  const [routineEmail, setRoutineEmail] = useState("");
+  const [inscrireLettre, setInscrireLettre] = useState(false);
+  const [enCoursEnvoi, setEnCoursEnvoi] = useState(false);
+  const [envoiStatut, setEnvoiStatut] = useState<"repos" | "ok" | "erreur">("repos");
+  const [envoiMessage, setEnvoiMessage] = useState<string | null>(null);
+  const [inscriptionStatut, setInscriptionStatut] = useState<"repos" | "ok" | "erreur">("repos");
+  const [inscriptionMessage, setInscriptionMessage] = useState<string | null>(null);
 
   const question = questions[qIndex];
   const selected = question ? answers[question.id] : undefined;
@@ -186,6 +216,7 @@ export function DiagnosticFlow({
       }
 
       setResult(data);
+      setLastAnswerIds(answerIds);
       setPhase("result");
     } catch {
       // Un échec ne se fait pas attendre : on rend la main tout de suite.
@@ -257,6 +288,87 @@ export function DiagnosticFlow({
     router.push(withLocale(pathname, "/commande"));
   }
 
+  /**
+   * Envoie la routine par e-mail et, si la case est cochée, inscrit la même
+   * adresse à la lettre d'information.
+   *
+   * Les deux appels sont indépendants : chacun gère son propre échec sans
+   * faire échouer l'autre, et sont lancés en parallèle plutôt qu'en série pour
+   * ne pas faire attendre l'inscription derrière l'envoi. `Promise.all` reste
+   * sûr ici parce qu'aucune des deux fonctions internes ne rejette — chacune
+   * capture son erreur et la range dans son propre message.
+   */
+  async function envoyerRoutineParEmail(e: React.FormEvent) {
+    e.preventDefault();
+    if (enCoursEnvoi) return; // Double clic : le premier envoi est encore en cours.
+    setEnCoursEnvoi(true);
+    setEnvoiStatut("repos");
+    setEnvoiMessage(null);
+    setInscriptionStatut("repos");
+    setInscriptionMessage(null);
+
+    const adresse = routineEmail.trim();
+
+    const appelEnvoi = (async () => {
+      try {
+        const res = await fetch("/api/kk/diagnostic/routine-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: adresse, answers: lastAnswerIds, locale }),
+        });
+        const data = (await res.json()) as { error?: string; retryAfterSeconds?: number };
+        if (res.status === 429) {
+          // Cas distinct du reste : le visiteur n'a rien fait de mal, il doit
+          // patienter. Le message porte un délai concret plutôt qu'un « erreur ».
+          const minutes = data.retryAfterSeconds ? Math.ceil(data.retryAfterSeconds / 60) : null;
+          setEnvoiMessage(
+            minutes
+              ? `Trop de demandes d'envoi. Réessayez dans environ ${minutes} min.`
+              : "Trop de demandes d'envoi. Merci de patienter un instant avant de réessayer.",
+          );
+          setEnvoiStatut("erreur");
+          return;
+        }
+        if (!res.ok) {
+          setEnvoiMessage(data.error ?? "L'envoi a échoué. Réessayez.");
+          setEnvoiStatut("erreur");
+          return;
+        }
+        setEnvoiMessage("Envoyée ! Vérifiez votre boîte de réception.");
+        setEnvoiStatut("ok");
+      } catch {
+        setEnvoiMessage("Vérifiez votre connexion et réessayez.");
+        setEnvoiStatut("erreur");
+      }
+    })();
+
+    const appelInscription = inscrireLettre
+      ? (async () => {
+          try {
+            const res = await fetch("/api/kk/newsletter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: adresse, locale, source: "diagnostic" }),
+            });
+            const data = (await res.json()) as { error?: string };
+            if (!res.ok) {
+              setInscriptionMessage(data.error ?? "Inscription à la lettre d'information impossible.");
+              setInscriptionStatut("erreur");
+              return;
+            }
+            setInscriptionMessage("Inscription à la lettre d'information confirmée.");
+            setInscriptionStatut("ok");
+          } catch {
+            setInscriptionMessage("Inscription à la lettre d'information impossible.");
+            setInscriptionStatut("erreur");
+          }
+        })()
+      : Promise.resolve();
+
+    await Promise.all([appelEnvoi, appelInscription]);
+    setEnCoursEnvoi(false);
+  }
+
   /* ---------------------------------------------------------- Propose -- */
   if (phase === "propose") {
     return (
@@ -299,7 +411,7 @@ export function DiagnosticFlow({
   if (phase === "loading") {
     return (
       <MinimalShell>
-        <DiagnosticAnalyse />
+        <DiagnosticAnalyse gestes={gestes} />
       </MinimalShell>
     );
   }
@@ -445,6 +557,79 @@ export function DiagnosticFlow({
                   <p className="mt-2.5 text-center text-xs text-primary-foreground/60">
                     {result.steps.length} produits · paiement à l&apos;étape suivante
                   </p>
+
+                  {/* Envoi par e-mail : une action distincte de l'achat, posée
+                      sous elle plutôt que rivalisant avec elle. Même balisage
+                      que `NewsletterBand`, sur le même fond — les deux
+                      formulaires du site sur bg-deep se ressemblent
+                      volontairement.
+
+                      Deux consentements, deux actions : le bouton n'engage que
+                      l'envoi de la routine, demandé par le visiteur en étant
+                      ici. La case, EN DESSOUS et décochée par défaut, propose
+                      l'inscription à la lettre d'information sans jamais s'y
+                      substituer. */}
+                  <form onSubmit={envoyerRoutineParEmail} className="mt-6 border-t border-white/10 pt-5">
+                    <h3 className="text-xs font-semibold tracking-[0.14em] text-gold-soft uppercase">
+                      Recevoir cette routine par e-mail
+                    </h3>
+                    <label htmlFor="diagnostic-routine-email" className="sr-only">
+                      Votre adresse e-mail
+                    </label>
+                    <input
+                      id="diagnostic-routine-email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={routineEmail}
+                      onChange={(e) => setRoutineEmail(e.target.value)}
+                      placeholder="Votre adresse e-mail"
+                      aria-invalid={envoiStatut === "erreur"}
+                      aria-describedby={envoiMessage ? "diagnostic-routine-email-message" : undefined}
+                      className="mt-3 w-full rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.08] px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:border-gold focus:outline-none"
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={enCoursEnvoi}
+                      className="kk-fill kk-fill-deep mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-deep disabled:opacity-60"
+                    >
+                      {enCoursEnvoi && <Loader2 className="h-4 w-4 animate-spin" />}
+                      Recevoir ma routine par e-mail
+                    </button>
+
+                    {/* Case décochée par défaut : cocher inscrit, ne pas cocher
+                        n'inscrit à rien — même en demandant l'envoi. */}
+                    <label className="mt-3 flex items-start gap-2.5 text-xs text-primary-foreground/75">
+                      <input
+                        type="checkbox"
+                        checked={inscrireLettre}
+                        onChange={(e) => setInscrireLettre(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-gold"
+                      />
+                      <span>M&rsquo;inscrire aussi à la lettre d&rsquo;information</span>
+                    </label>
+
+                    {/* Les deux messages sont indépendants : l'un peut confirmer
+                        pendant que l'autre signale un échec, et chacun nomme ce
+                        qui le concerne — jamais un « une erreur est survenue »
+                        générique qui laisserait deviner lequel des deux appels
+                        a manqué. */}
+                    {envoiMessage && (
+                      <p
+                        id="diagnostic-routine-email-message"
+                        role={envoiStatut === "erreur" ? "alert" : "status"}
+                        className="mt-2.5 text-xs text-gold"
+                      >
+                        {envoiMessage}
+                      </p>
+                    )}
+                    {inscriptionMessage && (
+                      <p role={inscriptionStatut === "erreur" ? "alert" : "status"} className="mt-1.5 text-xs text-gold">
+                        {inscriptionMessage}
+                      </p>
+                    )}
+                  </form>
                 </div>
               </div>
             </aside>

@@ -14,7 +14,7 @@ import { adresseEmailValide } from "@/lib/kk/email-valide";
  * permettant de tester si quelqu'un est client de la maison.
  */
 
-const SOURCES = new Set(["accueil", "pied-de-page", "commande"]);
+const SOURCES = new Set(["accueil", "pied-de-page", "commande", "diagnostic"]);
 
 export async function POST(request: Request) {
   let corps: unknown;

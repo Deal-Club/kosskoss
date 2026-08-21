@@ -39,16 +39,6 @@ const TEMPS = [
   { label: "Composition de votre routine", ms: 9200 },
 ];
 
-/**
- * Les quatre gestes de la routine, qui s'inscrivent au second acte.
- *
- * Ce sont exactement ceux de `ROUTINE_STEPS` dans server/kk/diagnostic.ts, dans
- * le même ordre. Ils ne dévoilent aucun produit — seulement la forme que prend
- * la routine —, et c'est ce qui rend la seconde moitié de l'attente
- * intéressante : le visiteur voit se construire ce qu'il va recevoir.
- */
-const GESTES = ["Nettoyer", "Traiter", "Hydrater", "Protéger"];
-
 /** Instant où le premier geste s'inscrit, puis cadence entre les suivants. */
 const GESTE_DEPART = 9800;
 const GESTE_PAS = 450;
@@ -69,7 +59,21 @@ const GESTE_PAS = 450;
  */
 export const DUREE_ANALYSE = 12000;
 
-export function DiagnosticAnalyse() {
+export function DiagnosticAnalyse({ gestes }: {
+  /**
+   * Libellés des gestes actifs, dans l'ordre — lus côté serveur via
+   * `lireGestes()` (`src/server/kk/gestes.ts`), filtrés par `gestesActifs()`
+   * et traduits par `libelleGeste()` (`src/lib/kk/gestes-selection.ts`), puis
+   * transmis depuis la page jusqu'ici.
+   *
+   * Ce ne sont plus quatre gestes fixes : ils viennent de la même sélection
+   * que `buildRoutine()` applique pour composer la routine réelle. Un geste
+   * désactivé au back-office ne doit pas être promis ici puis absent du
+   * résultat — ce que faisait le tableau figé qui vivait avant dans ce
+   * fichier.
+   */
+  gestes: string[];
+}) {
   // Les coches se posent au fil de la séquence. L'apparition du texte est
   // portée par le CSS (`--d`) ; seul le passage du rond vide à la coche demande
   // un état, parce qu'il change la structure et pas seulement le style.
@@ -179,18 +183,24 @@ export function DiagnosticAnalyse() {
       {/* Second acte : la routine se compose sous les yeux du visiteur.
           Sans lui, les trois dernières secondes se passeraient devant un écran
           où plus rien n'arrive — et c'est précisément à ce moment-là qu'une
-          longue attente bascule de « ça travaille » à « c'est bloqué ». */}
-      <ul className="mt-8 flex flex-wrap items-center justify-center gap-2">
-        {GESTES.map((geste, i) => (
-          <li
-            key={geste}
-            className="kkd-geste rounded-full bg-sand px-4 py-2 text-sm font-medium text-deep"
-            style={{ "--d": `${GESTE_DEPART + i * GESTE_PAS}ms` } as React.CSSProperties}
-          >
-            {geste}
-          </li>
-        ))}
-      </ul>
+          longue attente bascule de « ça travaille » à « c'est bloqué ».
+
+          Gardé par une longueur : si tous les gestes étaient désactivés au
+          back-office (cas limite, pas un fonctionnement normal), mieux vaut
+          une liste absente qu'une liste vide qui laisserait un blanc. */}
+      {gestes.length > 0 && (
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-2">
+          {gestes.map((geste, i) => (
+            <li
+              key={geste}
+              className="kkd-geste rounded-full bg-sand px-4 py-2 text-sm font-medium text-deep"
+              style={{ "--d": `${GESTE_DEPART + i * GESTE_PAS}ms` } as React.CSSProperties}
+            >
+              {geste}
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
