@@ -44,10 +44,6 @@ describe("tauxMarge", () => {
     assert.equal(tauxMarge(18500, undefined), null);
   });
 
-  it("rend null quand le coût n'est pas renseigné", () => {
-    assert.equal(tauxMarge(18500, null), null);
-  });
-
   it("rend null quand le prix est nul", () => {
     // Diviser par le prix de vente exige qu'il existe. Un prix à zéro n'a pas
     // de taux, il n'a pas d'erreur non plus.

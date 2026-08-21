@@ -112,6 +112,19 @@ export function ProductForm({
     return `Marge : ${formatPrice(marge)} (${taux.toString().replace(".", ",")} %)${mention}`;
   }, [price, cost]);
 
+  /**
+   * Ce qui s'affiche à la place de la marge, quand il n'y en a pas encore.
+   *
+   * Trois raisons distinctes empêchent le calcul, et les confondre envoyait
+   * l'administrateur corriger le mauvais champ : un coût illisible n'est pas
+   * un prix manquant.
+   */
+  const messageMarge = !cost.trim()
+    ? "Laissez vide tant que le coût n’est pas connu : un coût absent n’est pas un coût nul."
+    : !coutSaisiValide(cost)
+      ? "Coût illisible : saisissez un montant, par exemple « 12 000 »."
+      : "Renseignez aussi le prix pour voir la marge.";
+
   const stockNumber = Number.parseInt(stock, 10);
   const thresholdNumber = Number.parseInt(lowStockThreshold, 10);
   const hasStock = Number.isFinite(stockNumber);
@@ -349,10 +362,7 @@ export function ProductForm({
                 Sans cela, il faudrait enregistrer puis aller la lire au tableau
                 de bord pour découvrir qu'on vend à perte. */}
             <span className="mt-1 block text-xs text-muted-foreground">
-              {apercuMarge ??
-                (cost.trim()
-                  ? "Renseignez aussi le prix pour voir la marge."
-                  : "Laissez vide tant que le coût n’est pas connu : un coût absent n’est pas un coût nul.")}
+              {apercuMarge ?? messageMarge}
             </span>
           </label>
         </div>

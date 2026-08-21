@@ -13,9 +13,6 @@ export function toCents(value: string): number {
 }
 
 /**
- * Formate un entier FCFA en chaîne lisible ("18 500 FCFA").
- */
-/**
  * Montant à enregistrer pour un coût d'achat.
  *
  * Zéro et « rien » ne se confondent pas ici : « 0 » est un coût réel — un
@@ -31,6 +28,9 @@ export function coutCentsAEnregistrer(saisie: string): number | null {
   return saisie ? toCents(saisie) : null;
 }
 
+/**
+ * Formate un entier FCFA en chaîne lisible ("18 500 FCFA").
+ */
 export function formatPrice(cents: number): string {
   return `${Math.round(cents).toLocaleString("fr-FR")} FCFA`;
 }
