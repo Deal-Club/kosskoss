@@ -268,8 +268,13 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
       }
     </div>`;
 
+  // Version texte. Le deux-points suit la typographie de la langue : espace
+  // insécable avant en français, collé au mot en anglais. La version HTML fait
+  // déjà cette distinction ; la version texte la manquait, et un anglophone
+  // recevait « Cleanse : Marque Produit ».
+  const deuxPoints = en ? ": " : " : ";
   const text = input.etapes
-    .map((e) => `${e.label} : ${e.brand} ${e.name} — ${formatFcfa(e.prixFcfa)}`)
+    .map((e) => `${e.label}${deuxPoints}${e.brand} ${e.name} — ${formatFcfa(e.prixFcfa)}`)
     .join("\n");
 
   try {
@@ -277,7 +282,7 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
       to: input.to,
       subject: en ? "Your personalised routine" : "Votre routine personnalisée",
       html: shell(en ? "Your routine" : "Votre routine", inner),
-      text: `${text}\n\nTotal : ${formatFcfa(input.totalFcfa)}`,
+      text: `${text}\n\nTotal${deuxPoints}${formatFcfa(input.totalFcfa)}`,
     });
   } catch {
     /* best-effort */

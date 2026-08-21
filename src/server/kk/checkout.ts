@@ -142,6 +142,12 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   }
   const total = Math.max(0, subtotal - discountCents);
 
+  // Langue de l'acheteur, résolue une fois pour toutes. Elle sert au compte
+  // client, à la commande et aux e-mails transactionnels : trois écritures qui
+  // doivent s'accorder, et qui recopiaient jusqu'ici le même test à la main.
+  // `choisirLangue` est le seul endroit où se décide le repli sur le français.
+  const langue = choisirLangue(input.locale);
+
   const name = input.fullName.trim();
   const space = name.indexOf(" ");
   const firstName = space > 0 ? name.slice(0, space) : name;
@@ -172,7 +178,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
           phone: telephone,
           billingCountry: "CM",
           shippingCountry: "CM",
-          locale: input.locale === "en" ? "en" : "fr",
+          locale: langue,
           active: true,
         },
       });
@@ -193,7 +199,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         orderNumber,
         accessToken,
         customerId,
-        locale: input.locale === "en" ? "en" : "fr",
+        locale: langue,
         email: input.email.trim(),
         phone: telephone,
         billingFirstName: firstName,
@@ -249,10 +255,8 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
 
   // E-mails transactionnels (best-effort : les fonctions avalent leurs erreurs
   // et ne partent que si le SMTP est configuré — la commande n'échoue jamais).
-  // La langue suit celle choisie par l'acheteur dans le tunnel (`/` ou `/en`),
-  // jamais une chaîne brute : `choisirLangue` centralise le repli sur le
-  // français.
-  const langue = choisirLangue(input.locale);
+  // Ils partent dans la `langue` résolue plus haut, celle-là même qui a été
+  // écrite sur la commande.
   await sendOrderConfirmationEmail({
     to: input.email.trim(),
     firstName,

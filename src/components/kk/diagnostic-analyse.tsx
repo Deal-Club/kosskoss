@@ -51,8 +51,10 @@ const GESTE_PAS = 450;
  * ne se lit pas comme rapide — il se lit comme n'ayant rien regardé. La durée
  * n'est tenable qu'à une condition, respectée ici : que rien ne s'arrête en
  * route. L'encre monte jusqu'à 9000 ms, les ondes bouclent sans fin, la
- * dernière coche se pose à 9620 ms et les quatre gestes s'inscrivent jusqu'à
- * 11600 ms.
+ * dernière coche se pose à 9620 ms et les gestes s'inscrivent ensuite un à un
+ * — quatre gestes actifs occupent jusqu'à 11600 ms, la configuration livrée.
+ * Leur nombre se règle au back-office : au-delà de cinq, les derniers
+ * s'inscriraient après la fin de la séquence et ne seraient pas vus.
  *
  * Reste un PLANCHER, jamais un ajout : une requête plus lente que la séquence
  * ne rallonge rien.
