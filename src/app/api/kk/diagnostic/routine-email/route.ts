@@ -2,16 +2,14 @@ import { NextResponse } from "next/server";
 import { buildRoutine } from "@/server/kk/diagnostic";
 import { sendRoutineEmail } from "@/server/kk/emails";
 import { choisirLangue } from "@/lib/kk/langue";
+import { adresseEmailValide } from "@/lib/kk/email-valide";
 
 /**
  * Envoi de la routine par e-mail.
  *
- * Même expression de validation que la route newsletter (`src/app/api/kk/
- * newsletter/route.ts`) : le rôle du serveur est d'écarter les saisies
- * manifestement fausses, pas de refuser des adresses valides mais
- * inhabituelles.
+ * Même règle de validation d'adresse que la route newsletter — voir
+ * `src/lib/kk/email-valide.ts`, qui explique pourquoi elle est partagée.
  */
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export async function POST(request: Request) {
   let corps: unknown;
@@ -24,7 +22,7 @@ export async function POST(request: Request) {
   const { email, answers, locale } = (corps ?? {}) as Record<string, unknown>;
 
   const adresse = typeof email === "string" ? email.trim().toLowerCase() : "";
-  if (!EMAIL.test(adresse) || adresse.length > 254) {
+  if (!adresseEmailValide(adresse)) {
     return NextResponse.json({ error: "Adresse e-mail invalide." }, { status: 400 });
   }
 
