@@ -8,16 +8,16 @@ import { normaliserParametres, PARAMETRES_PAR_DEFAUT, type ParametresBoutique } 
  * Les types, les valeurs par défaut et la normalisation vivent dans
  * `@/lib/kk/parametres`, que le back-office — composant client — peut importer.
  * On les réexporte ici pour que les appelants serveur n'aient qu'un import.
+ *
+ * Seul ce dont un appelant serveur se sert est réexporté : les quatre
+ * validateurs individuels s'atteignent par `CHAMPS_PARAMETRES`, personne ne les
+ * nomme un par un.
  */
-export type { ParametresBoutique, DescriptionChamp } from "@/lib/kk/parametres";
+export type { ParametresBoutique } from "@/lib/kk/parametres";
 export {
   PARAMETRES_PAR_DEFAUT,
   normaliserParametres,
   saisieEffacee,
-  numeroWhatsappValide,
-  lienEvaluationValide,
-  identifiantGa4Valide,
-  identifiantPixelValide,
   CHAMPS_PARAMETRES,
 } from "@/lib/kk/parametres";
 
@@ -26,8 +26,10 @@ const CLE_REGLAGES = "boutique.parametres";
 /**
  * Réglages en base.
  *
- * Mémoïsé par requête : le numéro WhatsApp est lu par l'en-tête, le pied de page
- * ET le bouton flottant. Sans `cache()`, ce serait trois requêtes par page.
+ * Mémoïsé par requête : le numéro WhatsApp est lu par le pied de page ET le
+ * bouton flottant du gabarit — donc deux fois sur chaque page de la boutique —
+ * et une troisième fois par la page de confirmation de commande. Sans
+ * `cache()`, ce serait autant de requêtes. L'en-tête, lui, ne le lit pas.
  */
 export const getParametres = cache(async (): Promise<ParametresBoutique> => {
   try {
@@ -36,8 +38,8 @@ export const getParametres = cache(async (): Promise<ParametresBoutique> => {
     return normaliserParametres(JSON.parse(ligne.value));
   } catch {
     // Ligne absente, JSON abîmé, base injoignable : le site garde ses valeurs
-    // par défaut plutôt que de tomber. Le numéro WhatsApp est lu sur CHAQUE
-    // page ; lever ici les ferait toutes échouer.
+    // par défaut plutôt que de tomber. Le pied de page conclut CHAQUE page et
+    // lit ce réglage ; lever ici les ferait toutes échouer.
     return { ...PARAMETRES_PAR_DEFAUT };
   }
 });

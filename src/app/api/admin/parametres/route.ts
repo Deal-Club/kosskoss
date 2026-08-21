@@ -74,10 +74,18 @@ export async function POST(request: Request) {
 
   // Rafraîchit la boutique. Le passage par la racine est nécessaire : le numéro
   // WhatsApp est lu par le pied de page et par le bouton flottant du gabarit,
-  // donc présent sur toutes les pages. Sans cette invalidation, la boutique —
-  // prérendue statiquement — continuerait à servir l'ancien numéro, désormais
-  // mort, jusqu'à ce qu'une écriture sans rapport vienne par hasard rafraîchir
-  // le cache.
+  // donc présent sur TOUTES les pages — même raison qui fait invalider depuis
+  // la racine les routes des fragments de code et du bandeau d'annonce.
+  //
+  // Aujourd'hui, la lecture du cookie de consentement dans le gabarit rend
+  // toute la boutique dynamique (`npx next build` : aucune page `[locale]`
+  // n'est prérendue), si bien qu'un nouveau numéro apparaîtrait de toute façon.
+  // Mais cette propriété ne tient qu'à un `cookies()` qu'un prochain lot peut
+  // déplacer ou retirer : sans invalidation ici, la boutique se remettrait alors
+  // à servir l'ancien numéro — mort — jusqu'à ce qu'une écriture sans rapport
+  // vienne par hasard rafraîchir le cache, et le critère « modifiable sans
+  // redéploiement » redeviendrait faux sans que rien ne le signale. L'appel
+  // vide en outre le cache de navigation côté client.
   revalidatePath("/", "layout");
 
   return NextResponse.json({ ok: true, parametres: resultat });

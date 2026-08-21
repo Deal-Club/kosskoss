@@ -130,7 +130,7 @@ function texte(source: Record<string, unknown>, cle: string): string {
  *
  * Ne lève jamais : une colonne abîmée rend les valeurs par défaut plutôt que de
  * faire tomber toutes les pages du site, puisque le numéro WhatsApp est lu par
- * l'en-tête et le pied de page de chacune.
+ * le pied de page et le bouton flottant de chacune.
  */
 export function normaliserParametres(brut: unknown): ParametresBoutique {
   if (!brut || typeof brut !== "object") return { ...PARAMETRES_PAR_DEFAUT };

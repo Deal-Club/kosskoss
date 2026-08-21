@@ -64,9 +64,11 @@ export default async function ConfirmationPage({
   const order = await getKossOrder(orderNumber, parCookie ?? parUrl ?? "");
   if (!order) notFound();
 
-  // Même source que l'en-tête, le pied de page et le bouton flottant :
-  // `getParametres` est mémoïsé par requête, cet appel ne coûte donc rien de
-  // plus qu'une lecture déjà faite ailleurs sur la page.
+  // Même source que le pied de page et le bouton flottant : `getParametres`
+  // est mémoïsé par requête, cet appel ne coûte donc rien de plus qu'une
+  // lecture déjà faite ailleurs sur la page. Le numéro rendu est en chiffres
+  // seuls — c'est tout ce que `wa.me` accepte — donc utilisable tel quel dans
+  // le lien construit par `whatsappHref`, sans nettoyage supplémentaire.
   const numeroWhatsapp = numeroWhatsappEffectif(await getParametres());
 
   const account = order.customerId

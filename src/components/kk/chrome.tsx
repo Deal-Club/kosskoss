@@ -318,8 +318,9 @@ export async function SiteFooter() {
   // Même condition qu'au layout : sans traceur actif, pas de bandeau, donc pas
   // de lien pour le rouvrir.
   const tracage = await tracageActif();
-  // `getParametres` est mémoïsé par requête : l'en-tête, le pied de page et le
-  // bouton flottant peuvent chacun l'appeler sans multiplier les requêtes.
+  // `getParametres` est mémoïsé par requête : ce pied de page, le bouton
+  // flottant du gabarit et la page de confirmation peuvent chacun l'appeler
+  // sans multiplier les requêtes. L'en-tête, lui, ne s'en sert pas.
   const whatsappLink = lienWhatsapp(numeroWhatsappEffectif(await getParametres()));
 
   return (
