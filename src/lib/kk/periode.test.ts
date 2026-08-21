@@ -145,4 +145,19 @@ describe("periodeDepuisUrl", () => {
     assert.equal(formatJourIso(periode.au), "2028-02-29");
     assert.equal(periode.raccourci, null);
   });
+
+  it("rejette une borne haute inexistante qui déborde dans le futur, même si l'ordre reste valide", () => {
+    // Cas critique : la borne basse est valide (31 janvier), la borne haute
+    // n'existe pas (31 février) mais déborde vers le futur (3 mars). Sans la
+    // validation d'aller-retour, le débordement ne change pas l'ordre du <= —
+    // `new Date(2026, 1, 31)` glisse au 3 mars, et 31 janvier <= 3 mars.
+    //
+    // Avec la validation : au est rejeté → raccourci "30j".
+    // Sans la validation : la période serait acceptée, fausse de cinq semaines.
+    //
+    // Ce test protège donc la validation calendaire elle-même, pas juste
+    // l'inversion des bornes.
+    const periode = periodeDepuisUrl({ du: "2026-01-31", au: "2026-02-31" }, MAINTENANT);
+    assert.equal(periode.raccourci, "30j");
+  });
 });
