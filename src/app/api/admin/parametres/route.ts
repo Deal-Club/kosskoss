@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { requireAdminApi } from "@/lib/adminApi";
 import {
   saveParametres,
@@ -61,5 +62,14 @@ export async function POST(request: Request) {
   }
 
   const resultat = await saveParametres(partiel);
+
+  // Rafraîchit la boutique. Le passage par la racine est nécessaire : le numéro
+  // WhatsApp est lu par le pied de page et par le bouton flottant du gabarit,
+  // donc présent sur toutes les pages. Sans cette invalidation, la boutique —
+  // prérendue statiquement — continuerait à servir l'ancien numéro, désormais
+  // mort, jusqu'à ce qu'une écriture sans rapport vienne par hasard rafraîchir
+  // le cache.
+  revalidatePath("/", "layout");
+
   return NextResponse.json({ ok: true, parametres: resultat });
 }
