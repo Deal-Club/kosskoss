@@ -215,3 +215,71 @@ export async function sendAccountAccessEmail(
     /* best-effort */
   }
 }
+
+export interface RoutineEmailInput {
+  to: string;
+  langue: Langue;
+  /** Gestes de la routine, déjà dans la bonne langue. */
+  etapes: { label: string; brand: string; name: string; prixFcfa: number }[];
+  totalFcfa: number;
+}
+
+/**
+ * Routine personnalisée envoyée par e-mail.
+ *
+ * Transactionnel : le visiteur l'a demandée. L'inscription à la lettre
+ * d'information est un consentement séparé, traité ailleurs — cette fonction
+ * n'inscrit personne.
+ *
+ * Best-effort, comme les autres : une panne SMTP ne doit pas faire échouer
+ * l'affichage du résultat, que le visiteur a déjà sous les yeux.
+ */
+export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> {
+  if (!isMailConfigured()) return;
+  const en = input.langue === "en";
+
+  const lignes = input.etapes
+    .map(
+      (e) =>
+        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(e.label)} — ${esc(
+          e.brand,
+        )} ${esc(e.name)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${esc(
+          formatFcfa(e.prixFcfa),
+        )}</td></tr>`,
+    )
+    .join("");
+
+  const inner = `
+    <p style="margin:0 0 16px">${
+      en
+        ? "Here is the routine we put together for you."
+        : "Voici la routine que nous avons composée pour vous."
+    }</p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">${lignes}
+      <tr><td style="padding:12px 0;font-weight:bold">${en ? "Total" : "Total"}</td><td style="padding:12px 0;text-align:right;font-weight:bold">${esc(
+        formatFcfa(input.totalFcfa),
+      )}</td></tr>
+    </table>
+    <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
+      ${
+        en
+          ? "These products are chosen from what is in stock today. Prices may change."
+          : "Ces produits sont choisis parmi ceux disponibles aujourd'hui. Les prix peuvent évoluer."
+      }
+    </div>`;
+
+  const text = input.etapes
+    .map((e) => `${e.label} : ${e.brand} ${e.name} — ${formatFcfa(e.prixFcfa)}`)
+    .join("\n");
+
+  try {
+    await sendMail({
+      to: input.to,
+      subject: en ? "Your personalised routine" : "Votre routine personnalisée",
+      html: shell(en ? "Your routine" : "Votre routine", inner),
+      text: `${text}\n\nTotal : ${formatFcfa(input.totalFcfa)}`,
+    });
+  } catch {
+    /* best-effort */
+  }
+}
