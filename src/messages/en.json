@@ -440,7 +440,7 @@
       "insufficientStock": "Insufficient stock for a product in your cart.",
       "invalidJson": "Something went wrong. Please try again.",
       "generic": "Something went wrong.",
-      "paymentUnavailable": "This payment method isn't active yet. Choose \"Cash on delivery\" to complete your order now.",
+      "paymentUnavailable": "This payment method isn't active yet. Select the cash-on-delivery option to complete your order now.",
       "network": "Could not reach the server. Please try again.",
       "couponCheckFailed": "Couldn't check the code right now."
     },
