@@ -39,6 +39,14 @@ export interface ProductRecord {
   /** Vues complémentaires de la galerie, dans l'ordre d'affichage */
   images?: string[];
   oldPrice?: string;
+  /**
+   * Coût d'achat unitaire, saisi comme les prix (« 12 000 »).
+   *
+   * Ce type sert l'ADMINISTRATION. Le modèle de vue de la boutique est
+   * `Product` (`src/types/home.ts`) et ne doit jamais porter ce champ : le
+   * coût d'achat n'a rien à faire dans le navigateur d'un visiteur.
+   */
+  cost?: string;
   price: string;
   badge?: string;
   rating?: number;

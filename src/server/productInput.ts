@@ -76,7 +76,7 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   const price = asTrimmedString(body.price);
   if (mode === "create" || has("price")) {
     if (!price) errors.push("Prix manquant.");
-    else if (toCents(price) <= 0) errors.push('Prix invalide (exemple : « 349,00 € »).');
+    else if (toCents(price) <= 0) errors.push('Prix invalide (exemple : « 18 500 »).');
     else values.price = price;
   }
 
@@ -84,9 +84,23 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   if (has("oldPrice")) {
     const oldPrice = asTrimmedString(body.oldPrice) ?? "";
     if (oldPrice && toCents(oldPrice) <= 0) {
-      errors.push('Ancien prix invalide (exemple : « 449,00 € »).');
+      errors.push('Ancien prix invalide (exemple : « 22 000 »).');
     } else {
       values.oldPrice = oldPrice;
+    }
+  }
+
+  // COÛT D'ACHAT : facultatif, et une chaîne vide l'efface volontairement.
+  //
+  // Zéro est refusé comme pour les prix, mais pour une raison différente : un
+  // produit reçu gratuitement se saisit en vidant le champ, pas en écrivant 0,
+  // sans quoi on ne distinguerait plus « gratuit » de « pas encore renseigné ».
+  if (has("cost")) {
+    const cost = asTrimmedString(body.cost) ?? "";
+    if (cost && toCents(cost) <= 0) {
+      errors.push("Coût d'achat invalide (exemple : « 12 000 »).");
+    } else {
+      values.cost = cost;
     }
   }
 
