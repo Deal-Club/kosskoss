@@ -6,6 +6,7 @@ import {
   lienEvaluationValide,
   normaliserParametres,
   numeroWhatsappValide,
+  saisieEffacee,
   PARAMETRES_PAR_DEFAUT,
 } from "./parametres";
 
@@ -116,5 +117,41 @@ describe("normaliserParametres", () => {
     const rendu = normaliserParametres({ whatsapp: "237658013646" });
     assert.equal(rendu.whatsapp, "237658013646");
     assert.equal(rendu.ga4, "");
+  });
+});
+
+describe("saisieEffacee", () => {
+  it("attrape une saisie non vide que la normalisation réduit à rien", () => {
+    // LE CAS QUI DÉTRUISAIT LE NUMÉRO DE LA BOUTIQUE. « à venir » ne laisse
+    // aucun chiffre ; le validateur accepte alors la chaîne vide, puisque le
+    // vide est un réglage légitime. Écran comme route annonçaient donc
+    // « Enregistré ✓ » sur un numéro de contact effacé.
+    for (const brut of ["à venir", "wa.me/kosskoss", "appelez-moi"]) {
+      const normalise = normaliserParametres({ whatsapp: brut }).whatsapp;
+      assert.equal(normalise, "");
+      assert.equal(numeroWhatsappValide(normalise), true);
+      assert.equal(saisieEffacee(brut, normalise), true);
+    }
+  });
+
+  it("laisse vider un réglage volontairement", () => {
+    // Retirer le numéro reste possible : c'est une saisie vide, pas une faute.
+    assert.equal(saisieEffacee("", ""), false);
+    assert.equal(saisieEffacee("   ", ""), false);
+  });
+
+  it("laisse passer un numéro écrit à l'humaine", () => {
+    const brut = "+237 658 01 36 46";
+    assert.equal(saisieEffacee(brut, normaliserParametres({ whatsapp: brut }).whatsapp), false);
+  });
+
+  it("ne se déclenche pas sur les champs seulement rognés", () => {
+    // La règle porte sur la paire (saisie, valeur normalisée) et non sur le nom
+    // du champ : un champ qui ne fait que rogner ne peut pas la déclencher, et
+    // c'est bien son validateur qui attrape la faute.
+    const brut = "  forms.gle/abc123  ";
+    const normalise = normaliserParametres({ formulaireEvaluation: brut }).formulaireEvaluation;
+    assert.equal(saisieEffacee(brut, normalise), false);
+    assert.equal(lienEvaluationValide(normalise), false);
   });
 });

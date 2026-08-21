@@ -3,7 +3,12 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save, Loader2 } from "lucide-react";
-import { normaliserParametres, CHAMPS_PARAMETRES, type ParametresBoutique } from "@/lib/kk/parametres";
+import {
+  normaliserParametres,
+  saisieEffacee,
+  CHAMPS_PARAMETRES,
+  type ParametresBoutique,
+} from "@/lib/kk/parametres";
 
 const inputCls =
   "w-full rounded border border-border bg-background px-2.5 py-1.5 text-sm outline-none focus:border-primary";
@@ -71,10 +76,16 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
   const erreurs = useMemo(() => {
     const map: Partial<Record<keyof ParametresBoutique, string>> = {};
     for (const { cle, valide, format } of CHAMPS_PARAMETRES) {
-      if (!valide(normalized[cle])) map[cle] = `Format attendu : ${format}`;
+      // Même règle qu'à la route : une saisie non vide que la normalisation
+      // réduit à rien satisferait le validateur — le vide est une valeur
+      // légitime — et l'écran afficherait « Enregistré ✓ » sur un réglage
+      // qu'il vient d'effacer. Voir `saisieEffacee`.
+      if (saisieEffacee(values[cle], normalized[cle]) || !valide(normalized[cle])) {
+        map[cle] = `Format attendu : ${format}`;
+      }
     }
     return map;
-  }, [normalized]);
+  }, [values, normalized]);
 
   // Le bouton n'est bloqué que par les champs MODIFIÉS et invalides. Une
   // valeur déjà en base — écrite avant que ce validateur existe, ou par un

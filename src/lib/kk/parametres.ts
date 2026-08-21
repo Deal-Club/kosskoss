@@ -98,6 +98,27 @@ export const CHAMPS_PARAMETRES: DescriptionChamp[] = [
   { cle: "metaPixel", valide: identifiantPixelValide, format: "8 à 20 chiffres" },
 ];
 
+/**
+ * La normalisation a-t-elle effacé une saisie qui n'était pas vide ?
+ *
+ * `whatsapp` est aujourd'hui le seul champ dont la normalisation SUPPRIME des
+ * caractères au lieu de simplement rogner : « à venir » ou « wa.me/kosskoss »
+ * n'y laissent aucun chiffre et deviennent la chaîne vide. Or le vide est une
+ * valeur parfaitement légitime — le réglage est facultatif — donc le validateur
+ * l'accepte. Sans ce garde-fou, une faute de saisie effaçait le numéro de
+ * contact de la boutique et l'écran annonçait « Enregistré ✓ ».
+ *
+ * Le test porte sur la paire (saisie, valeur normalisée), jamais sur le nom du
+ * champ : tout futur champ normalisant est couvert sans qu'on ait à y revenir,
+ * et les champs seulement rognés ne peuvent pas le déclencher.
+ *
+ * Un champ volontairement vidé — saisie vide, ou seulement des espaces — reste
+ * accepté : c'est la façon de retirer un réglage.
+ */
+export function saisieEffacee(brut: string, normalise: string): boolean {
+  return brut.trim() !== "" && normalise === "";
+}
+
 /** Lit un champ texte, rogné, ou rend la chaîne vide. */
 function texte(source: Record<string, unknown>, cle: string): string {
   const valeur = source[cle];

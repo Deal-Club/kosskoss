@@ -4,6 +4,7 @@ import { requireAdminApi } from "@/lib/adminApi";
 import {
   saveParametres,
   normaliserParametres,
+  saisieEffacee,
   CHAMPS_PARAMETRES,
   type ParametresBoutique,
 } from "@/server/kk/parametres";
@@ -55,7 +56,15 @@ export async function POST(request: Request) {
   for (const { cle, valide, format } of CHAMPS_PARAMETRES) {
     if (!(cle in raw)) continue;
     const valeur = normalise[cle];
-    if (!valide(valeur)) {
+    // Une saisie non vide que la normalisation réduit à rien est une faute de
+    // format, pas un effacement volontaire : « à venir » dans le numéro
+    // WhatsApp ne laisse aucun chiffre, `numeroWhatsappValide("")` rend `true`
+    // puisque le vide est légitime, et le numéro de la boutique disparaîtrait
+    // en silence. Le test de type ne sert qu'à le prouver au compilateur : la
+    // boucle précédente a déjà rejeté tout ce qui n'est pas une chaîne.
+    const brut = raw[cle];
+    const efface = typeof brut === "string" && saisieEffacee(brut, valeur);
+    if (efface || !valide(valeur)) {
       return NextResponse.json({ error: `format_invalide:${cle}`, champ: cle, format }, { status: 400 });
     }
     partiel[cle] = valeur;

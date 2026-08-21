@@ -13,6 +13,7 @@ export type { ParametresBoutique, DescriptionChamp } from "@/lib/kk/parametres";
 export {
   PARAMETRES_PAR_DEFAUT,
   normaliserParametres,
+  saisieEffacee,
   numeroWhatsappValide,
   lienEvaluationValide,
   identifiantGa4Valide,
