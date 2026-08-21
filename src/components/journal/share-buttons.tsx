@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Link2 } from "lucide-react";
-import { WhatsAppGlyph } from "@/components/WhatsAppButton";
+import { WhatsAppGlyph } from "@/components/WhatsAppGlyph";
 
 /**
  * Partage d'un article.

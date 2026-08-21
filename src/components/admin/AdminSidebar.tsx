@@ -16,6 +16,7 @@ import {
   Package,
   Plug,
   Receipt,
+  Settings,
   ShoppingBag,
   Sparkles,
   Star,
@@ -115,6 +116,9 @@ export function AdminSidebar({
       entries: [
         { label: "Pages & mentions légales", href: "/admin/pages", icon: FileText },
         { label: "Scripts & balises", href: "/admin/scripts", icon: Code2 },
+        // Numéro WhatsApp, lien du formulaire d'évaluation et identifiants de
+        // mesure — modifiables sans redéploiement (critère 16).
+        { label: "Paramètres", href: "/admin/parametres", icon: Settings },
         { label: "Accès", href: "/admin/users", icon: Users },
       ],
     },
