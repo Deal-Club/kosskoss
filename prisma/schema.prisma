@@ -592,6 +592,12 @@ model OrderItem {
   path  String @default("")
 
   unitPriceCents Int
+  // Coût d'achat unitaire au moment de la vente, recopié depuis la fiche
+  // produit. NULL veut dire « on ne savait pas » : commandes antérieures à
+  // cette colonne, ou produit dont le coût n'était pas renseigné ce jour-là.
+  // Figé comme le prix : une marge de mars calculée au prix d'achat de
+  // septembre n'est pas une marge de mars.
+  unitCostCents  Int?
   quantity       Int
   lineTotalCents Int
 
