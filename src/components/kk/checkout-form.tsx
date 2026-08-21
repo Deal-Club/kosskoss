@@ -437,7 +437,7 @@ export function CheckoutForm({
                 error={touched.email ? erreurs.email : null}
                 valide={erreurs.email === null && values.email.length > 0}
                 autoComplete="email"
-                placeholder="exemple@email.com"
+                placeholder={t("step1.emailPlaceholder")}
                 className="sm:col-span-2"
                 aide={t("step1.emailHelp")}
                 onChange={(v) => setField("email", v)}

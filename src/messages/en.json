@@ -383,6 +383,7 @@
       "phoneLabel": "Phone",
       "phoneHelp": "We'll call you on this number to arrange delivery.",
       "emailLabel": "Email",
+      "emailPlaceholder": "you@email.com",
       "emailHelp": "To send you the order summary.",
       "locationLabel": "Delivery location",
       "locationPlaceholder": "Neighbourhood, city, landmark…",
