@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -29,23 +30,29 @@ import type { PaymentMethodView } from "@/server/kk/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import { BottleMotif } from "./motifs";
 
-const ERRORS: Record<string, string> = {
-  panier_vide: "Votre panier est vide.",
-  champs_invalides: "Merci de vérifier les champs du formulaire.",
+// Code d'erreur serveur → clé de message. La table reste hors composant, ce
+// ne sont que des chaînes littérales ; c'est `t(...)` qui traduit, appelé au
+// moment de l'affichage (voir handleSubmit), jamais ici.
+const CLES_ERREUR: Record<string, string> = {
+  panier_vide: "errors.cartEmpty",
+  champs_invalides: "errors.invalidFields",
   // La route accepte n'importe quel corps JSON : le message nomme le format
   // attendu plutôt que de dire « invalide », pour le cas — rare mais réel —
   // où ce message serveur est ce que le client voit (validation client
   // contournée, JS désactivé…).
-  telephone_invalide: "Numéro de téléphone invalide : neuf chiffres, commençant par 6 (mobile) ou 2 (fixe).",
-  paiement_invalide: "Sélectionnez un moyen de paiement.",
-  produit_indisponible: "Un produit de votre panier n'est plus disponible.",
-  variante_indisponible: "Une variante sélectionnée n'est plus disponible.",
-  stock_insuffisant: "Stock insuffisant pour un produit de votre panier.",
-  json_invalide: "Une erreur est survenue. Réessayez.",
+  telephone_invalide: "errors.invalidPhone",
+  paiement_invalide: "errors.invalidPayment",
+  produit_indisponible: "errors.productUnavailable",
+  variante_indisponible: "errors.variantUnavailable",
+  stock_insuffisant: "errors.insufficientStock",
+  json_invalide: "errors.invalidJson",
 };
 
 /** Champs de livraison, dans l'ordre où ils sont posés au client. */
 type FieldName = "fullName" | "email" | "phone" | "location";
+
+/** Type de la fonction de traduction, pour la passer en paramètre à `validate`. */
+type Traduire = ReturnType<typeof useTranslations>;
 
 /**
  * Moyens de paiement qui n'ont besoin d'aucune passerelle.
@@ -71,26 +78,28 @@ const CLES_HORS_LIGNE = ["paiement-livraison", "paiement-a-la-livraison"];
  * quelqu'un qui écrit encore est le meilleur moyen de le braquer.
  *
  * Renvoie `null` quand le champ est bon, sinon la phrase à afficher.
+ *
+ * Fonction déclarée hors composant : `useTranslations` est un hook et ne
+ * peut pas être appelé ici. La fonction de traduction est donc reçue en
+ * paramètre plutôt qu'obtenue directement.
  */
-function validate(field: FieldName, value: string): string | null {
+function validate(field: FieldName, value: string, t: Traduire): string | null {
   const v = value.trim();
   switch (field) {
     case "fullName":
-      return v.length >= 2 ? null : "Indiquez votre nom et votre prénom.";
+      return v.length >= 2 ? null : t("validation.fullName");
     case "email":
       // Volontairement permissif : le rôle de ce test est d'attraper la faute
       // de frappe évidente (« @gmail » sans point), pas de juger de l'existence
       // de l'adresse — ce qu'aucune expression régulière ne sait faire.
-      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Vérifiez votre adresse e-mail.";
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : t("validation.email");
     case "phone":
       // Format camerounais : neuf chiffres, mobile en 6 ou fixe en 2,
       // l'indicatif étant accepté sous toutes ses formes. Le message nomme le
       // format attendu — « numéro invalide » laisserait le client deviner.
-      return normaliserTelephone(v)
-        ? null
-        : "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56";
+      return normaliserTelephone(v) ? null : t("validation.phone");
     case "location":
-      return v.length >= 3 ? null : "Quartier et ville, au minimum.";
+      return v.length >= 3 ? null : t("validation.location");
   }
 }
 
@@ -110,6 +119,7 @@ export function CheckoutForm({
    */
   passerelleActive: boolean;
 }) {
+  const t = useTranslations("commande");
   const router = useRouter();
   const { lines, ready, clear } = useCart();
   const subtotal = cartSubtotalFcfa(lines);
@@ -167,8 +177,8 @@ export function CheckoutForm({
       const marques = [...new Set(enLigne.flatMap((p) => brandMarksFor(p.key, "") ?? []))];
       options.push({
         cle: enLigne[0].key,
-        titre: "Paiement en ligne",
-        note: "Bientôt disponible",
+        titre: t("step2.onlineTitle"),
+        note: t("step2.comingSoon"),
         marques,
       });
     }
@@ -177,7 +187,7 @@ export function CheckoutForm({
       options.push({
         cle: p.key,
         titre: p.label,
-        note: "Réglez en espèces à la remise du colis",
+        note: t("step2.cashNote"),
         // Aucun logo à afficher — ce n'est pas une marque, c'est un geste. La
         // carte se retrouvait donc en texte nu à côté d'une carte illustrée de
         // trois logos, et paraissait la moins sérieuse des deux alors que
@@ -189,7 +199,7 @@ export function CheckoutForm({
     }
 
     return options;
-  }, [payments]);
+  }, [payments, t]);
 
   const [paymentMethod, setPaymentMethod] = useState(
     // On présélectionne le premier moyen qui fonctionne, pas le premier de la
@@ -227,12 +237,12 @@ export function CheckoutForm({
 
   const erreurs = useMemo(
     () => ({
-      fullName: validate("fullName", values.fullName),
-      email: validate("email", values.email),
-      phone: validate("phone", values.phone),
-      location: validate("location", values.location),
+      fullName: validate("fullName", values.fullName, t),
+      email: validate("email", values.email, t),
+      phone: validate("phone", values.phone, t),
+      location: validate("location", values.location, t),
     }),
-    [values],
+    [values, t],
   );
   const formulaireComplet = Object.values(erreurs).every((e) => e === null);
   const remise = coupon?.discountCents ?? 0;
@@ -242,15 +252,15 @@ export function CheckoutForm({
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
         <BottleMotif className="mx-auto h-20 text-deep/30" />
-        <h1 className="mt-6 text-deep">Votre panier est vide</h1>
+        <h1 className="mt-6 text-deep">{t("emptyCart.title")}</h1>
         <p className="mt-3 text-muted-foreground">
-          Choisissez vos soins, ils vous attendront ici.
+          {t("emptyCart.text")}
         </p>
         <Link
           href="/soins-visage"
           className="kk-fill mt-6 inline-block rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
         >
-          Découvrir la boutique
+          {t("emptyCart.cta")}
         </Link>
       </div>
     );
@@ -286,7 +296,7 @@ export function CheckoutForm({
         setMessageCoupon(data.message);
       }
     } catch {
-      setMessageCoupon("Impossible de vérifier le code pour l'instant.");
+      setMessageCoupon(t("errors.couponCheckFailed"));
     } finally {
       setVerifCoupon(false);
     }
@@ -321,9 +331,7 @@ export function CheckoutForm({
     // faire, plutôt que de laisser partir une commande qu'on ne pourra pas
     // encaisser.
     if (!paiementDisponible(paymentMethod)) {
-      setError(
-        "Ce moyen de paiement n'est pas encore actif. Choisissez « Paiement à la livraison » pour finaliser votre commande dès maintenant.",
-      );
+      setError(t("errors.paymentUnavailable"));
       document.getElementById("moyens-paiement")?.scrollIntoView({ block: "center", behavior: "smooth" });
       return;
     }
@@ -350,7 +358,7 @@ export function CheckoutForm({
         | { ok: true; orderNumber: string; accessToken: string; urlPaiement?: string }
         | { ok: false; error: string };
       if (!data.ok) {
-        setError(ERRORS[data.error] ?? "Une erreur est survenue.");
+        setError(t(CLES_ERREUR[data.error] ?? "errors.generic"));
         setSubmitting(false);
         return;
       }
@@ -373,7 +381,7 @@ export function CheckoutForm({
       const prefix = locale === "en" ? "/en" : "";
       router.push(`${prefix}/confirmation/${data.orderNumber}?t=${data.accessToken}`);
     } catch {
-      setError("Impossible de joindre le serveur. Réessayez.");
+      setError(t("errors.network"));
       setSubmitting(false);
     }
   }
@@ -383,35 +391,32 @@ export function CheckoutForm({
       <FilEtapes />
 
       <div className="mt-8">
-        <h1 className="text-deep">Finaliser la commande</h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">
-          Deux minutes, quatre champs. Payez en ligne ou à la livraison, comme
-          il vous arrange.
-        </p>
+        <h1 className="text-deep">{t("title")}</h1>
+        <p className="mt-2 max-w-xl text-muted-foreground">{t("intro")}</p>
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_24rem] lg:gap-12">
         <div className="space-y-8">
           {/* ---------------------------------------------- Étape 1 : livraison */}
           <section className="rounded-2xl border border-border bg-card p-5 sm:p-7">
-            <TitreEtape numero={1} titre="Où vous livrer" />
+            <TitreEtape numero={1} titre={t("step1.title")} />
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <Champ
                 name="fullName"
-                label="Nom complet"
+                label={t("step1.fullNameLabel")}
                 icon={User}
                 value={values.fullName}
                 error={touched.fullName ? erreurs.fullName : null}
                 valide={erreurs.fullName === null && values.fullName.length > 0}
                 autoComplete="name"
-                placeholder="Nom et prénom"
+                placeholder={t("step1.fullNamePlaceholder")}
                 onChange={(v) => setField("fullName", v)}
-                onBlur={() => setTouched((t) => ({ ...t, fullName: true }))}
+                onBlur={() => setTouched((tch) => ({ ...tch, fullName: true }))}
               />
               <Champ
                 name="phone"
-                label="Téléphone"
+                label={t("step1.phoneLabel")}
                 icon={Phone}
                 type="tel"
                 value={values.phone}
@@ -419,13 +424,13 @@ export function CheckoutForm({
                 valide={erreurs.phone === null && values.phone.length > 0}
                 autoComplete="tel"
                 placeholder="+237 6XX XX XX XX"
-                aide="C'est sur ce numéro que nous vous appelons pour la livraison."
+                aide={t("step1.phoneHelp")}
                 onChange={(v) => setField("phone", v)}
-                onBlur={() => setTouched((t) => ({ ...t, phone: true }))}
+                onBlur={() => setTouched((tch) => ({ ...tch, phone: true }))}
               />
               <Champ
                 name="email"
-                label="E-mail"
+                label={t("step1.emailLabel")}
                 icon={Mail}
                 type="email"
                 value={values.email}
@@ -434,22 +439,22 @@ export function CheckoutForm({
                 autoComplete="email"
                 placeholder="exemple@email.com"
                 className="sm:col-span-2"
-                aide="Pour recevoir le récapitulatif de votre commande."
+                aide={t("step1.emailHelp")}
                 onChange={(v) => setField("email", v)}
-                onBlur={() => setTouched((t) => ({ ...t, email: true }))}
+                onBlur={() => setTouched((tch) => ({ ...tch, email: true }))}
               />
               <Champ
                 name="location"
-                label="Lieu de livraison"
+                label={t("step1.locationLabel")}
                 icon={MapPin}
                 value={values.location}
                 error={touched.location ? erreurs.location : null}
                 valide={erreurs.location === null && values.location.length > 0}
-                placeholder="Quartier, ville, repère…"
+                placeholder={t("step1.locationPlaceholder")}
                 className="sm:col-span-2"
-                aide="Un repère connu du quartier accélère la livraison."
+                aide={t("step1.locationHelp")}
                 onChange={(v) => setField("location", v)}
-                onBlur={() => setTouched((t) => ({ ...t, location: true }))}
+                onBlur={() => setTouched((tch) => ({ ...tch, location: true }))}
               />
             </div>
 
@@ -461,15 +466,15 @@ export function CheckoutForm({
                 className="mt-0.5 h-4 w-4 accent-[var(--deep)]"
               />
               <span className="text-foreground">
-                Je veux suivre ma commande
+                {t("step1.followOrder")}
                 <span className="group relative ml-1 inline-flex align-middle">
                   <HelpCircle className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 w-60 -translate-x-1/2 rounded-lg bg-deep px-3 py-2 text-xs text-primary-foreground opacity-0 transition group-hover:opacity-100">
-                    En cochant, un espace personnel est créé avec l&rsquo;e-mail saisi ; vous recevrez vos identifiants par e-mail pour suivre l&rsquo;avancement.
+                    {t("step1.followOrderTooltip")}
                   </span>
                 </span>
                 <span className="mt-0.5 block text-xs text-muted-foreground">
-                  Un espace personnel est créé pour suivre l&rsquo;avancement de la livraison.
+                  {t("step1.followOrderHint")}
                 </span>
               </span>
             </label>
@@ -477,7 +482,7 @@ export function CheckoutForm({
 
           {/* ------------------------------------------------ Étape 2 : paiement */}
           <section className="rounded-2xl border border-border bg-card p-5 sm:p-7">
-            <TitreEtape numero={2} titre="Comment vous payez" />
+            <TitreEtape numero={2} titre={t("step2.title")} />
 
             {/* Affichage seul, sans sélection.
                 Le choix du moyen de paiement se fait dans la passerelle, après
@@ -487,7 +492,7 @@ export function CheckoutForm({
                 `ul` et non une rangée de boutons : rien n'est cliquable, donc
                 rien ne doit avoir l'apparence d'un contrôle. */}
             <p className="mt-5 text-sm text-foreground">
-              Choisissez comment vous réglez :
+              {t("step2.chooseLabel")}
             </p>
             {/* Vrais boutons radio, masqués derrière les cartes : on hérite
                 du clavier, de la navigation aux flèches entre options et de
@@ -510,7 +515,7 @@ export function CheckoutForm({
             <div
               id="moyens-paiement"
               role="radiogroup"
-              aria-label="Moyen de paiement"
+              aria-label={t("step2.ariaLabel")}
               className="mt-4 grid gap-3 sm:grid-cols-2"
             >
               {OPTIONS_PAIEMENT.map((option) => {
@@ -577,8 +582,7 @@ export function CheckoutForm({
             <div className="mt-5 flex items-start gap-3 rounded-xl border border-trust-line bg-trust-soft px-4 py-3.5">
               <MessageCircle className="mt-0.5 h-5 w-5 shrink-0 text-trust" aria-hidden />
               <p className="text-sm text-foreground">
-                <span className="font-semibold text-trust">Vous choisissez votre moyen.</span> Réglez en
-                ligne à la validation, ou en espèces à la remise du colis.
+                <span className="font-semibold text-trust">{t("step2.trustTitle")}</span> {t("step2.trustText")}
               </p>
             </div>
           </section>
@@ -588,9 +592,9 @@ export function CheckoutForm({
               annoncé qui ne soit tenu par le tunnel lui-même. */}
           <ul className="grid gap-3 sm:grid-cols-3">
             {[
-              { icon: Lock, titre: "Aucune donnée bancaire", texte: "Aucun numéro de carte n'est saisi ni stocké ici." },
-              { icon: MessageCircle, titre: "Une équipe joignable", texte: "Sur WhatsApp, avant comme après la commande." },
-              { icon: ShieldCheck, titre: "Coordonnées protégées", texte: "Utilisées pour la livraison, rien d'autre." },
+              { icon: Lock, titre: t("reassurance.noCardTitle"), texte: t("reassurance.noCardText") },
+              { icon: MessageCircle, titre: t("reassurance.teamTitle"), texte: t("reassurance.teamText") },
+              { icon: ShieldCheck, titre: t("reassurance.dataTitle"), texte: t("reassurance.dataText") },
             ].map(({ icon: Icon, titre, texte }) => (
               <li key={titre} className="rounded-xl border border-border bg-card px-4 py-4">
                 <Icon className="h-5 w-5 text-trust" aria-hidden />
@@ -606,16 +610,16 @@ export function CheckoutForm({
           <div className="overflow-hidden rounded-2xl border border-border bg-card">
             <div className="flex items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
               <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">
-                Votre commande
+                {t("summary.title")}
                 <span className="ml-2 font-sans text-xs font-medium normal-case tracking-normal text-muted-foreground">
-                  {articles} article{articles > 1 ? "s" : ""}
+                  {t("summary.itemCount", { count: articles })}
                 </span>
               </h2>
               <Link
                 href="/panier"
                 className="inline-flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground underline-offset-4 transition hover:text-deep hover:underline"
               >
-                <Pencil className="h-3 w-3" /> Modifier
+                <Pencil className="h-3 w-3" /> {t("summary.edit")}
               </Link>
             </div>
 
@@ -670,7 +674,7 @@ export function CheckoutForm({
                     onClick={retirerCode}
                     className="shrink-0 text-xs font-medium text-muted-foreground underline underline-offset-4 transition hover:text-deep"
                   >
-                    Retirer
+                    {t("summary.couponRemove")}
                   </button>
                 </div>
               ) : champPromoOuvert ? (
@@ -680,7 +684,7 @@ export function CheckoutForm({
                       le navigateur le déplacerait, cassant la soumission. */}
                   <div className="flex items-center gap-2">
                     <label htmlFor="code-promo" className="sr-only">
-                      Code promo
+                      {t("summary.couponLabel")}
                     </label>
                     <input
                       id="code-promo"
@@ -690,7 +694,7 @@ export function CheckoutForm({
                       onKeyDown={(e) => {
                         if (e.key === "Enter") verifierCode(e);
                       }}
-                      placeholder="Code promo"
+                      placeholder={t("summary.couponPlaceholder")}
                       autoComplete="off"
                       maxLength={32}
                       className="min-w-0 flex-1 rounded-xl border border-input bg-background px-4 py-2.5 text-sm uppercase tracking-wider outline-none transition focus:border-deep"
@@ -701,7 +705,7 @@ export function CheckoutForm({
                       disabled={verifCoupon || !codeSaisi.trim()}
                       className="shrink-0 rounded-xl border border-deep px-4 py-2.5 text-sm font-semibold text-deep transition hover:bg-sand disabled:opacity-40"
                     >
-                      {verifCoupon ? "…" : "Appliquer"}
+                      {verifCoupon ? t("summary.couponApplying") : t("summary.couponApply")}
                     </button>
                   </div>
                   {messageCoupon && (
@@ -716,7 +720,7 @@ export function CheckoutForm({
                   onClick={() => setChampPromoOuvert(true)}
                   className="inline-flex items-center gap-1.5 text-sm text-muted-foreground underline-offset-4 transition hover:text-deep hover:underline"
                 >
-                  <Tag className="h-3.5 w-3.5" /> J&rsquo;ai un code promo
+                  <Tag className="h-3.5 w-3.5" /> {t("summary.couponAdd")}
                 </button>
               )}
             </div>
@@ -725,22 +729,22 @@ export function CheckoutForm({
               {coupon && (
                 <div className="mb-3 space-y-1.5 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Sous-total</span>
+                    <span className="text-muted-foreground">{t("summary.subtotal")}</span>
                     <span className="figure text-muted-foreground">{formatFcfa(subtotal)}</span>
                   </div>
                   <div className="flex items-center justify-between font-medium text-trust">
-                    <span>Vous économisez</span>
+                    <span>{t("summary.youSave")}</span>
                     <span className="figure">−{formatFcfa(remise)}</span>
                   </div>
                 </div>
               )}
 
               <div className="flex items-baseline justify-between gap-3">
-                <span className="font-semibold text-deep">Total à payer</span>
+                <span className="font-semibold text-deep">{t("summary.totalToPay")}</span>
                 <span className="figure text-2xl font-semibold text-deep">{formatFcfa(total)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Livraison coordonnée via WhatsApp après commande.
+                {t("summary.deliveryNote")}
               </p>
 
               {error && (
@@ -760,11 +764,11 @@ export function CheckoutForm({
               >
                 {submitting ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> Enregistrement…
+                    <Loader2 className="h-4 w-4 animate-spin" /> {t("summary.submitting")}
                   </>
                 ) : (
                   <>
-                    Valider ma commande <ArrowRight className="h-4 w-4" />
+                    {t("summary.submit")} <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -773,14 +777,16 @@ export function CheckoutForm({
                   le bouton, en vert, assez grande pour être lue. Elle valait
                   une ligne grise de 12 px — autant dire rien. */}
               <p className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-trust-line bg-trust-soft px-4 py-3 text-sm font-semibold text-trust">
-                <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden /> Paiement sécurisé
+                <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden /> {t("summary.securePayment")}
               </p>
               <p className="mt-2 text-center text-xs text-muted-foreground">
-                En validant, vous acceptez nos{" "}
-                <Link href="/cgv" className="underline underline-offset-2 hover:text-deep">
-                  conditions de vente
-                </Link>
-                .
+                {t.rich("summary.termsNote", {
+                  cgv: (chunks) => (
+                    <Link href="/cgv" className="underline underline-offset-2 hover:text-deep">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
             </div>
           </div>
@@ -801,7 +807,7 @@ export function CheckoutForm({
         <div className="mx-auto flex max-w-md items-center gap-3 px-4 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pt-3">
           <span className="min-w-0">
             <span className="block text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground">
-              Total
+              {t("summary.mobileTotal")}
             </span>
             <span className="figure block text-lg font-semibold leading-tight text-deep">
               {formatFcfa(total)}
@@ -814,7 +820,7 @@ export function CheckoutForm({
             className="kk-fill flex flex-1 items-center justify-center gap-2 rounded-full bg-deep px-5 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
           >
             {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
-            {submitting ? "Enregistrement…" : "Valider ma commande"}
+            {submitting ? t("summary.submitting") : t("summary.submit")}
           </button>
         </div>
       </div>
@@ -831,14 +837,17 @@ export function CheckoutForm({
  * temps ? ».
  */
 function FilEtapes() {
+  // Composant à part entière (nom en majuscule, rendu JSX) : contrairement à
+  // `validate`, il peut appeler ce hook directement.
+  const t = useTranslations("commande");
   const etapes: { label: string; href?: string; etat: "fait" | "encours" | "avenir" }[] = [
-    { label: "Panier", href: "/panier", etat: "fait" },
-    { label: "Vos informations", etat: "encours" },
-    { label: "Confirmation", etat: "avenir" },
+    { label: t("steps.cart"), href: "/panier", etat: "fait" },
+    { label: t("steps.info"), etat: "encours" },
+    { label: t("steps.confirmation"), etat: "avenir" },
   ];
 
   return (
-    <nav aria-label="Étapes de la commande">
+    <nav aria-label={t("steps.aria")}>
       <ol className="flex items-center gap-2 text-xs sm:gap-3 sm:text-sm">
         {etapes.map((etape, i) => {
           const pastille =

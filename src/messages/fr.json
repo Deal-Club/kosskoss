@@ -362,6 +362,94 @@
       "failedText": "Votre commande est enregistrée, mais le paiement a été refusé et rien n'a été débité. Contactez-nous à contact@mlc-bois.fr avec votre numéro de commande pour choisir un autre moyen de règlement."
     }
   },
+  "commande": {
+    "title": "Finaliser la commande",
+    "intro": "Deux minutes, quatre champs. Payez en ligne ou à la livraison, comme il vous arrange.",
+    "emptyCart": {
+      "title": "Votre panier est vide",
+      "text": "Choisissez vos soins, ils vous attendront ici.",
+      "cta": "Découvrir la boutique"
+    },
+    "steps": {
+      "aria": "Étapes de la commande",
+      "cart": "Panier",
+      "info": "Vos informations",
+      "confirmation": "Confirmation"
+    },
+    "step1": {
+      "title": "Où vous livrer",
+      "fullNameLabel": "Nom complet",
+      "fullNamePlaceholder": "Nom et prénom",
+      "phoneLabel": "Téléphone",
+      "phoneHelp": "C'est sur ce numéro que nous vous appelons pour la livraison.",
+      "emailLabel": "E-mail",
+      "emailHelp": "Pour recevoir le récapitulatif de votre commande.",
+      "locationLabel": "Lieu de livraison",
+      "locationPlaceholder": "Quartier, ville, repère…",
+      "locationHelp": "Un repère connu du quartier accélère la livraison.",
+      "followOrder": "Je veux suivre ma commande",
+      "followOrderTooltip": "En cochant, un espace personnel est créé avec l'e-mail saisi ; vous recevrez vos identifiants par e-mail pour suivre l'avancement.",
+      "followOrderHint": "Un espace personnel est créé pour suivre l'avancement de la livraison."
+    },
+    "step2": {
+      "title": "Comment vous payez",
+      "chooseLabel": "Choisissez comment vous réglez :",
+      "ariaLabel": "Moyen de paiement",
+      "onlineTitle": "Paiement en ligne",
+      "comingSoon": "Bientôt disponible",
+      "cashNote": "Réglez en espèces à la remise du colis",
+      "trustTitle": "Vous choisissez votre moyen.",
+      "trustText": "Réglez en ligne à la validation, ou en espèces à la remise du colis."
+    },
+    "reassurance": {
+      "noCardTitle": "Aucune donnée bancaire",
+      "noCardText": "Aucun numéro de carte n'est saisi ni stocké ici.",
+      "teamTitle": "Une équipe joignable",
+      "teamText": "Sur WhatsApp, avant comme après la commande.",
+      "dataTitle": "Coordonnées protégées",
+      "dataText": "Utilisées pour la livraison, rien d'autre."
+    },
+    "summary": {
+      "title": "Votre commande",
+      "itemCount": "{count, plural, one {# article} other {# articles}}",
+      "edit": "Modifier",
+      "couponLabel": "Code promo",
+      "couponPlaceholder": "Code promo",
+      "couponApply": "Appliquer",
+      "couponApplying": "…",
+      "couponRemove": "Retirer",
+      "couponAdd": "J'ai un code promo",
+      "subtotal": "Sous-total",
+      "youSave": "Vous économisez",
+      "totalToPay": "Total à payer",
+      "deliveryNote": "Livraison coordonnée via WhatsApp après commande.",
+      "submit": "Valider ma commande",
+      "submitting": "Enregistrement…",
+      "securePayment": "Paiement sécurisé",
+      "termsNote": "En validant, vous acceptez nos <cgv>conditions de vente</cgv>.",
+      "mobileTotal": "Total"
+    },
+    "errors": {
+      "cartEmpty": "Votre panier est vide.",
+      "invalidFields": "Merci de vérifier les champs du formulaire.",
+      "invalidPhone": "Numéro de téléphone invalide : neuf chiffres, commençant par 6 (mobile) ou 2 (fixe).",
+      "invalidPayment": "Sélectionnez un moyen de paiement.",
+      "productUnavailable": "Un produit de votre panier n'est plus disponible.",
+      "variantUnavailable": "Une variante sélectionnée n'est plus disponible.",
+      "insufficientStock": "Stock insuffisant pour un produit de votre panier.",
+      "invalidJson": "Une erreur est survenue. Réessayez.",
+      "generic": "Une erreur est survenue.",
+      "paymentUnavailable": "Ce moyen de paiement n'est pas encore actif. Choisissez « Paiement à la livraison » pour finaliser votre commande dès maintenant.",
+      "network": "Impossible de joindre le serveur. Réessayez.",
+      "couponCheckFailed": "Impossible de vérifier le code pour l'instant."
+    },
+    "validation": {
+      "fullName": "Indiquez votre nom et votre prénom.",
+      "email": "Vérifiez votre adresse e-mail.",
+      "phone": "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56",
+      "location": "Quartier et ville, au minimum."
+    }
+  },
   "wishlist": {
     "title": "Favoris",
     "intro": "Les articles mis en favori restent enregistrés dans ce navigateur — sans compte et sans connexion.",

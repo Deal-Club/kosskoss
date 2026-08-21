@@ -362,6 +362,94 @@
       "failedText": "Your order has been placed, but the payment was declined and nothing has been charged. Contact us at contact@mlc-bois.fr with your order number to choose another payment method."
     }
   },
+  "commande": {
+    "title": "Complete your order",
+    "intro": "Two minutes, four fields. Pay online or on delivery, whichever suits you.",
+    "emptyCart": {
+      "title": "Your cart is empty",
+      "text": "Pick your favourites and they'll be waiting for you here.",
+      "cta": "Browse the shop"
+    },
+    "steps": {
+      "aria": "Order steps",
+      "cart": "Cart",
+      "info": "Your details",
+      "confirmation": "Confirmation"
+    },
+    "step1": {
+      "title": "Where to deliver",
+      "fullNameLabel": "Full name",
+      "fullNamePlaceholder": "First and last name",
+      "phoneLabel": "Phone",
+      "phoneHelp": "We'll call you on this number to arrange delivery.",
+      "emailLabel": "Email",
+      "emailHelp": "To send you the order summary.",
+      "locationLabel": "Delivery location",
+      "locationPlaceholder": "Neighbourhood, city, landmark…",
+      "locationHelp": "A well-known landmark speeds up delivery.",
+      "followOrder": "I want to track my order",
+      "followOrderTooltip": "Checking this creates a personal account with the email you entered; you'll receive your login details by email to track progress.",
+      "followOrderHint": "A personal account is created to track delivery progress."
+    },
+    "step2": {
+      "title": "How you pay",
+      "chooseLabel": "Choose how you'd like to pay:",
+      "ariaLabel": "Payment method",
+      "onlineTitle": "Online payment",
+      "comingSoon": "Coming soon",
+      "cashNote": "Pay in cash when your parcel is delivered",
+      "trustTitle": "You choose your payment method.",
+      "trustText": "Pay online at checkout, or in cash on delivery."
+    },
+    "reassurance": {
+      "noCardTitle": "No card details stored",
+      "noCardText": "No card number is entered or stored here.",
+      "teamTitle": "A team you can reach",
+      "teamText": "On WhatsApp, before and after your order.",
+      "dataTitle": "Protected contact details",
+      "dataText": "Used for delivery, nothing else."
+    },
+    "summary": {
+      "title": "Your order",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "edit": "Edit",
+      "couponLabel": "Promo code",
+      "couponPlaceholder": "Promo code",
+      "couponApply": "Apply",
+      "couponApplying": "…",
+      "couponRemove": "Remove",
+      "couponAdd": "I have a promo code",
+      "subtotal": "Subtotal",
+      "youSave": "You save",
+      "totalToPay": "Total to pay",
+      "deliveryNote": "Delivery arranged via WhatsApp after ordering.",
+      "submit": "Place my order",
+      "submitting": "Saving…",
+      "securePayment": "Secure payment",
+      "termsNote": "By confirming, you accept our <cgv>terms of sale</cgv>.",
+      "mobileTotal": "Total"
+    },
+    "errors": {
+      "cartEmpty": "Your cart is empty.",
+      "invalidFields": "Please check the form fields.",
+      "invalidPhone": "Invalid phone number: nine digits, starting with 6 (mobile) or 2 (landline).",
+      "invalidPayment": "Select a payment method.",
+      "productUnavailable": "A product in your cart is no longer available.",
+      "variantUnavailable": "A selected variant is no longer available.",
+      "insufficientStock": "Insufficient stock for a product in your cart.",
+      "invalidJson": "Something went wrong. Please try again.",
+      "generic": "Something went wrong.",
+      "paymentUnavailable": "This payment method isn't active yet. Choose \"Cash on delivery\" to complete your order now.",
+      "network": "Could not reach the server. Please try again.",
+      "couponCheckFailed": "Couldn't check the code right now."
+    },
+    "validation": {
+      "fullName": "Enter your first and last name.",
+      "email": "Check your email address.",
+      "phone": "Nine digits, starting with 6 (mobile) or 2 (landline). E.g. 6 77 12 34 56",
+      "location": "Neighbourhood and city, at minimum."
+    }
+  },
   "wishlist": {
     "title": "Wishlist",
     "intro": "Saved items stay in this browser — no account and no sign-in needed.",
