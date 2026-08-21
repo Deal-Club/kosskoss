@@ -3,21 +3,8 @@ import { aggregateProfileFromAnswers } from "./diagnostic-data";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
 import type { KKProductView } from "@/types/kk";
 import { parseTags } from "@/lib/kk/tags";
-
-// Routine en 4 gestes, chaque geste puisé dans une catégorie du visage.
-//
-// « traiter » pointait sur une catégorie `serums` qui n'existe pas au
-// catalogue : les slugs réels sont nettoyants, toniques, TRAITEMENTS,
-// hydratants, solaires (voir prisma/data/kk-catalog.json). Aucun candidat
-// n'étant trouvé, la boucle sortait en silence — le geste central de la
-// routine, celui qui porte les vingt sérums du catalogue, manquait donc à
-// CHAQUE diagnostic depuis l'origine, sans la moindre erreur visible.
-const ROUTINE_STEPS = [
-  { key: "nettoyer", label: "Nettoyer", category: "nettoyants" },
-  { key: "traiter", label: "Traiter", category: "traitements" },
-  { key: "hydrater", label: "Hydrater", category: "hydratants" },
-  { key: "proteger", label: "Protéger", category: "solaires" },
-] as const;
+import { gestesActifs, libelleGeste } from "@/lib/kk/gestes-selection";
+import { lireGestes } from "./gestes";
 
 export type RoutineStep = {
   index: number;
@@ -42,7 +29,10 @@ function scoreOf(productTags: string[], profile: Record<string, number>): number
  * catégorie qui correspond le mieux au profil (score de tags), en respectant la
  * préférence de budget et la disponibilité.
  */
-export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResult> {
+export async function buildRoutine(
+  answerIds: string[],
+  locale = "fr",
+): Promise<DiagnosticResult> {
   const { tags, chips } = await aggregateProfileFromAnswers(answerIds);
 
   const rows = await prisma.product.findMany({
@@ -53,12 +43,16 @@ export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResul
   const preferCheap = (tags.budget_eco ?? 0) > (tags.premium ?? 0);
   const preferPremium = (tags.premium ?? 0) > (tags.budget_eco ?? 0);
 
+  // Les gestes viennent de la base : leur nombre, leur ordre et leur activation
+  // sont des réglages du client, plus une constante de code.
+  const gestes = gestesActifs(await lireGestes());
+
   const steps: RoutineStep[] = [];
   let total = 0;
 
-  ROUTINE_STEPS.forEach((step, i) => {
+  gestes.forEach((geste, i) => {
     const candidates = rows
-      .filter((p) => p.category.slug === step.category)
+      .filter((p) => p.category.slug === geste.category)
       .map((p) => ({ p, score: scoreOf(parseTags(p.tags), tags) }));
     if (candidates.length === 0) return;
 
@@ -73,8 +67,8 @@ export async function buildRoutine(answerIds: string[]): Promise<DiagnosticResul
     total += best.priceCents;
     steps.push({
       index: i + 1,
-      key: step.key,
-      label: step.label,
+      key: geste.key,
+      label: libelleGeste(geste, locale),
       why: best.shortDescription ?? "",
       product: toProductView(best, i),
     });

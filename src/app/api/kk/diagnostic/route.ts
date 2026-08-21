@@ -11,6 +11,9 @@ export async function POST(request: Request) {
   const answers = Array.isArray(body.answers)
     ? (body.answers as unknown[]).filter((x): x is string => typeof x === "string")
     : [];
-  const result = await buildRoutine(answers);
+  // Le corps vient du navigateur : on n'accepte que les deux langues connues,
+  // jamais une chaîne arbitraire transmise telle quelle à buildRoutine.
+  const locale = body.locale === "en" ? "en" : "fr";
+  const result = await buildRoutine(answers, locale);
   return NextResponse.json(result);
 }
