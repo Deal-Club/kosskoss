@@ -84,6 +84,10 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     image: string;
     path: string;
     unitPriceCents: number;
+    // Coût d'achat unitaire figé à la vente, comme dans createOrder
+    // (src/server/orders.ts) : recopié depuis la fiche produit au moment de
+    // la commande, jamais relu depuis le catalogue par la suite.
+    unitCostCents: number | null;
     quantity: number;
     lineTotalCents: number;
   }[] = [];
@@ -119,6 +123,9 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       image: p.image ?? "",
       path: `/${p.category.group.slug}/${p.category.slug}/${p.slug}`,
       unitPriceCents: unit,
+      // Figé à la vente, comme le prix. `?? null` et non `?? 0` : un produit
+      // sans coût renseigné laisse la case vide, il ne devient pas gratuit.
+      unitCostCents: p.costCents ?? null,
       quantity: qty,
       lineTotalCents: lineTotal,
     });
