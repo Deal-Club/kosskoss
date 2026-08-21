@@ -24,6 +24,7 @@ import {
   Tag,
   Tags,
   Ticket,
+  TrendingUp,
   Users,
   Warehouse,
   X,
@@ -80,6 +81,7 @@ export function AdminSidebar({
     {
       title: "Boutique",
       entries: [
+        { label: "Ventes", href: "/admin/ventes", icon: TrendingUp },
         { label: "Commandes", href: "/admin/orders", icon: Receipt },
         // « Clients » est retiré du menu : les coordonnées du client figurent
         // déjà dans le détail de chaque commande. L'écran existe toujours et
