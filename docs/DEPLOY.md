@@ -93,6 +93,8 @@ Créer `/var/www/mlc-bois/.env.local` avec les variables de l'étape 2, puis :
 ```bash
 npm ci                 # installe et lance `prisma generate` (postinstall)
 npx prisma migrate deploy   # applique les migrations à la base Neon
+npm run db:seed:gestes      # OBLIGATOIRE — voir § 5, sans quoi le diagnostic ne propose rien
+npm run db:seed:tags        # OBLIGATOIRE — voir § 5, sans quoi les facettes du catalogue sont vides
 npm run build
 pm2 start npm --name mlc-bois -- start
 pm2 save && pm2 startup     # relance automatique au redémarrage du serveur
@@ -159,6 +161,8 @@ connexion au back-office tourne alors en boucle.
 ```bash
 npm ci                        # installe et génère le client Prisma
 npx prisma migrate deploy     # applique les migrations à la base Neon
+npm run db:seed:gestes        # OBLIGATOIRE — voir § 5
+npm run db:seed:tags          # OBLIGATOIRE — voir § 5
 npm run build                 # base réveillée au préalable — voir plus bas
 ```
 
@@ -268,6 +272,32 @@ npm run db:seed
 
 À sauter si la base Neon contient déjà le catalogue — c'est le cas ici, la même
 base sert le développement et la production (voir [`DATABASE.md`](DATABASE.md)).
+
+### Deux tables que `migrate deploy` crée VIDES
+
+`npx prisma migrate deploy` ne pose que les structures. Deux d'entre elles sont
+créées vides alors que le site attend un contenu, et **rien dans le code ne
+supplée à leur absence** :
+
+| Table | Remplie par | Ce qui casse si on l'oublie |
+|---|---|---|
+| `DiagStep` | `npm run db:seed:gestes` | Le Diagnostic Beauté compose une routine **de zéro produit**. La page de résultat s'affiche, annonce « 0 produits », et « Commander la routine » mène à un panier vide. |
+| `ProductTag` | `npm run db:seed:tags` | Le vocabulaire des tags est vide : les facettes du catalogue et l'écran d'administration des tags n'ont plus rien à proposer. |
+
+La panne est **silencieuse** : aucune erreur, aucun 500, aucune ligne de
+journal. Une page qui s'affiche normalement mais ne vend rien. D'où les deux
+commandes placées juste après `migrate deploy` aux étapes 3 et 4.
+
+Ces deux scripts ne sont **pas** `npm run db:seed` : ils ne touchent ni au
+catalogue, ni aux moyens de paiement, ni au compte administrateur, et sont
+idempotents (`upsert` sur la clé). On peut les relancer sans rien casser.
+
+Une réserve tout de même une fois le site en service : relancés, ils
+**réécrivent les libellés** (`labelFr`, `labelEn`). L'ordre, la famille, la
+catégorie source et l'activation sont préservés — ce sont des réglages du
+client —, mais un libellé retouché depuis le back-office reviendrait à sa
+valeur d'origine. À lancer au premier déploiement, puis seulement en
+connaissance de cause.
 
 Neon met le calcul en veille après inactivité : la première requête après une
 nuit calme peut prendre une à deux secondes. C'est normal.
