@@ -28,6 +28,7 @@ import type { DiagIcon } from "@/lib/kk/diagnostic";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
+import { questionnaireEntame, type Reprise } from "@/lib/kk/diagnostic-reprise";
 import { Petal, BottleMotif } from "./motifs";
 import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
@@ -130,7 +131,7 @@ export function DiagnosticFlow({
     try {
       const brut = sessionStorage.getItem(REPRISE);
       if (!brut) return;
-      const repris = JSON.parse(brut) as { qIndex?: number; answers?: Record<string, string> };
+      const repris = JSON.parse(brut) as Reprise;
       if (repris.answers) setAnswers(repris.answers);
       if (typeof repris.qIndex === "number") {
         setQIndex(Math.min(Math.max(repris.qIndex, 0), questions.length - 1));
@@ -144,10 +145,18 @@ export function DiagnosticFlow({
   // QCM. N'écrase pas une reprise d'onglet déjà en cours — un questionnaire
   // entamé prime sur un ancien résultat, sans quoi revenir en arrière depuis
   // la question 3 renverrait sans cesse à cet écran.
+  //
+  // C'est un PROGRÈS RÉEL qu'on cherche, pas la simple présence de la clé :
+  // l'effet d'enregistrement plus bas écrit `{"qIndex":0,"answers":{}}` dès le
+  // premier montage, une valeur parfaitement vide mais bien présente. Se fier
+  // à `getItem()` seul faisait donc dépendre la proposition de l'ordre de
+  // déclaration des effets — elle ne survivait qu'au tout premier affichage de
+  // la page, et tout retour dans le même onglet (aller voir un produit, passer
+  // par le panier) renvoyait le client à la question 1.
   useEffect(() => {
     if (!savedAnswerIds || savedAnswerIds.length === 0) return;
     try {
-      if (sessionStorage.getItem(REPRISE)) return;
+      if (questionnaireEntame(sessionStorage.getItem(REPRISE))) return;
     } catch {
       /* Stockage indisponible : la proposition reste affichée quand même. */
     }
