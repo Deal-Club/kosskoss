@@ -655,6 +655,29 @@ model DiagAnswer {
   @@index([questionId])
 }
 
+// Gestes du Diagnostic Beauté : un produit est proposé par geste actif.
+//
+// Le nom ne peut pas être « RoutineStep » : ce modèle existe déjà, pour les
+// routines éditoriales. La famille Diag* est la bonne voisine.
+//
+// La CLÉ est l'identifiant, comme pour ProductTag : elle sert de repère stable
+// au moteur de routines et n'a aucune raison de changer.
+//
+// Le NOMBRE de produits proposés découle du nombre de gestes actifs. C'est
+// voulu : un plafond arbitraire couperait une routine au milieu, laissant un
+// client avec un nettoyant et un traitement, sans hydratant ni protection.
+model DiagStep {
+  key      String  @id
+  labelFr  String
+  labelEn  String  @default("")
+  // Slug de la catégorie produit où puiser le candidat de ce geste.
+  category String
+  position Int     @default(0)
+  active   Boolean @default(true)
+
+  @@index([position])
+}
+
 // Vocabulaire des tags produits, partagé par le catalogue et le diagnostic.
 //
 // La CLÉ est l'identifiant : ces clés sont déjà écrites dans Product.tags et
@@ -748,6 +771,27 @@ model Customer {
   passwordResets     CustomerPasswordReset[]
   campaignRecipients CampaignRecipient[]
   favorites          CustomerFavorite[]
+  diagProfile        CustomerDiagProfile?
+}
+
+// Profil Diagnostic d'un client connecté : ses RÉPONSES, pas sa routine.
+//
+// Les réponses restent valables dans le temps ; une routine calculée vieillit
+// avec le catalogue — ruptures, prix périmés, produits retirés. Stocker les
+// réponses évite d'avoir à gérer chacun de ces cas à l'affichage.
+//
+// `Cascade` et non `Restrict`, contrairement à la facture : un profil n'a
+// aucune valeur probante, il n'existe que pour servir son client.
+model CustomerDiagProfile {
+  id         String   @id @default(cuid())
+  // Un profil par client : un nouveau diagnostic remplace le précédent.
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  // Tableau JSON d'identifiants DiagAnswer. Lu en bloc, jamais interrogé entrée
+  // par entrée — comme les pondérations de DiagAnswer, déjà stockées ainsi.
+  answerIds  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // Produit mis en favori par un client connecté.

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/server/prisma";
+import { adresseEmailValide } from "@/lib/kk/email-valide";
 
 /**
  * Inscription à la lettre d'information.
@@ -13,12 +14,7 @@ import { prisma } from "@/server/prisma";
  * permettant de tester si quelqu'un est client de la maison.
  */
 
-/** Validation volontairement large : le rôle du serveur est d'écarter les
- *  saisies manifestement fausses, pas de refuser des adresses valides mais
- *  inhabituelles. La confirmation par e-mail tranchera le reste. */
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-
-const SOURCES = new Set(["accueil", "pied-de-page", "commande"]);
+const SOURCES = new Set(["accueil", "pied-de-page", "commande", "diagnostic"]);
 
 export async function POST(request: Request) {
   let corps: unknown;
@@ -31,7 +27,7 @@ export async function POST(request: Request) {
   const { email, locale, source } = (corps ?? {}) as Record<string, unknown>;
 
   const adresse = typeof email === "string" ? email.trim().toLowerCase() : "";
-  if (!EMAIL.test(adresse) || adresse.length > 254) {
+  if (!adresseEmailValide(adresse)) {
     return NextResponse.json({ error: "Adresse e-mail invalide." }, { status: 400 });
   }
 

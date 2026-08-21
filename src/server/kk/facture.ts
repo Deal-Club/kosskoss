@@ -19,6 +19,7 @@ import type { PaymentStatus } from "@/lib/orderStatus";
 import { buildInvoicePdf, invoiceFilename } from "@/server/invoice";
 import { isMailConfigured } from "@/lib/mailer";
 import { sendPaymentReceivedEmail } from "./emails";
+import { choisirLangue } from "@/lib/kk/langue";
 
 /**
  * Émission de la facture.
@@ -140,6 +141,8 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
 
   try {
     const pdf = await buildInvoicePdf(order, numero, issuedAt);
+    // Même langue que la commande : c'est elle qui a reçu la confirmation, la
+    // facture doit suivre — voir `checkout.ts` pour le même choix côté commande.
     await sendPaymentReceivedEmail({
       to: order.email,
       firstName: order.billing.firstName,
@@ -148,6 +151,7 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
       totalFcfa: order.totalCents,
       facturePdf: pdf,
       nomFichier: invoiceFilename(numero),
+      langue: choisirLangue(order.locale),
     });
     // Le succès aussi se consigne. Le back-office n'a ni écran des factures ni
     // renvoi manuel : l'historique de la commande est la SEULE surface où

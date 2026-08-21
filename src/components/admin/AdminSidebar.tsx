@@ -9,6 +9,7 @@ import {
   FileText,
   Layers,
   LayoutDashboard,
+  ListChecks,
   Megaphone,
   Menu,
   Newspaper,
@@ -69,6 +70,10 @@ export function AdminSidebar({
         { label: "Tags produits", href: "/admin/products/tags", icon: Tag },
         { label: "Stock", href: "/admin/stock", icon: Warehouse },
         { label: "Diagnostic beauté", href: "/admin/diagnostic", icon: Sparkles },
+        // Gestes du diagnostic : libellés FR/EN, catégorie source, ordre et
+        // activation — leur nombre actif fixe le nombre de produits proposés
+        // par le diagnostic (critère 08), sans redéploiement.
+        { label: "Gestes du diagnostic", href: "/admin/diagnostic/gestes", icon: ListChecks },
       ],
     },
     {

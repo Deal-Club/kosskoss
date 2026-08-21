@@ -1,4 +1,7 @@
-// Freins contre les tentatives automatisées sur l'espace client.
+// Freins contre les tentatives automatisées sur l'espace client, et sur toute
+// route publique qui envoie un e-mail à une adresse fournie par l'appelant
+// (même risque de mailbombing, même besoin de ne pas révéler si l'adresse
+// est connue).
 //
 // Même principe que src/server/loginRate.ts (compteur en mémoire, suffisant
 // pour une instance unique), mais des compteurs distincts : un client qui se
@@ -67,6 +70,16 @@ const reset = createLimiter(3, 60 * 60 * 1000);
 /** Inscription : cinq envois par adresse et par heure, pour éviter le mailbombing. */
 const signup = createLimiter(5, 60 * 60 * 1000);
 
+/**
+ * Routine du diagnostic par e-mail : cinq envois par adresse et par heure.
+ * Cette route n'exige pas de compte — n'importe qui peut la cibler pour
+ * mailbomber une adresse tierce sous la réputation d'envoi de la boutique,
+ * partagée avec les confirmations de commande et les factures. Même borne
+ * que l'inscription, pour la même raison.
+ */
+const routineEmail = createLimiter(5, 60 * 60 * 1000);
+
 export const customerLoginRate = login;
 export const customerResetRate = reset;
 export const customerSignupRate = signup;
+export const customerRoutineEmailRate = routineEmail;

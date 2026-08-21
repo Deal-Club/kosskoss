@@ -839,7 +839,9 @@
      1200 / 4000 / 6800 / 9200   les quatre temps de l'analyse
 
    Acte II — la composition
-     9800 → 11600  les quatre gestes de la routine s'inscrivent
+     9800 → …      les gestes de la routine s'inscrivent, un toutes les 450 ms
+                   (11600 ms pour les quatre gestes livrés — leur nombre se
+                   règle au back-office)
      9000 →        le pétale respire jusqu'à l'affichage du résultat
 
    Douze secondes ne se tiennent qu'à une condition : que rien ne s'arrête en

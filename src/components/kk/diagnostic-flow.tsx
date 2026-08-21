@@ -21,12 +21,14 @@ import {
   ArrowLeft,
   ArrowRight,
   Zap,
+  Loader2,
 } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import { formatFcfa } from "@/lib/kk/format";
+import { questionnaireEntame, type Reprise } from "@/lib/kk/diagnostic-reprise";
 import { Petal, BottleMotif } from "./motifs";
 import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
@@ -63,13 +65,31 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  * Les réponses sont conservées le temps de l'onglet : un rechargement, un
  * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
  */
-type Phase = "question" | "loading" | "result";
+type Phase = "propose" | "question" | "loading" | "result";
 
 /** Clé de reprise. `session` et non `local` : un diagnostic est daté, il ne
  *  doit pas ressurgir des semaines plus tard comme s'il était encore valable. */
 const REPRISE = "kk-diagnostic";
 
-export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
+export function DiagnosticFlow({
+  questions,
+  savedAnswerIds,
+  locale = "fr",
+  gestes,
+}: {
+  questions: ClientQuestion[];
+  /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
+   *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
+   *  questionnaire — dans ce cas la page se comporte comme avant. */
+  savedAnswerIds?: string[] | null;
+  /** Langue de la page, transmise aux trois routes appelées depuis le parcours
+   *  (calcul de la routine, envoi de la routine par e-mail, inscription à la
+   *  lettre d'information) — même usage que sur `NewsletterBand`, qui ne s'en
+   *  sert que pour l'appel réseau, jamais pour changer le texte affiché. */
+  locale?: string;
+  /** Libellés des gestes actifs, dans l'ordre — voir `DiagnosticAnalyse`. */
+  gestes: string[];
+}) {
   const { add } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -78,9 +98,29 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [result, setResult] = useState<DiagnosticResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  /** Réponses ayant produit `result` : distinctes de `answers`, qui reste vide
+   *  quand on arrive au résultat par « Revoir ma routine » sans repasser par
+   *  le QCM. C'est ce tableau, pas `answers`, qu'il faut renvoyer au serveur
+   *  pour que l'e-mail envoyé corresponde à la routine affichée. */
+  const [lastAnswerIds, setLastAnswerIds] = useState<string[]>([]);
   /** Passage automatique en cours : neutralise un second clic pendant le délai. */
   /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
   const attenteAnalyse = useRef<number | null>(null);
+
+  // Formulaire d'envoi de la routine par e-mail (écran de résultat).
+  //
+  // Deux consentements, deux actions : `routineEmail` sert aux deux appels,
+  // mais leur issue est suivie séparément (`envoiStatut`/`inscriptionStatut`)
+  // puisque l'un peut réussir quand l'autre échoue. `enCoursEnvoi` est le seul
+  // état qui pilote le bouton — un double clic ne doit pas partir même si un
+  // des deux appels a déjà répondu et que l'autre traîne encore.
+  const [routineEmail, setRoutineEmail] = useState("");
+  const [inscrireLettre, setInscrireLettre] = useState(false);
+  const [enCoursEnvoi, setEnCoursEnvoi] = useState(false);
+  const [envoiStatut, setEnvoiStatut] = useState<"repos" | "ok" | "erreur">("repos");
+  const [envoiMessage, setEnvoiMessage] = useState<string | null>(null);
+  const [inscriptionStatut, setInscriptionStatut] = useState<"repos" | "ok" | "erreur">("repos");
+  const [inscriptionMessage, setInscriptionMessage] = useState<string | null>(null);
 
   const question = questions[qIndex];
   const selected = question ? answers[question.id] : undefined;
@@ -91,7 +131,7 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     try {
       const brut = sessionStorage.getItem(REPRISE);
       if (!brut) return;
-      const repris = JSON.parse(brut) as { qIndex?: number; answers?: Record<string, string> };
+      const repris = JSON.parse(brut) as Reprise;
       if (repris.answers) setAnswers(repris.answers);
       if (typeof repris.qIndex === "number") {
         setQIndex(Math.min(Math.max(repris.qIndex, 0), questions.length - 1));
@@ -100,6 +140,28 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
       /* Stockage indisponible ou illisible : on repart simplement de zéro. */
     }
   }, [questions.length]);
+
+  // Profil client : proposer de revoir la routine plutôt que de relancer le
+  // QCM. N'écrase pas une reprise d'onglet déjà en cours — un questionnaire
+  // entamé prime sur un ancien résultat, sans quoi revenir en arrière depuis
+  // la question 3 renverrait sans cesse à cet écran.
+  //
+  // C'est un PROGRÈS RÉEL qu'on cherche, pas la simple présence de la clé :
+  // l'effet d'enregistrement plus bas écrit `{"qIndex":0,"answers":{}}` dès le
+  // premier montage, une valeur parfaitement vide mais bien présente. Se fier
+  // à `getItem()` seul faisait donc dépendre la proposition de l'ordre de
+  // déclaration des effets — elle ne survivait qu'au tout premier affichage de
+  // la page, et tout retour dans le même onglet (aller voir un produit, passer
+  // par le panier) renvoyait le client à la question 1.
+  useEffect(() => {
+    if (!savedAnswerIds || savedAnswerIds.length === 0) return;
+    try {
+      if (questionnaireEntame(sessionStorage.getItem(REPRISE))) return;
+    } catch {
+      /* Stockage indisponible : la proposition reste affichée quand même. */
+    }
+    setPhase("propose");
+  }, [savedAnswerIds]);
 
   useEffect(() => {
     try {
@@ -120,13 +182,17 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     setError(null);
   }
 
-  async function avancer(reponses: Record<string, string>) {
-    if (qIndex < questions.length - 1) {
-      setQIndex((i) => i + 1);
-      return;
-    }
-    // Dernière question → analyse.
-    //
+  /**
+   * Envoie des identifiants de réponse au moteur et affiche le résultat.
+   * Commun aux deux chemins qui y mènent : la fin du QCM, et « Revoir ma
+   * routine » sur le profil sauvegardé — dans les deux cas la routine est
+   * recalculée sur le catalogue du jour, jamais rejouée depuis un résultat
+   * figé.
+   *
+   * `retourEnErreur` est l'écran où revenir si la requête échoue : la
+   * question courante depuis le QCM, la proposition depuis le profil.
+   */
+  async function soumettre(answerIds: string[], retourEnErreur: Phase) {
     // Le résultat n'est affiché qu'une fois la séquence d'analyse arrivée à son
     // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
     // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
@@ -140,11 +206,15 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     setError(null);
     const debut = Date.now();
     try {
-      const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ answers: answerIds }),
+        // `locale` n'est pas décoratif : le moteur traduit les libellés de
+        // gestes (`libelleGeste`) avec ce qu'il reçoit ici. Sans lui, la route
+        // retombait sur le français, et l'écran de résultat affichait
+        // « Nettoyer » là où l'écran d'attente qui le précède — rendu côté
+        // serveur avec la langue de la page — venait d'annoncer « Cleanse ».
+        body: JSON.stringify({ answers: answerIds, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as DiagnosticResult;
@@ -160,12 +230,38 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
       }
 
       setResult(data);
+      setLastAnswerIds(answerIds);
       setPhase("result");
     } catch {
       // Un échec ne se fait pas attendre : on rend la main tout de suite.
       setError("L'analyse a échoué. Choisissez à nouveau votre réponse.");
-      setPhase("question");
+      setPhase(retourEnErreur);
     }
+  }
+
+  async function avancer(reponses: Record<string, string>) {
+    if (qIndex < questions.length - 1) {
+      setQIndex((i) => i + 1);
+      return;
+    }
+    // Dernière question → analyse.
+    const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
+    await soumettre(answerIds, "question");
+  }
+
+  /** Revoit la routine du profil sauvegardé, sans repasser par le QCM. */
+  function revoirRoutine() {
+    if (!savedAnswerIds || savedAnswerIds.length === 0) return;
+    void soumettre(savedAnswerIds, "propose");
+  }
+
+  /** Refaire le questionnaire remplace le profil : on repart de zéro, et
+   *  c'est l'`upsert` d'`enregistrerProfil` qui écrasera l'ancien à la fin. */
+  function refaireQuestionnaire() {
+    setAnswers({});
+    setQIndex(0);
+    setError(null);
+    setPhase("question");
   }
 
   /**
@@ -206,11 +302,130 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     router.push(withLocale(pathname, "/commande"));
   }
 
+  /**
+   * Envoie la routine par e-mail et, si la case est cochée, inscrit la même
+   * adresse à la lettre d'information.
+   *
+   * Les deux appels sont indépendants : chacun gère son propre échec sans
+   * faire échouer l'autre, et sont lancés en parallèle plutôt qu'en série pour
+   * ne pas faire attendre l'inscription derrière l'envoi. `Promise.all` reste
+   * sûr ici parce qu'aucune des deux fonctions internes ne rejette — chacune
+   * capture son erreur et la range dans son propre message.
+   */
+  async function envoyerRoutineParEmail(e: React.FormEvent) {
+    e.preventDefault();
+    if (enCoursEnvoi) return; // Double clic : le premier envoi est encore en cours.
+    setEnCoursEnvoi(true);
+    setEnvoiStatut("repos");
+    setEnvoiMessage(null);
+    setInscriptionStatut("repos");
+    setInscriptionMessage(null);
+
+    const adresse = routineEmail.trim();
+
+    const appelEnvoi = (async () => {
+      try {
+        const res = await fetch("/api/kk/diagnostic/routine-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: adresse, answers: lastAnswerIds, locale }),
+        });
+        const data = (await res.json()) as { error?: string; retryAfterSeconds?: number };
+        if (res.status === 429) {
+          // Cas distinct du reste : le visiteur n'a rien fait de mal, il doit
+          // patienter. Le message porte un délai concret plutôt qu'un « erreur ».
+          const minutes = data.retryAfterSeconds ? Math.ceil(data.retryAfterSeconds / 60) : null;
+          setEnvoiMessage(
+            minutes
+              ? `Trop de demandes d'envoi. Réessayez dans environ ${minutes} min.`
+              : "Trop de demandes d'envoi. Merci de patienter un instant avant de réessayer.",
+          );
+          setEnvoiStatut("erreur");
+          return;
+        }
+        if (!res.ok) {
+          setEnvoiMessage(data.error ?? "L'envoi a échoué. Réessayez.");
+          setEnvoiStatut("erreur");
+          return;
+        }
+        setEnvoiMessage("Envoyée ! Vérifiez votre boîte de réception.");
+        setEnvoiStatut("ok");
+      } catch {
+        setEnvoiMessage("Vérifiez votre connexion et réessayez.");
+        setEnvoiStatut("erreur");
+      }
+    })();
+
+    const appelInscription = inscrireLettre
+      ? (async () => {
+          try {
+            const res = await fetch("/api/kk/newsletter", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: adresse, locale, source: "diagnostic" }),
+            });
+            const data = (await res.json()) as { error?: string };
+            if (!res.ok) {
+              setInscriptionMessage(data.error ?? "Inscription à la lettre d'information impossible.");
+              setInscriptionStatut("erreur");
+              return;
+            }
+            setInscriptionMessage("Inscription à la lettre d'information confirmée.");
+            setInscriptionStatut("ok");
+          } catch {
+            setInscriptionMessage("Inscription à la lettre d'information impossible.");
+            setInscriptionStatut("erreur");
+          }
+        })()
+      : Promise.resolve();
+
+    await Promise.all([appelEnvoi, appelInscription]);
+    setEnCoursEnvoi(false);
+  }
+
+  /* ---------------------------------------------------------- Propose -- */
+  if (phase === "propose") {
+    return (
+      <MinimalShell>
+        <section className="kk-rise mx-auto max-w-2xl px-6 py-16 text-center">
+          <p className="eyebrow">Bon retour</p>
+          <h1 className="mt-2 text-deep">Vous avez déjà fait votre diagnostic</h1>
+          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+            Revoyez la routine construite à partir de vos réponses — recalculée sur les produits
+            disponibles aujourd&rsquo;hui — ou refaites le questionnaire si votre peau a changé.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={revoirRoutine}
+              className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition"
+            >
+              Revoir ma routine
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={refaireQuestionnaire}
+              className="text-sm font-medium text-muted-foreground transition hover:text-deep"
+            >
+              Refaire le questionnaire
+            </button>
+          </div>
+          {error && (
+            <p role="alert" className="mt-4 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+        </section>
+      </MinimalShell>
+    );
+  }
+
   /* ---------------------------------------------------------- Loading -- */
   if (phase === "loading") {
     return (
       <MinimalShell>
-        <DiagnosticAnalyse />
+        <DiagnosticAnalyse gestes={gestes} />
       </MinimalShell>
     );
   }
@@ -356,6 +571,79 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
                   <p className="mt-2.5 text-center text-xs text-primary-foreground/60">
                     {result.steps.length} produits · paiement à l&apos;étape suivante
                   </p>
+
+                  {/* Envoi par e-mail : une action distincte de l'achat, posée
+                      sous elle plutôt que rivalisant avec elle. Même balisage
+                      que `NewsletterBand`, sur le même fond — les deux
+                      formulaires du site sur bg-deep se ressemblent
+                      volontairement.
+
+                      Deux consentements, deux actions : le bouton n'engage que
+                      l'envoi de la routine, demandé par le visiteur en étant
+                      ici. La case, EN DESSOUS et décochée par défaut, propose
+                      l'inscription à la lettre d'information sans jamais s'y
+                      substituer. */}
+                  <form onSubmit={envoyerRoutineParEmail} className="mt-6 border-t border-white/10 pt-5">
+                    <h3 className="text-xs font-semibold tracking-[0.14em] text-gold-soft uppercase">
+                      Recevoir cette routine par e-mail
+                    </h3>
+                    <label htmlFor="diagnostic-routine-email" className="sr-only">
+                      Votre adresse e-mail
+                    </label>
+                    <input
+                      id="diagnostic-routine-email"
+                      type="email"
+                      required
+                      autoComplete="email"
+                      value={routineEmail}
+                      onChange={(e) => setRoutineEmail(e.target.value)}
+                      placeholder="Votre adresse e-mail"
+                      aria-invalid={envoiStatut === "erreur"}
+                      aria-describedby={envoiMessage ? "diagnostic-routine-email-message" : undefined}
+                      className="mt-3 w-full rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.08] px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:border-gold focus:outline-none"
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={enCoursEnvoi}
+                      className="kk-fill kk-fill-deep mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-deep disabled:opacity-60"
+                    >
+                      {enCoursEnvoi && <Loader2 className="h-4 w-4 animate-spin" />}
+                      Recevoir ma routine par e-mail
+                    </button>
+
+                    {/* Case décochée par défaut : cocher inscrit, ne pas cocher
+                        n'inscrit à rien — même en demandant l'envoi. */}
+                    <label className="mt-3 flex items-start gap-2.5 text-xs text-primary-foreground/75">
+                      <input
+                        type="checkbox"
+                        checked={inscrireLettre}
+                        onChange={(e) => setInscrireLettre(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 accent-gold"
+                      />
+                      <span>M&rsquo;inscrire aussi à la lettre d&rsquo;information</span>
+                    </label>
+
+                    {/* Les deux messages sont indépendants : l'un peut confirmer
+                        pendant que l'autre signale un échec, et chacun nomme ce
+                        qui le concerne — jamais un « une erreur est survenue »
+                        générique qui laisserait deviner lequel des deux appels
+                        a manqué. */}
+                    {envoiMessage && (
+                      <p
+                        id="diagnostic-routine-email-message"
+                        role={envoiStatut === "erreur" ? "alert" : "status"}
+                        className="mt-2.5 text-xs text-gold"
+                      >
+                        {envoiMessage}
+                      </p>
+                    )}
+                    {inscriptionMessage && (
+                      <p role={inscriptionStatut === "erreur" ? "alert" : "status"} className="mt-1.5 text-xs text-gold">
+                        {inscriptionMessage}
+                      </p>
+                    )}
+                  </form>
                 </div>
               </div>
             </aside>
