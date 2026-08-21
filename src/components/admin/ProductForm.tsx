@@ -1,12 +1,11 @@
 "use client";
 
-
 import { useMemo, useState, type FormEvent } from "react";
 // `marge` et `pricingUtils` sont des modules purs — vérifié : aucun import,
 // donc rien de serveur n'entre dans le paquet du navigateur. Ce composant est
 // un composant client, et le lot précédent a cassé la construction en tirant
 // Prisma dans le navigateur par un import qui semblait anodin.
-import { margeUnitaire, tauxMarge } from "@/lib/kk/marge";
+import { coutSaisiValide, margeUnitaire, tauxMarge } from "@/lib/kk/marge";
 import { formatPrice, toCents } from "@/server/pricingUtils";
 import { useRouter } from "next/navigation";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
@@ -58,26 +57,6 @@ export function ProductForm({
   const [price, setPrice] = useState(initialData?.price ?? "");
   const [cost, setCost] = useState(initialData?.cost ?? "");
 
-  /**
-   * Marge affichée sous le champ, recalculée à la frappe.
-   *
-   * Rendue `null` — donc remplacée par l'invite — tant que l'un des deux
-   * montants manque : une marge affichée sur un coût vide serait fausse, et
-   * c'est précisément l'erreur que le champ nullable existe pour éviter.
-   */
-  const apercuMarge = useMemo(() => {
-    const prixCents = toCents(price);
-    const coutCents = cost.trim() ? toCents(cost) : null;
-    if (!prixCents || coutCents === null) return null;
-
-    const marge = margeUnitaire(prixCents, coutCents);
-    const taux = tauxMarge(prixCents, coutCents);
-    if (marge === null || taux === null) return null;
-
-    // Une vente à perte se dit, elle ne se déduit pas d'un signe moins.
-    const mention = marge < 0 ? " — vendu à perte" : "";
-    return `Marge : ${formatPrice(marge)} (${taux.toString().replace(".", ",")} %)${mention}`;
-  }, [price, cost]);
   const [badge, setBadge] = useState(initialData?.badge ?? "");
   const [rating, setRating] = useState(initialData?.rating?.toString() ?? "");
   const [stock, setStock] = useState((initialData?.stock ?? 10).toString());
@@ -106,6 +85,32 @@ export function ProductForm({
   // Vue affichée dans l'aperçu : la fiche produit ou la carte telle qu'elle
   // apparaît dans les grilles de la boutique.
   const [previewView, setPreviewView] = useState<ProductPreviewView>("detail");
+
+  /**
+   * Marge affichée sous le champ, recalculée à la frappe.
+   *
+   * Rendue `null` — donc remplacée par l'invite — tant que l'un des deux
+   * montants manque : une marge affichée sur un coût vide serait fausse, et
+   * c'est précisément l'erreur que le champ nullable existe pour éviter.
+   */
+  const apercuMarge = useMemo(() => {
+    // Une saisie sans chiffre — « abc », « — » — n'est pas un coût de zéro :
+    // sans ce test, l'aperçu annonçait 100 % de marge avant que le serveur ne
+    // refuse la même chaîne.
+    if (!coutSaisiValide(cost)) return null;
+
+    const prixCents = toCents(price);
+    const coutCents = cost.trim() ? toCents(cost) : null;
+    if (!prixCents || coutCents === null) return null;
+
+    const marge = margeUnitaire(prixCents, coutCents);
+    const taux = tauxMarge(prixCents, coutCents);
+    if (marge === null || taux === null) return null;
+
+    // Une vente à perte se dit, elle ne se déduit pas d'un signe moins.
+    const mention = marge < 0 ? " — vendu à perte" : "";
+    return `Marge : ${formatPrice(marge)} (${taux.toString().replace(".", ",")} %)${mention}`;
+  }, [price, cost]);
 
   const stockNumber = Number.parseInt(stock, 10);
   const thresholdNumber = Number.parseInt(lowStockThreshold, 10);
@@ -344,7 +349,10 @@ export function ProductForm({
                 Sans cela, il faudrait enregistrer puis aller la lire au tableau
                 de bord pour découvrir qu'on vend à perte. */}
             <span className="mt-1 block text-xs text-muted-foreground">
-              {apercuMarge ?? "Laissez vide tant que le coût n’est pas connu : un coût absent n’est pas un coût nul."}
+              {apercuMarge ??
+                (cost.trim()
+                  ? "Renseignez aussi le prix pour voir la marge."
+                  : "Laissez vide tant que le coût n’est pas connu : un coût absent n’est pas un coût nul.")}
             </span>
           </label>
         </div>

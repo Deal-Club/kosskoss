@@ -1,4 +1,5 @@
 import { toCents } from "@/server/pricingUtils";
+import { coutSaisiValide } from "@/lib/kk/marge";
 import type { VariantInput } from "@/lib/variantPricing";
 import type { ProductRecord } from "@/server/types";
 import { isValidGtin } from "@/lib/gtin";
@@ -92,12 +93,18 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
 
   // COÛT D'ACHAT : facultatif, et une chaîne vide l'efface volontairement.
   //
-  // Zéro est refusé comme pour les prix, mais pour une raison différente : un
-  // produit reçu gratuitement se saisit en vidant le champ, pas en écrivant 0,
-  // sans quoi on ne distinguerait plus « gratuit » de « pas encore renseigné ».
+  // ZÉRO EST ACCEPTÉ, contrairement aux prix. Un échantillon reçu gratuitement
+  // a bien un coût de zéro : c'est une information, pas une absence. Le refuser
+  // obligerait à vider le champ, donc à écrire « pas encore renseigné » là où
+  // l'on sait — et ferait s'effondrer la distinction que toute cette colonne
+  // nullable existe pour tenir.
+  //
+  // Le contrôle porte donc sur la SAISIE et non sur sa conversion : `toCents`
+  // rend 0 aussi bien pour « 0 » que pour « abc », qui ne se distinguent plus
+  // après coup.
   if (has("cost")) {
     const cost = asTrimmedString(body.cost) ?? "";
-    if (cost && toCents(cost) <= 0) {
+    if (!coutSaisiValide(cost)) {
       errors.push("Coût d'achat invalide (exemple : « 12 000 »).");
     } else {
       values.cost = cost;

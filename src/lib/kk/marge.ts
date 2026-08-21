@@ -68,3 +68,27 @@ export function tauxMarge(
   if (marge === null || prixCents === 0) return null;
   return Math.round((marge / prixCents) * 1000) / 10;
 }
+
+/**
+ * Une saisie de coût d'achat est-elle exploitable ?
+ *
+ * ── POURQUOI CETTE FONCTION EXISTE ──────────────────────────────────────────
+ *
+ * `toCents` rend 0 aussi bien pour « 0 » que pour « abc » : après conversion,
+ * les deux sont indistinguables. Or l'un est un coût RÉEL — un échantillon reçu
+ * gratuitement, une dotation fournisseur — et l'autre une faute de frappe.
+ *
+ * On regarde donc la SAISIE et non son résultat. Sans cela, l'aperçu de marge
+ * annonçait « 100 % » sur « abc » avant que le serveur ne refuse la même
+ * chaîne : l'écran et le serveur se contredisaient sur des touches identiques.
+ *
+ * Une chaîne vide est licite : elle signifie « pas encore renseigné », ce qui
+ * est différent de zéro et que la colonne nullable existe pour distinguer.
+ */
+export function coutSaisiValide(saisie: string): boolean {
+  const brut = saisie.trim();
+  if (!brut) return true;
+  // Au moins un chiffre : « 0 » passe, « abc » et « — » non. `toCents` écarte
+  // ensuite tout le reste, donc ce test suffit à séparer les deux cas.
+  return /\d/.test(brut);
+}

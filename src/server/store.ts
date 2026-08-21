@@ -25,7 +25,7 @@ import { parseTags } from "@/lib/kk/tags";
 // sans casser les callers existants, tout en gardant la logique dans un
 // module pur testable sans base de données.
 export { formatPrice, toCents } from "@/server/pricingUtils";
-import { formatPrice, toCents } from "@/server/pricingUtils";
+import { formatPrice, toCents, coutCentsAEnregistrer } from "@/server/pricingUtils";
 
 function parseBullets(raw: string): string[] {
   try {
@@ -381,7 +381,7 @@ export async function createProduct(input: Omit<ProductRecord, "id">): Promise<P
         images: JSON.stringify(input.images ?? []),
         priceCents: toCents(input.price),
         oldPriceCents: input.oldPrice ? toCents(input.oldPrice) : null,
-        costCents: input.cost ? toCents(input.cost) : null,
+        costCents: coutCentsAEnregistrer(input.cost ?? ""),
         badge: input.badge ?? null,
         editorialRating: input.rating ?? null,
         stock: input.stock ?? (input.inStock === false ? 0 : 10),
@@ -462,7 +462,7 @@ export async function updateProduct(
         oldPriceCents:
           patch.oldPrice === undefined ? undefined : patch.oldPrice ? toCents(patch.oldPrice) : null,
         costCents:
-          patch.cost === undefined ? undefined : patch.cost ? toCents(patch.cost) : null,
+          patch.cost === undefined ? undefined : coutCentsAEnregistrer(patch.cost),
         badge: patch.badge === undefined ? undefined : (patch.badge || null),
         editorialRating: patch.rating === undefined ? undefined : (patch.rating ?? null),
         stock: patch.stock ?? undefined,

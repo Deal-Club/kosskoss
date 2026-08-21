@@ -15,6 +15,22 @@ export function toCents(value: string): number {
 /**
  * Formate un entier FCFA en chaîne lisible ("18 500 FCFA").
  */
+/**
+ * Montant à enregistrer pour un coût d'achat.
+ *
+ * Zéro et « rien » ne se confondent pas ici : « 0 » est un coût réel — un
+ * échantillon reçu gratuitement — tandis qu'une chaîne vide veut dire « pas
+ * encore renseigné », et la colonne est nullable pour porter cette différence.
+ * La chaîne « 0 » étant vraie en JavaScript, elle passe bien par `toCents`.
+ *
+ * La règle vit ici plutôt qu'en ligne dans `store.ts` : les deux chemins
+ * d'écriture — création et mise à jour — doivent l'appliquer à l'identique, et
+ * une règle recopiée diverge tôt ou tard.
+ */
+export function coutCentsAEnregistrer(saisie: string): number | null {
+  return saisie ? toCents(saisie) : null;
+}
+
 export function formatPrice(cents: number): string {
   return `${Math.round(cents).toLocaleString("fr-FR")} FCFA`;
 }

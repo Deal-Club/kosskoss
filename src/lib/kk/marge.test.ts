@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { margeUnitaire, tauxMarge } from "./marge";
+import { coutSaisiValide, margeUnitaire, tauxMarge } from "./marge";
 
 describe("margeUnitaire", () => {
   it("rend la différence entre le prix et le coût", () => {
@@ -39,6 +39,12 @@ describe("tauxMarge", () => {
   });
 
   it("rend null quand le coût n'est pas renseigné", () => {
+    // Même contrat que `margeUnitaire` : les deux formes d'absence se valent.
+    assert.equal(tauxMarge(18500, null), null);
+    assert.equal(tauxMarge(18500, undefined), null);
+  });
+
+  it("rend null quand le coût n'est pas renseigné", () => {
     assert.equal(tauxMarge(18500, null), null);
   });
 
@@ -55,5 +61,31 @@ describe("tauxMarge", () => {
   it("arrondit à une décimale", () => {
     // Un taux affiché avec quinze décimales ne se lit pas.
     assert.equal(tauxMarge(3000, 1000), 66.7);
+  });
+});
+
+describe("coutSaisiValide", () => {
+  it("accepte un coût de zéro", () => {
+    // Le cœur de la fonction : « 0 » et « abc » donnent tous deux 0 après
+    // conversion, donc seul l'examen de la saisie peut les distinguer.
+    assert.equal(coutSaisiValide("0"), true);
+    assert.equal(coutSaisiValide("0 FCFA"), true);
+  });
+
+  it("accepte une saisie vide, qui signifie « pas encore renseigné »", () => {
+    assert.equal(coutSaisiValide(""), true);
+    assert.equal(coutSaisiValide("   "), true);
+  });
+
+  it("refuse une saisie sans aucun chiffre", () => {
+    // Sans ce refus, l'aperçu annonçait 100 % de marge sur « abc » avant que
+    // le serveur ne rejette la même chaîne.
+    assert.equal(coutSaisiValide("abc"), false);
+    assert.equal(coutSaisiValide("—"), false);
+    assert.equal(coutSaisiValide("-"), false);
+  });
+
+  it("accepte les formats que le back-office produit lui-même", () => {
+    assert.equal(coutSaisiValide("12 000 FCFA"), true);
   });
 });
