@@ -1,6 +1,7 @@
 import { sendMail, isMailConfigured } from "@/lib/mailer";
 import { formatFcfa } from "@/lib/kk/format";
 import { BRAND } from "@/config/brand";
+import type { Langue } from "@/lib/kk/langue";
 
 const DEEP = "#0f3b46";
 const SAND = "#f3e8dd";
@@ -42,11 +43,13 @@ type OrderEmailInput = {
   orderNumber: string;
   items: { brand: string; name: string; variantLabel: string; quantity: number; lineTotalCents: number }[];
   totalFcfa: number;
+  langue: Langue;
 };
 
 /** Confirmation de commande (best-effort : ne bloque jamais la commande). */
 export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promise<void> {
   if (!isMailConfigured()) return;
+  const fr = input.langue !== "en";
   const rows = input.items
     .map(
       (i) =>
@@ -57,7 +60,8 @@ export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promis
         )}</td></tr>`,
     )
     .join("");
-  const inner = `
+  const inner = fr
+    ? `
     <p style="margin:0 0 16px">Bonjour ${esc(input.firstName)}, merci pour votre commande !</p>
     <p style="margin:0 0 16px;color:#6a7a7d">Commande <strong style="color:${DEEP}">${esc(input.orderNumber)}</strong></p>
     <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
@@ -68,15 +72,33 @@ export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promis
     <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
       Dès réception de votre paiement, nous vous envoyons votre facture et nous
       vous contactons sur WhatsApp pour organiser la livraison.
+    </div>`
+    : `
+    <p style="margin:0 0 16px">Hello ${esc(input.firstName)}, thank you for your order!</p>
+    <p style="margin:0 0 16px;color:#6a7a7d">Order <strong style="color:${DEEP}">${esc(input.orderNumber)}</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">${rows}
+      <tr><td style="padding:12px 0;font-weight:bold">Total</td><td style="padding:12px 0;text-align:right;font-weight:bold">${esc(
+        formatFcfa(input.totalFcfa),
+      )}</td></tr>
+    </table>
+    <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
+      As soon as we receive your payment, we'll send your invoice and contact
+      you on WhatsApp to arrange delivery.
     </div>`;
-  const text = `Merci pour votre commande ${input.orderNumber}. Total : ${formatFcfa(
-    input.totalFcfa,
-  )}. Votre facture vous parviendra dès réception du paiement.`;
+  const text = fr
+    ? `Merci pour votre commande ${input.orderNumber}. Total : ${formatFcfa(
+        input.totalFcfa,
+      )}. Votre facture vous parviendra dès réception du paiement.`
+    : `Thank you for your order ${input.orderNumber}. Total: ${formatFcfa(
+        input.totalFcfa,
+      )}. Your invoice will arrive once payment is received.`;
   try {
     await sendMail({
       to: input.to,
-      subject: `Votre commande ${input.orderNumber} — ${BRAND.name}`,
-      html: shell("Merci pour votre commande !", inner),
+      subject: fr
+        ? `Votre commande ${input.orderNumber} — ${BRAND.name}`
+        : `Your order ${input.orderNumber} — ${BRAND.name}`,
+      html: shell(fr ? "Merci pour votre commande !" : "Thank you for your order!", inner),
       text,
     });
   } catch {
@@ -92,6 +114,7 @@ export interface PaymentReceivedInput {
   totalFcfa: number;
   facturePdf: Buffer;
   nomFichier: string;
+  langue: Langue;
 }
 
 /**
@@ -106,24 +129,42 @@ export interface PaymentReceivedInput {
  */
 export async function sendPaymentReceivedEmail(input: PaymentReceivedInput): Promise<void> {
   if (!isMailConfigured()) return;
-  const inner = `
+  const fr = input.langue !== "en";
+  const inner = fr
+    ? `
     <p style="margin:0 0 16px">Bonjour ${esc(input.firstName)}, nous avons bien reçu votre paiement.</p>
     <p style="margin:0 0 16px;color:#6a7a7d">Commande <strong style="color:${DEEP}">${esc(
-      input.orderNumber,
-    )}</strong> · Facture <strong style="color:${DEEP}">${esc(input.numeroFacture)}</strong></p>
+        input.orderNumber,
+      )}</strong> · Facture <strong style="color:${DEEP}">${esc(input.numeroFacture)}</strong></p>
     <p style="margin:0 0 16px">Montant réglé : <strong>${esc(formatFcfa(input.totalFcfa))}</strong></p>
     <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
       Votre facture est jointe à ce message. Nous vous contactons sur WhatsApp
       pour convenir de la livraison.
+    </div>`
+    : `
+    <p style="margin:0 0 16px">Hello ${esc(input.firstName)}, we have received your payment.</p>
+    <p style="margin:0 0 16px;color:#6a7a7d">Order <strong style="color:${DEEP}">${esc(
+        input.orderNumber,
+      )}</strong> · Invoice <strong style="color:${DEEP}">${esc(input.numeroFacture)}</strong></p>
+    <p style="margin:0 0 16px">Amount paid: <strong>${esc(formatFcfa(input.totalFcfa))}</strong></p>
+    <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px">
+      Your invoice is attached to this message. We'll contact you on WhatsApp
+      to arrange delivery.
     </div>`;
-  const text = `Paiement reçu pour la commande ${input.orderNumber}. Facture ${
-    input.numeroFacture
-  }, montant ${formatFcfa(input.totalFcfa)}. La facture est jointe à ce message.`;
+  const text = fr
+    ? `Paiement reçu pour la commande ${input.orderNumber}. Facture ${
+        input.numeroFacture
+      }, montant ${formatFcfa(input.totalFcfa)}. La facture est jointe à ce message.`
+    : `Payment received for order ${input.orderNumber}. Invoice ${
+        input.numeroFacture
+      }, amount ${formatFcfa(input.totalFcfa)}. The invoice is attached to this message.`;
   try {
     await sendMail({
       to: input.to,
-      subject: `Paiement reçu — facture ${input.numeroFacture}`,
-      html: shell("Paiement bien reçu", inner),
+      subject: fr
+        ? `Paiement reçu — facture ${input.numeroFacture}`
+        : `Payment received — invoice ${input.numeroFacture}`,
+      html: shell(fr ? "Paiement bien reçu" : "Payment received", inner),
       text,
       attachments: [
         { filename: input.nomFichier, content: input.facturePdf, contentType: "application/pdf" },
@@ -135,22 +176,39 @@ export async function sendPaymentReceivedEmail(input: PaymentReceivedInput): Pro
 }
 
 /** E-mail d'accès à l'espace client (compte créé à l'opt-in). */
-export async function sendAccountAccessEmail(to: string, firstName: string, tempPassword: string): Promise<void> {
+export async function sendAccountAccessEmail(
+  to: string,
+  firstName: string,
+  tempPassword: string,
+  langue: Langue,
+): Promise<void> {
   if (!isMailConfigured()) return;
-  const inner = `
+  const fr = langue !== "en";
+  const inner = fr
+    ? `
     <p style="margin:0 0 16px">Bonjour ${esc(firstName)}, votre espace client a été créé.</p>
     <p style="margin:0 0 8px">Vos identifiants de connexion :</p>
     <table style="font-size:14px;margin:0 0 16px">
       <tr><td style="color:#6a7a7d;padding:2px 12px 2px 0">E-mail</td><td><strong>${esc(to)}</strong></td></tr>
       <tr><td style="color:#6a7a7d;padding:2px 12px 2px 0">Mot de passe</td><td><strong>${esc(tempPassword)}</strong></td></tr>
     </table>
-    <p style="margin:0;color:#6a7a7d;font-size:13px">Pensez à changer ce mot de passe depuis votre espace client.</p>`;
-  const text = `Votre espace client KossKoss Select. E-mail : ${to} — Mot de passe : ${tempPassword}. Changez-le après connexion.`;
+    <p style="margin:0;color:#6a7a7d;font-size:13px">Pensez à changer ce mot de passe depuis votre espace client.</p>`
+    : `
+    <p style="margin:0 0 16px">Hello ${esc(firstName)}, your customer account has been created.</p>
+    <p style="margin:0 0 8px">Your login details:</p>
+    <table style="font-size:14px;margin:0 0 16px">
+      <tr><td style="color:#6a7a7d;padding:2px 12px 2px 0">Email</td><td><strong>${esc(to)}</strong></td></tr>
+      <tr><td style="color:#6a7a7d;padding:2px 12px 2px 0">Password</td><td><strong>${esc(tempPassword)}</strong></td></tr>
+    </table>
+    <p style="margin:0;color:#6a7a7d;font-size:13px">Remember to change this password from your customer account.</p>`;
+  const text = fr
+    ? `Votre espace client KossKoss Select. E-mail : ${to} — Mot de passe : ${tempPassword}. Changez-le après connexion.`
+    : `Your KossKoss Select customer account. Email: ${to} — Password: ${tempPassword}. Change it after logging in.`;
   try {
     await sendMail({
       to,
-      subject: `Votre espace client — ${BRAND.name}`,
-      html: shell("Bienvenue chez KossKoss Select", inner),
+      subject: fr ? `Votre espace client — ${BRAND.name}` : `Your customer account — ${BRAND.name}`,
+      html: shell(fr ? "Bienvenue chez KossKoss Select" : "Welcome to KossKoss Select", inner),
       text,
     });
   } catch {

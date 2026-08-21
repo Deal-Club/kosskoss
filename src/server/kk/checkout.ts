@@ -6,6 +6,7 @@ import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/
 import { resolvePaymentMethod } from "@/server/kk/payments";
 import { consommerCoupon, validerCoupon } from "@/server/coupons";
 import { normaliserTelephone } from "@/lib/kk/telephone";
+import { choisirLangue } from "@/lib/kk/langue";
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -248,15 +249,20 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
 
   // E-mails transactionnels (best-effort : les fonctions avalent leurs erreurs
   // et ne partent que si le SMTP est configuré — la commande n'échoue jamais).
+  // La langue suit celle choisie par l'acheteur dans le tunnel (`/` ou `/en`),
+  // jamais une chaîne brute : `choisirLangue` centralise le repli sur le
+  // français.
+  const langue = choisirLangue(input.locale);
   await sendOrderConfirmationEmail({
     to: input.email.trim(),
     firstName,
     orderNumber,
     items: orderItems,
     totalFcfa: total,
+    langue,
   });
   if (account === "created" && tempPassword) {
-    await sendAccountAccessEmail(emailNorm, firstName, tempPassword);
+    await sendAccountAccessEmail(emailNorm, firstName, tempPassword, langue);
   }
 
   return { ok: true, orderNumber, accessToken, account };
