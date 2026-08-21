@@ -1,4 +1,5 @@
 import { toCents } from "@/server/pricingUtils";
+import { coutSaisiValide } from "@/lib/kk/marge";
 import type { VariantInput } from "@/lib/variantPricing";
 import type { ProductRecord } from "@/server/types";
 import { isValidGtin } from "@/lib/gtin";
@@ -76,7 +77,7 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   const price = asTrimmedString(body.price);
   if (mode === "create" || has("price")) {
     if (!price) errors.push("Prix manquant.");
-    else if (toCents(price) <= 0) errors.push('Prix invalide (exemple : « 349,00 € »).');
+    else if (toCents(price) <= 0) errors.push('Prix invalide (exemple : « 18 500 »).');
     else values.price = price;
   }
 
@@ -84,9 +85,29 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   if (has("oldPrice")) {
     const oldPrice = asTrimmedString(body.oldPrice) ?? "";
     if (oldPrice && toCents(oldPrice) <= 0) {
-      errors.push('Ancien prix invalide (exemple : « 449,00 € »).');
+      errors.push('Ancien prix invalide (exemple : « 22 000 »).');
     } else {
       values.oldPrice = oldPrice;
+    }
+  }
+
+  // COÛT D'ACHAT : facultatif, et une chaîne vide l'efface volontairement.
+  //
+  // ZÉRO EST ACCEPTÉ, contrairement aux prix. Un échantillon reçu gratuitement
+  // a bien un coût de zéro : c'est une information, pas une absence. Le refuser
+  // obligerait à vider le champ, donc à écrire « pas encore renseigné » là où
+  // l'on sait — et ferait s'effondrer la distinction que toute cette colonne
+  // nullable existe pour tenir.
+  //
+  // Le contrôle porte donc sur la SAISIE et non sur sa conversion : `toCents`
+  // rend 0 aussi bien pour « 0 » que pour « abc », qui ne se distinguent plus
+  // après coup.
+  if (has("cost")) {
+    const cost = asTrimmedString(body.cost) ?? "";
+    if (!coutSaisiValide(cost)) {
+      errors.push("Coût d'achat invalide (exemple : « 12 000 »).");
+    } else {
+      values.cost = cost;
     }
   }
 

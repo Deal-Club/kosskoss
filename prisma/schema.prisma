@@ -105,6 +105,16 @@ model Product {
   images                String   @default("[]")
   priceCents            Int
   oldPriceCents         Int?
+  // Coût d'achat unitaire, en FCFA entiers comme les autres montants.
+  //
+  // NULLABLE ET SANS VALEUR PAR DÉFAUT, délibérément : un coût non renseigné
+  // n'est pas un coût nul. Avec `@default(0)`, le tableau de bord annoncerait
+  // 100 % de marge sur tout le catalogue existant, dont aucun produit ne porte
+  // encore de coût — un chiffre faux, et plus nuisible qu'une case vide.
+  //
+  // Le calcul de marge vit dans `src/lib/kk/marge.ts` et retient le taux sur
+  // PRIX DE VENTE, convention du commerce de détail.
+  costCents             Int?
   badge                 String?
   editorialRating       Float?
   stock                 Int      @default(0)

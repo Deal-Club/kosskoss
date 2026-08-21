@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useMemo, useState, type FormEvent } from "react";
+// `marge` et `pricingUtils` sont des modules purs — vérifié : aucun import,
+// donc rien de serveur n'entre dans le paquet du navigateur. Ce composant est
+// un composant client, et le lot précédent a cassé la construction en tirant
+// Prisma dans le navigateur par un import qui semblait anodin.
+import { coutSaisiValide, margeUnitaire, tauxMarge } from "@/lib/kk/marge";
+import { formatPrice, toCents } from "@/server/pricingUtils";
 import { useRouter } from "next/navigation";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { GalleryUploadField } from "@/components/admin/GalleryUploadField";
@@ -49,6 +55,8 @@ export function ProductForm({
   const [images, setImages] = useState<string[]>(initialData?.images ?? []);
   const [oldPrice, setOldPrice] = useState(initialData?.oldPrice ?? "");
   const [price, setPrice] = useState(initialData?.price ?? "");
+  const [cost, setCost] = useState(initialData?.cost ?? "");
+
   const [badge, setBadge] = useState(initialData?.badge ?? "");
   const [rating, setRating] = useState(initialData?.rating?.toString() ?? "");
   const [stock, setStock] = useState((initialData?.stock ?? 10).toString());
@@ -77,6 +85,45 @@ export function ProductForm({
   // Vue affichée dans l'aperçu : la fiche produit ou la carte telle qu'elle
   // apparaît dans les grilles de la boutique.
   const [previewView, setPreviewView] = useState<ProductPreviewView>("detail");
+
+  /**
+   * Marge affichée sous le champ, recalculée à la frappe.
+   *
+   * Rendue `null` — donc remplacée par l'invite — tant que l'un des deux
+   * montants manque : une marge affichée sur un coût vide serait fausse, et
+   * c'est précisément l'erreur que le champ nullable existe pour éviter.
+   */
+  const apercuMarge = useMemo(() => {
+    // Une saisie sans chiffre — « abc », « — » — n'est pas un coût de zéro :
+    // sans ce test, l'aperçu annonçait 100 % de marge avant que le serveur ne
+    // refuse la même chaîne.
+    if (!coutSaisiValide(cost)) return null;
+
+    const prixCents = toCents(price);
+    const coutCents = cost.trim() ? toCents(cost) : null;
+    if (!prixCents || coutCents === null) return null;
+
+    const marge = margeUnitaire(prixCents, coutCents);
+    const taux = tauxMarge(prixCents, coutCents);
+    if (marge === null || taux === null) return null;
+
+    // Une vente à perte se dit, elle ne se déduit pas d'un signe moins.
+    const mention = marge < 0 ? " — vendu à perte" : "";
+    return `Marge : ${formatPrice(marge)} (${taux.toString().replace(".", ",")} %)${mention}`;
+  }, [price, cost]);
+
+  /**
+   * Ce qui s'affiche à la place de la marge, quand il n'y en a pas encore.
+   *
+   * Trois raisons distinctes empêchent le calcul, et les confondre envoyait
+   * l'administrateur corriger le mauvais champ : un coût illisible n'est pas
+   * un prix manquant.
+   */
+  const messageMarge = !cost.trim()
+    ? "Laissez vide tant que le coût n’est pas connu : un coût absent n’est pas un coût nul."
+    : !coutSaisiValide(cost)
+      ? "Coût illisible : saisissez un montant, par exemple « 12 000 »."
+      : "Renseignez aussi le prix pour voir la marge.";
 
   const stockNumber = Number.parseInt(stock, 10);
   const thresholdNumber = Number.parseInt(lowStockThreshold, 10);
@@ -110,6 +157,7 @@ export function ProductForm({
       images,
       oldPrice,
       price,
+      cost,
       badge,
       rating: rating ? Number.parseFloat(rating) : null,
     };
@@ -299,6 +347,23 @@ export function ProductForm({
               placeholder="ex. 18 500"
               className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
             />
+          </label>
+          <label className="text-sm">
+            <span className="mb-1 block font-semibold text-foreground">
+              Coût d&rsquo;achat <span className="font-normal text-muted-foreground">(facultatif)</span>
+            </span>
+            <input
+              value={cost}
+              onChange={(event) => setCost(event.target.value)}
+              placeholder="ex. 12 000"
+              className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
+            />
+            {/* La marge s'affiche sous le champ, au moment de la saisie.
+                Sans cela, il faudrait enregistrer puis aller la lire au tableau
+                de bord pour découvrir qu'on vend à perte. */}
+            <span className="mt-1 block text-xs text-muted-foreground">
+              {apercuMarge ?? messageMarge}
+            </span>
           </label>
         </div>
 
