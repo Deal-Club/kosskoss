@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { buildRoutine } from "@/server/kk/diagnostic";
+import { getCurrentCustomer } from "@/server/customerSession";
+import { enregistrerProfil } from "@/server/kk/profil-diagnostic";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -15,5 +17,17 @@ export async function POST(request: Request) {
   // jamais une chaîne arbitraire transmise telle quelle à buildRoutine.
   const locale = body.locale === "en" ? "en" : "fr";
   const result = await buildRoutine(answers, locale);
+
+  // Rattachement au compte, comme dans /api/checkout : lu dans le cookie
+  // signé, jamais dans la charge utile. Un visiteur sans session ne déclenche
+  // aucune écriture.
+  const customer = await getCurrentCustomer();
+  if (customer) {
+    // Différé avec `after` : le résultat part au client tout de suite, la
+    // sauvegarde du profil suit sans le retarder. `enregistrerProfil` ne
+    // lève jamais.
+    after(() => enregistrerProfil(customer.id, answers));
+  }
+
   return NextResponse.json(result);
 }

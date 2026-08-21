@@ -63,13 +63,22 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  * Les réponses sont conservées le temps de l'onglet : un rechargement, un
  * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
  */
-type Phase = "question" | "loading" | "result";
+type Phase = "propose" | "question" | "loading" | "result";
 
 /** Clé de reprise. `session` et non `local` : un diagnostic est daté, il ne
  *  doit pas ressurgir des semaines plus tard comme s'il était encore valable. */
 const REPRISE = "kk-diagnostic";
 
-export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
+export function DiagnosticFlow({
+  questions,
+  savedAnswerIds,
+}: {
+  questions: ClientQuestion[];
+  /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
+   *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
+   *  questionnaire — dans ce cas la page se comporte comme avant. */
+  savedAnswerIds?: string[] | null;
+}) {
   const { add } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -101,6 +110,20 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     }
   }, [questions.length]);
 
+  // Profil client : proposer de revoir la routine plutôt que de relancer le
+  // QCM. N'écrase pas une reprise d'onglet déjà en cours — un questionnaire
+  // entamé prime sur un ancien résultat, sans quoi revenir en arrière depuis
+  // la question 3 renverrait sans cesse à cet écran.
+  useEffect(() => {
+    if (!savedAnswerIds || savedAnswerIds.length === 0) return;
+    try {
+      if (sessionStorage.getItem(REPRISE)) return;
+    } catch {
+      /* Stockage indisponible : la proposition reste affichée quand même. */
+    }
+    setPhase("propose");
+  }, [savedAnswerIds]);
+
   useEffect(() => {
     try {
       sessionStorage.setItem(REPRISE, JSON.stringify({ qIndex, answers }));
@@ -120,13 +143,17 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     setError(null);
   }
 
-  async function avancer(reponses: Record<string, string>) {
-    if (qIndex < questions.length - 1) {
-      setQIndex((i) => i + 1);
-      return;
-    }
-    // Dernière question → analyse.
-    //
+  /**
+   * Envoie des identifiants de réponse au moteur et affiche le résultat.
+   * Commun aux deux chemins qui y mènent : la fin du QCM, et « Revoir ma
+   * routine » sur le profil sauvegardé — dans les deux cas la routine est
+   * recalculée sur le catalogue du jour, jamais rejouée depuis un résultat
+   * figé.
+   *
+   * `retourEnErreur` est l'écran où revenir si la requête échoue : la
+   * question courante depuis le QCM, la proposition depuis le profil.
+   */
+  async function soumettre(answerIds: string[], retourEnErreur: Phase) {
     // Le résultat n'est affiché qu'une fois la séquence d'analyse arrivée à son
     // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
     // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
@@ -140,7 +167,6 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     setError(null);
     const debut = Date.now();
     try {
-      const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,8 +190,33 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     } catch {
       // Un échec ne se fait pas attendre : on rend la main tout de suite.
       setError("L'analyse a échoué. Choisissez à nouveau votre réponse.");
-      setPhase("question");
+      setPhase(retourEnErreur);
     }
+  }
+
+  async function avancer(reponses: Record<string, string>) {
+    if (qIndex < questions.length - 1) {
+      setQIndex((i) => i + 1);
+      return;
+    }
+    // Dernière question → analyse.
+    const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
+    await soumettre(answerIds, "question");
+  }
+
+  /** Revoit la routine du profil sauvegardé, sans repasser par le QCM. */
+  function revoirRoutine() {
+    if (!savedAnswerIds || savedAnswerIds.length === 0) return;
+    void soumettre(savedAnswerIds, "propose");
+  }
+
+  /** Refaire le questionnaire remplace le profil : on repart de zéro, et
+   *  c'est l'`upsert` d'`enregistrerProfil` qui écrasera l'ancien à la fin. */
+  function refaireQuestionnaire() {
+    setAnswers({});
+    setQIndex(0);
+    setError(null);
+    setPhase("question");
   }
 
   /**
@@ -204,6 +255,44 @@ export function DiagnosticFlow({ questions }: { questions: ClientQuestion[] }) {
     // Ni confirmation ni tiroir : deux interruptions qui ne feraient que
     // retarder le paiement.
     router.push(withLocale(pathname, "/commande"));
+  }
+
+  /* ---------------------------------------------------------- Propose -- */
+  if (phase === "propose") {
+    return (
+      <MinimalShell>
+        <section className="kk-rise mx-auto max-w-2xl px-6 py-16 text-center">
+          <p className="eyebrow">Bon retour</p>
+          <h1 className="mt-2 text-deep">Vous avez déjà fait votre diagnostic</h1>
+          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+            Revoyez la routine construite à partir de vos réponses — recalculée sur les produits
+            disponibles aujourd&rsquo;hui — ou refaites le questionnaire si votre peau a changé.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={revoirRoutine}
+              className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition"
+            >
+              Revoir ma routine
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={refaireQuestionnaire}
+              className="text-sm font-medium text-muted-foreground transition hover:text-deep"
+            >
+              Refaire le questionnaire
+            </button>
+          </div>
+          {error && (
+            <p role="alert" className="mt-4 text-sm text-destructive">
+              {error}
+            </p>
+          )}
+        </section>
+      </MinimalShell>
+    );
   }
 
   /* ---------------------------------------------------------- Loading -- */
