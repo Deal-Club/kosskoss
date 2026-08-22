@@ -42,6 +42,7 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   announcements: "contenu",
   campaigns: "contenu",
   scripts: "contenu",
+  traductions: "contenu",
 
   // Réglages — y compris les moyens de paiement : virement et passerelles en
   // ligne sont des réglages de paiement, pas des commandes.
