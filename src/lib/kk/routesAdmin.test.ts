@@ -44,6 +44,21 @@ function familleDe(cheminRelatif: string): string {
   return cheminRelatif.split("/")[0];
 }
 
+/**
+ * Compte les fonctions HTTP exportées (`GET`, `POST`, `PUT`, `PATCH`,
+ * `DELETE`) d'un fichier `route.ts`.
+ *
+ * Une route.ts exporte souvent plusieurs de ces fonctions — `brands/[id]/route.ts`
+ * en exporte deux, `PUT` et `DELETE`. Vérifier qu'UN appel du garde existe
+ * quelque part dans le fichier ne prouve rien : ce seul appel peut vivre dans
+ * `PUT` et laisser `DELETE` entièrement ouvert, et les tests resteraient verts.
+ * Le nombre d'appels attendu est donc le nombre de fonctions exportées, pas 1.
+ */
+function fonctionsHttpExportees(contenu: string): string[] {
+  const motif = /export\s+(?:async\s+)?function\s+(GET|POST|PUT|PATCH|DELETE)\s*\(/g;
+  return [...contenu.matchAll(motif)].map((m) => m[1]);
+}
+
 describe("carte des capacités", () => {
   it("classe toutes les familles de routes d'API", () => {
     const manquantes = familles("src/app/api/admin").filter(
@@ -111,6 +126,12 @@ describe("chaque fichier applique — et applique correctement — le garde de s
     cheminsRelatifs: string[],
     fonctionGarde: string,
     exclusions: (famille: string, cheminRelatif: string) => boolean,
+    /**
+     * Nombre minimal d'appels attendu dans ce fichier. `page.tsx` n'exporte
+     * qu'un composant par défaut : 1 suffit. `route.ts` peut exporter
+     * plusieurs fonctions HTTP, chacune devant porter son propre appel.
+     */
+    nombreAttendu: (contenu: string) => number = () => 1,
   ): string[] {
     const problemes: string[] = [];
     const motif = new RegExp(`${fonctionGarde}\\(\\s*"([a-z]+)"\\s*\\)`, "g");
@@ -131,12 +152,21 @@ describe("chaque fichier applique — et applique correctement — le garde de s
       }
 
       const appels = [...contenu.matchAll(motif)].map((m) => m[1]);
+      const attenduNombre = Math.max(1, nombreAttendu(contenu));
+
       if (appels.length === 0) {
         problemes.push(
           `${racine}/${cheminRelatif} : n'appelle jamais ${fonctionGarde}(). ` +
-            `Attendu : ${fonctionGarde}("${attendue}").`,
+            `Attendu : ${fonctionGarde}("${attendue}") (trouvé 0 appel, attendu ${attenduNombre}).`,
         );
         continue;
+      }
+      if (appels.length < attenduNombre) {
+        problemes.push(
+          `${racine}/${cheminRelatif} : ${appels.length} appel(s) à ${fonctionGarde}() trouvé(s), ` +
+            `mais ${attenduNombre} fonction(s) HTTP exportée(s) — chacune doit être gardée ` +
+            `(trouvé ${appels.length}, attendu ${attenduNombre}).`,
+        );
       }
       for (const capacite of appels) {
         if (capacite !== attendue) {
@@ -150,12 +180,13 @@ describe("chaque fichier applique — et applique correctement — le garde de s
     return problemes;
   }
 
-  it("chaque route.ts appelle requireCapaciteApi avec la capacité de sa famille", () => {
+  it("chaque route.ts appelle requireCapaciteApi, au moins une fois par fonction HTTP exportée", () => {
     const problemes = verifieAppels(
       RACINE_API,
       fichiers(RACINE_API, "route.ts"),
       "requireCapaciteApi",
       (famille) => (FAMILLES_SANS_SESSION as readonly string[]).includes(famille),
+      (contenu) => fonctionsHttpExportees(contenu).length,
     );
     assert.deepEqual(problemes, [], problemes.join("\n"));
   });

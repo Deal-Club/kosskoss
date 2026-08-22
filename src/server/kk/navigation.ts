@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
 import { packshot } from "@/lib/kk/packshot";
+import { pickText } from "@/server/localizedContent";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -117,11 +118,6 @@ export const getNavHighlights = cache(async (limit = 2): Promise<NavHighlight[]>
   }));
 });
 
-/** Repli sur le français quand la traduction anglaise est vide. */
-function pickBrandText(fr: string, en: string, locale: Locale): string {
-  return locale === "en" && en.trim().length > 0 ? en : fr;
-}
-
 /**
  * Marque telle que montrée sur `/marques` : soit une entité (logo, accroche,
  * fiche dédiée), soit un simple nom en mode repli — voir `getShopBrands`.
@@ -152,21 +148,30 @@ export interface NavBrand {
  * cliqué. Ce n'est donc pas du code mort : ne le retire que si l'import
  * devient automatique ou obligatoire au déploiement.
  *
+ * Le repli se décide sur `prisma.brand.count() === 0` — la table est-elle
+ * VIDE — et non sur `rows.length === 0` : `rows` est déjà filtré sur les
+ * marques ACTIVES ayant un produit actif, donc un administrateur qui masque
+ * ses douze marques (le geste que ce lot introduit) viderait `rows` sans
+ * vider la table. Décider sur `rows` ferait alors resurgir, via le repli, les
+ * douze noms qu'on vient précisément de masquer — le masquage ne masquerait
+ * plus rien.
+ *
  * En repli, chaque marque n'est qu'un nom sans fiche dédiée (`href: null`) :
  * `/marques/[slug]` n'existe que pour les marques réellement rattachées.
  */
 export const getShopBrands = cache(async (locale: Locale = "fr"): Promise<NavBrand[]> => {
-  const rows = await prisma.brand.findMany({
-    where: { active: true, products: { some: { active: true } } },
-    orderBy: [{ position: "asc" }, { name: "asc" }],
-  });
+  const totalMarques = await prisma.brand.count();
 
-  if (rows.length > 0) {
+  if (totalMarques > 0) {
+    const rows = await prisma.brand.findMany({
+      where: { active: true, products: { some: { active: true } } },
+      orderBy: [{ position: "asc" }, { name: "asc" }],
+    });
     return rows.map((row) => ({
       href: `/marques/${row.slug}`,
-      name: pickBrandText(row.name, row.nameEn, locale),
+      name: pickText(row.name, locale === "en" ? row.nameEn : undefined),
       logo: row.logo || null,
-      tagline: pickBrandText(row.description, row.descriptionEn, locale) || null,
+      tagline: pickText(row.description, locale === "en" ? row.descriptionEn : undefined) || null,
     }));
   }
 

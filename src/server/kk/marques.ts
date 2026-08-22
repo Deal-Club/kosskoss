@@ -1,6 +1,8 @@
 import { prisma } from "@/server/prisma";
 import { cleMarque, slugMarque } from "@/lib/kk/marques";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import { CATALOG_PAGE_SIZE } from "./catalog";
+import { pickText } from "@/server/localizedContent";
 import type { KKProductView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 
@@ -113,23 +115,21 @@ export async function listerMarques(options?: {
   return rows.map(versMarqueRecord);
 }
 
-export async function marqueParSlug(slug: string): Promise<MarqueRecord | null> {
-  const row = await prisma.brand.findUnique({ where: { slug }, include: avecCompte });
-  return row ? versMarqueRecord(row) : null;
-}
-
-/** Repli sur le français quand la traduction anglaise est vide — même règle que pour les catégories. */
-function pickMarqueText(fr: string, en: string, locale: Locale): string {
-  return locale === "en" && en.trim().length > 0 ? en : fr;
-}
-
 /** Marque telle que présentée sur sa page de vitrine, avec ses produits actifs. */
 export interface MarqueVitrine {
   slug: string;
   name: string;
   description: string;
   logo: string;
+  /** Produits de la page courante uniquement — voir `CATALOG_PAGE_SIZE`. */
   products: KKProductView[];
+  /** Total de produits actifs de la marque, toutes pages confondues. */
+  total: number;
+  page: number;
+  pageCount: number;
+  pageSize: number;
+  firstItem: number;
+  lastItem: number;
 }
 
 /**
@@ -137,35 +137,77 @@ export interface MarqueVitrine {
  * inactive, ou si elle n'a plus aucun produit actif — même règle que sur le
  * listing : une page de marque vide déçoit plus qu'une absence, et fait sortir
  * la fiche du référencement plutôt que de la laisser à vide.
+ *
+ * Paginée comme une page de catégorie (`getCatalog`, src/server/kk/catalog.ts) :
+ * une marque à cinq cents produits rendrait cinq cents vignettes sur une seule
+ * page sans ce découpage. Même gabarit — `CATALOG_PAGE_SIZE`, comptage puis
+ * lecture de la tranche, page hors bornes ramenée à la dernière.
  */
 export async function marqueVitrineParSlug(
   slug: string,
   locale: Locale,
+  page = 1,
 ): Promise<MarqueVitrine | null> {
-  const row = await prisma.brand.findUnique({
-    where: { slug },
-    include: {
-      products: {
-        where: { active: true },
-        include: PRODUCT_VIEW_INCLUDE,
-        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
-      },
-    },
+  const marque = await prisma.brand.findUnique({ where: { slug } });
+  if (!marque || !marque.active) return null;
+
+  const where = { brandId: marque.id, active: true };
+  const total = await prisma.product.count({ where });
+  if (total === 0) return null;
+
+  const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
+  const pageEffective = Math.min(Math.max(page, 1), pageCount);
+  const skip = (pageEffective - 1) * CATALOG_PAGE_SIZE;
+
+  const rows = await prisma.product.findMany({
+    where,
+    include: PRODUCT_VIEW_INCLUDE,
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+    skip,
+    take: CATALOG_PAGE_SIZE,
   });
-  if (!row || !row.active || row.products.length === 0) return null;
 
   return {
-    slug: row.slug,
-    name: pickMarqueText(row.name, row.nameEn, locale),
-    description: pickMarqueText(row.description, row.descriptionEn, locale),
-    logo: row.logo,
-    products: row.products.map((p) => toProductView(p)),
+    slug: marque.slug,
+    name: pickText(marque.name, locale === "en" ? marque.nameEn : undefined),
+    description: pickText(marque.description, locale === "en" ? marque.descriptionEn : undefined),
+    logo: marque.logo,
+    products: rows.map(toProductView),
+    total,
+    page: pageEffective,
+    pageCount,
+    pageSize: CATALOG_PAGE_SIZE,
+    firstItem: total === 0 ? 0 : skip + 1,
+    lastItem: skip + rows.length,
   };
+}
+
+/**
+ * Cherche, parmi les marques existantes, celle qui partage la clé de
+ * rapprochement du nom donné — « Nivea » et « Nivéa » sont la même clé, la
+ * seule contrainte d'unicité de la base ne les distinguerait pas puisqu'elle
+ * est sensible à la casse et aux accents. `ignoreId` exclut la marque qu'on
+ * modifie elle-même de la recherche.
+ */
+async function marqueEnConflit(name: string, ignoreId?: string) {
+  const cle = cleMarque(name);
+  const existantes = await prisma.brand.findMany({
+    where: ignoreId ? { id: { not: ignoreId } } : undefined,
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+  });
+  return existantes.find((marque) => cleMarque(marque.name) === cle);
 }
 
 export async function creerMarque(input: MarqueInput): Promise<MarqueRecord> {
   const name = input.name.trim();
   if (!name) throw new Error("Le nom de la marque est obligatoire.");
+
+  const conflit = await marqueEnConflit(name);
+  if (conflit) {
+    throw new Error(
+      `Une marque très proche existe déjà : « ${conflit.name} ». Réutilisez-la plutôt que d'en créer une seconde.`,
+    );
+  }
 
   const base = input.slug?.trim() ? slugMarque(input.slug) : slugMarque(name);
   const slug = await slugUnique(base);
@@ -197,24 +239,63 @@ export async function modifierMarque(
   const name = patch.name !== undefined ? patch.name.trim() : current.name;
   if (!name) throw new Error("Le nom de la marque est obligatoire.");
 
+  const renomme = name !== current.name;
+  if (renomme) {
+    const conflit = await marqueEnConflit(name, id);
+    if (conflit) {
+      throw new Error(
+        `Une marque très proche existe déjà : « ${conflit.name} ». Réutilisez-la plutôt que de renommer celle-ci à l'identique.`,
+      );
+    }
+  }
+
   // Le slug ne suit pas automatiquement un changement de nom : le rederiver à
   // chaque modification romprait des adresses déjà publiées. Il ne change que
   // sur demande explicite, et reste alors unique.
   const slug = patch.slug?.trim() ? await slugUnique(slugMarque(patch.slug), id) : current.slug;
 
-  const row = await prisma.brand.update({
-    where: { id },
-    data: {
-      name,
-      slug,
-      nameEn: patch.nameEn ?? undefined,
-      description: patch.description ?? undefined,
-      descriptionEn: patch.descriptionEn ?? undefined,
-      logo: patch.logo ?? undefined,
-      position: patch.position ?? undefined,
-      active: patch.active ?? undefined,
-    },
-    include: avecCompte,
+  // Une seule transaction : soit la marque ET ses produits changent de
+  // libellé ensemble, soit rien ne bouge. Sans ça, un crash entre les deux
+  // écritures laisserait une marque déjà renommée avec des produits qui
+  // affichent encore l'ancien nom — exactement le défaut que cette écriture
+  // corrige.
+  const row = await prisma.$transaction(async (tx) => {
+    const updated = await tx.brand.update({
+      where: { id },
+      data: {
+        name,
+        slug,
+        nameEn: patch.nameEn ?? undefined,
+        description: patch.description ?? undefined,
+        descriptionEn: patch.descriptionEn ?? undefined,
+        logo: patch.logo ?? undefined,
+        position: patch.position ?? undefined,
+        active: patch.active ?? undefined,
+      },
+      include: avecCompte,
+    });
+
+    // ── PRODUIT VIVANT, LIGNE DE COMMANDE FIGÉE ──────────────────────────
+    //
+    // `Product.brand` est un libellé recopié pour l'affichage, mais le
+    // produit reste rattaché à sa marque par `brandId` : il est vivant, donc
+    // son libellé doit suivre le nom courant de sa marque, comme le titre
+    // d'une fiche suit le nom qu'on lui a donné. Ne pas le faire laisserait
+    // les fiches déjà rattachées afficher l'ancien nom sous un titre de page
+    // qui, lui, aurait changé — et le prochain import recréerait même une
+    // DEUXIÈME marque pour l'ancienne graphie, jamais réparée depuis.
+    //
+    // `OrderItem.brand`, à l'inverse, NE DOIT JAMAIS être touché ici : une
+    // commande est un document historique, elle décrit ce que le client a
+    // acheté au moment de l'achat, sous le nom qu'elle portait alors. La
+    // aligner sur le nom actuel de la marque falsifierait cette photographie.
+    // Si quelqu'un « corrige » l'un en croyant l'aligner sur l'autre, c'est
+    // ce paragraphe qu'il faut relire.
+    if (renomme) {
+      await tx.product.updateMany({ where: { brandId: id }, data: { brand: name } });
+    }
+
+    return updated;
   });
   return versMarqueRecord(row);
 }
@@ -254,8 +335,23 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
     groupes.set(cle, liste);
   }
 
-  const marquesExistantes = await prisma.brand.findMany();
-  const parCle = new Map(marquesExistantes.map((marque) => [cleMarque(marque.name), marque]));
+  // `orderBy` explicite : sans lui, deux marques qui partagent une clé de
+  // rapprochement (cas normalement empêché à la création — voir
+  // `marqueEnConflit` — mais qu'une base plus ancienne peut déjà porter)
+  // laisseraient l'ordre physique de la table décider laquelle des deux
+  // reçoit les produits, un ordre qui peut changer d'une exécution à
+  // l'autre. La plus ancienne l'emporte, pour rester déterministe.
+  const marquesExistantes = await prisma.brand.findMany({
+    orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+  });
+  // Construit à la main plutôt que via `new Map(marques.map(...))` : ce
+  // dernier garderait la DERNIÈRE entrée d'une clé dupliquée, donc la plus
+  // récente — l'inverse de ce que l'`orderBy` ci-dessus doit garantir.
+  const parCle = new Map<string, (typeof marquesExistantes)[number]>();
+  for (const marque of marquesExistantes) {
+    const cle = cleMarque(marque.name);
+    if (!parCle.has(cle)) parCle.set(cle, marque);
+  }
 
   const compteRendu: CompteRenduImport = {
     creees: [],
@@ -294,10 +390,17 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
 
     // Écritures distinctes réellement fondues par cette exécution — celles
     // déjà rattachées lors d'une exécution précédente ne comptent plus.
-    const variantes = [...new Set(aRattacher.map((ligne) => ligne.brand.trim()))].filter(
-      (nom) => nom !== marque!.name,
-    );
-    if (variantes.length > 0) {
+    //
+    // Le test porte sur le NOMBRE DE GRAPHIES OBSERVÉES DANS CE LOT
+    // (`graphies.length > 1`), pas sur la seule présence d'une graphie
+    // différente du nom retenu par la marque. Une marque a pu être renommée
+    // au back-office (`modifierMarque`) sans que le catalogue ait jamais
+    // porté qu'une seule graphie : rattacher cette unique graphie à une
+    // marque dont le nom diffère pour une autre raison n'est pas une fusion,
+    // et ne doit pas être annoncé comme telle.
+    const graphies = [...new Set(aRattacher.map((ligne) => ligne.brand.trim()))];
+    if (graphies.length > 1) {
+      const variantes = graphies.filter((nom) => nom !== marque!.name);
       compteRendu.fusionnees.push({ conservee: marque.name, variantes });
     }
 
