@@ -141,6 +141,7 @@ export function FiltersPanel({
   vocabulaire,
   locale,
   t,
+  idPrefix,
 }: {
   view: CatalogView;
   groupSlug: string;
@@ -150,6 +151,17 @@ export function FiltersPanel({
   vocabulaire: OptionFacette[];
   locale: Locale;
   t: CatalogT;
+  /**
+   * Préfixe des identifiants de champ. Le panneau est rendu deux fois sur
+   * la même page — repliable au mobile, fixe au bureau — et un même `id`
+   * posé deux fois casse l'association `<label for>` : le clic sur une
+   * étiquette de prix visait alors toujours le PREMIER champ du DOM, jamais
+   * celui réellement affiché à l'écran. `groupSlug`/`currentCategory`
+   * suffiraient à rendre les deux instances différentes, mais un simple
+   * "mobile"/"desktop" explicite à l'appel (voir catalog.tsx) documente
+   * mieux l'intention qu'un slug de rayon.
+   */
+  idPrefix: string;
 }) {
   const peauOptions = vocabulaire.filter((o) => o.family === FAMILLE_PEAU);
   const preoccupationOptions = vocabulaire.filter((o) => o.family === FAMILLE_PREOCCUPATION);
@@ -285,15 +297,22 @@ export function FiltersPanel({
           )}
           {state.sort !== "pertinence" && <input type="hidden" name="tri" value={state.sort} />}
           <div className="flex items-center gap-2">
-            <label className="sr-only" htmlFor="prixMin">
+            <label className="sr-only" htmlFor={`${idPrefix}-prixMin`}>
               {t("priceMinLabel")}
             </label>
             <input
-              id="prixMin"
+              id={`${idPrefix}-prixMin`}
               type="number"
               inputMode="numeric"
               name="prixMin"
               min={0}
+              // Ceinture ET bretelles : ce plafond n'empêche pas à lui seul une
+              // borne absurde (contournable en DevTools ou par requête directe),
+              // c'est `parseBorne` qui la tient réellement (voir
+              // catalog-params.ts) — mais il évite déjà, pour un visiteur qui
+              // tape dans le champ, de viser un prix qu'aucun produit du rayon
+              // n'atteint.
+              max={view.prixMax}
               step={100}
               defaultValue={state.prixMin ?? ""}
               placeholder={String(view.prixMin)}
@@ -302,15 +321,16 @@ export function FiltersPanel({
             <span aria-hidden="true" className="text-muted-foreground">
               –
             </span>
-            <label className="sr-only" htmlFor="prixMax">
+            <label className="sr-only" htmlFor={`${idPrefix}-prixMax`}>
               {t("priceMaxLabel")}
             </label>
             <input
-              id="prixMax"
+              id={`${idPrefix}-prixMax`}
               type="number"
               inputMode="numeric"
               name="prixMax"
               min={0}
+              max={view.prixMax}
               step={100}
               defaultValue={state.prixMax ?? ""}
               placeholder={String(view.prixMax)}
@@ -351,9 +371,21 @@ export function FiltersPanel({
   );
 }
 
-/** Libellé d'une clé de facette — repli sur la clé elle-même si le vocabulaire ne la porte plus. */
+/**
+ * Repli d'affichage pour une clé de facette dont le vocabulaire ne porte plus
+ * le libellé (tag retiré depuis, lien déjà partagé) : « peau_normale » devient
+ * « Peau normale » plutôt que de s'afficher tel quel, en argot de base de
+ * données, dans une puce destinée à un visiteur.
+ */
+function humaniser(cle: string): string {
+  const mots = cle.replace(/[_-]+/g, " ").trim();
+  if (!mots) return cle;
+  return mots.charAt(0).toUpperCase() + mots.slice(1);
+}
+
+/** Libellé d'une clé de facette — repli humanisé si le vocabulaire ne la porte plus. */
 function labelFor(vocabulaire: OptionFacette[], key: string): string {
-  return vocabulaire.find((o) => o.key === key)?.label ?? key;
+  return vocabulaire.find((o) => o.key === key)?.label ?? humaniser(key);
 }
 
 /** Libellé d'une borne de prix posée, entière ou partielle. */

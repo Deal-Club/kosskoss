@@ -105,6 +105,7 @@
   },
   "catalog": {
     "metaDescription": "Découvrez notre sélection {labelLower} : soins sélectionnés avec exigence, prix en FCFA, livraison au Cameroun.",
+    "heroLead": "Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement évalué pour son efficacité, sa formulation et son respect de la peau.",
     "filtersTitle": "Filtres",
     "filtersAndSort": "Filtres & tri",
     "reset": "Réinitialiser",

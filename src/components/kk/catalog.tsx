@@ -66,7 +66,11 @@ export async function CatalogView({
   };
   const filterCount = activeFilterCount(state);
 
-  const filtersPanel = (
+  // Rendu deux fois — mobile repliable, bureau fixe — chacun avec son propre
+  // `idPrefix` : les deux panneaux ne peuvent pas partager les mêmes `id` de
+  // champ de prix, sous peine de casser l'association `<label for>` du
+  // second (voir catalog-filters.tsx).
+  const filtersPanelMobile = (
     <FiltersPanel
       view={view}
       groupSlug={groupSlug}
@@ -76,6 +80,20 @@ export async function CatalogView({
       vocabulaire={vocabulaire}
       locale={locale}
       t={t}
+      idPrefix="mobile"
+    />
+  );
+  const filtersPanelDesktop = (
+    <FiltersPanel
+      view={view}
+      groupSlug={groupSlug}
+      currentCategory={currentCategory}
+      state={state}
+      basePath={basePath}
+      vocabulaire={vocabulaire}
+      locale={locale}
+      t={t}
+      idPrefix="desktop"
     />
   );
 
@@ -95,10 +113,7 @@ export async function CatalogView({
         <div className="relative mx-auto max-w-7xl px-6 py-14 text-center">
           <p className="eyebrow eyebrow-on-dark">{view.group.label}</p>
           <h1 className="mt-3">{title}</h1>
-          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground">
-            Notre sélection experte de soins dermo-cosmétiques. Chaque produit est rigoureusement
-            évalué pour son efficacité, sa formulation et son respect de la peau.
-          </p>
+          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground">{t("heroLead")}</p>
         </div>
       </section>
 
@@ -110,7 +125,7 @@ export async function CatalogView({
           <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-deep">
             <SlidersHorizontal className="h-4 w-4" /> {t("filtersAndSort")}
           </summary>
-          <div className="mt-5">{filtersPanel}</div>
+          <div className="mt-5">{filtersPanelMobile}</div>
         </details>
 
         {/* Filtres desktop.
@@ -130,7 +145,7 @@ export async function CatalogView({
             réserve, elle masquait les derniers critères de tri. */}
         <aside className="hidden w-60 shrink-0 lg:block">
           <div className="sticky top-24 max-h-[calc(100vh-7rem)] overflow-y-auto overscroll-contain pr-2 pb-16">
-            {filtersPanel}
+            {filtersPanelDesktop}
           </div>
         </aside>
 

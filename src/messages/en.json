@@ -105,6 +105,7 @@
   },
   "catalog": {
     "metaDescription": "Discover our {labelLower} selection: carefully curated skincare, prices in FCFA, delivery across Cameroon.",
+    "heroLead": "Our expert selection of dermo-cosmetic skincare. Every product is rigorously assessed for effectiveness, formulation and respect for the skin.",
     "filtersTitle": "Filters",
     "filtersAndSort": "Filters & sorting",
     "reset": "Reset",
