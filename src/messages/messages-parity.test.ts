@@ -28,9 +28,12 @@ import { describe, it } from "node:test";
  *     principe — parser le format réel plutôt que le deviner au regex — est
  *     le même que celui qui a fait tomber le garde-fou de traductions.ts).
  *
- * Éprouvé par mutation (voir le rapport de la tâche 5) : une clé ajoutée dans
- * un seul des deux fichiers, ou une valeur vidée d'un seul côté, fait tomber
- * ce test.
+ * Éprouvé par mutation (voir le rapport de la tâche 5, complété par la revue
+ * de la tâche 6) : une clé ajoutée dans un seul des deux fichiers, une valeur
+ * vidée d'un seul côté, et une clé imbriquée d'un côté rendue plate de
+ * l'autre (même chemin pointé une fois aplati, ex. `common.mutation.depth`
+ * imbriqué contre `common["mutation.depth"]` plat) font toutes tomber ce
+ * test.
  */
 
 const MESSAGES_DIR = __dirname;
@@ -38,6 +41,23 @@ const MESSAGES_DIR = __dirname;
 function chargerMessages(nom: "fr" | "en"): Record<string, unknown> {
   const brut = readFileSync(path.join(MESSAGES_DIR, `${nom}.json`), "utf8");
   return JSON.parse(brut) as Record<string, unknown>;
+}
+
+/**
+ * Assemble un chemin de segments en une clé plate unique.
+ *
+ * Un point littéral à l'intérieur d'un segment (une clé de message qui
+ * s'appelle elle-même `"mutation.depth"`) est échappé en `\.` avant la
+ * jonction. Sans cet échappement, un couple imbriqué
+ * `{ common: { mutation: { depth: "x" } } }` et un couple plat
+ * `{ common: { "mutation.depth": "y" } }` s'aplatiraient tous deux en la
+ * chaîne `common.mutation.depth` : la fonction perdrait l'information qui les
+ * distingue, et le test verrait une seule clé identique des deux côtés là où
+ * next-intl — qui résout par imbrication réelle, jamais par une chaîne
+ * pointée — ne retrouve la seconde forme sous aucun chemin.
+ */
+function cheminVersCle(segments: string[]): string {
+  return segments.map((s) => s.replace(/\\/g, "\\\\").replace(/\./g, "\\.")).join(".");
 }
 
 /**
@@ -49,17 +69,19 @@ function chargerMessages(nom: "fr" | "en"): Record<string, unknown> {
  * l'ignorer évite qu'une clé de ce genre échappe silencieusement à la
  * vérification de parité.
  */
-function aplatir(o: Record<string, unknown>, prefixe = ""): Map<string, string> {
+function aplatir(o: Record<string, unknown>, segments: string[] = []): Map<string, string> {
   const sortie = new Map<string, string>();
   for (const cle of Object.keys(o)) {
     const valeur = o[cle];
-    const chemin = prefixe ? `${prefixe}.${cle}` : cle;
+    const chemin = [...segments, cle];
     if (valeur !== null && typeof valeur === "object" && !Array.isArray(valeur)) {
       for (const [c, v] of aplatir(valeur as Record<string, unknown>, chemin)) sortie.set(c, v);
     } else if (typeof valeur === "string") {
-      sortie.set(chemin, valeur);
+      sortie.set(cheminVersCle(chemin), valeur);
     } else {
-      throw new Error(`${chemin} : valeur d'un type inattendu (${typeof valeur}), ni objet ni chaîne`);
+      throw new Error(
+        `${cheminVersCle(chemin)} : valeur d'un type inattendu (${typeof valeur}), ni objet ni chaîne`,
+      );
     }
   }
   return sortie;
