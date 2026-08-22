@@ -1,6 +1,6 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { parseProductInput, toCreateInput, type ProductInput } from "@/server/productInput";
 import { createProduct, listCategories } from "@/server/store";
 
@@ -152,7 +152,7 @@ function detectFormat(text: string): ImportFormat {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

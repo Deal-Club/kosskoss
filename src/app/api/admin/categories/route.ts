@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { prisma } from "@/server/prisma";
 import { slugify } from "@/lib/slugify";
 import { createCategory, listCategories } from "@/server/store";
@@ -31,7 +31,7 @@ function parseGuide(raw: unknown): CategoryGuide {
 }
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const categories = await listCategories();
@@ -39,7 +39,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const body = await request.json().catch(() => null);

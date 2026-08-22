@@ -11,7 +11,7 @@ import {
   ShoppingCart,
   Wallet,
 } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { campaignStats, getCampaign, listRecipients } from "@/server/campaigns";
 import { listCampaignOrders } from "@/server/campaignAdmin";
 import { formatPrice } from "@/server/store";
@@ -80,7 +80,7 @@ export default async function AdminCampaignDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ rstatus?: string; rpage?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
 
   const { id } = await params;
   const query = await searchParams;

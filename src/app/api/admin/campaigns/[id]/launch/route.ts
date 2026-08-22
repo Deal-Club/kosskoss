@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { launchCampaign } from "@/server/campaigns";
 import {
   campaignErrorMessage,
@@ -19,7 +19,7 @@ type Params = Promise<{ id: string }>;
  * désinscrits et les doublons, et renvoie le compte réellement mis en file.
  */
 export async function POST(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

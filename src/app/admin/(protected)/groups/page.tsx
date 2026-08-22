@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { prisma } from "@/server/prisma";
 import { Pencil } from "lucide-react";
 import { GroupDeleteButton } from "@/components/admin/GroupForm";
@@ -12,7 +12,7 @@ export default async function AdminGroupsPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   const params = await searchParams;
   const allGroups = await prisma.group.findMany({

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { AtSign, KeyRound, Trash2, UserCheck, UserX } from "lucide-react";
 import { IconActionButton } from "@/components/admin/IconAction";
 import type { AdminUserRecord } from "@/server/admins";
+import { LIBELLES_ROLES } from "@/lib/kk/roles";
 
 /** Doit correspondre à la vérification dans /api/admin/users. */
 const MIN_PASSWORD_LENGTH = 10;
@@ -109,8 +110,9 @@ export function UserForm({ allowSuperadmin = false }: { allowSuperadmin?: boolea
             onChange={(event) => setRole(event.target.value)}
             className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
           >
-            <option value="admin">Administrateur</option>
-            <option value="owner">Propriétaire</option>
+            <option value="admin">{LIBELLES_ROLES.admin}</option>
+            <option value="owner">{LIBELLES_ROLES.owner}</option>
+            <option value="gestionnaire">{LIBELLES_ROLES.gestionnaire}</option>
             {allowSuperadmin ? <option value="superadmin">Superadmin (invisible)</option> : null}
           </select>
           {allowSuperadmin ? (

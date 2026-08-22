@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { GroupForm } from "@/components/admin/GroupForm";
 
 export default async function NewGroupPage() {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   return (
     <div>

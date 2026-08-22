@@ -21,7 +21,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { prisma } from "@/server/prisma";
 import { autoExcerpt, readingMinutes } from "@/lib/journal/content";
 import { normalizeBlocks, serializeBlocks } from "@/lib/journal/blocks";
@@ -29,7 +29,7 @@ import { normalizeBlocks, serializeBlocks } from "@/lib/journal/blocks";
 type Params = Promise<{ id: string }>;
 
 export async function PATCH(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

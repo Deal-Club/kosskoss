@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Trash2 } from "lucide-react";
+import { requireCapacitePage } from "@/lib/dal";
 import { ArticleTable } from "@/components/admin/journal/ArticleTable";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { countTrashedArticles, listAdminArticles } from "@/server/journal/store";
@@ -29,6 +30,7 @@ type Search = Promise<{
 }>;
 
 export default async function AdminJournalPage({ searchParams }: { searchParams: Search }) {
+  await requireCapacitePage("contenu");
   const params = await searchParams;
   const trashed = params.corbeille === "1";
   const query = (params.q ?? "").trim();

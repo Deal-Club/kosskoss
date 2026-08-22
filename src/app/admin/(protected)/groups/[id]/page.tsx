@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { prisma } from "@/server/prisma";
 import { GroupForm } from "@/components/admin/GroupForm";
 
 export default async function EditGroupPage({ params }: { params: Promise<{ id: string }> }) {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   const { id } = await params;
   const group = await prisma.group.findUnique({

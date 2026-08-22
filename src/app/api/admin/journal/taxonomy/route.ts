@@ -8,7 +8,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   deleteAuthor,
   deleteCategory,
@@ -35,7 +35,7 @@ function isKind(value: unknown): value is Kind {
 }
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const [categories, tags, authors] = await Promise.all([listCategories(), listTags(), listAuthors()]);
@@ -43,7 +43,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as {
@@ -86,7 +86,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const url = new URL(request.url);

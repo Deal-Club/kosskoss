@@ -1,5 +1,5 @@
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf-lib";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { listCategories, listProducts } from "@/server/store";
 import { filterAndSortProducts, isSortValue } from "@/server/productListing";
 import type { ProductRecord } from "@/server/types";
@@ -219,7 +219,7 @@ async function buildPdf(rows: ExportRow[], subtitle: string): Promise<Uint8Array
 // ---- Route ----
 
 export async function GET(request: Request): Promise<Response> {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const url = new URL(request.url);

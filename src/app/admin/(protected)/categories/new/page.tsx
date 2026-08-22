@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { prisma } from "@/server/prisma";
 import { CategoryForm } from "@/components/admin/CategoryForm";
 
 export default async function NewCategoryPage() {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   const groups = await prisma.group.findMany({
     orderBy: { position: "asc" },

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listCustomersForAdmin } from "@/server/customers";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { ADMIN_PAGE_SIZE, paginate, parsePageParam } from "@/lib/pagination";
@@ -34,7 +34,7 @@ export default async function AdminCustomersPage({
 }: {
   searchParams: Promise<{ q?: string; page?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("commandes");
 
   const params = await searchParams;
   const query = (params.q ?? "").trim();

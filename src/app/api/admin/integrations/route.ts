@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { createIntegration, listIntegrations } from "@/server/integrations";
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   // listIntegrations liefert bewusst nur Maske und Status, nie den Klartext.
@@ -12,7 +12,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const body = await request.json().catch(() => null);

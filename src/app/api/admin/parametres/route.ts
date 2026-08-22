@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   saveParametres,
   normaliserParametres,
@@ -10,7 +10,7 @@ import {
 } from "@/server/kk/parametres";
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   let body: unknown;

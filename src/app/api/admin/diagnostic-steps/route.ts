@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { enregistrerGestes } from "@/server/kk/gestes";
 import type { GesteLigne } from "@/lib/kk/gestes-selection";
 
@@ -38,7 +38,7 @@ function parseItem(raw: unknown): GesteLigne | null {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   let body: { items?: unknown };

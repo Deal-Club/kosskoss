@@ -32,6 +32,8 @@ import {
 import { cn } from "@/lib/utils";
 import { LogoImage } from "@/components/brand/Logo";
 import { LogoutButton } from "@/components/admin/LogoutButton";
+import { capaciteDeFamille } from "@/lib/kk/routesAdmin";
+import type { Capacite } from "@/lib/kk/roles";
 
 interface NavEntry {
   label: string;
@@ -40,6 +42,13 @@ interface NavEntry {
   badge?: number;
   /** Ce que compte la pastille : un nombre seul n'est lisible par personne. */
   badgeTitle?: string;
+  /**
+   * Famille de routes (premier segment après `/admin/`) que réclame cette
+   * entrée. Résolue en capacité via `CAPACITE_PAR_FAMILLE`, la source unique :
+   * la recopier ici aurait permis à cette règle de diverger de celle qui garde
+   * réellement les écrans.
+   */
+  famille?: string;
 }
 
 interface NavSection {
@@ -50,39 +59,65 @@ interface NavSection {
 export function AdminSidebar({
   email,
   pendingReviews,
+  capacites,
 }: {
   email: string;
   pendingReviews: number;
+  capacites: readonly Capacite[];
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const sections: NavSection[] = [
+  function ouverte(famille: string | undefined): boolean {
+    // Une entrée sans famille (la « Vue d'ensemble ») n'est protégée par
+    // aucune capacité précise, mais un compte à zéro capacité ne mène nulle
+    // part derrière elle : mieux vaut la masquer que l'envoyer sur un refus.
+    if (!famille) return capacites.length > 0;
+    const capacite = capaciteDeFamille(famille);
+    return capacite === null || capacites.includes(capacite);
+  }
+
+  const sectionsBrutes: NavSection[] = [
     {
       entries: [{ label: "Vue d'ensemble", href: "/admin", icon: LayoutDashboard }],
     },
     {
       title: "Catalogue",
       entries: [
-        { label: "Univers produits", href: "/admin/groups", icon: Layers },
-        { label: "Catégories", href: "/admin/categories", icon: Tags },
-        { label: "Produits", href: "/admin/products", icon: Package },
+        { label: "Univers produits", href: "/admin/groups", icon: Layers, famille: "groups" },
+        { label: "Catégories", href: "/admin/categories", icon: Tags, famille: "categories" },
+        { label: "Produits", href: "/admin/products", icon: Package, famille: "products" },
         // Vocabulaire des tags (types de peau, préoccupations…) : labels FR/EN,
         // famille et activation, éditables sans redéploiement (tâche 10).
-        { label: "Tags produits", href: "/admin/products/tags", icon: Tag },
-        { label: "Stock", href: "/admin/stock", icon: Warehouse },
-        { label: "Diagnostic beauté", href: "/admin/diagnostic", icon: Sparkles },
+        {
+          label: "Tags produits",
+          href: "/admin/products/tags",
+          icon: Tag,
+          famille: "products",
+        },
+        { label: "Stock", href: "/admin/stock", icon: Warehouse, famille: "stock" },
+        {
+          label: "Diagnostic beauté",
+          href: "/admin/diagnostic",
+          icon: Sparkles,
+          famille: "diagnostic",
+        },
         // Gestes du diagnostic : libellés FR/EN, catégorie source, ordre et
         // activation — leur nombre actif fixe le nombre de produits proposés
         // par le diagnostic (critère 08), sans redéploiement.
-        { label: "Gestes du diagnostic", href: "/admin/diagnostic/gestes", icon: ListChecks },
+        {
+          label: "Gestes du diagnostic",
+          href: "/admin/diagnostic/gestes",
+          icon: ListChecks,
+          famille: "diagnostic",
+        },
       ],
     },
     {
       title: "Boutique",
       entries: [
-        { label: "Ventes", href: "/admin/ventes", icon: TrendingUp },
-        { label: "Commandes", href: "/admin/orders", icon: Receipt },
+        { label: "Ventes", href: "/admin/ventes", icon: TrendingUp, famille: "ventes" },
+        { label: "Commandes", href: "/admin/orders", icon: Receipt, famille: "orders" },
         // « Clients » est retiré du menu : les coordonnées du client figurent
         // déjà dans le détail de chaque commande. L'écran existe toujours et
         // reste joignable par son adresse (/admin/customers).
@@ -92,15 +127,36 @@ export function AdminSidebar({
           icon: Star,
           badge: pendingReviews,
           badgeTitle: "avis en attente de validation",
+          famille: "reviews",
         },
         // « Campagnes » est retiré du menu : la partie e-mailing n'est pas
         // ouverte. Les écrans existent toujours et restent joignables par leur
         // adresse (/admin/campaigns) ; seule l'entrée du menu disparaît.
-        { label: "Moyens de paiement", href: "/admin/payments", icon: CreditCard },
-        { label: "Codes promo", href: "/admin/coupons", icon: Ticket },
-        { label: "Bandeau d'annonce", href: "/admin/announcements", icon: Megaphone },
-        { label: "Google Merchant", href: "/admin/merchant", icon: ShoppingBag },
-        { label: "Intégrations", href: "/admin/integrations", icon: Plug },
+        {
+          label: "Moyens de paiement",
+          href: "/admin/payments",
+          icon: CreditCard,
+          famille: "payments",
+        },
+        { label: "Codes promo", href: "/admin/coupons", icon: Ticket, famille: "coupons" },
+        {
+          label: "Bandeau d'annonce",
+          href: "/admin/announcements",
+          icon: Megaphone,
+          famille: "announcements",
+        },
+        {
+          label: "Google Merchant",
+          href: "/admin/merchant",
+          icon: ShoppingBag,
+          famille: "merchant",
+        },
+        {
+          label: "Intégrations",
+          href: "/admin/integrations",
+          icon: Plug,
+          famille: "integrations",
+        },
       ],
     },
     {
@@ -110,21 +166,37 @@ export function AdminSidebar({
         // depuis l'écran du Journal. Trois lignes de menu de plus pour des
         // réglages qu'on touche au démarrage puis presque jamais auraient
         // surtout allongé la barre.
-        { label: "Le Journal", href: "/admin/journal", icon: Newspaper },
+        { label: "Le Journal", href: "/admin/journal", icon: Newspaper, famille: "journal" },
       ],
     },
     {
       title: "Système",
       entries: [
-        { label: "Pages & mentions légales", href: "/admin/pages", icon: FileText },
-        { label: "Scripts & balises", href: "/admin/scripts", icon: Code2 },
+        { label: "Pages & mentions légales", href: "/admin/pages", icon: FileText, famille: "pages" },
+        { label: "Scripts & balises", href: "/admin/scripts", icon: Code2, famille: "scripts" },
         // Numéro WhatsApp, lien du formulaire d'évaluation et identifiants de
         // mesure — modifiables sans redéploiement (critère 16).
-        { label: "Paramètres", href: "/admin/parametres", icon: Settings },
-        { label: "Accès", href: "/admin/users", icon: Users },
+        {
+          label: "Paramètres",
+          href: "/admin/parametres",
+          icon: Settings,
+          famille: "parametres",
+        },
+        { label: "Accès", href: "/admin/users", icon: Users, famille: "users" },
       ],
     },
   ];
+
+  // Une entrée dont la capacité est refusée disparaît ; une section dont plus
+  // aucune entrée ne subsiste disparaît à son tour, titre compris — un titre
+  // de section vide se lit comme un bogue d'affichage, pas comme un droit
+  // absent.
+  const sections: NavSection[] = sectionsBrutes
+    .map((section) => ({
+      ...section,
+      entries: section.entries.filter((entry) => ouverte(entry.famille)),
+    }))
+    .filter((section) => section.entries.length > 0);
 
   // "/admin" ne doit pas rester surligné sur les sous-pages
   function isActive(href: string): boolean {

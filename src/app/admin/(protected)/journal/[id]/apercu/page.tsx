@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
+import { requireCapacitePage } from "@/lib/dal";
 import { ArticleView } from "@/components/journal/article-view";
 import { getArticleForPreview, listRelatedArticles } from "@/server/journal/read";
 import { resolveCitedProducts } from "@/server/journal/products";
@@ -20,9 +21,9 @@ import type { Locale } from "@/i18n/routing";
  * moment où on lui fait confiance.
  *
  * Aucun jeton d'aperçu n'est nécessaire : cette page vit sous
- * `admin/(protected)`, dont le layout appelle déjà `requireAdminSession()`. Une
- * URL signée aurait ajouté une surface d'attaque pour reproduire une protection
- * qui existe.
+ * `admin/(protected)`, dont le layout garantit déjà la session. La capacité
+ * `contenu`, elle, est vérifiée ici — le layout ne connaît que la session, pas
+ * le droit sur cet écran.
  */
 
 /**
@@ -41,6 +42,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlePreviewPage({ params }: { params: Params }) {
+  await requireCapacitePage("contenu");
   const { id } = await params;
 
   const [article, admin] = await Promise.all([

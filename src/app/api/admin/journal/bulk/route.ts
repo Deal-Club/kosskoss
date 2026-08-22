@@ -9,7 +9,7 @@
  */
 
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { isSuperadminSession } from "@/server/admins";
 import {
   purgeArticles,
@@ -27,7 +27,7 @@ function isAction(value: unknown): value is BulkAction {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as {

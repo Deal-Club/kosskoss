@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { sendTestEmail } from "@/server/campaigns";
 import {
   campaignErrorMessage,
@@ -17,7 +17,7 @@ type Params = Promise<{ id: string }>;
  * chez un client par inadvertance.
  */
 export async function POST(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

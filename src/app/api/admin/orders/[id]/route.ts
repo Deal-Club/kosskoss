@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   deleteOrder,
   getOrder,
@@ -21,7 +21,7 @@ const MAX_NOTE_LENGTH = 2000;
  * Les trois champs sont facultatifs et peuvent être combinés en un seul appel.
  */
 export async function PATCH(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non connecté." }, { status: 401 });
   }
@@ -82,7 +82,7 @@ export async function PATCH(request: Request, { params }: { params: Params }) {
 }
 
 export async function GET(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -93,7 +93,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 
 /** Suppression définitive — utile pour retirer les commandes de test. */
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

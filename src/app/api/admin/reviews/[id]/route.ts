@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { deleteReview, moderateReview } from "@/server/reviews";
 import { adminActorLabel } from "@/server/admins";
 
@@ -9,7 +9,7 @@ type Params = Promise<{ id: string }>;
 const MAX_NOTE_LENGTH = 500;
 
 export async function PATCH(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non connecté." }, { status: 401 });
   }
@@ -45,7 +45,7 @@ export async function PATCH(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

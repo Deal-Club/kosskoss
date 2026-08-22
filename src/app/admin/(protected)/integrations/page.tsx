@@ -1,9 +1,9 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listIntegrations } from "@/server/integrations";
 import { IntegrationCreateForm, IntegrationForm } from "@/components/admin/IntegrationForm";
 
 export default async function AdminIntegrationsPage() {
-  await requireAdminSession();
+  await requireCapacitePage("reglages");
   const integrations = await listIntegrations();
   const configuredCount = integrations.filter((integration) => integration.configured).length;
 

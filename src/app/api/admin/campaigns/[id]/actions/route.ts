@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   cancelCampaign,
   pauseCampaign,
@@ -32,7 +32,7 @@ function isAction(value: unknown): value is CampaignAction {
  * bouton qu'on utilise pour vérifier qu'une campagne part réellement.
  */
 export async function POST(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

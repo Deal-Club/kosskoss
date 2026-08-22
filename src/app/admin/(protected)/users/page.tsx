@@ -1,14 +1,9 @@
-import { requireAdminSession } from "@/lib/dal";
-import { SUPERADMIN_ROLE, isSuperadminSession, listAdminUsers } from "@/server/admins";
+import { requireCapacitePage } from "@/lib/dal";
+import { isSuperadminSession, listAdminUsers } from "@/server/admins";
 import { UserForm, UserRowActions } from "@/components/admin/UserForm";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { paginate, parsePageParam } from "@/lib/pagination";
-
-const ROLE_LABELS: Record<string, string> = {
-  owner: "Propriétaire",
-  admin: "Administrateur",
-  [SUPERADMIN_ROLE]: "Superadmin",
-};
+import { LIBELLES_ROLES } from "@/lib/kk/roles";
 
 function formatDateTime(value?: string): string {
   if (!value) return "—";
@@ -26,7 +21,7 @@ export default async function AdminUsersPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  const session = await requireAdminSession();
+  const session = await requireCapacitePage("acces");
   const params = await searchParams;
 
   // Les superadmins n'apparaissent que pour un superadmin : ni dans le tableau,
@@ -79,7 +74,7 @@ export default async function AdminUsersPage({
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{user.email}</td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {ROLE_LABELS[user.role] ?? user.role}
+                    {(LIBELLES_ROLES as Record<string, string>)[user.role] ?? user.role}
                   </td>
                   <td className="px-4 py-3">
                     {user.active ? (

@@ -1,9 +1,9 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { getAnnouncementConfig, listAnnouncements } from "@/server/announcements";
 import { AnnouncementManager } from "@/components/admin/AnnouncementManager";
 
 export default async function AdminAnnouncementsPage() {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
   const [items, config] = await Promise.all([listAnnouncements(), getAnnouncementConfig()]);
 
   return (

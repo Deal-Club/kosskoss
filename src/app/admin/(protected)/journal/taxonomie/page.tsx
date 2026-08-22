@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { requireCapacitePage } from "@/lib/dal";
 import { TaxonomyManager } from "@/components/admin/journal/TaxonomyManager";
 import { listAuthors, listCategories, listTags } from "@/server/journal/taxonomy";
 
 export default async function JournalTaxonomyPage() {
+  await requireCapacitePage("contenu");
   const [categories, tags, authors] = await Promise.all([
     listCategories(),
     listTags(),

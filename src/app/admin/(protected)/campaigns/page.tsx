@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { BarChart3, Megaphone } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listCampaigns } from "@/server/campaigns";
 import { formatPrice } from "@/server/store";
 import {
@@ -41,7 +41,7 @@ export default async function AdminCampaignsPage({
 }: {
   searchParams: Promise<{ status?: string; type?: string; page?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
 
   // `params` est conservé entier : il alimente les liens de pagination et fait
   // donc survivre les filtres actifs.

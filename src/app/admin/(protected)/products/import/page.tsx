@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { ProductImportForm } from "@/components/admin/ProductImportForm";
 import { listCategories } from "@/server/store";
 
 export default async function ProductImportPage() {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
   const categories = await listCategories();
 
   return (

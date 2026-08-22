@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { saveQuestionnaire, type AdminQuestion } from "@/server/kk/diagnostic-admin";
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   let body: { questions?: unknown };

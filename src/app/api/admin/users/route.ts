@@ -1,21 +1,27 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   SUPERADMIN_ROLE,
   createAdminUser,
   isSuperadminSession,
   listAdminUsers,
 } from "@/server/admins";
+import { ROLES } from "@/lib/kk/roles";
 
 /** Longueur minimale des mots de passe du back-office. */
 const MIN_PASSWORD_LENGTH = 10;
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const ALLOWED_ROLES = ["admin", "owner"];
+/**
+ * Tous les rôles attribuables sans être déjà superadmin. Dérivée de `ROLES`,
+ * le module pur : un rôle ajouté demain y devient attribuable sans qu'on
+ * pense à modifier cette liste à la main.
+ */
+const ALLOWED_ROLES: readonly string[] = ROLES.filter((role) => role !== SUPERADMIN_ROLE);
 
 export async function GET() {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   // listAdminUsers liefert bewusst kein Passwortfeld — auch keinen Hash.
@@ -27,7 +33,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const body = await request.json().catch(() => null);
@@ -60,7 +66,9 @@ export async function POST(request: Request) {
 
   if (!allowed.includes(role)) {
     return NextResponse.json(
-      { error: "Rôle inconnu. Les valeurs autorisées sont « admin » et « owner »." },
+      {
+        error: `Rôle inconnu. Les valeurs autorisées sont ${ALLOWED_ROLES.map((r) => `« ${r} »`).join(", ")}.`,
+      },
       { status: 400 },
     );
   }

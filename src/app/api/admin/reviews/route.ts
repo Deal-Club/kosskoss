@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { countReviewsByStatus, isReviewStatus, listReviews } from "@/server/reviews";
 import type { ReviewStatus } from "@/server/types";
 
 export async function GET(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const url = new URL(request.url);

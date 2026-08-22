@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { parseArticleInput } from "@/lib/journal/input";
 import { listAdminArticles, saveArticle } from "@/server/journal/store";
 import { revalidateJournal } from "@/server/journal/revalidate";
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const articles = await listAdminArticles();
@@ -13,7 +13,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const body = await request.json().catch(() => null);

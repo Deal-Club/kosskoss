@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { createCampaign, listCampaigns } from "@/server/campaigns";
 import { adminActorLabel } from "@/server/admins";
 import {
@@ -11,7 +11,7 @@ import {
 } from "@/server/campaignInput";
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const campaigns = await listCampaigns();
@@ -19,7 +19,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

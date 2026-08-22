@@ -1,4 +1,4 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listPaymentMethods } from "@/server/payments";
 import { getBankTransferSettings } from "@/server/bankTransfer";
 import { getGatewayAdminState } from "@/server/gateways/admin";
@@ -8,7 +8,7 @@ import { BankTransferForm } from "@/components/admin/BankTransferForm";
 import { GatewaySettingsForm } from "@/components/admin/GatewaySettingsForm";
 
 export default async function AdminPaymentsPage() {
-  await requireAdminSession();
+  await requireCapacitePage("reglages");
   const methods = await listPaymentMethods();
   const bankTransfer = await getBankTransferSettings();
   const gatewayState = await getGatewayAdminState();

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   SUPERADMIN_ROLE,
   deleteAdminUser,
@@ -9,11 +9,17 @@ import {
   updateAdminUser,
 } from "@/server/admins";
 import { prisma } from "@/server/prisma";
+import { ROLES } from "@/lib/kk/roles";
 
 /** Longueur minimale des mots de passe du back-office. */
 const MIN_PASSWORD_LENGTH = 10;
 
-const ALLOWED_ROLES = ["admin", "owner"];
+/**
+ * Tous les rôles attribuables sans être déjà superadmin. Dérivée de `ROLES`,
+ * le module pur : un rôle ajouté demain y devient attribuable sans qu'on
+ * pense à modifier cette liste à la main.
+ */
+const ALLOWED_ROLES: readonly string[] = ROLES.filter((role) => role !== SUPERADMIN_ROLE);
 
 type Params = Promise<{ id: string }>;
 
@@ -26,7 +32,7 @@ const notFound = () =>
   NextResponse.json({ error: "Ce compte n'existe pas." }, { status: 404 });
 
 export async function GET(_request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -41,7 +47,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -98,7 +104,9 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 
     if (!allowed.includes(body.role)) {
       return NextResponse.json(
-        { error: "Rôle inconnu. Les valeurs autorisées sont « admin » et « owner »." },
+        {
+          error: `Rôle inconnu. Les valeurs autorisées sont ${ALLOWED_ROLES.map((r) => `« ${r} »`).join(", ")}.`,
+        },
         { status: 400 },
       );
     }
@@ -141,7 +149,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

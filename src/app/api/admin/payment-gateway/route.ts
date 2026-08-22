@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { adminActorLabel } from "@/server/admins";
 import { setIntegrationSecret } from "@/server/integrations";
 import {
@@ -18,7 +18,7 @@ import {
 // vide conserve la clé déjà enregistrée. Le clair n'est jamais renvoyé.
 
 export async function PUT(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

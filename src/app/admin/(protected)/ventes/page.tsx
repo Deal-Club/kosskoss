@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { formatFcfa } from "@/lib/kk/format";
 import { formatJourIso, periodeDepuisUrl } from "@/lib/kk/periode";
 import { classerParProduit, totaliserVentes, ventesParJour } from "@/lib/kk/ventes";
@@ -48,7 +48,7 @@ export default async function AdminVentesPage({
 }: {
   searchParams: Promise<{ du?: string; au?: string; p?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("commandes");
 
   const params = await searchParams;
   const periode = periodeDepuisUrl(params, new Date());
