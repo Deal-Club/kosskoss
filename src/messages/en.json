@@ -148,6 +148,7 @@
     "vatNoteFreeShipping": "Free standard delivery",
     "galleryLabel": "More product views",
     "galleryView": "Show view {index} of {total}",
+    "galleryAdditionalViewAlt": "{name} — view {number}",
     "chooseVolume": "Choose a volume",
     "fromPrice": "from",
     "sectionDescription": "Description",
@@ -1001,7 +1002,9 @@
     "eyebrow": "Brand",
     "sectionTitle": "{name} range",
     "countRange": "Products {first}–{last} of {total}",
-    "paginationAriaLabel": "Brand product pagination"
+    "paginationAriaLabel": "Brand product pagination",
+    "metaNotFoundTitle": "Brand not found — {brand}",
+    "metaFallbackDescription": "{name} products at {brand}."
   },
   "pagination": {
     "previous": "Previous",

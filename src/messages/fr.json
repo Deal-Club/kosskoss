@@ -148,6 +148,7 @@
     "vatNoteFreeShipping": "Livraison standard offerte",
     "galleryLabel": "Autres vues du produit",
     "galleryView": "Afficher la vue {index} sur {total}",
+    "galleryAdditionalViewAlt": "{name} — vue {number}",
     "chooseVolume": "Choisissez un volume",
     "fromPrice": "à partir de",
     "sectionDescription": "Description",
@@ -1001,7 +1002,9 @@
     "eyebrow": "Marque",
     "sectionTitle": "Le rayon {name}",
     "countRange": "Produits {first}–{last} sur {total}",
-    "paginationAriaLabel": "Pagination des produits de la marque"
+    "paginationAriaLabel": "Pagination des produits de la marque",
+    "metaNotFoundTitle": "Marque introuvable — {brand}",
+    "metaFallbackDescription": "Les produits {name} chez {brand}."
   },
   "pagination": {
     "previous": "Précédent",

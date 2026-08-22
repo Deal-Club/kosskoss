@@ -27,7 +27,8 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const page = parsePage((await searchParams).page);
   const marque = await marqueVitrineParSlug(slug, locale, page);
-  if (!marque) return { title: `Marque introuvable — ${BRAND.name}` };
+  const t = await getTranslations({ locale, namespace: "marque" });
+  if (!marque) return { title: t("metaNotFoundTitle", { brand: BRAND.name }) };
 
   // Voir la note des pages de rayon : chaque page au-delà de la première se
   // désigne elle-même comme canonique, sinon Google la replie sur la page 1
@@ -38,7 +39,7 @@ export async function generateMetadata({
     title: `${marque.name}${suffixe} — ${BRAND.name}`,
     description: marque.description
       ? marque.description.slice(0, 155)
-      : `Les produits ${marque.name} chez ${BRAND.name}.`,
+      : t("metaFallbackDescription", { name: marque.name, brand: BRAND.name }),
     alternates: alternatesFor(`/marques/${marque.slug}`, locale, requete),
   };
 }

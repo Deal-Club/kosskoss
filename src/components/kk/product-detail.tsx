@@ -49,7 +49,13 @@ function Breadcrumb({
   );
 }
 
-function Gallery({ product }: { product: KKProductDetail }) {
+function Gallery({
+  product,
+  additionalViewAlt,
+}: {
+  product: KKProductDetail;
+  additionalViewAlt: (number: number) => string;
+}) {
   const hasImage = typeof product.image === "string" && product.image.length > 0;
   // Les entrées vides sont écartées : une chaîne vide en base ferait un cadre
   // gris et casserait `next/image`, qui refuse un `src` vide.
@@ -105,7 +111,7 @@ function Gallery({ product }: { product: KKProductDetail }) {
             >
               <Image
                 src={src}
-                alt={`${product.name} — vue ${i + 2}`}
+                alt={additionalViewAlt(i + 2)}
                 fill
                 sizes="(max-width: 1024px) 45vw, 22vw"
                 className="object-contain p-2"
@@ -153,7 +159,10 @@ export async function ProductDetail({
             disparaissaient dès qu'on descendait voir les autres vues du
             produit. Ils suivent maintenant la lecture. */}
         <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-14">
-          <Gallery product={product} />
+          <Gallery
+            product={product}
+            additionalViewAlt={(number) => t("galleryAdditionalViewAlt", { name: product.name, number })}
+          />
 
           <div className="lg:sticky lg:top-24 lg:pt-4">
             <div className="rounded-[1.75rem] border border-border/70 bg-card p-5 sm:p-7 lg:p-9">
