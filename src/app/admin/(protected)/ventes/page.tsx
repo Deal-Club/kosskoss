@@ -77,7 +77,10 @@ export default async function AdminVentesPage({
   // qu'elles seules manquent au compte.
   const mentionEncaisse =
     totaux.remisesCents > 0
-      ? `produits seuls, remises déduites (${formatFcfa(totaux.remisesCents)}), livraison exclue`
+      ? // Le montant nu entre parenthèses pourrait se lire comme ce qui est
+        // retenu plutôt que ce qui est retiré : « de remises accordées » lève
+        // l'ambiguïté.
+        `produits seuls, remises déduites (${formatFcfa(totaux.remisesCents)} de remises accordées), livraison exclue`
       : "produits seuls, remises déduites, livraison exclue";
 
   return (

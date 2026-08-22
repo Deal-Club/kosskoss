@@ -169,6 +169,16 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.remisesCents, 0);
     assert.equal(totaux.margeCents, 12000);
   });
+
+  it("calcule le taux de marge sur l'assiette nette, pas sur le brut", () => {
+    // 36 000 brut, remisé de 6 000 : net 30 000, coût 24 000, marge 6 000.
+    // Rapportée au net : 6 000 / 30 000 = 20 %. Rapportée au brut (calcul
+    // fautif) : 6 000 / 36 000 = 16,7 %, un taux différent et plus faible.
+    const totaux = totaliserVentes([
+      ligne({ quantity: 3, lineTotalCents: 36000, remiseCents: 6000, unitCostCents: 8000 }),
+    ]);
+    assert.equal(totaux.tauxMarge, 20);
+  });
 });
 
 describe("repartirRemise", () => {
@@ -204,6 +214,15 @@ describe("repartirRemise", () => {
       parts.reduce((total, part) => total + part, 0),
       50000,
     );
+  });
+
+  it("ne fait jamais dépasser à une part le total brut de sa ligne", () => {
+    // Une remise mal saisie en base (150, pour un sous-total de 100 : elle
+    // dépasse le sous-total qu'elle est censée réduire) ne doit pas rendre la
+    // part supérieure au total de la ligne — ce qui rendrait son CA net
+    // négatif. Sans le plafond, la part vaudrait 150 ; avec, elle reste à 100.
+    const parts = repartirRemise([{ lineTotalCents: 100 }], 150, 100);
+    assert.deepEqual(parts, [100]);
   });
 });
 
@@ -343,5 +362,17 @@ describe("ventesParJour", () => {
   it("rend un point unique sur une période d'un jour", () => {
     const points = ventesParJour([], new Date(2026, 7, 19), new Date(2026, 7, 19, 23, 59, 59));
     assert.equal(points.length, 1);
+  });
+
+  it("cumule le chiffre d'affaires net du jour, remise déduite", () => {
+    // 12 000 brut, remisé de 2 000 : le point doit porter le NET (10 000),
+    // pas le brut — sans quoi l'histogramme ne correspondrait plus aux
+    // cartes de l'écran, qui affichent toutes le chiffre d'affaires net.
+    const points = ventesParJour(
+      [ligne({ date: new Date(2026, 7, 19, 10, 0), lineTotalCents: 12000, remiseCents: 2000 })],
+      new Date(2026, 7, 19),
+      new Date(2026, 7, 19, 23, 59, 59),
+    );
+    assert.equal(points[0].chiffreAffairesCents, 10000);
   });
 });

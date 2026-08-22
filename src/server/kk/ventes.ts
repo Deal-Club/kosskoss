@@ -130,9 +130,14 @@ export async function lireVentes(periode: Periode): Promise<LigneVente[]> {
  * le jour où elle est payée.
  *
  * `Order.totalCents` est déjà net de remise (`subtotalCents − discountCents`,
- * voir `createOrder`) et ne porte pas de livraison : cette assiette est donc
- * la même que le chiffre d'affaires net de `lireVentes` ci-dessus, ce qui rend
- * les deux montants directement comparables.
+ * voir `createKossOrder`) et ne porte pas de livraison : cette assiette est
+ * donc la même que le chiffre d'affaires net de `lireVentes` ci-dessus, ce qui
+ * rend les deux montants directement comparables — pour les commandes issues
+ * du tunnel `kk`, seul chemin atteignable depuis une page en ligne. L'autre
+ * chemin de création de commande (`src/server/orders.ts::createOrder`, mort
+ * côté navigation mais dont la route HTTP existe toujours) calcule
+ * `totalCents` autrement et y inclut la livraison ; une commande créée par ce
+ * chemin romprait la comparaison.
  */
 export async function lireEnCours(
   periode: Periode,

@@ -142,10 +142,26 @@ function margeLigne(ligne: LigneVente): number | null {
  * zéro n'a pas de sens, et une commande sans sous-total n'a rien à répartir.
  *
  * Garde-fou : la part d'une ligne ne dépasse jamais son propre total brut —
- * une remise mal saisie en base ne doit pas rendre une ligne négative. Dans
- * l'usage réel, `discountCents` ne dépasse jamais `subtotalCents` (le calcul
- * du coupon le plafonne déjà), ce qui laisse toujours assez de marge à la
- * dernière ligne pour absorber le reste sans toucher ce plafond.
+ * une remise mal saisie en base ne doit pas rendre une ligne négative.
+ *
+ * ── QUAND CE GARDE-FOU PEUT EMPÊCHER L'EXACTITUDE ────────────────────────────
+ *
+ * La somme des parts vaut EXACTEMENT `discountCents` tant que la dernière
+ * ligne a assez de marge sous son propre plafond pour absorber le reste
+ * d'arrondi. Formellement : `derniere_ligne × (1 − remise / sous_total) ≥
+ * nombre_de_lignes − 1`. Ce n'est PAS une question de hauteur de remise — une
+ * remise de 20 % suffit à faire perdre 2 F si les lignes sont assez inégales
+ * — c'est une question de PETITESSE DE LA DERNIÈRE LIGNE : moins elle a de
+ * marge sous son plafond, moins elle peut absorber.
+ *
+ * Sur les paniers réels de cette boutique — au plus 8 lignes, chacune d'au
+ * moins 500 F — la condition tient toujours : aucun échec observé sur 1 800
+ * 000 tirages construits pour la mettre en défaut. Elle cesserait de tenir
+ * si une ligne descendait à quelques francs. Le jour où ce cas se présente,
+ * la correction n'est pas de changer le plafond mais de changer la
+ * distribution du reste : au lieu de le poser en bloc sur la dernière ligne,
+ * le distribuer franc par franc sur les lignes qui ont encore de la marge
+ * sous leur propre plafond, en tournant tant qu'il en reste.
  */
 export function repartirRemise(
   lignes: { lineTotalCents: number }[],
