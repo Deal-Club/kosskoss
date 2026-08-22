@@ -4,7 +4,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
-import { parseBesoin, parseBrands, parsePage, parseSort } from "@/lib/kk/catalog-params";
+import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
+import { parseBrands, parseFacettes, parsePage, parsePrix, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -54,9 +55,26 @@ export default async function GroupPage({
 
   const brands = parseBrands(sp.marque);
   const sort = parseSort(sp.tri);
-  const besoin = parseBesoin(sp.besoin);
+  // `besoin` — l'ancien paramètre à choix unique — est versé dans la bonne
+  // famille par `parseFacettes` : un lien de diagnostic ou un lien déjà
+  // partagé continue de filtrer correctement (voir catalog-params.ts).
+  const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin });
+  const prix = parsePrix({ prixMin: sp.prixMin, prixMax: sp.prixMax });
   const page = parsePage(sp.page);
-  const view = await getCatalog({ group, brands, besoin, sort, page, locale });
+  const [view, vocabulaire] = await Promise.all([
+    getCatalog({
+      group,
+      brands,
+      peau: selection.peau,
+      preoccupation: selection.preoccupation,
+      prixMin: prix.min,
+      prixMax: prix.max,
+      sort,
+      page,
+      locale,
+    }),
+    lireVocabulaire(locale),
+  ]);
   if (!view) notFound();
 
   return (
@@ -68,8 +86,11 @@ export default async function GroupPage({
           view={view}
           groupSlug={group}
           brands={brands}
-          besoin={besoin}
+          selection={selection}
+          prix={prix}
           sort={sort}
+          vocabulaire={vocabulaire}
+          locale={locale}
         />
       </main>
       <SiteFooter />
