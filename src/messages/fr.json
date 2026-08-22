@@ -597,7 +597,8 @@
         "phoneLine": "Tél : {phone}",
         "deliveryLocationLine": "Lieu de livraison : {location}",
         "confirmDeliveryLine": "Merci de me confirmer l'acheminement."
-      }
+      },
+      "metaTitle": "Commande confirmée — {brand}"
     }
   },
   "wishlist": {
@@ -989,7 +990,10 @@
     "summaryTotal": "Total",
     "buyNote": "Les {count} produits en une seule commande.",
     "othersEyebrow": "Autres besoins",
-    "othersTitle": "Nos autres routines"
+    "othersTitle": "Nos autres routines",
+    "metaNotFoundTitle": "Routine introuvable — {brand}",
+    "listMetaTitle": "Routines prêtes à l'emploi — {brand}",
+    "listMetaDescription": "Des routines complètes par préoccupation : acné, taches et hyperpigmentation, éclat, anti-âge, hydratation. Trois gestes dans le bon ordre, un seul ajout au panier."
   },
   "marque": {
     "breadcrumbLabel": "Marques",

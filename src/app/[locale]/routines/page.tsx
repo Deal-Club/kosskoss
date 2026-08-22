@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { RoutineCard } from "@/components/kk/routine-card";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getRoutines } from "@/server/kk/routines";
 import { alternatesFor } from "@/lib/hreflang";
+import { BRAND } from "@/config/brand";
 import { Sparkles, ArrowRight } from "lucide-react";
 import type { Locale } from "@/i18n/routing";
 
@@ -13,10 +14,10 @@ type Params = Promise<{ locale: Locale }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "routine" });
   return {
-    title: "Routines prêtes à l'emploi — KossKoss Select",
-    description:
-      "Des routines complètes par préoccupation : acné, taches et hyperpigmentation, éclat, anti-âge, hydratation. Trois gestes dans le bon ordre, un seul ajout au panier.",
+    title: t("listMetaTitle", { brand: BRAND.name }),
+    description: t("listMetaDescription"),
     alternates: alternatesFor("/routines", locale),
   };
 }

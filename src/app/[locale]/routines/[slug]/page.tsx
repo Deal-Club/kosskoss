@@ -12,6 +12,7 @@ import { getRoutine, getRoutines } from "@/server/kk/routines";
 import { besoinParTag, libelleBesoin } from "@/lib/kk/besoins";
 import { formatFcfa } from "@/lib/kk/format";
 import { alternatesFor } from "@/lib/hreflang";
+import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale; slug: string }>;
@@ -19,10 +20,13 @@ type Params = Promise<{ locale: Locale; slug: string }>;
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { locale, slug } = await params;
   const routine = await getRoutine(slug, locale);
-  if (!routine) return { title: "Routine introuvable — KossKoss Select" };
+  if (!routine) {
+    const t = await getTranslations({ locale, namespace: "routine" });
+    return { title: t("metaNotFoundTitle", { brand: BRAND.name }) };
+  }
 
   return {
-    title: `${routine.name} — KossKoss Select`,
+    title: `${routine.name} — ${BRAND.name}`,
     description: routine.claim || routine.description.slice(0, 155),
     alternates: alternatesFor(`/routines/${routine.slug}`, locale),
   };

@@ -597,7 +597,8 @@
         "phoneLine": "Phone: {phone}",
         "deliveryLocationLine": "Delivery location: {location}",
         "confirmDeliveryLine": "Please confirm the delivery for me."
-      }
+      },
+      "metaTitle": "Order confirmed — {brand}"
     }
   },
   "wishlist": {
@@ -989,7 +990,10 @@
     "summaryTotal": "Total",
     "buyNote": "The {count} products in a single order.",
     "othersEyebrow": "Other needs",
-    "othersTitle": "Our other routines"
+    "othersTitle": "Our other routines",
+    "metaNotFoundTitle": "Routine not found — {brand}",
+    "listMetaTitle": "Ready-to-use routines — {brand}",
+    "listMetaDescription": "Complete routines by concern: acne, dark spots and hyperpigmentation, radiance, anti-ageing, hydration. Three steps in the right order, added to your cart in one go."
   },
   "marque": {
     "breadcrumbLabel": "Brands",

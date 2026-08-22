@@ -17,10 +17,14 @@ type Params = Promise<{ locale: Locale; orderNumber: string }>;
 type Search = Promise<Record<string, string | string[] | undefined>>;
 type ConfirmationT = Awaited<ReturnType<typeof getTranslations>>;
 
-export const metadata: Metadata = {
-  title: "Commande confirmée — KossKoss Select",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "commande" });
+  return {
+    title: t("confirmation.metaTitle", { brand: BRAND.name }),
+    robots: { index: false, follow: false },
+  };
+}
 
 /**
  * Message WhatsApp pré-rempli.
