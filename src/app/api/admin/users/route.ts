@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   SUPERADMIN_ROLE,
   createAdminUser,
@@ -15,7 +15,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ALLOWED_ROLES = ["admin", "owner"];
 
 export async function GET() {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   // listAdminUsers liefert bewusst kein Passwortfeld — auch keinen Hash.
@@ -27,7 +27,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const body = await request.json().catch(() => null);

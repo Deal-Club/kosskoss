@@ -1,4 +1,4 @@
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { buildCsv } from "@/lib/kk/csv";
 import { formatJourIso, periodeDepuisUrl } from "@/lib/kk/periode";
 import { lireVentes } from "@/server/kk/ventes";
@@ -47,7 +47,7 @@ function nombreFr(valeur: number): string {
 }
 
 export async function GET(request: Request): Promise<Response> {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const url = new URL(request.url);

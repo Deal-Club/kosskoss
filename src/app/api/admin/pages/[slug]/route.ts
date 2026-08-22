@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { isLegalLocale, isLegalSlug, LEGAL_SLUG_LABELS } from "@/content/legal";
 import type { LegalLocale, LegalSlug } from "@/content/legal/types";
 import { normalizeLegalPage, toLegalPageInput } from "@/server/legalPageInput";
@@ -62,7 +62,7 @@ function refreshShop() {
 }
 
 export async function GET(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { slug } = await params;
@@ -86,7 +86,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { slug } = await params;
@@ -110,7 +110,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { slug } = await params;

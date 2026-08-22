@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { slugify } from "@/lib/slugify";
 import { isCloudinaryConfigured, uploadImage } from "@/server/cloudinary";
 
@@ -86,7 +86,7 @@ function timestamp(): string {
 }
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const contentType = request.headers.get("content-type") ?? "";

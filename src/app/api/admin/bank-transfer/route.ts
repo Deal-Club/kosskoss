@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   getBankTransferSettings,
   saveBankTransferSettings,
@@ -8,14 +8,14 @@ import {
 } from "@/server/bankTransfer";
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   return NextResponse.json(await getBankTransferSettings());
 }
 
 export async function PUT(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as Partial<BankTransferSettings> | null;

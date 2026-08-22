@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   deletePaymentMethod,
   getPaymentMethod,
@@ -11,7 +11,7 @@ import {
 type Params = Promise<{ id: string }>;
 
 export async function PATCH(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -52,7 +52,7 @@ export async function PATCH(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

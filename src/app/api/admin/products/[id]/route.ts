@@ -1,13 +1,13 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { parseProductInput } from "@/server/productInput";
 import { deleteProduct, getProductRecord, updateProduct } from "@/server/store";
 
 type Params = Promise<{ id: string }>;
 
 export async function GET(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -41,7 +41,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

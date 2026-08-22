@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { parseArticleInput } from "@/lib/journal/input";
 import { getAdminArticle, saveArticle, trashArticles } from "@/server/journal/store";
 import { revalidateJournal } from "@/server/journal/revalidate";
@@ -7,7 +7,7 @@ import { revalidateJournal } from "@/server/journal/revalidate";
 type Params = Promise<{ id: string }>;
 
 export async function GET(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -45,7 +45,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 
 /** Mise à la corbeille. La suppression définitive passe par /bulk. */
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { adminActorLabel } from "@/server/admins";
 import { setIntegrationSecret } from "@/server/integrations";
 import { ensureGatewayIntegrations, getGateway, isGatewayId } from "@/server/gateways";
@@ -12,7 +12,7 @@ import { ensureGatewayIntegrations, getGateway, isGatewayId } from "@/server/gat
 // n'est renvoyé — seulement de quoi corriger la configuration.
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized || !session) {
     return unauthorized ?? NextResponse.json({ error: "Non authentifié." }, { status: 401 });
   }

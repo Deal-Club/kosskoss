@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { normalizeCodeSnippet } from "@/server/codeSnippetInput";
 import { createSnippet, listSnippets } from "@/server/codeSnippets";
 
@@ -24,14 +24,14 @@ function refreshShop() {
 }
 
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   return NextResponse.json({ snippets: await listSnippets() });
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const body: unknown = await request.json().catch(() => null);

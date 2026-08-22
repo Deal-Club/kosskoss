@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   clearIntegrationSecret,
   deleteIntegration,
@@ -12,7 +12,7 @@ type Params = Promise<{ key: string }>;
 
 /** Enregistre un secret. Le texte en clair est accepté en entrée, jamais renvoyé. */
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const { key } = await params;
@@ -34,7 +34,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 export async function PATCH(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const { key } = await params;
@@ -60,7 +60,7 @@ export async function PATCH(request: Request, { params }: { params: Params }) {
  * Mit "?purge=1" wird der komplette Eintrag entfernt (eigene Integrationen).
  */
 export async function DELETE(request: Request, { params }: { params: Params }) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const { key } = await params;

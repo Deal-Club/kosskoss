@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { listContacts } from "@/server/contacts";
 
 /**
@@ -10,7 +10,7 @@ import { listContacts } from "@/server/contacts";
  * croire que la boutique a perdu des adresses, alors qu'elle honore un refus.
  */
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const contacts = await listContacts();

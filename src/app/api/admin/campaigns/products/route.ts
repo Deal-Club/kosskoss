@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { listCampaignProductOptions } from "@/server/campaignAdmin";
 
 /**
@@ -13,7 +13,7 @@ import { listCampaignProductOptions } from "@/server/campaignAdmin";
  * manipule des chaînes formatées.
  */
 export async function GET() {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("contenu");
   if (unauthorized) return unauthorized;
 
   const products = await listCampaignProductOptions();

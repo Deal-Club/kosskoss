@@ -1,11 +1,11 @@
 import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import { adjustStock, isStockReason, listStockMovements, setStock } from "@/server/stock";
 import { adminActorLabel } from "@/server/admins";
 
 export async function GET(request: Request) {
-  const { unauthorized } = await requireAdminApi();
+  const { unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const url = new URL(request.url);
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("catalogue");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as Record<string, unknown> | null;

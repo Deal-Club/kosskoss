@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { requireAdminApi } from "@/lib/adminApi";
+import { requireCapaciteApi } from "@/lib/adminApi";
 import {
   SUPERADMIN_ROLE,
   deleteAdminUser,
@@ -26,7 +26,7 @@ const notFound = () =>
   NextResponse.json({ error: "Ce compte n'existe pas." }, { status: 404 });
 
 export async function GET(_request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -41,7 +41,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
 }
 
 export async function PUT(request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
@@ -141,7 +141,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 export async function DELETE(_request: Request, { params }: { params: Params }) {
-  const { session, unauthorized } = await requireAdminApi();
+  const { session, unauthorized } = await requireCapaciteApi("acces");
   if (unauthorized) return unauthorized;
 
   const { id } = await params;
