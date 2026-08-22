@@ -409,6 +409,13 @@ model PaymentMethod {
   enabled     Boolean  @default(true)
   position    Int      @default(0)
   updatedAt   DateTime @updatedAt
+  // Traductions anglaises ; vides = repli sur le français, comme partout
+  // ailleurs (voir src/server/localizedContent.ts). Ces libellés s'affichent
+  // sur la page qui encaisse : la même règle que le reste de la boutique
+  // s'applique.
+  labelEn       String @default("")
+  descriptionEn String @default("")
+  feeLabelEn    String @default("")
 }
 
 model Integration {
@@ -692,6 +699,8 @@ model DiagAnswer {
   tags          String  @default("{}")
   // Étiquette de profil affichée dans le résultat (facultative).
   chip          String  @default("")
+  // Traduction anglaise ; vide = repli sur le français
+  chipEn        String  @default("")
   position      Int     @default(0)
   active        Boolean @default(true)
 
@@ -1016,6 +1025,11 @@ model Campaign {
   // reste lisible dans les exports.
   code String @unique
   name String
+  // Colonne présente pour cohérence avec les autres modèles, mais EXCLUE du
+  // registre des champs traduisibles (src/lib/kk/traductions.ts) : `name` est
+  // un libellé interne au back-office qui ne sort jamais vers un client, donc
+  // rien à y traduire.
+  nameEn String @default("")
 
   // promotion | flash | nouveaute | offre_speciale
   type   String
@@ -1191,6 +1205,8 @@ model CampaignEvent {
 model Announcement {
   id        String   @id @default(cuid())
   message   String
+  // Traduction anglaise ; vide = repli sur le français
+  messageEn String   @default("")
   // Nom d'une icône lucide-react ; vide = aucune icône devant le message.
   icon      String   @default("sparkles")
   active    Boolean  @default(true)

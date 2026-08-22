@@ -4,7 +4,6 @@ import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome"
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CategoryProductBrowser } from "@/components/CategoryProductBrowser";
 import { getCategoryPages } from "@/server/store";
-import { loadCatalogTranslations, localizeCategoryPages } from "@/server/localizedContent";
 import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
 import type { Locale } from "@/i18n/routing";
 import type { Product } from "@/types/home";
@@ -43,13 +42,12 @@ async function searchResults(locale: Locale, query: string): Promise<Product[]> 
   const tokens = fold(query).split(/\s+/).filter(Boolean);
   if (tokens.length === 0) return [];
 
-  const [rawCategories, translations] = await Promise.all([
-    getCategoryPages(),
-    loadCatalogTranslations(locale),
-  ]);
-  const products = localizeCategoryPages(rawCategories, translations).flatMap(
-    (category) => category.products,
-  );
+  // `getCategoryPages` localise déjà son résultat quand on lui passe la
+  // langue : pas de second passage par `localizeCategoryPages` ici, sinon la
+  // traduction s'appliquerait deux fois pour rien (voir son commentaire
+  // d'en-tête, src/server/store.ts).
+  const categories = await getCategoryPages(locale);
+  const products = categories.flatMap((category) => category.products);
 
   return products.filter((product) => matches(product, tokens));
 }

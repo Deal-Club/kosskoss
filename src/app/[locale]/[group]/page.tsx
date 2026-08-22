@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
@@ -23,8 +23,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, group } = await params;
   const page = parsePage((await searchParams).page);
-  const view = await getCatalog({ group, page });
+  const view = await getCatalog({ group, page, locale });
   if (!view) return {};
+
+  const t = await getTranslations({ locale, namespace: "catalog" });
 
   // Une page 2 doit porter son propre titre et sa propre canonique.
   // Sans ça, Google voit deux adresses au contenu différent sous un
@@ -34,7 +36,7 @@ export async function generateMetadata({
   const requete = view.page > 1 ? `?page=${view.page}` : "";
   return {
     title: `${view.group.label}${suffixe} — ${BRAND.name}`,
-    description: `Découvrez notre sélection ${view.group.label.toLowerCase()} : soins sélectionnés avec exigence, prix en FCFA, livraison au Cameroun.`,
+    description: t("metaDescription", { labelLower: view.group.label.toLowerCase() }),
     alternates: alternatesFor(`/${group}`, locale, requete),
   };
 }
@@ -54,7 +56,7 @@ export default async function GroupPage({
   const sort = parseSort(sp.tri);
   const besoin = parseBesoin(sp.besoin);
   const page = parsePage(sp.page);
-  const view = await getCatalog({ group, brands, besoin, sort, page });
+  const view = await getCatalog({ group, brands, besoin, sort, page, locale });
   if (!view) notFound();
 
   return (

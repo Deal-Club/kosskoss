@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Hero, ProductRail } from "@/components/kk/home";
 import { InsightsSection, PromisesRow } from "@/components/kk/home-sections";
@@ -23,10 +23,10 @@ type HomeParams = Promise<{ locale: Locale }>;
 
 export async function generateMetadata({ params }: { params: HomeParams }): Promise<Metadata> {
   const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home" });
   return {
-    title: `${BRAND.name} — ${BRAND.slogan}`,
-    description:
-      "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money.",
+    title: `${BRAND.name} — ${t("slogan")}`,
+    description: t("metaDescription"),
     alternates: alternatesFor("/", locale),
   };
 }
@@ -55,7 +55,7 @@ export default async function Home({ params }: { params: HomeParams }) {
   // carte des catégories et la section « Nos maisons » ont été retirées de
   // l'accueil. Deux requêtes de moins à chaque rendu de la page la plus vue.
   const [products, testimonials, avisResume, faq, routines, focus, raisonDetre] = await Promise.all([
-    getHomeProducts(12),
+    getHomeProducts(12, locale),
     // Trois, et pas un de plus : la section les montre sur UNE SEULE rangée.
     // À six, la grille repassait à la ligne et la section doublait de hauteur
     // pour dire la même chose.

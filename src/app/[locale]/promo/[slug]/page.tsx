@@ -51,7 +51,7 @@ export default async function CampaignLandingPage({ params }: { params: PagePara
         <div className="border-b border-border bg-white">
           <div className="mx-auto max-w-screen-xl px-3 py-3">
             <Breadcrumb
-              items={[{ label: common("home"), href: "/" }, { label: landing.name }]}
+              items={[{ label: common("home"), href: "/" }, { label: landing.headline }]}
             />
           </div>
         </div>

@@ -5,6 +5,7 @@ import type { KKProductView } from "@/types/kk";
 import { parseTags } from "@/lib/kk/tags";
 import { gestesActifs, libelleGeste } from "@/lib/kk/gestes-selection";
 import { lireGestes } from "./gestes";
+import type { Locale } from "@/i18n/routing";
 
 export type RoutineStep = {
   index: number;
@@ -31,9 +32,9 @@ function scoreOf(productTags: string[], profile: Record<string, number>): number
  */
 export async function buildRoutine(
   answerIds: string[],
-  locale = "fr",
+  locale: Locale = "fr",
 ): Promise<DiagnosticResult> {
-  const { tags, chips } = await aggregateProfileFromAnswers(answerIds);
+  const { tags, chips } = await aggregateProfileFromAnswers(answerIds, locale);
 
   const rows = await prisma.product.findMany({
     where: { active: true, stock: { gt: 0 }, category: { group: { slug: "soins-visage" } } },
@@ -70,7 +71,7 @@ export async function buildRoutine(
       key: geste.key,
       label: libelleGeste(geste, locale),
       why: best.shortDescription ?? "",
-      product: toProductView(best, i),
+      product: toProductView(best, locale, i),
     });
   });
 

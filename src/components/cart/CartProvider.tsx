@@ -31,7 +31,6 @@ import { CAMPAIGN_COOKIE } from "@/lib/campaigns";
 /** Avantage accordé par la campagne dont vient le visiteur, s'il y en a une. */
 export interface CampaignBenefit {
   freeShipping: boolean;
-  campaignName: string | null;
 }
 
 interface CartContextValue {
@@ -55,7 +54,7 @@ interface CartContextValue {
   closeDrawer: () => void;
 }
 
-const NO_BENEFIT: CampaignBenefit = { freeShipping: false, campaignName: null };
+const NO_BENEFIT: CampaignBenefit = { freeShipping: false };
 
 const CartContext = createContext<CartContextValue | null>(null);
 
@@ -86,13 +85,11 @@ function useCampaignBenefit(): CampaignBenefit {
 
         const data = (await response.json()) as {
           freeShipping?: boolean;
-          campaignName?: string | null;
         };
         if (cancelled) return;
 
         setBenefit({
           freeShipping: Boolean(data.freeShipping),
-          campaignName: data.campaignName ?? null,
         });
       } catch {
         // Hors ligne : le panier reste au tarif normal. Oublier une gratuité à

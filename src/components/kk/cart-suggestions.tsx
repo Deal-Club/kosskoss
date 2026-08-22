@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { Plus, ChevronRight, Loader2 } from "lucide-react";
 import { LocalizedLink as Link } from "./localized-link";
 import { useCart } from "@/components/cart/CartProvider";
@@ -22,6 +23,7 @@ import type { KKProductView } from "@/types/kk";
  */
 export function CartSuggestions() {
   const { lines, add } = useCart();
+  const locale = useLocale();
   const [items, setItems] = useState<KKProductView[]>([]);
   const [chargement, setChargement] = useState(true);
 
@@ -38,7 +40,10 @@ export function CartSuggestions() {
         const res = await fetch("/api/kk/suggestions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productIds: idsPanier ? idsPanier.split(",") : [] }),
+          body: JSON.stringify({
+            productIds: idsPanier ? idsPanier.split(",") : [],
+            locale,
+          }),
         });
         if (!res.ok || annule) return;
         const data = (await res.json()) as { items?: KKProductView[] };
@@ -53,7 +58,7 @@ export function CartSuggestions() {
     return () => {
       annule = true;
     };
-  }, [idsPanier]);
+  }, [idsPanier, locale]);
 
   if (chargement) {
     return (

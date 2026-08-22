@@ -40,6 +40,7 @@
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
+    "metaDescription": "{label} : notre sélection de soins {labelLower}, prix en FCFA, livraison au Cameroun.",
     "productsCount": "<b>{filtered}</b> produits sur {total}",
     "sortBy": "Trier par",
     "sortRelevance": "Pertinence",
@@ -70,6 +71,27 @@
     "guideTitle": "{label} chez KossKoss Select",
     "guideDiscover": "Découvrir {label}",
     "guideAdvice": "Demander conseil"
+  },
+  "catalog": {
+    "metaDescription": "Découvrez notre sélection {labelLower} : soins sélectionnés avec exigence, prix en FCFA, livraison au Cameroun.",
+    "filtersTitle": "Filtres",
+    "filtersAndSort": "Filtres & tri",
+    "reset": "Réinitialiser",
+    "categoryLabel": "Catégorie",
+    "allProducts": "Tous les produits",
+    "brandLabel": "Marque",
+    "sortLabel": "Trier par",
+    "sortRelevance": "Pertinence",
+    "sortNewest": "Nouveautés",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "emptyText": "Aucun produit ne correspond à ces filtres.",
+    "emptyReset": "Réinitialiser les filtres",
+    "removeBesoinFilter": "Retirer ce filtre",
+    "searchingFor": "Vous cherchez :",
+    "countRange": "Produits <b>{first}</b>–<b>{last}</b> sur {total}",
+    "countTotal": "{total, plural, one {# produit} other {# produits}}",
+    "paginationAriaLabel": "Pagination des produits"
   },
   "product": {
     "details": "Détails du produit & informations service",
@@ -453,6 +475,7 @@
   },
   "wishlist": {
     "title": "Favoris",
+    "metaTitle": "Mes favoris | KossKoss Select",
     "intro": "Les articles mis en favori restent enregistrés dans ce navigateur — sans compte et sans connexion.",
     "add": "Ajouter aux favoris",
     "remove": "Retirer des favoris",
@@ -675,6 +698,14 @@
     "cta": "Voir ces produits",
     "dismiss": "Continuer mes achats",
     "close": "Fermer"
+  },
+  "home": {
+    "slogan": "La Sélection beauté qui vous choisit.",
+    "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money."
+  },
+  "diagnostic": {
+    "metaTitle": "Diagnostic Beauté — KossKoss Select",
+    "metaDescription": "Répondez à quelques questions sur votre peau et recevez une routine de soins personnalisée, à ajouter au panier."
   },
   "recentlyViewed": {
     "title": "Consultés récemment",

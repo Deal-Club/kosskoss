@@ -20,7 +20,7 @@ export const dynamicParams = true;
 
 export async function generateMetadata({ params }: { params: ProductParams }): Promise<Metadata> {
   const { locale, group, category, product } = await params;
-  const detail = await getProductDetail(group, category, product);
+  const detail = await getProductDetail(group, category, product, locale);
   if (!detail) return {};
   return {
     title: `${detail.brand} ${detail.name} — ${BRAND.name}`,
@@ -33,11 +33,11 @@ export default async function ProductPage({ params }: { params: ProductParams })
   const { locale, group, category, product } = await params;
   setRequestLocale(locale);
 
-  const detail = await getProductDetail(group, category, product);
+  const detail = await getProductDetail(group, category, product, locale);
   if (!detail) notFound();
 
   const [related, reviews] = await Promise.all([
-    getRelatedProducts(detail.category.slug, detail.id, 4),
+    getRelatedProducts(detail.category.slug, detail.id, locale, 4),
     // Seuls les avis modérés sortent d'ici — voir getProductReviews.
     getProductReviews(detail.id),
   ]);

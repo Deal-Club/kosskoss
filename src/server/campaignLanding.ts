@@ -12,6 +12,7 @@
 
 import { prisma } from "@/server/prisma";
 import { getStorefrontProducts } from "@/server/store";
+import { pickText } from "@/server/localizedContent";
 import {
   campaignTypeDefinition,
   isCampaignType,
@@ -25,7 +26,6 @@ import type { Product } from "@/types/home";
 
 export interface CampaignLanding {
   code: string;
-  name: string;
   type: CampaignType;
   discountKind: DiscountKind;
   discountValue: number;
@@ -62,7 +62,6 @@ export async function getCampaignLanding(
     where: { landingSlug: normalized },
     select: {
       code: true,
-      name: true,
       type: true,
       status: true,
       discountKind: true,
@@ -88,26 +87,29 @@ export async function getCampaignLanding(
   if (!live) return undefined;
 
   const type = isCampaignType(row.type) ? row.type : "promotion";
-  const products = await getStorefrontProducts(row.products.map((entry) => entry.productId));
+  // La traduction descend dans la lecture : `getStorefrontProducts` localise
+  // son résultat, `lead.name`/`lead.brand` ci-dessous sont donc déjà dans la
+  // bonne langue, sans repasser par un accès direct à un champ `*En` ici.
+  const products = await getStorefrontProducts(row.products.map((entry) => entry.productId), locale);
   // Tous les produits retirés du catalogue depuis le lancement : la page n'a
   // plus rien à montrer.
   if (products.length === 0) return undefined;
 
   // Repli sur le français quand la traduction anglaise est vide, règle appliquée
-  // partout dans la boutique.
+  // partout dans la boutique — via `pickText`, jamais un accès direct au champ
+  // `*En`.
   const english = locale === "en";
   const kind = row.discountKind as DiscountKind;
   const lead = products[0];
 
   return {
     code: row.code,
-    name: row.name,
     type,
     discountKind: kind,
     discountValue: row.discountValue,
     endsAt: row.endsAt,
     showsCountdown: campaignTypeDefinition(type).showsCountdown,
-    headline: renderTemplate((english && row.headlineEn) || row.headline, {
+    headline: renderTemplate(pickText(row.headline, english ? row.headlineEn : undefined), {
       produit: lead.name,
       marque: lead.brand,
       prix: lead.oldPrice ?? lead.price,
@@ -143,12 +145,20 @@ function discountLabel(kind: DiscountKind, value: number, english: boolean): str
   }
 }
 
-/** « 48 Stunden », « 3 Tage ». Le décompte à la seconde est l'affaire du compte à rebours. */
+/**
+ * « 48 heures », « 3 jours ». Le décompte à la seconde est l'affaire du compte
+ * à rebours.
+ *
+ * Corrigé au passage : ce résidu de l'allemand du site d'origine (« Stunden »,
+ * « Tage ») s'affichait encore sur la boutique française — l'allemand a été
+ * entièrement retiré du projet (voir TARGET.md), cette fonction l'avait
+ * oublié.
+ */
 function remainingLabel(endsAt: Date, now: Date, english: boolean): string {
   const hours = Math.max(1, Math.ceil((endsAt.getTime() - now.getTime()) / 3_600_000));
   if (hours < 48) {
-    return english ? `${hours} hours` : `${hours} Stunden`;
+    return english ? `${hours} hours` : `${hours} heures`;
   }
   const days = Math.ceil(hours / 24);
-  return english ? `${days} days` : `${days} Tage`;
+  return english ? `${days} days` : `${days} jours`;
 }

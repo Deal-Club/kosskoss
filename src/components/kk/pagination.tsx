@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LocalizedLink as Link } from "./localized-link";
 
 /**
  * Barre de pagination générique, découplée de tout filtre : l'appelant fournit
@@ -51,11 +52,11 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
       <ul className="flex flex-wrap items-center justify-center gap-1.5">
         <li>
           {page > 1 ? (
-            <a href={hrefForPage(page - 1)} rel="prev" className={`${base} gap-1 text-deep hover:bg-cream`}>
+            <Link href={hrefForPage(page - 1)} rel="prev" className={`${base} gap-1 text-deep hover:bg-cream`}>
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:inline">Précédent</span>
               <span className="sr-only sm:hidden">Page précédente</span>
-            </a>
+            </Link>
           ) : (
             // Désactivé = absent du parcours au clavier, mais la place reste
             // prise : sinon la barre saute latéralement d'une page à l'autre.
@@ -78,10 +79,10 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
                   {n}
                 </span>
               ) : (
-                <a href={hrefForPage(n)} className={`${base} text-foreground hover:bg-cream hover:text-deep`}>
+                <Link href={hrefForPage(n)} className={`${base} text-foreground hover:bg-cream hover:text-deep`}>
                   <span className="sr-only">Page </span>
                   {n}
-                </a>
+                </Link>
               )}
             </li>
           ),
@@ -89,11 +90,11 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
 
         <li>
           {page < pageCount ? (
-            <a href={hrefForPage(page + 1)} rel="next" className={`${base} gap-1 text-deep hover:bg-cream`}>
+            <Link href={hrefForPage(page + 1)} rel="next" className={`${base} gap-1 text-deep hover:bg-cream`}>
               <span className="hidden sm:inline">Suivant</span>
               <span className="sr-only sm:hidden">Page suivante</span>
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </a>
+            </Link>
           ) : (
             <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
               <span className="hidden sm:inline">Suivant</span>

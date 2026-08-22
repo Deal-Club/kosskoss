@@ -11,12 +11,12 @@ import { parseStoredBlocks } from "@/lib/journal/blocks";
  * Lecture et écriture des traductions, un modèle à la fois.
  *
  * Le registre (src/lib/kk/traductions.ts) dit QUELS champs sont traduisibles ;
- * ce module dit COMMENT les lire et les écrire pour chacun des dix-sept
+ * ce module dit COMMENT les lire et les écrire pour chacun des dix-neuf
  * modèles. La carte ci-dessous compte donc une entrée par modèle, chacune
  * appelant `prisma.<modele>` nommé en toutes lettres.
  *
  * PAS D'ACCÈS INDEXÉ SUR LE CLIENT PRISMA (`(prisma as never)[cle]`), même si
- * le résultat tiendrait en dix lignes : cet écran écrit dans dix-sept tables,
+ * le résultat tiendrait en dix lignes : cet écran écrit dans dix-neuf tables,
  * et un accès dynamique ne se vérifie qu'à l'exécution — il échouerait le
  * jour d'un renommage de champ, et pourrait écrire dans le mauvais champ
  * avant qu'on s'en aperçoive. Une traduction fautive n'est visible que de
@@ -388,6 +388,8 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
           labelEn: true,
           description: true,
           descriptionEn: true,
+          chip: true,
+          chipEn: true,
           question: { select: { title: true } },
         },
         orderBy: { position: "asc" },
@@ -400,13 +402,19 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
           labelEn: a.labelEn,
           description: a.description,
           descriptionEn: a.descriptionEn,
+          chip: a.chip,
+          chipEn: a.chipEn,
         },
       }));
     },
     async ecrire(id, donnees) {
       await prisma.diagAnswer.update({
         where: { id },
-        data: { labelEn: donnees.labelEn, descriptionEn: donnees.descriptionEn },
+        data: {
+          labelEn: donnees.labelEn,
+          descriptionEn: donnees.descriptionEn,
+          chipEn: donnees.chipEn,
+        },
       });
     },
   },
@@ -622,6 +630,64 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
       await prisma.articleAuthor.update({
         where: { id },
         data: { roleEn: donnees.roleEn, bioEn: donnees.bioEn },
+      });
+    },
+  },
+
+  Announcement: {
+    champs: registreDe("Announcement"),
+    async lister() {
+      const lignes = await prisma.announcement.findMany({
+        select: { id: true, message: true, messageEn: true },
+        orderBy: { position: "asc" },
+      });
+      return lignes.map((a) => ({
+        id: a.id,
+        libelle: a.message || "(sans message)",
+        valeurs: { message: a.message, messageEn: a.messageEn },
+      }));
+    },
+    async ecrire(id, donnees) {
+      await prisma.announcement.update({ where: { id }, data: { messageEn: donnees.messageEn } });
+    },
+  },
+
+  PaymentMethod: {
+    champs: registreDe("PaymentMethod"),
+    async lister() {
+      const lignes = await prisma.paymentMethod.findMany({
+        select: {
+          id: true,
+          label: true,
+          labelEn: true,
+          description: true,
+          descriptionEn: true,
+          feeLabel: true,
+          feeLabelEn: true,
+        },
+        orderBy: { position: "asc" },
+      });
+      return lignes.map((p) => ({
+        id: p.id,
+        libelle: p.label,
+        valeurs: {
+          label: p.label,
+          labelEn: p.labelEn,
+          description: p.description,
+          descriptionEn: p.descriptionEn,
+          feeLabel: p.feeLabel,
+          feeLabelEn: p.feeLabelEn,
+        },
+      }));
+    },
+    async ecrire(id, donnees) {
+      await prisma.paymentMethod.update({
+        where: { id },
+        data: {
+          labelEn: donnees.labelEn,
+          descriptionEn: donnees.descriptionEn,
+          feeLabelEn: donnees.feeLabelEn,
+        },
       });
     },
   },

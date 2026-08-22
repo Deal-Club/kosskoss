@@ -112,6 +112,10 @@ describe("registre face au schéma", () => {
     // l'éditer depuis une case de traduction reviendrait à modifier du JSON à
     // la main. Voir le commentaire d'en-tête de traductions.ts.
     Article: ["blocksEn"],
+    // `name` est un libellé interne au back-office (identifiant lisible de la
+    // campagne dans les listes admin) : il ne sort jamais vers un client, donc
+    // rien à y traduire. Voir prisma/schema.prisma, modèle Campaign.
+    Campaign: ["nameEn"],
   };
 
   /** Modèles du schéma Prisma et leurs champs `*En`, dans l'ordre du fichier. */

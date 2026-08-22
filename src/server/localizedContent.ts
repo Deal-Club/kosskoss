@@ -54,10 +54,16 @@ export function pickText(fallback: string, translated: string | null | undefined
   return value ? value : fallback;
 }
 
-/** Même règle pour une liste : une liste vide vaut « pas de traduction ». */
+/**
+ * Même règle qu'un texte, appliquée puce par puce.
+ *
+ * La liste française donne la longueur de référence, et chaque position
+ * retombe sur elle indépendamment des autres : une traduction incomplète (une
+ * case vide ou manquante au milieu de la liste) ne doit jamais faire
+ * disparaître une puce, seulement la laisser en français.
+ */
 export function pickList(fallback: string[], translated: string[] | undefined): string[] {
-  const values = translated?.filter((entry) => entry.trim().length > 0) ?? [];
-  return values.length > 0 ? values : fallback;
+  return fallback.map((entry, index) => pickText(entry, translated?.[index]));
 }
 
 /** Vrai dès qu'une locale connue autre que le français est demandée. */

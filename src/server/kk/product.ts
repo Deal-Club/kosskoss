@@ -1,6 +1,8 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toBadge, toProductView } from "./product-view";
+import { pickText, pickList, needsTranslation } from "@/server/localizedContent";
 import type { KKProductView, KKBadge } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 /** Les champs `bullets`/`images` sont des String JSON (défaut "[]"). */
 function parseStringArray(value: string | null): string[] {
@@ -46,6 +48,7 @@ export async function getProductDetail(
   group: string,
   category: string,
   slug: string,
+  locale: Locale,
 ): Promise<KKProductDetail | null> {
   const p = await prisma.product.findFirst({
     where: {
@@ -60,26 +63,41 @@ export async function getProductDetail(
   });
   if (!p) return null;
 
+  // Le repli passe uniquement par pickText/pickList — jamais un accès direct
+  // à un champ *En. La marque, nom propre, ne se traduit jamais.
+  const traduire = needsTranslation(locale);
+  const name = pickText(p.name, traduire ? p.nameEn : undefined);
+  const shortDescription = pickText(p.shortDescription ?? "", traduire ? p.shortDescriptionEn : undefined);
+  const description = pickText(p.description ?? "", traduire ? p.descriptionEn : undefined);
+  const bullets = pickList(parseStringArray(p.bullets), traduire ? parseStringArray(p.bulletsEn) : undefined);
+
   return {
     id: p.id,
     brand: p.brand,
-    name: p.name,
+    name,
     slug: p.slug,
     sku: p.sku,
-    shortDescription: p.shortDescription ?? "",
-    description: p.description ?? "",
-    bullets: parseStringArray(p.bullets),
+    shortDescription,
+    description,
+    bullets,
     priceFcfa: p.priceCents,
     oldPriceFcfa: p.oldPriceCents ?? undefined,
     badge: toBadge(p.badge),
     stock: p.stock,
     image: p.image,
     images: parseStringArray(p.images),
-    group: { slug: p.category.group.slug, label: p.category.group.label },
-    category: { slug: p.category.slug, label: p.category.label },
+    // Fil d'Ariane de la fiche : mêmes libellés que le catalogue, même repli.
+    group: {
+      slug: p.category.group.slug,
+      label: pickText(p.category.group.label, traduire ? p.category.group.labelEn : undefined),
+    },
+    category: {
+      slug: p.category.slug,
+      label: pickText(p.category.label, traduire ? p.category.labelEn : undefined),
+    },
     variants: p.variants.map((v) => ({
       id: v.id,
-      label: v.label,
+      label: pickText(v.label, traduire ? v.labelEn : undefined),
       priceFcfa: v.priceCents,
       oldPriceFcfa: v.oldPriceCents ?? undefined,
     })),
@@ -91,6 +109,7 @@ export async function getProductDetail(
 export async function getRelatedProducts(
   categorySlug: string,
   excludeId: string,
+  locale: Locale,
   limit = 4,
 ): Promise<KKProductView[]> {
   const rows = await prisma.product.findMany({
@@ -98,5 +117,5 @@ export async function getRelatedProducts(
     include: PRODUCT_VIEW_INCLUDE,
     take: limit,
   });
-  return rows.map(toProductView);
+  return rows.map((row, index) => toProductView(row, locale, index));
 }

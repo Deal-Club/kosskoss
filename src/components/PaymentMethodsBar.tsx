@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import {
   Banknote,
   CreditCard,
@@ -12,7 +12,7 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import { listEnabledPaymentMethods } from "@/server/payments";
+import { listEnabledPaymentMethodsLocalized } from "@/server/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import type { PaymentMethodRecord } from "@/server/types";
 
@@ -34,8 +34,9 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 /**
- * Les moyens de paiement viennent du back-office et n'ont pas de champ traduit.
- * Seule la mention de gratuité, saisie de façon standardisée, est transposée.
+ * Les moyens de paiement viennent du back-office ; `listEnabledPaymentMethodsLocalized`
+ * les a déjà fait passer par pickText. Ce repli ne joue donc plus que pour un
+ * moyen dont la mention de frais n'a pas encore de traduction saisie.
  */
 function feeLabelFor(feeLabel: string, freeLabel: string): string {
   const normalized = feeLabel.trim().toLowerCase();
@@ -75,6 +76,7 @@ export async function PaymentMethodsBar({
   className,
 }: PaymentMethodsBarProps = {}) {
   const t = await getTranslations("payment");
+  const locale = await getLocale();
   const methods: PaymentMethodRecord[] =
     source === "vitrine"
       ? VITRINE.map((entree, index) => ({
@@ -87,7 +89,7 @@ export async function PaymentMethodsBar({
           enabled: true,
           position: index,
         }))
-      : await listEnabledPaymentMethods();
+      : await listEnabledPaymentMethodsLocalized(locale);
   if (methods.length === 0) return null;
 
   const freeLabel = t("free");

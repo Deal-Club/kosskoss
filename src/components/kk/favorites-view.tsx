@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { LocalizedLink as Link } from "./localized-link";
+import { usePathname } from "next/navigation";
+import { LocalizedLink as Link, withLocale } from "./localized-link";
 import { Heart, Trash2, ShoppingBag, ChevronRight, Check, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/components/cart/CartProvider";
@@ -74,6 +75,7 @@ function AddButton({ item }: { item: FavoriteItem }) {
 
 export function FavoritesView() {
   const { items, ready, onAccount } = useFavorites();
+  const pathname = usePathname();
 
   // Tant que le navigateur n'a pas rendu la main, on n'affiche ni la liste ni
   // l'état vide : montrer « aucun favori » puis la remplir ferait clignoter.
@@ -183,7 +185,7 @@ export function FavoritesView() {
             Cette sélection est conservée dans ce navigateur.
           </p>
           <Link
-            href="/compte/connexion?suite=/favoris"
+            href={`/compte/connexion?suite=${withLocale(pathname, "/favoris")}`}
             className="kk-fill inline-flex items-center gap-1.5 rounded-full bg-deep px-4 py-2 text-sm font-semibold text-primary-foreground"
           >
             <UserPlus className="h-4 w-4" /> La retrouver sur tous mes appareils

@@ -38,7 +38,7 @@ export interface EtatTraduction {
   complet: boolean;
 }
 
-// Dix-sept modèles, un par table portant au moins un couple de champs
+// Dix-neuf modèles, un par table portant au moins un couple de champs
 // `xxx` / `xxxEn`. Les noms de champs reprennent exactement ceux du schéma —
 // voir prisma/schema.prisma, vérifié champ par champ à l'écriture de ce
 // registre, et confirmé par le test qui relit le schéma (traductions.test.ts).
@@ -127,6 +127,7 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
     champs: [
       { fr: "label", en: "labelEn", libelle: "Réponse", format: "texte" },
       { fr: "description", en: "descriptionEn", libelle: "Description", format: "texte-long" },
+      { fr: "chip", en: "chipEn", libelle: "Étiquette de profil", format: "texte" },
     ],
   },
   {
@@ -180,6 +181,20 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
     champs: [
       { fr: "role", en: "roleEn", libelle: "Fonction", format: "texte" },
       { fr: "bio", en: "bioEn", libelle: "Biographie", format: "texte-long" },
+    ],
+  },
+  {
+    cle: "Announcement",
+    libelle: "Bandeau d'annonce",
+    champs: [{ fr: "message", en: "messageEn", libelle: "Message", format: "texte" }],
+  },
+  {
+    cle: "PaymentMethod",
+    libelle: "Moyens de paiement",
+    champs: [
+      { fr: "label", en: "labelEn", libelle: "Libellé", format: "texte" },
+      { fr: "description", en: "descriptionEn", libelle: "Description", format: "texte-long" },
+      { fr: "feeLabel", en: "feeLabelEn", libelle: "Mention de frais", format: "texte" },
     ],
   },
 ];

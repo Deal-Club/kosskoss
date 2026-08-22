@@ -1,7 +1,9 @@
 import { prisma } from "@/server/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import { pickText, needsTranslation } from "@/server/localizedContent";
 import type { KKProductView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 export type CatalogSort = "pertinence" | "prix-asc" | "prix-desc" | "nouveautes";
 
@@ -75,6 +77,8 @@ export async function getCatalog(opts: {
   sort?: CatalogSort;
   /** Page demandée, 1 par défaut. Hors bornes, on ramène à la dernière page. */
   page?: number;
+  /** Langue de la page qui affiche le catalogue — voir `toProductView`. */
+  locale: Locale;
 }): Promise<CatalogView | null> {
   const group = await prisma.group.findUnique({
     where: { slug: opts.group },
@@ -82,11 +86,16 @@ export async function getCatalog(opts: {
   });
   if (!group) return null;
 
+  // Repli identique à `toProductView` : accès direct au champ `*En` déjà
+  // chargé sur la ligne (aucun `select` restrictif sur ces requêtes), passé
+  // par `pickText` — jamais affiché tel quel.
+  const traduire = needsTranslation(opts.locale);
+
   let category: { slug: string; label: string } | undefined;
   if (opts.category) {
     const match = group.categories.find((c) => c.slug === opts.category);
     if (!match) return null;
-    category = { slug: match.slug, label: match.label };
+    category = { slug: match.slug, label: pickText(match.label, traduire ? match.labelEn : undefined) };
   }
 
   // Portée : univers, éventuellement restreinte à une catégorie.
@@ -138,15 +147,15 @@ export async function getCatalog(opts: {
   const countByCategoryId = new Map(counts.map((c) => [c.categoryId, c._count._all]));
 
   return {
-    group: { slug: group.slug, label: group.label },
+    group: { slug: group.slug, label: pickText(group.label, traduire ? group.labelEn : undefined) },
     category,
     categories: group.categories.map((c) => ({
       slug: c.slug,
-      label: c.label,
+      label: pickText(c.label, traduire ? c.labelEn : undefined),
       count: countByCategoryId.get(c.id) ?? 0,
     })),
     brands: brandRows.map((b) => b.brand),
-    products: rows.map(toProductView),
+    products: rows.map((row, index) => toProductView(row, opts.locale, index)),
     total,
     page,
     pageCount,

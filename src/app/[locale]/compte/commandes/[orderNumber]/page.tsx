@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { ArrowLeft } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
+import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { requireCustomer } from "@/server/customerSession";
 import { getAccountOrder } from "@/server/kk/account";
 import { formatFcfa } from "@/lib/kk/format";

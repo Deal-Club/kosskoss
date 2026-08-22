@@ -8,10 +8,13 @@
  */
 
 import { NextResponse } from "next/server";
+import { hasLocale } from "next-intl";
 import { prisma } from "@/server/prisma";
 import { CAMPAIGN_COOKIE } from "@/lib/campaigns";
 import { campaignCookieOptions } from "@/server/campaignContext";
 import { recordEvent } from "@/server/campaigns";
+import { getPathname } from "@/i18n/navigation";
+import { routing } from "@/i18n/routing";
 
 // La route écrit en base à chaque appel : rien à mettre en cache, et un cache
 // intermédiaire ferait disparaître des clics des statistiques.
@@ -52,6 +55,10 @@ export async function GET(request: Request, { params }: { params: Params }) {
       id: true,
       campaignId: true,
       firstClickedAt: true,
+      // Langue dans laquelle le message a été composé : le lien de suivi doit
+      // ramener le destinataire vers la même langue, pas vers le français par
+      // défaut.
+      locale: true,
       campaign: {
         select: {
           landingSlug: true,
@@ -90,7 +97,11 @@ export async function GET(request: Request, { params }: { params: Params }) {
   });
   await recordEvent(recipient.campaignId, "clic", recipient.id);
 
-  const destination = requested ?? defaultDestination(recipient.campaign);
+  const locale = hasLocale(routing.locales, recipient.locale) ? recipient.locale : routing.defaultLocale;
+  const destination = getPathname({
+    href: requested ?? defaultDestination(recipient.campaign),
+    locale,
+  });
   const response = redirectTo(request, destination);
   response.cookies.set(CAMPAIGN_COOKIE, token, campaignCookieOptions());
   return response;

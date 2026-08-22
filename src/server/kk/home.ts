@@ -1,6 +1,7 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
 import type { KKProductView, KKReviewsSummary, KKTestimonialView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Produits mis en avant sur l'accueil, lus en base.
@@ -19,7 +20,7 @@ import type { KKProductView, KKReviewsSummary, KKTestimonialView } from "@/types
  * sous-unité) — voir docs/13, chantier « fondation FCFA ».
  * Renvoie une liste vide sans erreur si le catalogue est vide.
  */
-export async function getHomeProducts(limit = 8): Promise<KKProductView[]> {
+export async function getHomeProducts(limit: number, locale: Locale): Promise<KKProductView[]> {
   // On lit plus large que nécessaire : l'alternance a besoin de choix, sinon
   // elle ne fait que réordonner les mêmes produits d'une même marque.
   const rows = await prisma.product.findMany({
@@ -50,7 +51,7 @@ export async function getHomeProducts(limit = 8): Promise<KKProductView[]> {
     if (choisis.length === avant) break; // toutes les files sont épuisées
   }
 
-  return choisis.map(toProductView);
+  return choisis.map((row, index) => toProductView(row, locale, index));
 }
 
 /**

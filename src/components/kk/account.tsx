@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { LocalizedLink as Link } from "./localized-link";
+import { useRouter, usePathname } from "next/navigation";
+import { LocalizedLink as Link, withLocale } from "./localized-link";
 import { Loader2, LogOut } from "lucide-react";
 import { resetFavoritesAfterLogout, syncFavoritesAfterLogin } from "@/lib/favorites";
 
@@ -11,6 +11,7 @@ const inputCls =
 
 export function AccountLogin({ returnTo }: { returnTo?: string }) {
   const router = useRouter();
+  const pathname = usePathname();
   const safeReturn =
     returnTo && returnTo.startsWith("/") && !returnTo.startsWith("//") ? returnTo : "/compte";
   const [email, setEmail] = useState("");
@@ -38,7 +39,10 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
       // Les favoris mis de côté avant la connexion rejoignent le compte.
       // `router.refresh()` ne réinitialise pas le magasin : il faut le lui dire.
       syncFavoritesAfterLogin();
-      router.push(safeReturn);
+      // `safeReturn` (comme le paramètre `suite` qui l'alimente) est délibérément
+      // sans préfixe de langue : c'est ici, au moment de revenir, qu'on applique
+      // celui de la page de connexion couramment affichée.
+      router.push(withLocale(pathname, safeReturn));
       router.refresh();
     } catch {
       setError("Une erreur est survenue. Réessayez.");
@@ -92,6 +96,7 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
 
 export function AccountLogout() {
   const router = useRouter();
+  const pathname = usePathname();
   const [busy, setBusy] = useState(false);
   async function logout() {
     setBusy(true);
@@ -103,7 +108,7 @@ export function AccountLogout() {
     // Sur un poste partagé, la sélection du compte ne doit pas rester affichée
     // pour la personne suivante.
     resetFavoritesAfterLogout();
-    router.push("/");
+    router.push(withLocale(pathname, "/"));
     router.refresh();
   }
   return (

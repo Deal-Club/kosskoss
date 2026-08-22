@@ -40,6 +40,7 @@
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
+    "metaDescription": "{label}: our {labelLower} selection, prices in FCFA, delivery across Cameroon.",
     "productsCount": "<b>{filtered}</b> of {total} products",
     "sortBy": "Sort by",
     "sortRelevance": "Relevance",
@@ -70,6 +71,27 @@
     "guideTitle": "{label} at KossKoss Select",
     "guideDiscover": "Discover {label}",
     "guideAdvice": "Ask for advice"
+  },
+  "catalog": {
+    "metaDescription": "Discover our {labelLower} selection: carefully curated skincare, prices in FCFA, delivery across Cameroon.",
+    "filtersTitle": "Filters",
+    "filtersAndSort": "Filters & sorting",
+    "reset": "Reset",
+    "categoryLabel": "Category",
+    "allProducts": "All products",
+    "brandLabel": "Brand",
+    "sortLabel": "Sort by",
+    "sortRelevance": "Relevance",
+    "sortNewest": "New arrivals",
+    "sortPriceAsc": "Price low to high",
+    "sortPriceDesc": "Price high to low",
+    "emptyText": "No product matches these filters.",
+    "emptyReset": "Reset filters",
+    "removeBesoinFilter": "Remove this filter",
+    "searchingFor": "Looking for :",
+    "countRange": "Products <b>{first}</b>–<b>{last}</b> of {total}",
+    "countTotal": "{total, plural, one {# product} other {# products}}",
+    "paginationAriaLabel": "Product pagination"
   },
   "product": {
     "details": "Product details & service information",
@@ -453,6 +475,7 @@
   },
   "wishlist": {
     "title": "Wishlist",
+    "metaTitle": "My favorites | KossKoss Select",
     "intro": "Saved items stay in this browser — no account and no sign-in needed.",
     "add": "Add to wishlist",
     "remove": "Remove from wishlist",
@@ -675,6 +698,14 @@
     "cta": "See these products",
     "dismiss": "Keep browsing",
     "close": "Close"
+  },
+  "home": {
+    "slogan": "The beauty selection that chooses you.",
+    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment."
+  },
+  "diagnostic": {
+    "metaTitle": "Beauty Diagnostic — KossKoss Select",
+    "metaDescription": "Answer a few questions about your skin and get a personalized skincare routine you can add to your cart."
   },
   "recentlyViewed": {
     "title": "Recently viewed",

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCartSuggestions } from "@/server/kk/suggestions";
+import { choisirLangue } from "@/lib/kk/langue";
 
 /**
  * Suggestions du tiroir du panier.
@@ -15,9 +16,12 @@ export async function POST(request: Request) {
   const ids = Array.isArray(body?.productIds)
     ? (body.productIds as unknown[]).filter((id): id is string => typeof id === "string")
     : [];
+  // Le corps vient du navigateur : mêmes garanties que /api/kk/diagnostic,
+  // jamais une chaîne arbitraire transmise telle quelle à `toProductView`.
+  const locale = choisirLangue(typeof body?.locale === "string" ? body.locale : null);
 
   try {
-    return NextResponse.json({ items: await getCartSuggestions(ids) });
+    return NextResponse.json({ items: await getCartSuggestions(ids, locale) });
   } catch (error) {
     // Le tiroir doit rester utilisable : sans suggestions, il montre le panier
     // et ses boutons, ce qui est l'essentiel.

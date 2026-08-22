@@ -3,6 +3,7 @@ import { formatFcfa } from "@/lib/kk/format";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
+import { LocalizedLink as Link } from "./localized-link";
 import { FavoriteHeart, QuickAddButton } from "./product-actions";
 import { ProductHoverPanel } from "./product-hover-panel";
 
@@ -27,7 +28,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
             selon le produit : la même crème changeait de couleur d'une page à
             l'autre. Décoratif et arbitraire — et surtout en concurrence avec
             les teintes de routine, qui, elles, veulent dire quelque chose. */}
-        <a
+        <Link
           href={href}
           /* Fond BLANC et non crème : les packshots ne sont pas détourés, ce
              sont des JPEG carrés shootés sur fond blanc. Posés sur le crème,
@@ -87,7 +88,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
               quelle partie du cadre l'ouvre, et un clic dessus mène à la fiche
               — ce qu'annonce « Voir la fiche ». */}
           <ProductHoverPanel product={product} />
-        </a>
+        </Link>
 
         {/* Les deux pastilles sont posées hors du lien : cliquer sur le cœur ou
             sur le « + » ne doit pas ouvrir la fiche produit. */}
@@ -98,7 +99,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
         <QuickAddButton product={product} />
       </div>
 
-      <a href={href} className="mt-4 flex flex-1 flex-col focus-visible:outline-none">
+      <Link href={href} className="mt-4 flex flex-1 flex-col focus-visible:outline-none">
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           {product.brand}
         </p>
@@ -115,7 +116,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
             </span>
           )}
         </div>
-      </a>
+      </Link>
     </article>
   );
 }

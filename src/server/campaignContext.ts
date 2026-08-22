@@ -33,7 +33,6 @@ import {
 export interface CampaignContext {
   campaignId: string;
   campaignCode: string;
-  campaignName: string;
   recipientId: string;
   /** La campagne est-elle encore en cours ? */
   active: boolean;
@@ -81,7 +80,6 @@ export async function resolveCampaignContextFromToken(
         select: {
           id: true,
           code: true,
-          name: true,
           status: true,
           discountKind: true,
           startsAt: true,
@@ -104,7 +102,6 @@ export async function resolveCampaignContextFromToken(
   return {
     campaignId: campaign.id,
     campaignCode: campaign.code,
-    campaignName: campaign.name,
     recipientId: recipient.id,
     active,
     freeShipping: active && campaign.discountKind === "free_shipping",
