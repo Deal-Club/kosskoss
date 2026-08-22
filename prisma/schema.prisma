@@ -158,6 +158,7 @@ model Product {
   variants       ProductVariant[]
   favorites      CustomerFavorite[]
   routineSteps   RoutineStep[]
+  purchaseItems  PurchaseOrderItem[]
 
   @@index([categoryId])
   @@index([brand])
@@ -1509,4 +1510,59 @@ model ArticleViewDay {
 
   @@id([articleId, day])
   @@index([day])
+}
+
+// ---- Approvisionnement ----
+
+/// Fournisseur du catalogue.
+model Supplier {
+  id        String          @id @default(cuid())
+  name      String          @unique
+  email     String          @default("")
+  phone     String          @default("")
+  address   String          @default("")
+  notes     String          @default("")
+  active    Boolean         @default(true)
+  orders    PurchaseOrder[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+/// Bon de commande fournisseur, numéroté « BC-AAAA-NNNNNN ».
+model PurchaseOrder {
+  id         String   @id @default(cuid())
+  reference  String   @unique
+  supplierId String
+  /// brouillon | envoye | recu_partiel | recu | annule — déduit des quantités,
+  /// jamais saisi à la main.
+  status     String   @default("brouillon")
+  note       String   @default("")
+  sentAt     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  supplier Supplier            @relation(fields: [supplierId], references: [id], onDelete: Restrict)
+  items    PurchaseOrderItem[]
+
+  @@index([supplierId])
+  @@index([status])
+}
+
+/// Ligne d'un bon de commande. Le libellé est recopié : supprimer un produit du
+/// catalogue ne doit pas rendre illisible un bon déjà passé.
+model PurchaseOrderItem {
+  id                String  @id @default(cuid())
+  purchaseOrderId   String
+  productId         String?
+  brand             String
+  name              String
+  quantityOrdered   Int
+  quantityReceived  Int     @default(0)
+  unitCostCents     Int
+
+  purchaseOrder PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  product       Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([purchaseOrderId])
+  @@index([productId])
 }
