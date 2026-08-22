@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
@@ -32,7 +33,7 @@ export default async function MarquesPage({ params }: { params: Params }) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const brands = await getShopBrands();
+  const brands = await getShopBrands(locale);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -60,12 +61,37 @@ export default async function MarquesPage({ params }: { params: Params }) {
           {brands.length > 0 ? (
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {brands.map((brand) => (
-                <li key={brand}>
+                <li key={brand.name}>
+                  {/* `href` absent : mode repli (voir `getShopBrands`), la
+                      table `Brand` n'a pas encore été peuplée par l'import.
+                      La marque redirige alors vers la recherche, faute de
+                      fiche à montrer. */}
                   <Link
-                    href={`/recherche?q=${encodeURIComponent(brand)}`}
-                    className="kk-lift block rounded-2xl border border-border/70 bg-card px-6 py-5 text-center text-sm font-medium uppercase tracking-[0.1em] text-deep transition hover:border-deep/40"
+                    href={brand.href ?? `/recherche?q=${encodeURIComponent(brand.name)}`}
+                    className="kk-lift flex items-center gap-4 rounded-2xl border border-border/70 bg-card px-6 py-5 text-left transition hover:border-deep/40"
                   >
-                    {brand}
+                    {brand.logo ? (
+                      <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full bg-cream">
+                        <Image
+                          src={brand.logo}
+                          alt=""
+                          fill
+                          sizes="40px"
+                          className="object-contain p-1"
+                          unoptimized
+                        />
+                      </span>
+                    ) : null}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium uppercase tracking-[0.1em] text-deep">
+                        {brand.name}
+                      </span>
+                      {brand.tagline && (
+                        <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                          {brand.tagline}
+                        </span>
+                      )}
+                    </span>
                   </Link>
                 </li>
               ))}

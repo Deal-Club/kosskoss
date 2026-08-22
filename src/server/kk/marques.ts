@@ -1,5 +1,8 @@
 import { prisma } from "@/server/prisma";
 import { cleMarque, slugMarque } from "@/lib/kk/marques";
+import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import type { KKProductView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Lecture, écriture et import des marques.
@@ -113,6 +116,51 @@ export async function listerMarques(options?: {
 export async function marqueParSlug(slug: string): Promise<MarqueRecord | null> {
   const row = await prisma.brand.findUnique({ where: { slug }, include: avecCompte });
   return row ? versMarqueRecord(row) : null;
+}
+
+/** Repli sur le français quand la traduction anglaise est vide — même règle que pour les catégories. */
+function pickMarqueText(fr: string, en: string, locale: Locale): string {
+  return locale === "en" && en.trim().length > 0 ? en : fr;
+}
+
+/** Marque telle que présentée sur sa page de vitrine, avec ses produits actifs. */
+export interface MarqueVitrine {
+  slug: string;
+  name: string;
+  description: string;
+  logo: string;
+  products: KKProductView[];
+}
+
+/**
+ * Marque de vitrine par slug. `null` si elle n'existe pas, si elle est
+ * inactive, ou si elle n'a plus aucun produit actif — même règle que sur le
+ * listing : une page de marque vide déçoit plus qu'une absence, et fait sortir
+ * la fiche du référencement plutôt que de la laisser à vide.
+ */
+export async function marqueVitrineParSlug(
+  slug: string,
+  locale: Locale,
+): Promise<MarqueVitrine | null> {
+  const row = await prisma.brand.findUnique({
+    where: { slug },
+    include: {
+      products: {
+        where: { active: true },
+        include: PRODUCT_VIEW_INCLUDE,
+        orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+      },
+    },
+  });
+  if (!row || !row.active || row.products.length === 0) return null;
+
+  return {
+    slug: row.slug,
+    name: pickMarqueText(row.name, row.nameEn, locale),
+    description: pickMarqueText(row.description, row.descriptionEn, locale),
+    logo: row.logo,
+    products: row.products.map((p) => toProductView(p)),
+  };
 }
 
 export async function creerMarque(input: MarqueInput): Promise<MarqueRecord> {
