@@ -40,6 +40,7 @@
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
+    "metaDescription": "{label}: our {labelLower} selection, prices in FCFA, delivery across Cameroon.",
     "productsCount": "<b>{filtered}</b> of {total} products",
     "sortBy": "Sort by",
     "sortRelevance": "Relevance",
@@ -72,6 +73,7 @@
     "guideAdvice": "Ask for advice"
   },
   "catalog": {
+    "metaDescription": "Discover our {labelLower} selection: carefully curated skincare, prices in FCFA, delivery across Cameroon.",
     "filtersTitle": "Filters",
     "filtersAndSort": "Filters & sorting",
     "reset": "Reset",

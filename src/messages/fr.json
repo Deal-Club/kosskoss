@@ -40,6 +40,7 @@
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
+    "metaDescription": "{label} : notre sélection de soins {labelLower}, prix en FCFA, livraison au Cameroun.",
     "productsCount": "<b>{filtered}</b> produits sur {total}",
     "sortBy": "Trier par",
     "sortRelevance": "Pertinence",
@@ -72,6 +73,7 @@
     "guideAdvice": "Demander conseil"
   },
   "catalog": {
+    "metaDescription": "Découvrez notre sélection {labelLower} : soins sélectionnés avec exigence, prix en FCFA, livraison au Cameroun.",
     "filtersTitle": "Filtres",
     "filtersAndSort": "Filtres & tri",
     "reset": "Réinitialiser",

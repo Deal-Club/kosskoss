@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
 import { getCatalog } from "@/server/kk/catalog";
@@ -26,13 +26,18 @@ export async function generateMetadata({
   const view = await getCatalog({ group, category, page, locale });
   if (!view || !view.category) return {};
 
+  const t = await getTranslations({ locale, namespace: "category" });
+
   // Voir la note de la page univers : chaque page de rayon se désigne
   // elle-même comme canonique, sinon elle n'est jamais explorée.
   const suffixe = view.page > 1 ? ` — Page ${view.page}` : "";
   const requete = view.page > 1 ? `?page=${view.page}` : "";
   return {
     title: `${view.category.label}${suffixe} — ${BRAND.name}`,
-    description: `${view.category.label} : notre sélection de soins ${view.category.label.toLowerCase()}, prix en FCFA, livraison au Cameroun.`,
+    description: t("metaDescription", {
+      label: view.category.label,
+      labelLower: view.category.label.toLowerCase(),
+    }),
     alternates: alternatesFor(`/${group}/${category}`, locale, requete),
   };
 }
