@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FileText, Pencil } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { LEGAL_SLUG_LABELS } from "@/content/legal";
 import type { LegalLocale } from "@/content/legal/types";
 import { listLegalPageSummaries } from "@/server/legalPages";
@@ -21,7 +21,7 @@ function formatDate(date: Date): string {
 }
 
 export default async function AdminPagesPage() {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
   const pages = await listLegalPageSummaries();
 
   const customizedCount = pages.filter((page) =>

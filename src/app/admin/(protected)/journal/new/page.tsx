@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { requireCapacitePage } from "@/lib/dal";
 import { ArticleForm } from "@/components/admin/journal/ArticleForm";
 import { listAuthors, listCategories, listTags } from "@/server/journal/taxonomy";
 
 export default async function NewArticlePage() {
+  await requireCapacitePage("contenu");
   const [categories, tags, authors] = await Promise.all([
     listCategories(),
     listTags(),

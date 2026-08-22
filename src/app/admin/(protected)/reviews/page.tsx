@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { countReviewsByStatus, isReviewStatus, listReviews } from "@/server/reviews";
 import { ReviewModerationTable } from "@/components/admin/ReviewModerationTable";
 import { AdminPagination } from "@/components/admin/AdminPagination";
@@ -24,7 +24,7 @@ export default async function AdminReviewsPage({
 }: {
   searchParams: Promise<{ status?: string; page?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("commandes");
 
   // `params` est conservé entier pour que l'onglet actif reste dans les liens
   // de pagination.

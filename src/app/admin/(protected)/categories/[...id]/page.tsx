@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { prisma } from "@/server/prisma";
 import { getCategoryRecord } from "@/server/store";
 import { CategoryForm } from "@/components/admin/CategoryForm";
@@ -10,7 +10,7 @@ export default async function EditCategoryPage({
 }: {
   params: Promise<{ id: string[] }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   const { id } = await params;
   const [category, groups] = await Promise.all([

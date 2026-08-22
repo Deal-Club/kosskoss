@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { isLegalSlug, LEGAL_LOCALES, LEGAL_SLUG_LABELS } from "@/content/legal";
 import type { LegalLocale } from "@/content/legal/types";
 import { getLegalPageVersion } from "@/server/legalPages";
@@ -8,7 +8,7 @@ import { toLegalPageInput } from "@/server/legalPageInput";
 import { LegalPageForm, type LegalPageFormData } from "@/components/admin/LegalPageForm";
 
 export default async function EditLegalPage({ params }: { params: Promise<{ slug: string }> }) {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
 
   const { slug } = await params;
   if (!isLegalSlug(slug)) notFound();

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FileSpreadsheet, FileText, Pencil } from "lucide-react";
+import { requireCapacitePage } from "@/lib/dal";
 import { listCategories, listProducts } from "@/server/store";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { IconActionLink } from "@/components/admin/IconAction";
@@ -21,6 +22,7 @@ export default async function AdminProductsPage({
 }: {
   searchParams: Promise<{ categoryId?: string; q?: string; sort?: string; page?: string }>;
 }) {
+  await requireCapacitePage("catalogue");
   const params = await searchParams;
   const { categoryId, q, sort } = params;
   const query = (q ?? "").trim();

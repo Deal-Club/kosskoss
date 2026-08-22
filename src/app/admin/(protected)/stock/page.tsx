@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Pencil } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { StockTable } from "@/components/admin/StockTable";
 import { IconActionLink } from "@/components/admin/IconAction";
 import { AdminPagination } from "@/components/admin/AdminPagination";
@@ -36,7 +36,7 @@ export default async function AdminStockPage({
 }: {
   searchParams: Promise<{ page?: string; mvPage?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
 
   // Deux clés distinctes : « page » pour les stocks, « mvPage » pour l'historique.
   const params = await searchParams;

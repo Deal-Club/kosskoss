@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { AlertTriangle, CheckCircle2, ExternalLink, FileDown, Info } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { paginate, parsePageParam } from "@/lib/pagination";
 import { auditCatalog, siteUrl, type MerchantAudit, type MerchantIssue } from "@/server/merchant";
@@ -120,7 +120,7 @@ export default async function MerchantPage({
 }: {
   searchParams: Promise<{ page?: string; warnPage?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("catalogue");
   // Deux clés distinctes : « page » pour les produits refusés, « warnPage » pour
   // ceux qui ne portent que des avertissements.
   const params = await searchParams;

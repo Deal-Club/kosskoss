@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
+import { requireCapacitePage } from "@/lib/dal";
 import { ArticleForm } from "@/components/admin/journal/ArticleForm";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { getAdminArticle } from "@/server/journal/store";
@@ -10,6 +11,7 @@ import { articleViewHistory } from "@/server/journal/counter";
 type Params = Promise<{ id: string }>;
 
 export default async function EditArticlePage({ params }: { params: Params }) {
+  await requireCapacitePage("contenu");
   const { id } = await params;
 
   const [article, categories, tags, authors] = await Promise.all([

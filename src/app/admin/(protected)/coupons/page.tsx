@@ -1,9 +1,9 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listCoupons } from "@/server/coupons";
 import { CouponManager } from "@/components/admin/CouponManager";
 
 export default async function AdminCouponsPage() {
-  await requireAdminSession();
+  await requireCapacitePage("reglages");
   const coupons = await listCoupons();
   const actifs = coupons.filter((c) => c.active).length;
 

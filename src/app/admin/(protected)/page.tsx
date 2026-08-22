@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   AlertTriangle,
   ArrowRight,
@@ -13,6 +14,8 @@ import {
   FolderOpen,
 } from "lucide-react";
 import { requireAdminSession } from "@/lib/dal";
+import { aLaCapacite, roleCourant } from "@/server/kk/acces";
+import { peut } from "@/lib/kk/roles";
 import { prisma } from "@/server/prisma";
 import { formatFcfa } from "@/lib/kk/format";
 import {
@@ -47,6 +50,14 @@ function formatDate(value: Date): string {
 
 export default async function AdminDashboardPage() {
   await requireAdminSession();
+
+  // L'accueil est un tableau de bord du catalogue : un gestionnaire de
+  // commandes y verrait un écran entier auquel il n'a pas droit. On l'envoie
+  // là où son travail commence, plutôt que de lui montrer un refus dès la
+  // connexion.
+  if (!(await aLaCapacite("catalogue"))) {
+    redirect(peut(await roleCourant(), "commandes") ? "/admin/orders" : "/admin/refuse");
+  }
 
   const [categories, products, pendingReviews] = await Promise.all([
     prisma.category.findMany({

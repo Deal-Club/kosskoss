@@ -1,4 +1,4 @@
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { SUPERADMIN_ROLE, isSuperadminSession, listAdminUsers } from "@/server/admins";
 import { UserForm, UserRowActions } from "@/components/admin/UserForm";
 import { AdminPagination } from "@/components/admin/AdminPagination";
@@ -26,7 +26,7 @@ export default async function AdminUsersPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  const session = await requireAdminSession();
+  const session = await requireCapacitePage("acces");
   const params = await searchParams;
 
   // Les superadmins n'apparaissent que pour un superadmin : ni dans le tableau,

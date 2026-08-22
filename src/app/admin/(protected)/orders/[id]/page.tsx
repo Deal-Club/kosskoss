@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { getOrder, type OrderAddress } from "@/server/orders";
 import {
   ORDER_STATUS_BADGES,
@@ -26,7 +26,7 @@ export default async function AdminOrderDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("commandes");
 
   const { id } = await params;
   const order = await getOrder(id);

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Eye } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { countOrdersByStatus, listOrders } from "@/server/orders";
 import {
   ORDER_STATUS_BADGES,
@@ -32,7 +32,7 @@ export default async function AdminOrdersPage({
 }: {
   searchParams: Promise<{ status?: string; paymentStatus?: string; q?: string; page?: string }>;
 }) {
-  await requireAdminSession();
+  await requireCapacitePage("commandes");
 
   // `params` est conservé entier : il alimente les liens de pagination et fait
   // donc survivre les filtres actifs (statut, recherche, statut de paiement).

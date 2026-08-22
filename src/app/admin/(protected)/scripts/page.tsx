@@ -1,5 +1,5 @@
 import { Code2 } from "lucide-react";
-import { requireAdminSession } from "@/lib/dal";
+import { requireCapacitePage } from "@/lib/dal";
 import { listSnippets } from "@/server/codeSnippets";
 import { CodeSnippetManager, type SnippetRow } from "@/components/admin/CodeSnippetManager";
 
@@ -12,7 +12,7 @@ import { CodeSnippetManager, type SnippetRow } from "@/components/admin/CodeSnip
  * boutique, exactement comme du code déployé.
  */
 export default async function AdminScriptsPage() {
-  await requireAdminSession();
+  await requireCapacitePage("contenu");
   const snippets = await listSnippets();
 
   const rows: SnippetRow[] = snippets.map((snippet) => ({
