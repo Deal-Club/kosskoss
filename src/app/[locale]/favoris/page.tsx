@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { FavoritesView } from "@/components/kk/favorites-view";
@@ -7,12 +7,16 @@ import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
 
-export const metadata: Metadata = {
-  title: "Mes favoris — KossKoss Select",
-  description: "Les produits que vous avez mis de côté.",
-  // Liste personnelle : rien à indexer.
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "wishlist" });
+  return {
+    title: t("metaTitle"),
+    description: t("intro"),
+    // Liste personnelle : rien à indexer.
+    robots: { index: false, follow: true },
+  };
+}
 
 export default async function FavoritesPage({ params }: { params: Params }) {
   const { locale } = await params;

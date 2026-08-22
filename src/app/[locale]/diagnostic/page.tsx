@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DiagnosticFlow } from "@/components/kk/diagnostic-flow";
 import { getQuestions } from "@/server/kk/diagnostic-data";
 import { getCurrentCustomer } from "@/server/customerSession";
@@ -10,12 +10,15 @@ import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
 
-export const metadata: Metadata = {
-  title: "Diagnostic Beauté — KossKoss Select",
-  description:
-    "Répondez à quelques questions sur votre peau et recevez une routine de soins personnalisée, à ajouter au panier.",
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "diagnostic" });
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    robots: { index: false, follow: true },
+  };
+}
 
 export default async function DiagnosticPage({ params }: { params: Params }) {
   const { locale } = await params;

@@ -473,6 +473,7 @@
   },
   "wishlist": {
     "title": "Favoris",
+    "metaTitle": "Mes favoris | KossKoss Select",
     "intro": "Les articles mis en favori restent enregistrés dans ce navigateur — sans compte et sans connexion.",
     "add": "Ajouter aux favoris",
     "remove": "Retirer des favoris",
@@ -695,6 +696,14 @@
     "cta": "Voir ces produits",
     "dismiss": "Continuer mes achats",
     "close": "Fermer"
+  },
+  "home": {
+    "slogan": "La Sélection beauté qui vous choisit.",
+    "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money."
+  },
+  "diagnostic": {
+    "metaTitle": "Diagnostic Beauté — KossKoss Select",
+    "metaDescription": "Répondez à quelques questions sur votre peau et recevez une routine de soins personnalisée, à ajouter au panier."
   },
   "recentlyViewed": {
     "title": "Consultés récemment",

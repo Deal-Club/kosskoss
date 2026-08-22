@@ -473,6 +473,7 @@
   },
   "wishlist": {
     "title": "Wishlist",
+    "metaTitle": "My favorites | KossKoss Select",
     "intro": "Saved items stay in this browser — no account and no sign-in needed.",
     "add": "Add to wishlist",
     "remove": "Remove from wishlist",
@@ -695,6 +696,14 @@
     "cta": "See these products",
     "dismiss": "Keep browsing",
     "close": "Close"
+  },
+  "home": {
+    "slogan": "The beauty selection that chooses you.",
+    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment."
+  },
+  "diagnostic": {
+    "metaTitle": "Beauty Diagnostic — KossKoss Select",
+    "metaDescription": "Answer a few questions about your skin and get a personalized skincare routine you can add to your cart."
   },
   "recentlyViewed": {
     "title": "Recently viewed",

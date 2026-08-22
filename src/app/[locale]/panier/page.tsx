@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CartPageView } from "@/components/kk/cart-page";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
 
-export const metadata: Metadata = {
-  title: "Votre panier — KossKoss Select",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "cart" });
+  return {
+    title: t("metaTitle"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function CartPage({ params }: { params: Params }) {
   const { locale } = await params;
