@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { Hero, ProductRail } from "@/components/kk/home";
 import {
@@ -12,6 +14,14 @@ import { NewsletterBand } from "@/components/kk/newsletter";
 import { CartProvider } from "@/components/cart/CartProvider";
 import { MOCK_SELECTION } from "@/data/kk/home-mock";
 import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
+
+/**
+ * Langue de l'aperçu. Cette page vit hors du segment [locale] : elle ne
+ * connaît donc aucune langue par défaut et doit en fixer une elle-même pour
+ * le fournisseur de traductions ci-dessous.
+ */
+const LOCALE: Locale = "fr";
 
 /**
  * Échantillon servant UNIQUEMENT à caler le rendu du bloc avis sur cette page
@@ -73,46 +83,55 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PreviewHomePage() {
+export default async function PreviewHomePage() {
+  // Les traductions doivent être chargées ici, explicitement : cette page vit
+  // hors du segment [locale], donc hors du layout de la boutique qui monte le
+  // fournisseur. Sans elles, les composants clients qui appellent
+  // `useTranslations` (en-tête, panier, favoris, newsletter…) plantaient au
+  // rendu (« No intl context found ») et l'aperçu renvoyait une 500.
+  const messages = await getMessages({ locale: LOCALE });
+
   // `CartProvider` est indispensable ici : cette page vit hors du segment
   // [locale], donc hors du layout de la boutique qui le fournit — or l'en-tête
   // (compteur du panier) et les vignettes (ajout rapide) appellent `useCart`.
   // Sans lui, la page entière échoue au rendu.
   return (
-    <CartProvider>
-      <div className="flex min-h-screen flex-col">
-        <AnnouncementBar />
-        <SiteHeader />
+    <NextIntlClientProvider locale={LOCALE} messages={messages}>
+      <CartProvider>
+        <div className="flex min-h-screen flex-col">
+          <AnnouncementBar />
+          <SiteHeader />
 
-        {/* Les blocs branchés sur la base — focus marque, routines, catégories
-            — ne figurent pas ici : cette page n'a pas de connexion et sert à
-            caler le rendu, pas à répéter l'accueil. */}
-        <main className="flex-1">
-          <Hero />
-          <PromisesRow />
-          <ProductRail
-            eyebrow="Les plus choisis"
-            title="Nos best-sellers"
-            action="Tout voir"
-            products={MOCK_SELECTION}
-          />
-          <InsightsSection
-            entries={[
-              {
-                question: "Emplacement d'une question fréquente",
-                answer: "Réponse de démonstration. La boutique lit ce bloc depuis la page /faq.",
-              },
-            ]}
-            cases={[]}
-          />
-          <AvisClients avis={PREVIEW_TESTIMONIALS} resume={PREVIEW_RESUME} />
-          <DiagnosticReminder />
-          <ServicesBand />
-          <NewsletterBand />
-        </main>
+          {/* Les blocs branchés sur la base — focus marque, routines, catégories
+              — ne figurent pas ici : cette page n'a pas de connexion et sert à
+              caler le rendu, pas à répéter l'accueil. */}
+          <main className="flex-1">
+            <Hero />
+            <PromisesRow />
+            <ProductRail
+              eyebrow="Les plus choisis"
+              title="Nos best-sellers"
+              action="Tout voir"
+              products={MOCK_SELECTION}
+            />
+            <InsightsSection
+              entries={[
+                {
+                  question: "Emplacement d'une question fréquente",
+                  answer: "Réponse de démonstration. La boutique lit ce bloc depuis la page /faq.",
+                },
+              ]}
+              cases={[]}
+            />
+            <AvisClients avis={PREVIEW_TESTIMONIALS} resume={PREVIEW_RESUME} />
+            <DiagnosticReminder />
+            <ServicesBand />
+            <NewsletterBand />
+          </main>
 
-        <SiteFooter />
-      </div>
-    </CartProvider>
+          <SiteFooter />
+        </div>
+      </CartProvider>
+    </NextIntlClientProvider>
   );
 }
