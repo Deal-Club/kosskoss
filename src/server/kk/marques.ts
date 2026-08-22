@@ -187,7 +187,7 @@ export async function marqueVitrineParSlug(
     name: pickText(marque.name, locale === "en" ? marque.nameEn : undefined),
     description: pickText(marque.description, locale === "en" ? marque.descriptionEn : undefined),
     logo: marque.logo,
-    products: rows.map(toProductView),
+    products: rows.map((row, index) => toProductView(row, locale, index)),
     total,
     page: pageEffective,
     pageCount,

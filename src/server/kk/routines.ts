@@ -45,7 +45,7 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
       id: s.id,
       label: t(s.label, s.labelEn, locale),
       why: t(s.why, s.whyEn, locale),
-      product: toProductView(s.product, i),
+      product: toProductView(s.product, locale, i),
     }));
 
   if (steps.length < 2) return null;

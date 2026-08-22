@@ -15,6 +15,7 @@ import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "@/server/kk/product-view";
 import type { JournalBlock } from "@/types/journal";
 import type { KKProductView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 /** Tous les slugs cités par les blocs produits d'un article. */
 function citedSlugs(blocks: readonly JournalBlock[]): string[] {
@@ -33,6 +34,7 @@ function citedSlugs(blocks: readonly JournalBlock[]): string[] {
  */
 export async function resolveCitedProducts(
   blocks: readonly JournalBlock[],
+  locale: Locale,
 ): Promise<Map<string, KKProductView>> {
   const slugs = citedSlugs(blocks);
   if (slugs.length === 0) return new Map();
@@ -42,5 +44,5 @@ export async function resolveCitedProducts(
     include: PRODUCT_VIEW_INCLUDE,
   });
 
-  return new Map(rows.map((row, index) => [row.slug, toProductView(row, index)]));
+  return new Map(rows.map((row, index) => [row.slug, toProductView(row, locale, index)]));
 }

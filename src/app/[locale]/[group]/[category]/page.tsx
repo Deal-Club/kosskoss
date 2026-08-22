@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, group, category } = await params;
   const page = parsePage((await searchParams).page);
-  const view = await getCatalog({ group, category, page });
+  const view = await getCatalog({ group, category, page, locale });
   if (!view || !view.category) return {};
 
   // Voir la note de la page univers : chaque page de rayon se désigne
@@ -52,7 +52,7 @@ export default async function CategoryPage({
   const sort = parseSort(sp.tri);
   const besoin = parseBesoin(sp.besoin);
   const page = parsePage(sp.page);
-  const view = await getCatalog({ group, category, brands, besoin, sort, page });
+  const view = await getCatalog({ group, category, brands, besoin, sort, page, locale });
   if (!view) notFound();
 
   return (

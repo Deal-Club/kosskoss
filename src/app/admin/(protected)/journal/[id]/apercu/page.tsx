@@ -52,7 +52,7 @@ export default async function ArticlePreviewPage({ params }: { params: Params })
   if (!article || !admin) notFound();
 
   const [products, related, messages] = await Promise.all([
-    resolveCitedProducts(article.blocks),
+    resolveCitedProducts(article.blocks, LOCALE),
     listRelatedArticles(article, LOCALE, 3),
     // Les traductions doivent être chargées ici, explicitement : cette page vit
     // hors du segment [locale], donc hors du layout de la boutique qui monte le

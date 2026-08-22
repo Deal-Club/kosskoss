@@ -91,7 +91,7 @@ export default async function ArticlePage({ params }: { params: ArticleParams })
   }
 
   const [products, related] = await Promise.all([
-    resolveCitedProducts(article.blocks),
+    resolveCitedProducts(article.blocks, locale),
     listRelatedArticles(article, locale, 3),
   ]);
 

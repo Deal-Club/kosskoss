@@ -1,6 +1,7 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
 import type { KKProductView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Produits suggérés dans le tiroir du panier.
@@ -25,6 +26,7 @@ const COMBIEN = 3;
 
 export async function getCartSuggestions(
   productIds: string[],
+  locale: Locale,
   limit = COMBIEN,
 ): Promise<KKProductView[]> {
   const auPanier = [...new Set(productIds.filter((id) => typeof id === "string" && id))];
@@ -57,7 +59,7 @@ export async function getCartSuggestions(
         })
       : [];
 
-  if (proches.length >= limit) return proches.map(toProductView);
+  if (proches.length >= limit) return proches.map((row, index) => toProductView(row, locale, index));
 
   // Second tour : le reste du catalogue, sans reprendre ce qu'on a déjà retenu.
   const dejaRetenus = proches.map((p) => p.id);
@@ -68,5 +70,5 @@ export async function getCartSuggestions(
     take: limit - proches.length,
   });
 
-  return [...proches, ...complement].map(toProductView);
+  return [...proches, ...complement].map((row, index) => toProductView(row, locale, index));
 }

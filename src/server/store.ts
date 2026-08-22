@@ -6,6 +6,8 @@ import type { CategoryGuide, CategoryRecord, ProductGroup, ProductRecord } from 
 import type { Product } from "@/types/home";
 import { discountedVariantCents, minActivePriceCents, type VariantInput, type VariantView } from "@/lib/variantPricing";
 import { parseTags } from "@/lib/kk/tags";
+import { loadCatalogTranslations, localizeCategoryPages } from "@/server/localizedContent";
+import type { Locale } from "@/i18n/routing";
 
 // L'interface publique ne change pas : les catégories restent adressées par
 // "groupe/slug" et les prix circulent en chaînes formatées ("349,00 €").
@@ -629,7 +631,18 @@ function toViewCategory(
   };
 }
 
-export async function getCategoryPages(): Promise<CategoryPageView[]> {
+/**
+ * Toutes les pages de catégorie, produits compris.
+ *
+ * `locale` est facultatif et localise le résultat AVANT de le renvoyer — la
+ * traduction descend dans la lecture, pas dans l'appelant. Omis (comme pour
+ * `sitemap.ts`, qui ne s'intéresse qu'aux adresses), la page reste en
+ * français : aucune requête de traduction n'est émise. Un appelant qui
+ * localiserait le résultat une seconde fois après l'avoir reçu déjà traduit
+ * ne romprait rien aujourd'hui — `pickText` est idempotent — mais doublerait
+ * le travail pour rien ; ne le fais pas.
+ */
+export async function getCategoryPages(locale?: Locale): Promise<CategoryPageView[]> {
   // Les promotions sont chargées en parallèle plutôt qu'après coup à partir des
   // identifiants trouvés : les campagnes actives se comptent sur les doigts
   // d'une main, alors qu'attendre la liste des produits ajouterait un
@@ -650,7 +663,11 @@ export async function getCategoryPages(): Promise<CategoryPageView[]> {
     getActivePromotions(),
   ]);
 
-  return rows.map((row) => toViewCategory(row, ratings, promotions));
+  const pages = rows.map((row) => toViewCategory(row, ratings, promotions));
+  if (!locale) return pages;
+
+  const translations = await loadCatalogTranslations(locale);
+  return localizeCategoryPages(pages, translations);
 }
 
 export async function getCategoryPage(

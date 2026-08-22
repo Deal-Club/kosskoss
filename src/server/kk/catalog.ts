@@ -2,6 +2,7 @@ import { prisma } from "@/server/prisma";
 import type { Prisma } from "@/generated/prisma/client";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
 import type { KKProductView } from "@/types/kk";
+import type { Locale } from "@/i18n/routing";
 
 export type CatalogSort = "pertinence" | "prix-asc" | "prix-desc" | "nouveautes";
 
@@ -75,6 +76,8 @@ export async function getCatalog(opts: {
   sort?: CatalogSort;
   /** Page demandée, 1 par défaut. Hors bornes, on ramène à la dernière page. */
   page?: number;
+  /** Langue de la page qui affiche le catalogue — voir `toProductView`. */
+  locale: Locale;
 }): Promise<CatalogView | null> {
   const group = await prisma.group.findUnique({
     where: { slug: opts.group },
@@ -146,7 +149,7 @@ export async function getCatalog(opts: {
       count: countByCategoryId.get(c.id) ?? 0,
     })),
     brands: brandRows.map((b) => b.brand),
-    products: rows.map(toProductView),
+    products: rows.map((row, index) => toProductView(row, opts.locale, index)),
     total,
     page,
     pageCount,

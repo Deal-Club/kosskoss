@@ -1,6 +1,8 @@
 import type { KKBadge, KKProductView, KKTone } from "@/types/kk";
 import { normaliserBadge } from "@/lib/kk/badges";
 import { packshot } from "@/lib/kk/packshot";
+import { pickText, needsTranslation } from "@/server/localizedContent";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Construction de la vue produit affichée sur les vignettes (accueil, catalogue,
@@ -46,6 +48,8 @@ export interface ProductViewRow {
   slug: string;
   brand: string;
   name: string;
+  /** Traduction anglaise du nom ; vide = repli sur le français (voir `pickText`). */
+  nameEn?: string;
   priceCents: number;
   oldPriceCents: number | null;
   badge: string | null;
@@ -54,18 +58,35 @@ export interface ProductViewRow {
   /** Résumé affiché au survol de la vignette. Colonne déjà chargée par
    *  `include` : aucun élargissement de requête. */
   shortDescription?: string;
+  /** Traduction anglaise du résumé ; même repli que `nameEn`. */
+  shortDescriptionEn?: string;
   category: { slug: string; group: { slug: string } };
   /** Absent si la requête n'a pas inclus les variations : on suppose alors aucune. */
   variants?: { id: string }[];
 }
 
-export function toProductView(row: ProductViewRow, index = 0): KKProductView {
+/**
+ * Construit la vue produit dans la langue de la page qui l'affiche.
+ *
+ * `locale` est obligatoire — sans valeur par défaut — pour qu'un appelant qui
+ * l'oublie échoue à la compilation plutôt qu'en silence sur la boutique
+ * anglaise. Le repli passe uniquement par `pickText` (jamais un accès direct
+ * à `nameEn`/`shortDescriptionEn`) et la marque n'est jamais traduite : voir
+ * `localizeProduct` dans `src/server/localizedContent.ts`, qui applique la
+ * même règle sur l'autre pipeline du catalogue.
+ */
+export function toProductView(row: ProductViewRow, locale: Locale, index = 0): KKProductView {
+  const traduire = needsTranslation(locale);
+  const name = pickText(row.name, traduire ? row.nameEn : undefined);
+  const shortDescription = pickText(row.shortDescription ?? "", traduire ? row.shortDescriptionEn : undefined);
+
   return {
     id: row.id,
     slug: row.slug,
+    // La marque est un nom propre : elle ne se traduit jamais.
     brand: row.brand,
-    name: row.name,
-    shortDescription: row.shortDescription?.trim() || undefined,
+    name,
+    shortDescription: shortDescription.trim() || undefined,
     priceFcfa: row.priceCents,
     oldPriceFcfa: row.oldPriceCents ?? undefined,
     badge: toBadge(row.badge),

@@ -55,7 +55,7 @@ export default async function Home({ params }: { params: HomeParams }) {
   // carte des catégories et la section « Nos maisons » ont été retirées de
   // l'accueil. Deux requêtes de moins à chaque rendu de la page la plus vue.
   const [products, testimonials, avisResume, faq, routines, focus, raisonDetre] = await Promise.all([
-    getHomeProducts(12),
+    getHomeProducts(12, locale),
     // Trois, et pas un de plus : la section les montre sur UNE SEULE rangée.
     // À six, la grille repassait à la ligne et la section doublait de hauteur
     // pour dire la même chose.

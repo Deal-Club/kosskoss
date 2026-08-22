@@ -23,7 +23,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, group } = await params;
   const page = parsePage((await searchParams).page);
-  const view = await getCatalog({ group, page });
+  const view = await getCatalog({ group, page, locale });
   if (!view) return {};
 
   // Une page 2 doit porter son propre titre et sa propre canonique.
@@ -54,7 +54,7 @@ export default async function GroupPage({
   const sort = parseSort(sp.tri);
   const besoin = parseBesoin(sp.besoin);
   const page = parsePage(sp.page);
-  const view = await getCatalog({ group, brands, besoin, sort, page });
+  const view = await getCatalog({ group, brands, besoin, sort, page, locale });
   if (!view) notFound();
 
   return (
