@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Check, Loader2 } from "lucide-react";
 import { PatternBackdrop } from "./pattern-backdrop";
 import { CONTACT } from "@/config/brand";
@@ -59,6 +60,7 @@ const RESEAUX = [
  * dommage de le perdre entièrement.
  */
 export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
+  const t = useTranslations("newsletter");
   const [email, setEmail] = useState("");
   const [etat, setEtat] = useState<"repos" | "envoi" | "ok" | "erreur">("repos");
   const [message, setMessage] = useState("");
@@ -75,14 +77,14 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
       });
       const data = (await res.json()) as { error?: string };
       if (!res.ok) {
-        setMessage(data.error ?? "Inscription impossible pour le moment.");
+        setMessage(data.error ?? t("errorGeneric"));
         setEtat("erreur");
         return;
       }
       setEtat("ok");
       setEmail("");
     } catch {
-      setMessage("Vérifiez votre connexion et réessayez.");
+      setMessage(t("errorConnection"));
       setEtat("erreur");
     }
   }
@@ -94,11 +96,8 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
 
         <div className="relative flex flex-col gap-6 px-7 py-10 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
           <div className="lg:max-w-md">
-            <h2 className="text-primary-foreground">Rejoignez la communauté</h2>
-            <p className="mt-2 text-sm leading-relaxed text-primary-foreground">
-              Nos conseils de soin, nos nouveautés et nos offres réservées. Pas plus d&rsquo;un
-              message par semaine.
-            </p>
+            <h2 className="text-primary-foreground">{t("title")}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-primary-foreground">{t("text")}</p>
           </div>
 
           {etat === "ok" ? (
@@ -109,13 +108,13 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
               className="inline-flex items-center gap-2.5 rounded-full bg-primary-foreground/10 px-6 py-3.5 text-sm font-medium text-primary-foreground lg:shrink-0"
             >
               <Check className="h-4 w-4 text-gold" />
-              C&rsquo;est noté — à très vite dans votre boîte de réception.
+              {t("confirmedMessage")}
             </p>
           ) : (
             <form onSubmit={envoyer} className="w-full lg:max-w-md lg:shrink-0">
               <div className="flex flex-col gap-3 sm:flex-row">
                 <label htmlFor="newsletter-email" className="sr-only">
-                  Votre adresse e-mail
+                  {t("emailLabel")}
                 </label>
                 <input
                   id="newsletter-email"
@@ -124,7 +123,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Votre adresse e-mail"
+                  placeholder={t("emailLabel")}
                   aria-invalid={etat === "erreur"}
                   aria-describedby={etat === "erreur" ? "newsletter-erreur" : undefined}
                   className="min-w-0 flex-1 rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.08] px-5 py-3.5 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:border-gold focus:outline-none"
@@ -135,7 +134,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
                   className="kk-fill kk-fill-deep inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-deep disabled:opacity-60"
                 >
                   {etat === "envoi" && <Loader2 className="h-4 w-4 animate-spin" />}
-                  S&rsquo;inscrire
+                  {t("submit")}
                 </button>
               </div>
 
@@ -145,9 +144,7 @@ export function NewsletterBand({ locale = "fr" }: { locale?: string }) {
                 </p>
               )}
 
-              <p className="mt-2.5 text-xs text-primary-foreground">
-                Désinscription en un clic depuis chaque message.
-              </p>
+              <p className="mt-2.5 text-xs text-primary-foreground">{t("unsubscribeHint")}</p>
             </form>
           )}
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { AccountLogin } from "@/components/kk/account";
 import { getCurrentCustomer } from "@/server/customerSession";
@@ -9,10 +9,14 @@ import type { Locale } from "@/i18n/routing";
 type Params = Promise<{ locale: Locale }>;
 type Search = Promise<Record<string, string | string[] | undefined>>;
 
-export const metadata: Metadata = {
-  title: "Connexion — KossKoss Select",
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "account" });
+  return {
+    title: t("login.metaTitle"),
+    robots: { index: false, follow: true },
+  };
+}
 
 export default async function LoginPage({
   params,

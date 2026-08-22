@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ChevronRight } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
@@ -27,7 +27,8 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const page = parsePage((await searchParams).page);
   const marque = await marqueVitrineParSlug(slug, locale, page);
-  if (!marque) return { title: `Marque introuvable — ${BRAND.name}` };
+  const t = await getTranslations({ locale, namespace: "marque" });
+  if (!marque) return { title: t("metaNotFoundTitle", { brand: BRAND.name }) };
 
   // Voir la note des pages de rayon : chaque page au-delà de la première se
   // désigne elle-même comme canonique, sinon Google la replie sur la page 1
@@ -38,7 +39,7 @@ export async function generateMetadata({
     title: `${marque.name}${suffixe} — ${BRAND.name}`,
     description: marque.description
       ? marque.description.slice(0, 155)
-      : `Les produits ${marque.name} chez ${BRAND.name}.`,
+      : t("metaFallbackDescription", { name: marque.name, brand: BRAND.name }),
     alternates: alternatesFor(`/marques/${marque.slug}`, locale, requete),
   };
 }
@@ -65,6 +66,9 @@ export default async function MarquePage({
   const { locale, slug } = await params;
   const page = parsePage((await searchParams).page);
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "marque" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tCatalog = await getTranslations({ locale, namespace: "catalog" });
 
   const marque = await marqueVitrineParSlug(slug, locale, page);
   if (!marque) notFound();
@@ -75,17 +79,17 @@ export default async function MarquePage({
       <SiteHeader />
 
       <main className="flex-1">
-        <nav aria-label="Fil d'Ariane" className="mx-auto max-w-7xl px-6 py-5">
+        <nav aria-label={tCommon("breadcrumb")} className="mx-auto max-w-7xl px-6 py-5">
           <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
             <li className="flex items-center gap-1.5">
               <Link href="/" className="transition hover:text-deep">
-                Accueil
+                {tCommon("home")}
               </Link>
               <ChevronRight className="h-3.5 w-3.5 opacity-60" />
             </li>
             <li className="flex items-center gap-1.5">
               <Link href="/marques" className="transition hover:text-deep">
-                Marques
+                {t("breadcrumbLabel")}
               </Link>
               <ChevronRight className="h-3.5 w-3.5 opacity-60" />
             </li>
@@ -108,7 +112,7 @@ export default async function MarquePage({
                 />
               </span>
             )}
-            <p className="eyebrow eyebrow-on-dark">Marque</p>
+            <p className="eyebrow eyebrow-on-dark">{t("eyebrow")}</p>
             <h1>{marque.name}</h1>
             {marque.description && (
               <p className="lead mx-auto max-w-xl text-primary-foreground">{marque.description}</p>
@@ -122,10 +126,10 @@ export default async function MarquePage({
                 on en voit trente. On situe donc la tranche dès qu'il y a plus
                 d'une page — même règle que sur une page de rayon. */}
             {marque.pageCount > 1
-              ? `Produits ${marque.firstItem}–${marque.lastItem} sur ${marque.total}`
-              : `${marque.total} produit${marque.total > 1 ? "s" : ""}`}
+              ? t("countRange", { first: marque.firstItem, last: marque.lastItem, total: marque.total })
+              : tCatalog("countTotal", { total: marque.total })}
           </p>
-          <h2 className="mt-2 text-deep">Le rayon {marque.name}</h2>
+          <h2 className="mt-2 text-deep">{t("sectionTitle", { name: marque.name })}</h2>
 
           <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-3">
             {marque.products.map((product) => (
@@ -137,7 +141,7 @@ export default async function MarquePage({
             page={marque.page}
             pageCount={marque.pageCount}
             hrefForPage={(n) => (n > 1 ? `/marques/${marque.slug}?page=${n}` : `/marques/${marque.slug}`)}
-            ariaLabel="Pagination des produits de la marque"
+            ariaLabel={t("paginationAriaLabel")}
           />
         </section>
       </main>

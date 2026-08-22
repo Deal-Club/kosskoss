@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
@@ -12,6 +12,7 @@ import { getRoutine, getRoutines } from "@/server/kk/routines";
 import { besoinParTag, libelleBesoin } from "@/lib/kk/besoins";
 import { formatFcfa } from "@/lib/kk/format";
 import { alternatesFor } from "@/lib/hreflang";
+import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale; slug: string }>;
@@ -19,10 +20,13 @@ type Params = Promise<{ locale: Locale; slug: string }>;
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { locale, slug } = await params;
   const routine = await getRoutine(slug, locale);
-  if (!routine) return { title: "Routine introuvable — KossKoss Select" };
+  if (!routine) {
+    const t = await getTranslations({ locale, namespace: "routine" });
+    return { title: t("metaNotFoundTitle", { brand: BRAND.name }) };
+  }
 
   return {
-    title: `${routine.name} — KossKoss Select`,
+    title: `${routine.name} — ${BRAND.name}`,
     description: routine.claim || routine.description.slice(0, 155),
     alternates: alternatesFor(`/routines/${routine.slug}`, locale),
   };
@@ -43,6 +47,9 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function RoutinePage({ params }: { params: Params }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "routine" });
+  const tCommon = await getTranslations({ locale, namespace: "common" });
+  const tHeader = await getTranslations({ locale, namespace: "header" });
 
   const routine = await getRoutine(slug, locale);
   if (!routine) notFound();
@@ -56,17 +63,17 @@ export default async function RoutinePage({ params }: { params: Params }) {
       <SiteHeader />
 
       <main className="flex-1">
-        <nav aria-label="Fil d'Ariane" className="mx-auto max-w-7xl px-6 py-5">
+        <nav aria-label={tCommon("breadcrumb")} className="mx-auto max-w-7xl px-6 py-5">
           <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
             <li className="flex items-center gap-1.5">
               <Link href="/" className="transition hover:text-deep">
-                Accueil
+                {tCommon("home")}
               </Link>
               <ChevronRight className="h-3.5 w-3.5 opacity-60" />
             </li>
             <li className="flex items-center gap-1.5">
               <Link href="/routines" className="transition hover:text-deep">
-                Routines
+                {tHeader("navRoutines")}
               </Link>
               <ChevronRight className="h-3.5 w-3.5 opacity-60" />
             </li>
@@ -91,9 +98,9 @@ export default async function RoutinePage({ params }: { params: Params }) {
           <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
             <div className="max-w-2xl">
               <p className="eyebrow">
-                {besoin ? libelleBesoin(besoin, locale) : "Routine complète"}
+                {besoin ? libelleBesoin(besoin, locale) : t("needFallback")}
                 {" · "}
-                {routine.steps.length} gestes
+                {tHeader("stepsCount", { count: routine.steps.length })}
               </p>
               <h1 className="mt-2 text-deep">{routine.name}</h1>
               {routine.claim && (
@@ -141,8 +148,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
         <section className="section mx-auto max-w-6xl px-6">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-14">
             <div>
-              <p className="eyebrow">Le détail</p>
-              <h2 className="mt-2 text-deep">Geste par geste</h2>
+              <p className="eyebrow">{t("detailEyebrow")}</p>
+              <h2 className="mt-2 text-deep">{t("detailTitle")}</h2>
               {routine.description && (
                 <p className="mt-4 max-w-2xl leading-relaxed text-foreground/85">
                   {routine.description}
@@ -227,15 +234,18 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   Affichée sans condition : elle ne dépend plus du besoin
                   associé à la routine. */}
               <p className="mt-8 text-sm text-muted-foreground">
-                Parcourez{" "}
-                <Link href="/routines" className="font-medium text-deep kk-underline">
-                  nos autres routines
-                </Link>{" "}
-                ou faites le{" "}
-                <Link href="/diagnostic" className="font-medium text-deep kk-underline">
-                  diagnostic
-                </Link>{" "}
-                pour composer la vôtre.
+                {t.rich("browseOthers", {
+                  routines: (chunks) => (
+                    <Link href="/routines" className="font-medium text-deep kk-underline">
+                      {chunks}
+                    </Link>
+                  ),
+                  diagnostic: (chunks) => (
+                    <Link href="/diagnostic" className="font-medium text-deep kk-underline">
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
             </div>
 
@@ -261,13 +271,10 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
                 <div className="p-6">
                   <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-gold-soft">
-                    Votre routine
+                    {t("summaryTitle")}
                   </h2>
                   <p className="mt-1 text-xs text-primary-foreground/60">
-                    {/* Gabarit plutôt que « {n} gestes » : JSX supprime l'espace
-                        qui suit une expression en fin de ligne, et le compte se
-                        collait au mot (« 3gestes »). */}
-                    {`${routine.steps.length} gestes, dans l’ordre`}
+                    {t("summarySubtitle", { count: routine.steps.length })}
                   </p>
 
                   {/* Filets plutôt qu'espacements : sur un fond sombre, la ligne
@@ -289,7 +296,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
                   <div className="mt-5 flex items-baseline justify-between gap-3">
                     <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
-                      Total
+                      {t("summaryTotal")}
                     </span>
                     <span className="figure text-2xl font-semibold text-primary-foreground">
                       {formatFcfa(routine.totalFcfa)}
@@ -314,7 +321,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   {/* Ce que fait le bouton, dit avant le clic : sur une routine,
                       un intitulé seul laisse croire à un article unique. */}
                   <p className="mt-3 text-center text-xs text-primary-foreground/55">
-                    Les {routine.steps.length} produits en une seule commande.
+                    {t("buyNote", { count: routine.steps.length })}
                   </p>
                 </div>
               </div>
@@ -325,8 +332,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
         {autres.length > 0 && (
           <section className="border-t border-border/60 bg-sand/40">
             <div className="mx-auto max-w-7xl px-6 py-14">
-              <p className="eyebrow">Autres besoins</p>
-              <h2 className="mt-2 text-deep">Nos autres routines</h2>
+              <p className="eyebrow">{t("othersEyebrow")}</p>
+              <h2 className="mt-2 text-deep">{t("othersTitle")}</h2>
               <ul className="mt-7 grid gap-4 sm:grid-cols-3">
                 {autres.map((r) => (
                   <li key={r.id}>
@@ -340,7 +347,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                           {r.name}
                         </span>
                         <span className="figure mt-0.5 block text-sm text-muted-foreground">
-                          dès {formatFcfa(r.totalFcfa)}
+                          {tCommon("from")} {formatFcfa(r.totalFcfa)}
                         </span>
                       </span>
                       <ArrowRight className="h-4 w-4 shrink-0 text-deep transition-transform group-hover:translate-x-1" />

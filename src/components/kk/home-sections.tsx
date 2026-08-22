@@ -1,5 +1,6 @@
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import {
   ArrowRight,
   BadgeCheck,
@@ -71,11 +72,12 @@ import type { AvantApresView } from "@/data/kk/avant-apres";
  * inquiétude de cette clientèle, avant le prix et avant le délai.
  */
 export function PromisesRow() {
+  const t = useTranslations("home");
   const items = [
-    { icon: BadgeCheck, title: "Sélection experte", text: "Produits testés et approuvés" },
-    { icon: ShieldCheck, title: "Paiement sécurisé", text: "Transactions protégées" },
-    { icon: Truck, title: "Livraison rapide", text: "Partout au Cameroun" },
-    { icon: MessageCircle, title: "Conseils personnalisés", text: "Par des experts skincare" },
+    { icon: BadgeCheck, title: t("promises.selectionTitle"), text: t("promises.selectionText") },
+    { icon: ShieldCheck, title: t("promises.paymentTitle"), text: t("promises.paymentText") },
+    { icon: Truck, title: t("promises.deliveryTitle"), text: t("promises.deliveryText") },
+    { icon: MessageCircle, title: t("promises.adviceTitle"), text: t("promises.adviceText") },
   ];
 
   return (
@@ -112,14 +114,15 @@ export function PromisesRow() {
  * d'un second écran qui redemandait le même clic.
  */
 function DiagnosticCard({ questions }: { questions: string[] }) {
+  const t = useTranslations("home");
   return (
     <div className="rounded-2xl bg-cream p-7 shadow-2xl shadow-deep/20 sm:p-8">
-      <p className="eyebrow">Diagnostic beauté</p>
+      <p className="eyebrow">{t("diagnosticCard.eyebrow")}</p>
       <h3 className="mt-2 font-display text-2xl leading-tight text-deep">
-        Votre routine idéale en 3 minutes
+        {t("diagnosticCard.title")}
       </h3>
       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-        Répondez à {questions.length} questions et recevez votre routine personnalisée.
+        {t("diagnosticCard.text", { count: questions.length })}
       </p>
 
       <ol className="mt-5 space-y-2.5">
@@ -140,12 +143,12 @@ function DiagnosticCard({ questions }: { questions: string[] }) {
         href="/diagnostic"
         className="kk-fill kk-fill-deep group mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3.5 text-sm font-semibold text-deep"
       >
-        Commencer le diagnostic
+        {t("diagnosticCta")}
         <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
       </Link>
 
       <p className="mt-3 text-center text-xs text-muted-foreground">
-        100 % personnalisé · Gratuit · Sans engagement
+        {t("diagnosticCard.badge")}
       </p>
     </div>
   );
@@ -169,6 +172,8 @@ export function BrandFocus({
   focus: BrandFocusView | null;
   questions: string[];
 }) {
+  const t = useTranslations("home");
+
   if (!focus) return null;
 
   return (
@@ -178,7 +183,7 @@ export function BrandFocus({
           en haut, elles laissaient un vide sous le texte. */}
       <div className="section-wide mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-16">
         <div>
-          <p className="eyebrow eyebrow-on-dark">Focus marque</p>
+          <p className="eyebrow eyebrow-on-dark">{t("brandFocus.eyebrow")}</p>
           <h2 className="mt-3 font-display text-4xl leading-none text-primary-foreground sm:text-5xl">
             {focus.brand}
           </h2>
@@ -194,11 +199,11 @@ export function BrandFocus({
               href={`/recherche?q=${encodeURIComponent(focus.brand)}`}
               className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-sand px-6 py-3 text-sm font-semibold text-deep"
             >
-              Découvrir la marque
+              {t("brandFocus.cta")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <span className="figure text-sm text-primary-foreground">
-              {focus.productCount} référence{focus.productCount > 1 ? "s" : ""} au catalogue
+              {t("brandFocus.referenceCount", { count: focus.productCount })}
             </span>
           </div>
 
@@ -256,6 +261,7 @@ const ICONE_CATEGORIE: Record<string, LucideIcon> = {
 };
 
 export function CategoryPills({ groups }: { groups: NavGroup[] }) {
+  const t = useTranslations("home");
   const categories = groups.flatMap((g) => g.categories);
   if (categories.length === 0) return null;
 
@@ -266,8 +272,8 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
        entre les icônes et les deux liens, jamais à l'intérieur de la grille
        d'icônes, qui garde son pas régulier. */
     <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5 sm:p-6">
-      <p className="eyebrow">Shoppez par catégorie</p>
-      <h2 className="mt-2 text-deep">Par où commencer</h2>
+      <p className="eyebrow">{t("categoryPills.eyebrow")}</p>
+      <h2 className="mt-2 text-deep">{t("categoryPills.title")}</h2>
 
       {/* TROIS PAR LIGNE, et non quatre.
 
@@ -340,13 +346,13 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
           href="/soins-visage"
           className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-medium text-deep transition hover:border-deep/50 hover:bg-sand"
         >
-          Voir toutes les catégories
+          {t("categoryPills.viewAll")}
         </Link>
         <Link
           href="/routines"
           className="group inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
         >
-          Ou partez d&rsquo;une routine
+          {t("categoryPills.orRoutine")}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>
@@ -386,18 +392,19 @@ export function InsightsSection({
   entries: HomeFaqEntry[];
   cases: AvantApresView[];
 }) {
+  const t = useTranslations("home");
   const panneaux: React.ReactNode[] = [];
 
   if (entries.length > 0) {
     panneaux.push(
       <div key="conseils">
         <div className="flex items-baseline justify-between gap-4">
-          <PanelTitre>Conseils &amp; guides</PanelTitre>
+          <PanelTitre>{t("insights.adviceTitle")}</PanelTitre>
           <Link
             href="/faq"
             className="shrink-0 text-xs font-medium text-deep kk-underline"
           >
-            Tout voir
+            {t("insights.viewAll")}
           </Link>
         </div>
         <div className="mt-5 space-y-3">
@@ -422,15 +429,15 @@ export function InsightsSection({
     const cas = cases[0];
     panneaux.push(
       <div key="avant-apres">
-        <PanelTitre>Avant / après</PanelTitre>
+        <PanelTitre>{t("insights.beforeAfterTitle")}</PanelTitre>
         <figure className="mt-5">
           <div className="relative aspect-[4/3] overflow-hidden rounded-xl">
             <Image src={cas.image} alt={cas.alt} fill sizes="(max-width:1024px) 100vw, 30vw" className="object-cover" />
             <span className="absolute bottom-3 left-3 rounded-full bg-deep/80 px-3 py-1 text-xs font-medium text-primary-foreground">
-              Avant
+              {t("insights.before")}
             </span>
             <span className="absolute bottom-3 right-3 rounded-full bg-deep/80 px-3 py-1 text-xs font-medium text-primary-foreground">
-              Après
+              {t("insights.after")}
             </span>
           </div>
           <figcaption className="mt-4">
@@ -441,7 +448,7 @@ export function InsightsSection({
                 href={cas.routineHref}
                 className="group mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-deep kk-underline"
               >
-                Voir la routine
+                {t("insights.viewRoutine")}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
               </Link>
             )}
@@ -474,8 +481,8 @@ export function InsightsSection({
               section ne porte plus d'avis : ils ont leur propre bloc, désormais
               placé juste en dessous. Un titre qui promet une troisième colonne
               inexistante fait chercher au lecteur ce qui n'est pas là. */}
-          <p className="eyebrow">Bon à savoir</p>
-          <h2 className="mt-2 text-deep">Vos questions, nos résultats</h2>
+          <p className="eyebrow">{t("insights.eyebrow")}</p>
+          <h2 className="mt-2 text-deep">{t("insights.title")}</h2>
         </div>
 
         {/* `divide-x` trace un filet entre les colonnes plutôt qu'un cadre
@@ -502,11 +509,12 @@ export function InsightsSection({
  * accompagnement, retour, moyens de paiement locaux).
  */
 export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
+  const t = useTranslations("home");
   const items = [
-    { icon: BadgeCheck, title: "Produits authentiques", text: "Circuits d'approvisionnement tracés" },
-    { icon: UserRound, title: "Experts à votre écoute", text: "Conseil avant et après l'achat" },
-    { icon: RefreshCw, title: "Satisfait ou remboursé", text: "14 jours pour changer d'avis" },
-    { icon: Smartphone, title: "Mobile Money", text: "Orange Money & MTN" },
+    { icon: BadgeCheck, title: t("services.authenticTitle"), text: t("services.authenticText") },
+    { icon: UserRound, title: t("services.expertsTitle"), text: t("services.expertsText") },
+    { icon: RefreshCw, title: t("services.satisfactionTitle"), text: t("services.satisfactionText") },
+    { icon: Smartphone, title: t("services.mobileMoneyTitle"), text: t("services.mobileMoneyText") },
   ];
 
   return (
@@ -526,17 +534,19 @@ export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
 
         {whatsappUrl && (
           <p className="mt-9 border-t border-primary-foreground/15 pt-7 text-center text-sm text-primary-foreground">
-            Une question avant d&rsquo;acheter ?{" "}
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 font-medium text-primary-foreground kk-underline"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Écrivez-nous sur WhatsApp
-            </a>{" "}
-            — on répond dans la journée.
+            {t.rich("services.whatsappPrompt", {
+              link: (chunks) => (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 font-medium text-primary-foreground kk-underline"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  {chunks}
+                </a>
+              ),
+            })}
           </p>
         )}
       </div>
@@ -555,13 +565,15 @@ export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
  * (bloc 4), celui-ci n'est qu'une porte de sortie.
  */
 export function DiagnosticReminder() {
+  const t = useTranslations("home");
+  const tHeader = useTranslations("header");
   return (
     <section className="section mx-auto max-w-7xl px-6">
       <div className="flex flex-wrap items-center justify-between gap-6 rounded-2xl bg-taupe px-8 py-9">
         <div>
-          <h2 className="text-deep">Vous ne savez pas par où commencer ?</h2>
+          <h2 className="text-deep">{t("diagnosticReminder.title")}</h2>
           <p className="mt-1.5 text-sm text-deep">
-            Cinq questions sur votre peau, et nous composons votre routine.
+            {t("diagnosticReminder.text")}
           </p>
         </div>
         <Link
@@ -569,7 +581,7 @@ export function DiagnosticReminder() {
           className="kk-fill group inline-flex shrink-0 items-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground"
         >
           <Sparkles className="h-4 w-4" />
-          Faire mon diagnostic
+          {tHeader("diagnosticCta")}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

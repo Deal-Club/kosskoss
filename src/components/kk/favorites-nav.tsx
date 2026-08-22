@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/lib/favorites";
@@ -25,13 +26,14 @@ import { useFavorites } from "@/lib/favorites";
  * accessibles depuis le menu, qui porte « Mes favoris ».
  */
 export function FavoritesLink() {
+  const t = useTranslations("wishlist");
   const { count, ready } = useFavorites();
   const visible = ready ? count : 0;
 
   return (
     <Link
       href="/favoris"
-      aria-label={visible > 0 ? `Favoris, ${visible} article${visible > 1 ? "s" : ""}` : "Favoris"}
+      aria-label={visible > 0 ? t("navAriaLabelWithCount", { count: visible }) : t("title")}
       className="relative grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand max-[359px]:hidden"
     >
       <Heart className="h-5 w-5" />

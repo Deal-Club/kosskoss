@@ -76,7 +76,9 @@ export function ProductPreview({
   // affiche son libellé (« Meilleure vente ») : un aperçu qui ne ressemble pas
   // à la page ne sert à rien.
   const cleBadge = normaliserBadge(badge);
-  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge] : "";
+  // Aperçu du back-office, non localisé (comme le reste de l'administration) :
+  // le libellé français, toujours.
+  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge].fr : "";
   const ratingValue = parseRating(rating);
   const inStock = stock === null || stock > 0;
   const lowStock =

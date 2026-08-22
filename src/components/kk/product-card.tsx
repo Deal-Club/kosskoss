@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useLocale } from "next-intl";
 import { formatFcfa } from "@/lib/kk/format";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
@@ -12,6 +13,7 @@ import { ProductHoverPanel } from "./product-hover-panel";
 // d'un côté cohabitait avec « Meilleure vente » de l'autre.
 
 export function ProductCard({ product }: { product: KKProductView }) {
+  const locale = useLocale();
   const href = product.href ?? "#";
   const hasImage = typeof product.image === "string" && product.image.length > 0;
 
@@ -80,7 +82,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
                   : "bg-gold text-deep"
               }`}
             >
-              {BADGE_LABEL[product.badge]}
+              {BADGE_LABEL[product.badge][locale === "en" ? "en" : "fr"]}
             </span>
           )}
 

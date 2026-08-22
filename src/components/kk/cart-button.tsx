@@ -1,18 +1,20 @@
 "use client";
 
 import { ShoppingBag } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/components/cart/CartProvider";
 import { cartItemCount } from "@/lib/kk/cart-totals";
 import { CIBLE_PANIER } from "@/lib/kk/fly-to-cart";
 
 export function CartButton() {
+  const t = useTranslations("cart");
   const { lines, openDrawer, ready } = useCart();
   const count = ready ? cartItemCount(lines) : 0;
   return (
     <button
       type="button"
       onClick={openDrawer}
-      aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+      aria-label={t("buttonAriaLabel", { count })}
       // Cible du vol : la copie du produit converge vers le centre de ce
       // bouton, qui pulse à l'arrivée. Voir src/lib/kk/fly-to-cart.ts.
       {...{ [CIBLE_PANIER]: "" }}

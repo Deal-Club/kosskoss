@@ -26,7 +26,11 @@
       "hygiene": "Hygiene",
       "homme": "Men"
     },
-    "from": "from"
+    "from": "from",
+    "close": "Close",
+    "whatsappPrefill": "Hello, I have a question about a KossKoss Select product.",
+    "whatsappAriaLabel": "Message us on WhatsApp",
+    "whatsappWriteToUs": "Message us"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – home page",
@@ -36,7 +40,34 @@
     "beratung": "Advice & orders",
     "oeffnung": "Mon–Fri 8am–5pm · Sat 9am–1pm",
     "lieferbanner": "Free delivery from 6 loose m³",
-    "anrufenAria": "Call: {nummer}"
+    "anrufenAria": "Call: {nummer}",
+    "searchClose": "Close search",
+    "searchLabel": "Search for a product",
+    "searchPlaceholder": "A brand, a product, a need…",
+    "searchSubmit": "Search",
+    "openMenu": "Open menu",
+    "menuLabel": "Menu",
+    "closeMenu": "Close menu",
+    "routinesCta": "Our ready-to-use routines",
+    "diagnosticCta": "Take my diagnostic",
+    "seeAllGroup": "All {group}",
+    "brandsLink": "Our brands",
+    "helpLink": "Advice & questions",
+    "myWishlist": "My wishlist",
+    "stepsCount": "{count} steps",
+    "viewAllRoutines": "View all routines",
+    "diagnosticPromptTitle": "Not sure which one?",
+    "diagnosticPromptText": "Five questions about your skin, and we put together the routine that matches it.",
+    "doDiagnostic": "Take the diagnostic",
+    "discoverLabel": "To discover",
+    "viewAllCatalog": "View the whole catalogue",
+    "routinesShort": "Our routines",
+    "securedShort": "Secure",
+    "announcementsAriaLabel": "Shop announcements",
+    "navHome": "Home",
+    "navShop": "Shop",
+    "navRoutines": "Routines",
+    "navDiagnostic": "Diagnostic"
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
@@ -117,8 +148,26 @@
     "vatNoteFreeShipping": "Free standard delivery",
     "galleryLabel": "More product views",
     "galleryView": "Show view {index} of {total}",
+    "galleryAdditionalViewAlt": "{name} — view {number}",
     "chooseVolume": "Choose a volume",
-    "fromPrice": "from"
+    "fromPrice": "from",
+    "sectionDescription": "Description",
+    "keyIngredients": "Key ingredients",
+    "usageTitle": "How to use",
+    "usageText": "Apply to clean, dry skin, morning and/or evening as needed. If in doubt, take our beauty diagnostic for a routine that fits.",
+    "inStockShort": "In stock",
+    "unavailable": "Unavailable",
+    "unavailableAria": "Product unavailable",
+    "relatedEyebrow": "Pairs well with",
+    "relatedTitle": "You might also like",
+    "relatedAction": "View the category",
+    "payNow": "Pay now",
+    "decreaseQuantityShort": "Decrease quantity",
+    "increaseQuantityShort": "Increase quantity",
+    "contentLabel": "Size",
+    "totalLabel": "Total:",
+    "addedToCart": "Added to cart —",
+    "viewCartLink": "view cart"
   },
   "reviews": {
     "title": "Customer reviews",
@@ -148,7 +197,29 @@
     "formModerationNote": "Every review is checked before it is published.",
     "formError": "Your review could not be sent. Please try again.",
     "formSuccessTitle": "Thank you! Your review will be published once checked.",
-    "formSuccessHint": "We read every review ourselves. Approval usually takes one to two working days."
+    "formSuccessHint": "We read every review ourselves. Approval usually takes one to two working days.",
+    "quick": {
+      "heading": "Give your review",
+      "intro": "Your review is read by our team before publishing. Your email address, if you enter it, will never be shown.",
+      "starAriaLabel": "{count, plural, one {# star} other {# stars}} out of 5",
+      "firstName": "First name",
+      "city": "Town",
+      "optional": "(optional)",
+      "emailLabel": "Email",
+      "emailOptionalNote": "(optional, never published)",
+      "titleLabel": "Title",
+      "bodyLabel": "Your review",
+      "bodyPlaceholder": "Texture, how it wears through the day, results after a few weeks…",
+      "counter": "{count} / {max}",
+      "submit": "Publish my review",
+      "submitting": "Sending…",
+      "nameRequired": "Please enter your first name.",
+      "bodyMinLength": "Your review must be at least {min} characters.",
+      "submitFailed": "Sending failed. Please try again.",
+      "networkError": "Connection interrupted: your review was not sent.",
+      "successTitle": "Thank you, your review has been received.",
+      "successText": "It will be published on this page once checked by our team."
+    }
   },
   "payment": {
     "title": "Secure payment methods",
@@ -186,7 +257,13 @@
     "linkTerms": "Terms & conditions",
     "linkCookies": "Cookie settings",
     "copyright": "© {year} KossKoss Select.",
-    "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm"
+    "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm",
+    "linkRetractation": "Withdrawal",
+    "linkDelivery": "Delivery",
+    "linkReturnsShort": "Returns",
+    "linkPayment": "Payment",
+    "whatsappCta": "A question? WhatsApp",
+    "copyrightNotice": "© 2026 {brand}. All rights reserved."
   },
   "cart": {
     "title": "Cart",
@@ -223,6 +300,7 @@
     "deliveryTime": "Dispatch takes place once payment has been received.",
     "withdrawalHint": "As a consumer you have a 14-day right of withdrawal (art. L221-18 of the French Consumer Code). Details are on the right of withdrawal page.",
     "toCheckout": "Proceed to checkout",
+    "proceedToPayment": "Proceed to checkout",
     "onlyLeft": "Only {count} left in stock",
     "stockAdjusted": "The quantity has been adjusted to the available stock.",
     "revalidated": "Prices and availability have just been updated. Please check your cart.",
@@ -231,7 +309,29 @@
     "drawerTitle": "Your cart",
     "drawerClose": "Close cart",
     "drawerViewCart": "View cart",
-    "campaignFreeShipping": "Free delivery through your offer"
+    "campaignFreeShipping": "Free delivery through your offer",
+    "drawerEmptyText": "Your cart is empty.",
+    "drawerEmptyCta": "Discover the shop",
+    "decreaseShort": "Decrease",
+    "increaseShort": "Increase",
+    "removeItemLabel": "Remove {name}",
+    "drawerOrder": "Order",
+    "buttonAriaLabel": "Cart, {count, plural, one {# item} other {# items}}",
+    "suggestionsLoading": "Loading suggestions…",
+    "suggestionsTitle": "You might also like",
+    "suggestionsChooseVariant": "Choose a size for {name}",
+    "suggestionsChooseVariantTitle": "Choose a size",
+    "suggestionsAddLabel": "Add {name} to cart",
+    "pageTitle": "Your cart",
+    "pageIntro": "Check your items before proceeding to payment.",
+    "pageEmptyText": "Browse our selection or take the diagnostic to find your skincare.",
+    "pageColumnProduct": "Product",
+    "removeShort": "Remove",
+    "summaryTitleFull": "Order summary",
+    "shippingLabel": "Delivery",
+    "shippingCalculatedNextStep": "Calculated at the next step",
+    "totalEstimated": "Estimated total",
+    "securePaymentNote": "Secure Mobile Money payment"
   },
   "checkout": {
     "metaTitle": "Checkout | KossKoss Select",
@@ -471,6 +571,36 @@
       "email": "Check your email address.",
       "phone": "Nine digits, starting with 6 (mobile) or 2 (landline). E.g. 6 77 12 34 56",
       "location": "Neighbourhood and city, at minimum."
+    },
+    "confirmation": {
+      "thankYouTitle": "Thank you for your order!",
+      "orderPrefix": "Your order",
+      "statusPaid": "is paid. We'll contact you on WhatsApp to arrange delivery.",
+      "statusPending": "is registered. Confirm it via WhatsApp to arrange payment and delivery.",
+      "summaryTitle": "Summary",
+      "total": "Total",
+      "whatsappButtonPaid": "Arrange delivery via WhatsApp",
+      "whatsappButtonPending": "Confirm my order via WhatsApp",
+      "infoPaid": "Your payment has been received — there is nothing more to pay. Delivery is arranged with you via WhatsApp.",
+      "infoPending": "Mobile Money payment (Orange Money / MTN) will be finalised upon confirmation. Delivery is then arranged with you via WhatsApp.",
+      "accountCreatedTitle": "Customer account created.",
+      "accountCreatedText": "You're signed in —",
+      "accountCreatedLink": "view my orders",
+      "accountExistsTitle": "An account already exists for this email.",
+      "accountExistsLink": "Sign in",
+      "accountExistsText": "to track this order.",
+      "backHome": "Back to home",
+      "whatsapp": {
+        "greeting": "Hello {brand}",
+        "orderNumberLine": "Order {orderNumber}",
+        "itemLine": "- {quantity}× {label}",
+        "totalLine": "Total: {total}",
+        "nameLine": "Name: {name}",
+        "phoneLine": "Phone: {phone}",
+        "deliveryLocationLine": "Delivery location: {location}",
+        "confirmDeliveryLine": "Please confirm the delivery for me."
+      },
+      "metaTitle": "Order confirmed — {brand}"
     }
   },
   "wishlist": {
@@ -484,7 +614,19 @@
     "clear": "Clear wishlist",
     "emptyTitle": "Your wishlist is still empty.",
     "emptyText": "Click the heart on an item to collect it here and find it again later.",
-    "emptyCta": "Discover the range"
+    "emptyCta": "Discover the range",
+    "navAriaLabelWithCount": "Wishlist, {count, plural, one {# item} other {# items}}",
+    "addShort": "Add",
+    "choose": "Choose",
+    "loadingSelection": "Loading your selection…",
+    "emptyTitleAlt": "No favourites yet",
+    "emptyTextAlt": "Tap the heart on a product to find it here, on all your devices once signed in.",
+    "clearAll": "Remove all",
+    "countMemorized": "{count, plural, one {# product saved} other {# products saved}}",
+    "removeItemAria": "Remove {name} from favourites",
+    "savedOnAccount": "Your selection is saved to your account.",
+    "savedInBrowser": "This selection is kept in this browser.",
+    "findOnAllDevices": "Find it on all my devices"
   },
   "account": {
     "metaTitle": "My account",
@@ -550,7 +692,7 @@
       "network": "No connection to the server. Please check your internet connection."
     },
     "login": {
-      "metaTitle": "Sign in",
+      "metaTitle": "Sign in | KossKoss Select",
       "title": "Sign in",
       "intro": "Sign in to view your orders and manage your addresses.",
       "submit": "Sign in",
@@ -701,11 +843,125 @@
   },
   "home": {
     "slogan": "The beauty selection that chooses you.",
-    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment."
+    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment.",
+    "diagnosticCta": "Start the diagnostic",
+    "hero": {
+      "imageAlt": "Woman with melanin-rich skin holding a bottle of serum",
+      "title": "Skincare designed to enhance Black & mixed-race skin",
+      "subtitle": "Rigorous selection, effective formulas, visible results. And routines already put together, so you don't have to choose alone.",
+      "ctaRoutine": "Find your routine"
+    },
+    "promises": {
+      "selectionTitle": "Expert selection",
+      "selectionText": "Products tested and approved",
+      "paymentTitle": "Secure payment",
+      "paymentText": "Protected transactions",
+      "deliveryTitle": "Fast delivery",
+      "deliveryText": "Anywhere in Cameroon",
+      "adviceTitle": "Personalised advice",
+      "adviceText": "From skincare experts"
+    },
+    "diagnosticCard": {
+      "eyebrow": "Beauty diagnostic",
+      "title": "Your ideal routine in 3 minutes",
+      "text": "Answer {count} questions and get your personalised routine.",
+      "badge": "100% personalised · Free · No commitment"
+    },
+    "brandFocus": {
+      "eyebrow": "Brand focus",
+      "cta": "Discover the brand",
+      "referenceCount": "{count, plural, one {# product} other {# products}} in the catalogue"
+    },
+    "categoryPills": {
+      "eyebrow": "Shop by category",
+      "title": "Where to start",
+      "viewAll": "View all categories",
+      "orRoutine": "Or start from a routine"
+    },
+    "insights": {
+      "adviceTitle": "Advice & guides",
+      "viewAll": "See all",
+      "beforeAfterTitle": "Before / after",
+      "before": "Before",
+      "after": "After",
+      "viewRoutine": "View the routine",
+      "eyebrow": "Good to know",
+      "title": "Your questions, our results"
+    },
+    "services": {
+      "authenticTitle": "Authentic products",
+      "authenticText": "Traceable supply chains",
+      "expertsTitle": "Experts on hand",
+      "expertsText": "Advice before and after your purchase",
+      "satisfactionTitle": "Satisfied or refunded",
+      "satisfactionText": "14 days to change your mind",
+      "mobileMoneyTitle": "Mobile Money",
+      "mobileMoneyText": "Orange Money & MTN",
+      "whatsappPrompt": "A question before you buy? <link>Message us on WhatsApp</link> — we reply the same day."
+    },
+    "diagnosticReminder": {
+      "title": "Not sure where to start?",
+      "text": "Five questions about your skin, and we put together your routine."
+    },
+    "raisonDetre": {
+      "eyebrow": "Our reason for being",
+      "titlePart1": "Choosing well shouldn't be",
+      "titlePart2": "an obstacle course.",
+      "text": "Finding skincare that truly suits Black, olive or mixed-race skin takes hours of research today. We built KossKoss Select to remove three obstacles at once.",
+      "whoWeAre": "Who we are",
+      "obstacles": {
+        "catalog": {
+          "probleme": "Entire aisles of products that all look alike",
+          "reponse": "A curated catalogue",
+          "precision": "references kept, not four thousand"
+        },
+        "routine": {
+          "probleme": "Advice written for other skin tones",
+          "reponse": "A routine put together for your skin",
+          "precision": "questions, and we put yours together"
+        },
+        "circuits": {
+          "probleme": "The constant doubt over where what you buy comes from",
+          "reponse": "Identified supply chains",
+          "precision": "houses distributed, named one by one"
+        }
+      }
+    }
   },
   "diagnostic": {
     "metaTitle": "Beauty Diagnostic — KossKoss Select",
-    "metaDescription": "Answer a few questions about your skin and get a personalized skincare routine you can add to your cart."
+    "metaDescription": "Answer a few questions about your skin and get a personalized skincare routine you can add to your cart.",
+    "proposeEyebrow": "Welcome back",
+    "proposeTitle": "You've already done your diagnostic",
+    "proposeText": "Review the routine built from your answers — recalculated using the products available today — or retake the questionnaire if your skin has changed.",
+    "reviewRoutine": "Review my routine",
+    "retakeQuiz": "Retake the questionnaire",
+    "analysisFailed": "The analysis failed. Please choose your answer again.",
+    "resultEyebrow": "Your personalised routine",
+    "resultTitle": "Your beauty profile",
+    "resultIntro": "Based on your answers, here's the routine we recommend — one step after another, with products selected for you.",
+    "summaryTitle": "Your full routine",
+    "summaryTotal": "Routine total",
+    "orderRoutineAria": "Order the routine — {count} products",
+    "orderRoutine": "Order the routine",
+    "productsCountNote": "{count} products · payment at the next step",
+    "emailFormTitle": "Receive this routine by email",
+    "emailLabel": "Your email address",
+    "sendRoutineEmail": "Receive my routine by email",
+    "subscribeNewsletterCheckbox": "Also subscribe me to the newsletter",
+    "rateLimitedWithMinutes": "Too many send requests. Try again in about {minutes} min.",
+    "rateLimited": "Too many send requests. Please wait a moment before trying again.",
+    "sendFailed": "Sending failed. Please try again.",
+    "sendSuccess": "Sent! Check your inbox.",
+    "checkConnection": "Check your connection and try again.",
+    "subscribeFailed": "Unable to subscribe to the newsletter.",
+    "subscribeSuccess": "Newsletter subscription confirmed.",
+    "stepOf": "Step {current} of {total}",
+    "exit": "Leave",
+    "previous": "Previous",
+    "next": "Next",
+    "seeResult": "See my result",
+    "exitDiagnostic": "Leave the diagnostic"
   },
   "recentlyViewed": {
     "title": "Recently viewed",
@@ -715,5 +971,47 @@
     "emptyTitle": "Nothing to show yet",
     "emptyText": "Open a product page and it will appear here.",
     "emptyCta": "Browse the catalogue"
+  },
+  "newsletter": {
+    "title": "Join the community",
+    "text": "Our skincare advice, new arrivals and exclusive offers. No more than one message a week.",
+    "confirmedMessage": "Got it — see you soon in your inbox.",
+    "emailLabel": "Your email address",
+    "submit": "Subscribe",
+    "errorGeneric": "Subscription isn't possible right now.",
+    "errorConnection": "Check your connection and try again.",
+    "unsubscribeHint": "Unsubscribe in one click from any message."
+  },
+  "routine": {
+    "needFallback": "Full routine",
+    "detailEyebrow": "The detail",
+    "detailTitle": "Step by step",
+    "browseOthers": "Browse <routines>our other routines</routines> or take the <diagnostic>diagnostic</diagnostic> to build your own.",
+    "summaryTitle": "Your routine",
+    "summarySubtitle": "{count} steps, in order",
+    "summaryTotal": "Total",
+    "buyNote": "The {count} products in a single order.",
+    "othersEyebrow": "Other needs",
+    "othersTitle": "Our other routines",
+    "metaNotFoundTitle": "Routine not found — {brand}",
+    "listMetaTitle": "Ready-to-use routines — {brand}",
+    "listMetaDescription": "Complete routines by concern: acne, dark spots and hyperpigmentation, radiance, anti-ageing, hydration. Three steps in the right order, added to your cart in one go."
+  },
+  "marque": {
+    "breadcrumbLabel": "Brands",
+    "eyebrow": "Brand",
+    "sectionTitle": "{name} range",
+    "countRange": "Products {first}–{last} of {total}",
+    "paginationAriaLabel": "Brand product pagination",
+    "metaNotFoundTitle": "Brand not found — {brand}",
+    "metaFallbackDescription": "{name} products at {brand}."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "previousPage": "Previous page",
+    "next": "Next",
+    "nextPage": "Next page",
+    "pageSrOnly": "Page ",
+    "pageOf": "Page {page} of {pageCount}"
   }
 }

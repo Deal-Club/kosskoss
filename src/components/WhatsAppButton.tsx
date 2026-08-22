@@ -1,8 +1,7 @@
+import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/content/legal";
 import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
 import { WhatsAppGlyph } from "@/components/WhatsAppGlyph";
-
-const PREFILL = encodeURIComponent("Bonjour, j'ai une question sur un produit KossKoss Select.");
 
 /**
  * Composant serveur : le numéro vient du réglage en base
@@ -10,18 +9,25 @@ const PREFILL = encodeURIComponent("Bonjour, j'ai une question sur un produit Ko
  * ni la variable d'environnement ne sont renseignés. `getParametres` est
  * mémoïsé par requête, donc cet appel ne coûte pas de requête supplémentaire
  * même si l'en-tête ou le pied de page l'ont déjà lu.
+ *
+ * Le message pré-rempli suit la langue du visiteur (next-intl) : c'est le
+ * canal de contact principal de la boutique, il ne doit pas rester figé en
+ * français pour un visiteur anglophone.
  */
 export async function WhatsAppButton() {
+  const t = await getTranslations("common");
   const parametres = await getParametres();
   const numero = numeroWhatsappEffectif(parametres) || COMPANY.phone.replace(/\D/g, "");
   if (!numero) return null;
 
+  const prefill = encodeURIComponent(t("whatsappPrefill"));
+
   return (
     <a
-      href={`https://wa.me/${numero}?text=${PREFILL}`}
+      href={`https://wa.me/${numero}?text=${prefill}`}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Nous écrire sur WhatsApp"
+      aria-label={t("whatsappAriaLabel")}
       // Coin bas-DROITE, et au ras du bord.
       //
       // Il a longtemps été à gauche, pour laisser le coin droit à Smartsupp.
@@ -74,7 +80,7 @@ export async function WhatsAppButton() {
           "group-focus-visible:mr-5 group-focus-visible:max-w-[10rem] group-focus-visible:opacity-100",
         ].join(" ")}
       >
-        Écrivez-nous
+        {t("whatsappWriteToUs")}
       </span>
     </a>
   );

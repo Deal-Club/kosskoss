@@ -14,7 +14,7 @@ export function ProductCard({ product }: { product: Product }) {
   const t = useTranslations("product");
   const locale = useLocale();
   const cleBadge = normaliserBadge(product.badge);
-  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge] : null;
+  const libelleBadge = cleBadge ? BADGE_LABEL[cleBadge][locale === "en" ? "en" : "fr"] : null;
 
   return (
     <div className="relative h-full">

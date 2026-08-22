@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
@@ -10,31 +10,56 @@ import { getCurrentCustomer } from "@/server/customerSession";
 import { formatFcfa } from "@/lib/kk/format";
 import { BRAND, CONTACT } from "@/config/brand";
 import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
+import { choisirLangue } from "@/lib/kk/langue";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale; orderNumber: string }>;
 type Search = Promise<Record<string, string | string[] | undefined>>;
+type ConfirmationT = Awaited<ReturnType<typeof getTranslations>>;
 
-export const metadata: Metadata = {
-  title: "Commande confirmée — KossKoss Select",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "commande" });
+  return {
+    title: t("confirmation.metaTitle", { brand: BRAND.name }),
+    robots: { index: false, follow: false },
+  };
+}
 
-function whatsappHref(order: Awaited<ReturnType<typeof getKossOrder>>, numero: string): string {
+/**
+ * Message WhatsApp pré-rempli.
+ *
+ * `tWa` DOIT être lié à la langue de la COMMANDE (`order.locale`), jamais à
+ * celle de la page consultée : un client qui a commandé en anglais peut
+ * rouvrir cette page depuis un lien reçu par e-mail sur un navigateur réglé en
+ * français, et le message envoyé au vendeur doit rester celui qu'il a choisi
+ * à la commande — voir `src/lib/kk/langue.ts`, déjà utilisé pour les e-mails
+ * transactionnels avec la même exigence.
+ */
+function whatsappHref(
+  order: Awaited<ReturnType<typeof getKossOrder>>,
+  numero: string,
+  tWa: ConfirmationT,
+): string {
   if (!order) return "#";
   const digits = numero || CONTACT.phone.replace(/\D/g, "");
   const lines = order.items
-    .map((i) => `- ${i.quantity}× ${i.brand} ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}`)
+    .map((i) =>
+      tWa("confirmation.whatsapp.itemLine", {
+        quantity: i.quantity,
+        label: `${i.brand} ${i.name}${i.variantLabel ? ` (${i.variantLabel})` : ""}`,
+      }),
+    )
     .join("\n");
   const message = [
-    `Bonjour ${BRAND.name}`,
-    `Commande ${order.orderNumber}`,
+    tWa("confirmation.whatsapp.greeting", { brand: BRAND.name }),
+    tWa("confirmation.whatsapp.orderNumberLine", { orderNumber: order.orderNumber }),
     lines,
-    `Total : ${formatFcfa(order.totalCents)}`,
-    `Nom : ${order.billingFirstName} ${order.billingLastName}`,
-    `Tél : ${order.phone}`,
-    `Lieu de livraison : ${order.billingStreet}`,
-    "Merci de me confirmer l'acheminement.",
+    tWa("confirmation.whatsapp.totalLine", { total: formatFcfa(order.totalCents) }),
+    tWa("confirmation.whatsapp.nameLine", { name: `${order.billingFirstName} ${order.billingLastName}` }),
+    tWa("confirmation.whatsapp.phoneLine", { phone: order.phone }),
+    tWa("confirmation.whatsapp.deliveryLocationLine", { location: order.billingStreet }),
+    tWa("confirmation.whatsapp.confirmDeliveryLine"),
   ].join("\n");
   return `https://wa.me/${digits}?text=${encodeURIComponent(message)}`;
 }
@@ -49,6 +74,7 @@ export default async function ConfirmationPage({
   const { locale, orderNumber } = await params;
   const sp = await searchParams;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "commande" });
 
   // Deux preuves d'accès acceptées, dans cet ordre.
   //
@@ -70,6 +96,11 @@ export default async function ConfirmationPage({
   // seuls — c'est tout ce que `wa.me` accepte — donc utilisable tel quel dans
   // le lien construit par `whatsappHref`, sans nettoyage supplémentaire.
   const numeroWhatsapp = numeroWhatsappEffectif(await getParametres());
+
+  // La langue de la COMMANDE fait foi pour le message WhatsApp — pas celle de
+  // la page consultée. `choisirLangue` filtre toute valeur historique qui ne
+  // serait ni « fr » ni « en ».
+  const tWa = await getTranslations({ locale: choisirLangue(order.locale), namespace: "commande" });
 
   const account = order.customerId
     ? { loggedIn: Boolean(await getCurrentCustomer()) }
@@ -98,18 +129,19 @@ export default async function ConfirmationPage({
             <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-deep text-primary-foreground">
               <Check className="h-8 w-8" />
             </span>
-            <h1 className="mt-6 text-deep">Merci pour votre commande !</h1>
+            <h1 className="mt-6 text-deep">{t("confirmation.thankYouTitle")}</h1>
             <p className="mt-3 text-muted-foreground">
-              Votre commande <span className="font-semibold text-deep">{order.orderNumber}</span>{" "}
-              {payee
-                ? "est payée. Nous vous contactons sur WhatsApp pour organiser la livraison."
-                : "est enregistrée. Confirmez-la via WhatsApp pour organiser le paiement et la livraison."}
+              {t("confirmation.orderPrefix")}{" "}
+              <span className="font-semibold text-deep">{order.orderNumber}</span>{" "}
+              {payee ? t("confirmation.statusPaid") : t("confirmation.statusPending")}
             </p>
           </div>
 
           {/* Récapitulatif */}
           <div className="mt-10 rounded-2xl border border-border bg-card p-6">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">Récapitulatif</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">
+              {t("confirmation.summaryTitle")}
+            </h2>
             <ul className="mt-4 divide-y divide-border">
               {order.items.map((i) => (
                 <li key={i.id} className="flex justify-between gap-3 py-3 text-sm">
@@ -123,48 +155,45 @@ export default async function ConfirmationPage({
               ))}
             </ul>
             <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-              <span className="font-semibold text-deep">Total</span>
+              <span className="font-semibold text-deep">{t("confirmation.total")}</span>
               <span className="figure text-xl font-semibold text-deep">{formatFcfa(order.totalCents)}</span>
             </div>
           </div>
 
           {/* Action WhatsApp */}
           <a
-            href={whatsappHref(order, numeroWhatsapp)}
+            href={whatsappHref(order, numeroWhatsapp, tWa)}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 text-sm font-semibold text-white transition hover:brightness-95"
           >
             <MessageCircle className="h-5 w-5" />
-            {payee ? "Organiser la livraison via WhatsApp" : "Confirmer ma commande via WhatsApp"}
+            {payee ? t("confirmation.whatsappButtonPaid") : t("confirmation.whatsappButtonPending")}
           </a>
 
           <div className="mt-6 flex items-start gap-3 rounded-2xl bg-sand/60 p-5 text-sm text-deep">
             <Clock className="mt-0.5 h-5 w-5 shrink-0" />
-            <p>
-              {payee
-                ? "Votre paiement est bien reçu — vous n'avez plus rien à régler. La livraison est coordonnée avec vous via WhatsApp."
-                : "Le paiement Mobile Money (Orange Money / MTN) sera finalisé lors de la confirmation. La livraison est ensuite coordonnée avec vous via WhatsApp."}
-            </p>
+            <p>{payee ? t("confirmation.infoPaid") : t("confirmation.infoPending")}</p>
           </div>
 
           {account && (
             <div className="mt-4 rounded-2xl border border-border bg-card p-5 text-sm text-deep">
               {account.loggedIn ? (
                 <p>
-                  <span className="font-semibold">Espace client créé.</span> Vous êtes connecté —{" "}
+                  <span className="font-semibold">{t("confirmation.accountCreatedTitle")}</span>{" "}
+                  {t("confirmation.accountCreatedText")}{" "}
                   <Link href="/compte" className="font-semibold underline underline-offset-2">
-                    accéder à mes commandes
+                    {t("confirmation.accountCreatedLink")}
                   </Link>
                   .
                 </p>
               ) : (
                 <p>
-                  <span className="font-semibold">Un compte existe déjà pour cet e-mail.</span>{" "}
+                  <span className="font-semibold">{t("confirmation.accountExistsTitle")}</span>{" "}
                   <Link href="/compte/connexion" className="font-semibold underline underline-offset-2">
-                    Connectez-vous
+                    {t("confirmation.accountExistsLink")}
                   </Link>{" "}
-                  pour suivre cette commande.
+                  {t("confirmation.accountExistsText")}
                 </p>
               )}
             </div>
@@ -172,7 +201,7 @@ export default async function ConfirmationPage({
 
           <div className="mt-8 text-center">
             <Link href="/" className="text-sm font-semibold text-deep underline underline-offset-4">
-              Retour à l&rsquo;accueil
+              {t("confirmation.backHome")}
             </Link>
           </div>
         </div>

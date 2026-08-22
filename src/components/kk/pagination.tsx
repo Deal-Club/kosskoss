@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { LocalizedLink as Link } from "./localized-link";
 
@@ -42,6 +43,7 @@ export interface PaginationProps {
 }
 
 export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Pagination" }: PaginationProps) {
+  const t = useTranslations("pagination");
   if (pageCount <= 1) return null;
 
   const base =
@@ -54,15 +56,15 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
           {page > 1 ? (
             <Link href={hrefForPage(page - 1)} rel="prev" className={`${base} gap-1 text-deep hover:bg-cream`}>
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Précédent</span>
-              <span className="sr-only sm:hidden">Page précédente</span>
+              <span className="hidden sm:inline">{t("previous")}</span>
+              <span className="sr-only sm:hidden">{t("previousPage")}</span>
             </Link>
           ) : (
             // Désactivé = absent du parcours au clavier, mais la place reste
             // prise : sinon la barre saute latéralement d'une page à l'autre.
             <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
               <ChevronLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">Précédent</span>
+              <span className="hidden sm:inline">{t("previous")}</span>
             </span>
           )}
         </li>
@@ -80,7 +82,7 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
                 </span>
               ) : (
                 <Link href={hrefForPage(n)} className={`${base} text-foreground hover:bg-cream hover:text-deep`}>
-                  <span className="sr-only">Page </span>
+                  <span className="sr-only">{t("pageSrOnly")}</span>
                   {n}
                 </Link>
               )}
@@ -91,22 +93,20 @@ export function Pagination({ page, pageCount, hrefForPage, ariaLabel = "Paginati
         <li>
           {page < pageCount ? (
             <Link href={hrefForPage(page + 1)} rel="next" className={`${base} gap-1 text-deep hover:bg-cream`}>
-              <span className="hidden sm:inline">Suivant</span>
-              <span className="sr-only sm:hidden">Page suivante</span>
+              <span className="hidden sm:inline">{t("next")}</span>
+              <span className="sr-only sm:hidden">{t("nextPage")}</span>
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           ) : (
             <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
-              <span className="hidden sm:inline">Suivant</span>
+              <span className="hidden sm:inline">{t("next")}</span>
               <ChevronRight className="h-4 w-4" />
             </span>
           )}
         </li>
       </ul>
 
-      <p className="text-xs text-muted-foreground">
-        Page {page} sur {pageCount}
-      </p>
+      <p className="text-xs text-muted-foreground">{t("pageOf", { page, pageCount })}</p>
     </nav>
   );
 }
