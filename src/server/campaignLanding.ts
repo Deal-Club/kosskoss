@@ -26,7 +26,6 @@ import type { Product } from "@/types/home";
 
 export interface CampaignLanding {
   code: string;
-  name: string;
   type: CampaignType;
   discountKind: DiscountKind;
   discountValue: number;
@@ -63,7 +62,6 @@ export async function getCampaignLanding(
     where: { landingSlug: normalized },
     select: {
       code: true,
-      name: true,
       type: true,
       status: true,
       discountKind: true,
@@ -106,7 +104,6 @@ export async function getCampaignLanding(
 
   return {
     code: row.code,
-    name: row.name,
     type,
     discountKind: kind,
     discountValue: row.discountValue,

@@ -24,9 +24,8 @@ export async function GET() {
         active: context.active,
         freeShipping: context.freeShipping,
         campaignCode: context.campaignCode,
-        campaignName: context.campaignName,
       }
-    : { active: false, freeShipping: false, campaignCode: null, campaignName: null };
+    : { active: false, freeShipping: false, campaignCode: null };
 
   return NextResponse.json(body, {
     // Une réponse propre à un visiteur n'a rien à faire dans un cache partagé.
