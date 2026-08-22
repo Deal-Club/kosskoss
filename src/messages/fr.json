@@ -299,6 +299,7 @@
     "deliveryTime": "L'expédition intervient après réception du paiement.",
     "withdrawalHint": "En tant que consommateur, vous disposez d'un délai de rétractation de 14 jours (art. L221-18 du Code de la consommation). Le détail figure dans la page Droit de rétractation.",
     "toCheckout": "Passer commande",
+    "proceedToPayment": "Procéder au paiement",
     "onlyLeft": "Plus que {count} en stock",
     "stockAdjusted": "La quantité a été ajustée au stock disponible.",
     "revalidated": "Les prix et la disponibilité viennent d'être mis à jour. Merci de vérifier votre panier.",

@@ -299,6 +299,7 @@
     "deliveryTime": "Dispatch takes place once payment has been received.",
     "withdrawalHint": "As a consumer you have a 14-day right of withdrawal (art. L221-18 of the French Consumer Code). Details are on the right of withdrawal page.",
     "toCheckout": "Proceed to checkout",
+    "proceedToPayment": "Proceed to checkout",
     "onlyLeft": "Only {count} left in stock",
     "stockAdjusted": "The quantity has been adjusted to the available stock.",
     "revalidated": "Prices and availability have just been updated. Please check your cart.",

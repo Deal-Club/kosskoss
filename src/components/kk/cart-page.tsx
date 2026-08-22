@@ -125,7 +125,7 @@ export function CartPageView() {
               href="/commande"
               className="kk-fill group mt-6 flex items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground"
             >
-              {t("toCheckout")}
+              {t("proceedToPayment")}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
