@@ -301,6 +301,12 @@ export async function annulerBon(bonId: string): Promise<BonRecord> {
   if (bon.status === "annule") {
     throw new Error("Ce bon est déjà annulé.");
   }
+  // Un bon entièrement reçu est un fait accompli : l'annuler afficherait
+  // « Annulé » sur des lignes déjà soldées, ce qui ferait croire que la
+  // marchandise reçue ne compte plus.
+  if (bon.status === "recu") {
+    throw new Error("Ce bon est déjà entièrement reçu : il ne peut plus être annulé.");
+  }
 
   const annule = await prisma.purchaseOrder.update({
     where: { id: bonId },
@@ -339,6 +345,18 @@ export interface ReceptionLigneResultat {
   quantiteRecueTotale: number;
   stockTouche: boolean;
   coutMisAJour: boolean;
+  /**
+   * Valeur effectivement écrite sur `product.costCents` quand `coutMisAJour`
+   * est vrai. Un coût à zéro est une valeur licite (échantillon, dotation
+   * fournisseur) — voir `coutZeroAVerifier` — pas une absence de coût.
+   */
+  coutEcritCents?: number;
+  /**
+   * Vrai quand `coutEcritCents` vaut 0 : sans ce signal, un zéro écrase
+   * silencieusement le coût du produit et `src/lib/kk/marge.ts` l'affiche
+   * alors comme une marge de 100 % sur tout le tableau de bord des ventes.
+   */
+  coutZeroAVerifier?: boolean;
   /** Renseigné quand la ligne n'a pas pu toucher le stock ou le coût. */
   message?: string;
 }
@@ -359,7 +377,7 @@ export interface ResultatReception {
  * ligne. Puis le statut du bon est recalculé par `statutApresReception`, à
  * partir de TOUTES ses lignes (pas seulement celles reçues cette fois).
  *
- * Cinq règles, qui ne se devinent pas :
+ * Six règles, qui ne se devinent pas :
  *
  * 1. Une quantité reçue nulle ou négative est refusée : une réception
  *    négative réécrirait l'histoire. Une correction passe par un ajustement
@@ -374,10 +392,19 @@ export interface ResultatReception {
  * 4. Recevoir sur un bon `brouillon` (rien n'a encore été transmis) ou
  *    `annule` (la décision est prise) est refusé, avec un message qui dit
  *    lequel des deux bloque.
- * 5. Si une seule écriture échoue, AUCUNE des quatre (quantité de la ligne,
- *    mouvement de stock, stock du produit, coût du produit) ne doit rester :
- *    tout passe par le `tx` de la transaction englobante, jamais par le
- *    client `prisma` global.
+ * 5. Si une seule écriture échoue, AUCUNE des trois (quantité de la ligne,
+ *    stock + coût du produit — un seul `update`, mouvement de stock) ne doit
+ *    rester : tout passe par le `tx` de la transaction englobante, jamais par
+ *    le client `prisma` global.
+ * 6. Un même `ligneId` reçu plusieurs fois dans UN SEUL appel est refusé
+ *    avant même d'ouvrir la transaction : ce n'est pas un doublon à absorber
+ *    silencieusement, mais une saisie incohérente — l'écran n'envoie jamais un
+ *    tel appel, mais la route est une surface publique. Et pour que même un
+ *    doublon qui passerait outre ce refus ne fausse pas les chiffres, la
+ *    quantité reçue et le stock s'écrivent tous deux en `{ increment }`,
+ *    jamais en valeur absolue recalculée à partir d'un objet chargé avant la
+ *    boucle : deux écritures sur la même ligne s'additionnent alors
+ *    correctement au lieu de s'écraser l'une l'autre.
  */
 export async function recevoirLignes(
   bonId: string,
@@ -396,6 +423,33 @@ export async function recevoirLignes(
   if (receptions.length === 0) {
     throw new Error("Aucune ligne à recevoir.");
   }
+
+  // Règle 6 — également vérifiée avant d'ouvrir la transaction : un `ligneId`
+  // répété dans le même appel est une saisie incohérente, pas un cas à
+  // absorber silencieusement (voir l'en-tête du fichier).
+  const ligneIdsVus = new Set<string>();
+  const ligneIdsEnDouble = new Set<string>();
+  for (const reception of receptions) {
+    if (ligneIdsVus.has(reception.ligneId)) {
+      ligneIdsEnDouble.add(reception.ligneId);
+    }
+    ligneIdsVus.add(reception.ligneId);
+  }
+  if (ligneIdsEnDouble.size > 0) {
+    throw new Error(
+      `Ligne(s) présente(s) plusieurs fois dans le même appel de réception : ${[...ligneIdsEnDouble].join(", ")}. Chaque ligne ne doit apparaître qu'une seule fois.`,
+    );
+  }
+
+  // Délai de transaction explicite : Prisma en garde 5 s par défaut, ce que
+  // dépasse un gros bon. La boucle fait jusqu'à 4 requêtes par ligne
+  // (mise à jour de la ligne, lecture du produit, mise à jour du produit,
+  // mouvement de stock), plus deux hors boucle (chargement du bon, relecture
+  // des lignes pour le statut). Sur une base distante mesurée à ~220 ms
+  // l'aller-retour : (4 × 220 ms) × 15 lignes + 2 × 220 ms ≈ 13,6 s pour un
+  // bon de quinze lignes. 30 s laisse une marge confortable jusqu'à une
+  // trentaine de lignes sans risquer un refus incompréhensible sur un gros bon.
+  const DELAI_TRANSACTION_MS = 30_000;
 
   return prisma.$transaction(async (tx) => {
     const bon = await tx.purchaseOrder.findUnique({ where: { id: bonId }, include: { items: true } });
@@ -417,14 +471,21 @@ export async function recevoirLignes(
       if (!ligne) throw new Error(`Ligne ${reception.ligneId} introuvable sur ce bon.`);
 
       // Règle 3 — aucun plafond : la sur-livraison est acceptée.
-      const quantiteRecueTotale = ligne.quantityReceived + reception.quantite;
-      await tx.purchaseOrderItem.update({
+      // Écrit en `{ increment }`, pas en valeur absolue recalculée depuis
+      // `bon.items` chargé avant la boucle (règle 6) : même si un doublon de
+      // `ligneId` passait outre le refus ci-dessus, les deux écritures
+      // s'additionneraient au lieu de s'écraser. Le cumul se lit dans le
+      // retour de l'`update`, jamais recalculé côté application.
+      const ligneMiseAJour = await tx.purchaseOrderItem.update({
         where: { id: ligne.id },
-        data: { quantityReceived: quantiteRecueTotale },
+        data: { quantityReceived: { increment: reception.quantite } },
       });
+      const quantiteRecueTotale = ligneMiseAJour.quantityReceived;
 
       let stockTouche = false;
       let coutMisAJour = false;
+      let coutEcritCents: number | undefined;
+      let coutZeroAVerifier: boolean | undefined;
       let message: string | undefined;
 
       // Règle 2 — pas de produit rattaché : reçue au sens du bon, stock et
@@ -434,7 +495,7 @@ export async function recevoirLignes(
       } else {
         const produit = await tx.product.findUnique({
           where: { id: ligne.productId },
-          select: { id: true, stock: true },
+          select: { id: true },
         });
 
         if (!produit) {
@@ -445,13 +506,25 @@ export async function recevoirLignes(
           // incohérence qui n'est pas celle de l'opérateur.
           message = "Produit introuvable : le stock et le coût n'ont pas été modifiés.";
         } else {
-          const nouveauStock = produit.stock + reception.quantite;
-          await tx.product.update({ where: { id: produit.id }, data: { stock: nouveauStock } });
+          // Stock et coût en un seul `update` (au lieu de deux successifs) :
+          // le stock en `{ increment }`, jamais en valeur absolue relue avant
+          // la boucle — voir `src/server/stock.ts`, l'invariant que ce module
+          // partage désormais avec `adjustStock`/`setStock`. Deux réceptions
+          // simultanées du même produit s'additionnent alors correctement au
+          // lieu de s'écraser.
+          const produitMisAJour = await tx.product.update({
+            where: { id: produit.id },
+            data: {
+              stock: { increment: reception.quantite },
+              ...(options.majCoutProduit ? { costCents: ligne.unitCostCents } : {}),
+            },
+            select: { costCents: true },
+          });
 
-          // Réécriture directe des deux écritures qu'aurait faites
-          // `adjustStock` (src/server/stock.ts) — voir le commentaire d'en-tête
-          // du fichier : `adjustStock` ouvre sa propre transaction, elle ne
-          // peut pas être appelée depuis celle-ci sans briser l'atomicité.
+          // Réécriture directe des écritures qu'aurait faites `adjustStock`
+          // (src/server/stock.ts) — voir le commentaire d'en-tête du fichier :
+          // `adjustStock` ouvre sa propre transaction, elle ne peut pas être
+          // appelée depuis celle-ci sans briser l'atomicité.
           await tx.stockMovement.create({
             data: {
               productId: produit.id,
@@ -466,11 +539,15 @@ export async function recevoirLignes(
           stockTouche = true;
 
           if (options.majCoutProduit) {
-            await tx.product.update({
-              where: { id: produit.id },
-              data: { costCents: ligne.unitCostCents },
-            });
             coutMisAJour = true;
+            // La valeur EFFECTIVEMENT écrite, lue dans le retour de l'update —
+            // pas `ligne.unitCostCents` recopié en aveugle. Un coût à 0 est une
+            // saisie licite (échantillon, dotation fournisseur) qu'on ne
+            // refuse pas, mais qui doit se voir : `src/lib/kk/marge.ts`
+            // affiche un coût de 0 comme une marge de 100 %, jamais comme une
+            // marge inconnue.
+            coutEcritCents = produitMisAJour.costCents ?? 0;
+            coutZeroAVerifier = coutEcritCents === 0;
           }
         }
       }
@@ -483,6 +560,8 @@ export async function recevoirLignes(
         quantiteRecueTotale,
         stockTouche,
         coutMisAJour,
+        coutEcritCents,
+        coutZeroAVerifier,
         message,
       });
     }
@@ -497,7 +576,7 @@ export async function recevoirLignes(
     }
 
     return { bonId, reference: bon.reference, statut: statutSuivant, lignes: lignesResultat };
-  });
+  }, { timeout: DELAI_TRANSACTION_MS });
 }
 
 /**

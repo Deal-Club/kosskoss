@@ -402,8 +402,10 @@ export function PurchaseOrderDetail({
                   Mettre à jour le coût d&apos;achat des produits
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  Le coût du produit devient le coût payé sur cette réception. À décocher pour un achat
-                  exceptionnel, qui ne doit pas s&apos;imposer comme référence.
+                  Le coût du produit devient le coût payé sur cette réception — pour CHAQUE produit
+                  rattaché à une ligne cochée, dans tout le catalogue, et pour toutes les ventes à venir,
+                  pas seulement pour ce bon. À décocher pour un achat exceptionnel, qui ne doit pas
+                  s&apos;imposer comme référence.
                 </span>
               </span>
             </label>
@@ -465,9 +467,16 @@ export function PurchaseOrderDetail({
                     </td>
                     <td className="px-4 py-3">
                       {ligne.coutMisAJour ? (
-                        <span className="rounded-sm bg-[#16a34a]/10 px-2 py-1 text-xs font-bold text-[#16a34a]">
-                          Mis à jour
-                        </span>
+                        <div className="flex flex-col items-start gap-1">
+                          <span className="rounded-sm bg-[#16a34a]/10 px-2 py-1 text-xs font-bold text-[#16a34a]">
+                            Mis à jour — {formatCents(ligne.coutEcritCents ?? 0)}
+                          </span>
+                          {ligne.coutZeroAVerifier && (
+                            <span className="rounded-sm bg-[#b45309]/10 px-2 py-1 text-xs font-bold text-[#b45309]">
+                              Coût écrit à 0 — à vérifier
+                            </span>
+                          )}
+                        </div>
                       ) : (
                         <span className="rounded-sm bg-muted px-2 py-1 text-xs font-bold text-muted-foreground">
                           Inchangé
