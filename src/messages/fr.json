@@ -48,7 +48,7 @@
     "openMenu": "Ouvrir le menu",
     "menuLabel": "Menu",
     "closeMenu": "Fermer le menu",
-    "routinesCta": "Nos routines prêtes à l'emploi",
+    "routinesCta": "Nos routines prêtes à l’emploi",
     "diagnosticCta": "Faire mon diagnostic",
     "seeAllGroup": "Tout {group}",
     "brandsLink": "Nos marques",
@@ -876,7 +876,7 @@
       "eyebrow": "Shoppez par catégorie",
       "title": "Par où commencer",
       "viewAll": "Voir toutes les catégories",
-      "orRoutine": "Ou partez d'une routine"
+      "orRoutine": "Ou partez d’une routine"
     },
     "insights": {
       "adviceTitle": "Conseils & guides",
@@ -897,17 +897,17 @@
       "satisfactionText": "14 jours pour changer d'avis",
       "mobileMoneyTitle": "Mobile Money",
       "mobileMoneyText": "Orange Money & MTN",
-      "whatsappPrompt": "Une question avant d'acheter ? <link>Écrivez-nous sur WhatsApp</link> — on répond dans la journée."
+      "whatsappPrompt": "Une question avant d’acheter ? <link>Écrivez-nous sur WhatsApp</link> — on répond dans la journée."
     },
     "diagnosticReminder": {
       "title": "Vous ne savez pas par où commencer ?",
       "text": "Cinq questions sur votre peau, et nous composons votre routine."
     },
     "raisonDetre": {
-      "eyebrow": "Notre raison d'être",
+      "eyebrow": "Notre raison d’être",
       "titlePart1": "Bien choisir ne devrait pas être",
       "titlePart2": "un parcours du combattant.",
-      "text": "Trouver un soin qui convienne vraiment à une peau noire, mate ou métissée demande aujourd'hui des heures de recherche. Nous avons construit KossKoss Select pour lever trois obstacles à la fois.",
+      "text": "Trouver un soin qui convienne vraiment à une peau noire, mate ou métissée demande aujourd’hui des heures de recherche. Nous avons construit KossKoss Select pour lever trois obstacles à la fois.",
       "whoWeAre": "Qui nous sommes",
       "obstacles": {
         "catalog": {
