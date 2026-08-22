@@ -1,5 +1,6 @@
 import { prisma } from "@/server/prisma";
 import { slugify } from "@/lib/slugify";
+import { pickText } from "@/server/localizedContent";
 import type { PaymentMethodRecord } from "@/server/types";
 
 interface PaymentMethodRow {
@@ -11,6 +12,12 @@ interface PaymentMethodRow {
   feeLabel: string;
   enabled: boolean;
   position: number;
+}
+
+interface PaymentMethodRowWithEn extends PaymentMethodRow {
+  labelEn: string;
+  descriptionEn: string;
+  feeLabelEn: string;
 }
 
 export interface PaymentMethodInput {
@@ -66,6 +73,28 @@ export async function listEnabledPaymentMethods(): Promise<PaymentMethodRecord[]
     orderBy: [{ position: "asc" }, { label: "asc" }],
   });
   return rows.map(toRecord);
+}
+
+/**
+ * Même liste, mais traduite pour la boutique : label, description et mention
+ * de frais passent par pickText, comme partout ailleurs sur le site public.
+ * Réservé à l'affichage côté vitrine — le back-office continue de lire
+ * `listEnabledPaymentMethods`, en français, quelle que soit la langue de
+ * l'administrateur connecté.
+ */
+export async function listEnabledPaymentMethodsLocalized(locale: string): Promise<PaymentMethodRecord[]> {
+  const rows: PaymentMethodRowWithEn[] = await prisma.paymentMethod.findMany({
+    where: { enabled: true },
+    orderBy: [{ position: "asc" }, { label: "asc" }],
+  });
+
+  const english = locale === "en";
+  return rows.map((row) => ({
+    ...toRecord(row),
+    label: pickText(row.label, english ? row.labelEn : undefined),
+    description: pickText(row.description, english ? row.descriptionEn : undefined),
+    feeLabel: pickText(row.feeLabel, english ? row.feeLabelEn : undefined),
+  }));
 }
 
 export async function getPaymentMethod(id: string): Promise<PaymentMethodRecord | undefined> {

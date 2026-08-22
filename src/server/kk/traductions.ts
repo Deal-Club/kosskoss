@@ -11,12 +11,12 @@ import { parseStoredBlocks } from "@/lib/journal/blocks";
  * Lecture et écriture des traductions, un modèle à la fois.
  *
  * Le registre (src/lib/kk/traductions.ts) dit QUELS champs sont traduisibles ;
- * ce module dit COMMENT les lire et les écrire pour chacun des dix-huit
+ * ce module dit COMMENT les lire et les écrire pour chacun des dix-neuf
  * modèles. La carte ci-dessous compte donc une entrée par modèle, chacune
  * appelant `prisma.<modele>` nommé en toutes lettres.
  *
  * PAS D'ACCÈS INDEXÉ SUR LE CLIENT PRISMA (`(prisma as never)[cle]`), même si
- * le résultat tiendrait en dix lignes : cet écran écrit dans dix-huit tables,
+ * le résultat tiendrait en dix lignes : cet écran écrit dans dix-neuf tables,
  * et un accès dynamique ne se vérifie qu'à l'exécution — il échouerait le
  * jour d'un renommage de champ, et pourrait écrire dans le mauvais champ
  * avant qu'on s'en aperçoive. Une traduction fautive n'est visible que de
@@ -649,6 +649,46 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
     },
     async ecrire(id, donnees) {
       await prisma.announcement.update({ where: { id }, data: { messageEn: donnees.messageEn } });
+    },
+  },
+
+  PaymentMethod: {
+    champs: registreDe("PaymentMethod"),
+    async lister() {
+      const lignes = await prisma.paymentMethod.findMany({
+        select: {
+          id: true,
+          label: true,
+          labelEn: true,
+          description: true,
+          descriptionEn: true,
+          feeLabel: true,
+          feeLabelEn: true,
+        },
+        orderBy: { position: "asc" },
+      });
+      return lignes.map((p) => ({
+        id: p.id,
+        libelle: p.label,
+        valeurs: {
+          label: p.label,
+          labelEn: p.labelEn,
+          description: p.description,
+          descriptionEn: p.descriptionEn,
+          feeLabel: p.feeLabel,
+          feeLabelEn: p.feeLabelEn,
+        },
+      }));
+    },
+    async ecrire(id, donnees) {
+      await prisma.paymentMethod.update({
+        where: { id },
+        data: {
+          labelEn: donnees.labelEn,
+          descriptionEn: donnees.descriptionEn,
+          feeLabelEn: donnees.feeLabelEn,
+        },
+      });
     },
   },
 };

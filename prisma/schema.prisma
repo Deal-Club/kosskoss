@@ -409,6 +409,13 @@ model PaymentMethod {
   enabled     Boolean  @default(true)
   position    Int      @default(0)
   updatedAt   DateTime @updatedAt
+  // Traductions anglaises ; vides = repli sur le français, comme partout
+  // ailleurs (voir src/server/localizedContent.ts). Ces libellés s'affichent
+  // sur la page qui encaisse : la même règle que le reste de la boutique
+  // s'applique.
+  labelEn       String @default("")
+  descriptionEn String @default("")
+  feeLabelEn    String @default("")
 }
 
 model Integration {

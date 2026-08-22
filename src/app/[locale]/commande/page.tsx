@@ -19,7 +19,7 @@ export default async function CheckoutPage({ params }: { params: Params }) {
 
   // Les moyens de paiement viennent du back-office, pas d'une liste figée dans
   // le formulaire : ce que l'administration active est ce que le client voit.
-  const payments = await getEnabledPaymentMethods();
+  const payments = await getEnabledPaymentMethods(locale);
 
   return (
     <div className="flex min-h-screen flex-col">
