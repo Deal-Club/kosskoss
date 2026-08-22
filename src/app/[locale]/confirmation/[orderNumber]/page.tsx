@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
+import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getKossOrder } from "@/server/kk/checkout";
 import { lireAccesCommande } from "@/server/kk/acces-commande";
 import { getCurrentCustomer } from "@/server/customerSession";

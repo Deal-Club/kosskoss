@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { setRequestLocale } from "next-intl/server";
 import { Package, Sparkles, ChevronRight, Heart, MapPin, ShieldCheck } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
+import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { AccountLogout } from "@/components/kk/account";
 import { requireCustomer } from "@/server/customerSession";
 import { getAccountOrders } from "@/server/kk/account";

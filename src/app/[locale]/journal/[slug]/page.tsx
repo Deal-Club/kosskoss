@@ -15,6 +15,7 @@ import {
 import { resolveCitedProducts } from "@/server/journal/products";
 import { resolveArticleSeo } from "@/lib/journal/seo";
 import { alternatesFor, localizedUrl } from "@/lib/hreflang";
+import { getPathname } from "@/i18n/navigation";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
@@ -86,7 +87,7 @@ export default async function ArticlePage({ params }: { params: ArticleParams })
     // Un article renommé après publication garde son ancienne adresse vivante :
     // on redirige en 301 plutôt que de rendre un 404 sur une URL déjà indexée.
     const target = await findRedirectTarget(slug);
-    if (target) permanentRedirect(`/journal/${target}`);
+    if (target) permanentRedirect(getPathname({ href: `/journal/${target}`, locale }));
     notFound();
   }
 
