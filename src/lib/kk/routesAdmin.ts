@@ -28,8 +28,6 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   customers: "commandes",
   reviews: "commandes",
   ventes: "commandes",
-  "bank-transfer": "commandes",
-  payments: "commandes",
 
   // Contenu
   journal: "contenu",
@@ -38,11 +36,14 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   campaigns: "contenu",
   scripts: "contenu",
 
-  // Réglages
+  // Réglages — y compris les moyens de paiement : virement et passerelles en
+  // ligne sont des réglages de paiement, pas des commandes.
   parametres: "reglages",
   integrations: "reglages",
   "payment-gateway": "reglages",
   "payment-methods": "reglages",
+  "bank-transfer": "reglages",
+  payments: "reglages",
   coupons: "reglages",
   diagnostic: "reglages",
   "diagnostic-steps": "reglages",

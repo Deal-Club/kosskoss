@@ -8,7 +8,7 @@ import { BankTransferForm } from "@/components/admin/BankTransferForm";
 import { GatewaySettingsForm } from "@/components/admin/GatewaySettingsForm";
 
 export default async function AdminPaymentsPage() {
-  await requireCapacitePage("commandes");
+  await requireCapacitePage("reglages");
   const methods = await listPaymentMethods();
   const bankTransfer = await getBankTransferSettings();
   const gatewayState = await getGatewayAdminState();

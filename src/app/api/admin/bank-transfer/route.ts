@@ -8,14 +8,14 @@ import {
 } from "@/server/bankTransfer";
 
 export async function GET() {
-  const { unauthorized } = await requireCapaciteApi("commandes");
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   return NextResponse.json(await getBankTransferSettings());
 }
 
 export async function PUT(request: Request) {
-  const { unauthorized } = await requireCapaciteApi("commandes");
+  const { unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   const body = (await request.json().catch(() => null)) as Partial<BankTransferSettings> | null;

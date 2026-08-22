@@ -6,7 +6,7 @@ import { DiagStepsAdmin } from "@/components/admin/DiagStepsAdmin";
 export const metadata: Metadata = { title: "Gestes du diagnostic — Administration" };
 
 export default async function AdminDiagStepsPage() {
-  await requireCapacitePage("catalogue");
+  await requireCapacitePage("reglages");
   const rows = await lireGestes();
   return <DiagStepsAdmin initial={rows} />;
 }

@@ -69,7 +69,10 @@ export function AdminSidebar({
   const [mobileOpen, setMobileOpen] = useState(false);
 
   function ouverte(famille: string | undefined): boolean {
-    if (!famille) return true;
+    // Une entrée sans famille (la « Vue d'ensemble ») n'est protégée par
+    // aucune capacité précise, mais un compte à zéro capacité ne mène nulle
+    // part derrière elle : mieux vaut la masquer que l'envoyer sur un refus.
+    if (!famille) return capacites.length > 0;
     const capacite = capaciteDeFamille(famille);
     return capacite === null || capacites.includes(capacite);
   }
