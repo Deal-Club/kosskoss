@@ -451,6 +451,7 @@ export async function createOrder(
       slug: true,
       image: true,
       priceCents: true,
+      costCents: true,
       stock: true,
       category: { select: { slug: true, image: true, group: { select: { slug: true } } } },
     },
@@ -662,6 +663,10 @@ export async function createOrder(
                 image: line.image,
                 path: line.path,
                 unitPriceCents: line.priceCents,
+                // Figé à la vente, comme le prix. `?? null` et non `?? 0` : un
+                // produit sans coût renseigné laisse la case vide, il ne devient
+                // pas gratuit.
+                unitCostCents: byId.get(line.productId)?.costCents ?? null,
                 quantity: line.quantity,
                 lineTotalCents: line.priceCents * line.quantity,
               })),
