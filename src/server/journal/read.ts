@@ -20,6 +20,7 @@ import { prisma } from "@/server/prisma";
 import { parseStoredBlocks } from "@/lib/journal/blocks";
 import { tableOfContents } from "@/lib/journal/content";
 import { pickRelated } from "@/lib/journal/related";
+import { pickText } from "@/server/localizedContent";
 import type { Locale } from "@/i18n/routing";
 import type { JournalBlock, TocEntry } from "@/types/journal";
 
@@ -94,12 +95,6 @@ const listInclude = {
   tags: { select: { tag: { select: { slug: true, label: true, labelEn: true } } } },
 } as const;
 
-/** Repli systématique : une traduction vide rend le français. */
-function pick(french: string, english: string, locale: Locale): string {
-  if (locale !== "en") return french;
-  return english.trim() || french;
-}
-
 type ListRow = {
   id: string;
   slug: string;
@@ -120,13 +115,16 @@ type ListRow = {
 };
 
 function toSummary(row: ListRow, locale: Locale): ArticleSummary {
+  // Repli sur le français partout ailleurs dans la boutique : jamais un accès
+  // direct au champ `*En` en dehors de `pickText`.
+  const english = locale === "en";
   return {
     id: row.id,
     slug: row.slug,
-    title: pick(row.title, row.titleEn, locale),
-    excerpt: pick(row.excerpt, row.excerptEn, locale),
+    title: pickText(row.title, english ? row.titleEn : undefined),
+    excerpt: pickText(row.excerpt, english ? row.excerptEn : undefined),
     coverImage: row.coverImage,
-    coverAlt: pick(row.coverAlt, row.coverAltEn, locale),
+    coverAlt: pickText(row.coverAlt, english ? row.coverAltEn : undefined),
     readingMinutes: row.readingMinutes,
     viewCount: row.viewCount,
     featured: row.featured,
@@ -134,19 +132,22 @@ function toSummary(row: ListRow, locale: Locale): ArticleSummary {
     // faite hors de ce filtre.
     publishedAt: row.publishedAt ?? new Date(0),
     category: row.category
-      ? { slug: row.category.slug, label: pick(row.category.label, row.category.labelEn, locale) }
+      ? {
+          slug: row.category.slug,
+          label: pickText(row.category.label, english ? row.category.labelEn : undefined),
+        }
       : null,
     author: row.author
       ? {
           slug: row.author.slug,
           name: row.author.name,
-          role: pick(row.author.role, row.author.roleEn, locale),
+          role: pickText(row.author.role, english ? row.author.roleEn : undefined),
           avatar: row.author.avatar,
         }
       : null,
     tags: row.tags.map((link) => ({
       slug: link.tag.slug,
-      label: pick(link.tag.label, link.tag.labelEn, locale),
+      label: pickText(link.tag.label, english ? link.tag.labelEn : undefined),
     })),
   };
 }
@@ -227,8 +228,9 @@ export const getPublishedArticle = cache(
     });
     if (!row) return null;
 
+    const english = locale === "en";
     const blocks = parseStoredBlocks(
-      locale === "en" && row.blocksEn.trim() && row.blocksEn !== "[]" ? row.blocksEn : row.blocks,
+      english && row.blocksEn.trim() && row.blocksEn !== "[]" ? row.blocksEn : row.blocks,
     );
 
     return {
@@ -236,10 +238,10 @@ export const getPublishedArticle = cache(
       blocks,
       toc: tableOfContents(blocks),
       updatedAt: row.updatedAt,
-      authorBio: row.author ? pick(row.author.bio, row.author.bioEn, locale) : "",
+      authorBio: row.author ? pickText(row.author.bio, english ? row.author.bioEn : undefined) : "",
       seo: {
-        metaTitle: pick(row.metaTitle, row.metaTitleEn, locale),
-        metaDescription: pick(row.metaDescription, row.metaDescriptionEn, locale),
+        metaTitle: pickText(row.metaTitle, english ? row.metaTitleEn : undefined),
+        metaDescription: pickText(row.metaDescription, english ? row.metaDescriptionEn : undefined),
         canonicalUrl: row.canonicalUrl,
         robotsNoindex: row.robotsNoindex,
         ogTitle: row.ogTitle,
@@ -284,8 +286,9 @@ export async function getArticleForPreview(
   });
   if (!row) return null;
 
+  const english = locale === "en";
   const blocks = parseStoredBlocks(
-    locale === "en" && row.blocksEn.trim() && row.blocksEn !== "[]" ? row.blocksEn : row.blocks,
+    english && row.blocksEn.trim() && row.blocksEn !== "[]" ? row.blocksEn : row.blocks,
   );
 
   return {
@@ -295,10 +298,10 @@ export async function getArticleForPreview(
     blocks,
     toc: tableOfContents(blocks),
     updatedAt: row.updatedAt,
-    authorBio: row.author ? pick(row.author.bio, row.author.bioEn, locale) : "",
+    authorBio: row.author ? pickText(row.author.bio, english ? row.author.bioEn : undefined) : "",
     seo: {
-      metaTitle: pick(row.metaTitle, row.metaTitleEn, locale),
-      metaDescription: pick(row.metaDescription, row.metaDescriptionEn, locale),
+      metaTitle: pickText(row.metaTitle, english ? row.metaTitleEn : undefined),
+      metaDescription: pickText(row.metaDescription, english ? row.metaDescriptionEn : undefined),
       canonicalUrl: row.canonicalUrl,
       robotsNoindex: row.robotsNoindex,
       ogTitle: row.ogTitle,
