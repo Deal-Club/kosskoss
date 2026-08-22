@@ -20,9 +20,17 @@ import { slugify } from "@/lib/slugify";
 import { PRODUCT_BADGES } from "@/lib/kk/badges";
 import type { CategoryRecord, ProductRecord } from "@/server/types";
 
+/** Marque existante proposée dans la liste déroulante. */
+export interface BrandOption {
+  id: string;
+  name: string;
+}
+
 interface ProductFormProps {
   mode: "new" | "edit";
   categories: CategoryRecord[];
+  /** Marques déjà créées, pour la liste déroulante — vide si non fournie. */
+  brands?: BrandOption[];
   initialData?: ProductRecord;
   /**
    * Fournie, cette fonction remplace la redirection vers la liste des produits.
@@ -40,6 +48,7 @@ const SHORT_DESCRIPTION_MAX = 200;
 export function ProductForm({
   mode,
   categories,
+  brands = [],
   initialData,
   onSaved,
   showPreview = true,
@@ -47,6 +56,10 @@ export function ProductForm({
   const router = useRouter();
   const [categoryId, setCategoryId] = useState(initialData?.categoryId ?? categories[0]?.id ?? "");
   const [brand, setBrand] = useState(initialData?.brand ?? "");
+  // Rempli en choisissant une marque dans la liste ; vidé dès que la saisie
+  // libre change, pour ne jamais rattacher un produit à la marque qu'on vient
+  // de quitter en tapant.
+  const [brandId, setBrandId] = useState<string | null>(initialData?.brandId ?? null);
   const [name, setName] = useState(initialData?.name ?? "");
   const [shortDescription, setShortDescription] = useState(initialData?.shortDescription ?? "");
   const [description, setDescription] = useState(initialData?.description ?? "");
@@ -149,6 +162,7 @@ export function ProductForm({
     const payload: Record<string, unknown> = {
       categoryId,
       brand,
+      brandId,
       name,
       shortDescription,
       description,
@@ -254,9 +268,39 @@ export function ProductForm({
             <input
               required
               value={brand}
-              onChange={(event) => setBrand(event.target.value)}
+              onChange={(event) => {
+                setBrand(event.target.value);
+                // Une saisie libre ne désigne plus forcément la marque choisie
+                // dans la liste : le rattachement se refera au prochain import.
+                setBrandId(null);
+              }}
               className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
             />
+            {brands.length > 0 ? (
+              <select
+                value={brandId ?? ""}
+                onChange={(event) => {
+                  const id = event.target.value;
+                  if (!id) {
+                    setBrandId(null);
+                    return;
+                  }
+                  const marque = brands.find((option) => option.id === id);
+                  if (marque) {
+                    setBrand(marque.name);
+                    setBrandId(marque.id);
+                  }
+                }}
+                className="mt-1.5 w-full rounded-sm border border-border px-3 py-1.5 text-xs outline-none focus:border-primary"
+              >
+                <option value="">— Marque existante (ou saisie libre ci-dessus) —</option>
+                {brands.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}
+              </select>
+            ) : null}
           </label>
           <label className="text-sm">
             <span className="mb-1 block font-semibold text-foreground">Nom</span>

@@ -71,6 +71,7 @@ interface CategoryRow {
 interface ProductRow {
   id: string;
   brand: string;
+  brandId: string | null;
   name: string;
   slug: string;
   sku: string;
@@ -145,6 +146,7 @@ function toProductRecord(row: ProductRow): ProductRecord {
     id: row.id,
     categoryId: `${row.category.group.slug}/${row.category.slug}`,
     brand: row.brand,
+    brandId: row.brandId ?? undefined,
     name: row.name,
     bullets: parseBullets(row.bullets),
     shortDescription: row.shortDescription,
@@ -371,6 +373,7 @@ export async function createProduct(input: Omit<ProductRecord, "id">): Promise<P
       data: {
         categoryId: category.id,
         brand: input.brand,
+        brandId: input.brandId || null,
         name: input.name,
         slug,
         sku: skuFor(input.brand, input.name),
@@ -449,6 +452,7 @@ export async function updateProduct(
       data: {
         categoryId,
         brand: patch.brand ?? undefined,
+        brandId: patch.brandId === undefined ? undefined : (patch.brandId || null),
         name: patch.name ?? undefined,
         slug: newSlug,
         sku: renamed ? skuFor(brand, name) : undefined,

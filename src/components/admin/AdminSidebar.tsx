@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
+  Award,
   Code2,
   CreditCard,
   FileText,
@@ -86,6 +87,7 @@ export function AdminSidebar({
       entries: [
         { label: "Univers produits", href: "/admin/groups", icon: Layers, famille: "groups" },
         { label: "Catégories", href: "/admin/categories", icon: Tags, famille: "categories" },
+        { label: "Marques", href: "/admin/brands", icon: Award, famille: "brands" },
         { label: "Produits", href: "/admin/products", icon: Package, famille: "products" },
         // Vocabulaire des tags (types de peau, préoccupations…) : labels FR/EN,
         // famille et activation, éditables sans redéploiement (tâche 10).
