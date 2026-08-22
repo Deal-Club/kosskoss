@@ -47,10 +47,14 @@ export type CatalogView = {
    * Décompte par option de facette dans la sélection courante, pour afficher
    * un nombre à côté de chaque case avant même de la cocher. Chaque décompte
    * ignore le filtre de SA PROPRE famille (mais tient compte de toutes les
-   * autres) : celui d'une marque non cochée dit « combien de produits si je
-   * coche CETTE marque », pas « combien avec les marques déjà cochées » — sans
-   * quoi cocher une première valeur d'une famille en union ferait chuter à
-   * zéro le compteur des autres valeurs de la même famille.
+   * autres) : celui d'une marque dit « combien de produits avec cette marque
+   * EN PLUS de celles déjà cochées » (union, comme les autres valeurs déjà
+   * sélectionnées de la même famille) — pas « combien de produits avec
+   * cette seule marque ». Ce n'est donc « combien si je coche CETTE case » que
+   * pour la première case cochée d'une famille ; dès la deuxième, le nombre
+   * inclut l'union avec celles déjà cochées. C'est voulu : sans cette
+   * exclusion de la propre famille, cocher une première valeur en union ferait
+   * chuter à zéro le compteur des autres valeurs de la même famille.
    */
   countsByBrand: Record<string, number>;
   countsByPeau: Record<string, number>;
@@ -78,6 +82,66 @@ function orderByFor(sort: CatalogSort): Prisma.ProductOrderByWithRelationInput[]
     default:
       return [{ createdAt: "asc" }, { id: "asc" }];
   }
+}
+
+export type CatalogMeta = {
+  group: { slug: string; label: string };
+  category?: { slug: string; label: string };
+  /** Page effectivement affichée, comprise entre 1 et pageCount. */
+  page: number;
+  pageCount: number;
+};
+
+/**
+ * Vue minimale pour `generateMetadata` : de quoi composer un `<title>` et une
+ * adresse canonique, rien de plus. `getCatalog` en fait dix-huit fois plus —
+ * décomptes par marque et par facette, produits de la page, bornes de prix —
+ * pour qu'un `<head>` n'en tire jamais qu'un titre et un lien `canonical`.
+ * Mesuré sur ce lot : 37 requêtes pour afficher un rayon (18 pour la page,
+ * 18 de plus pour sa métadonnée, dupliquées) sont tombées à 20 en retirant
+ * cette redondance — 18 pour la page, 2 ici. `generateMetadata` ne reçoit
+ * jamais de filtres (marque, facette, prix) : seule la pagination du rayon
+ * NON filtré importe pour son titre et sa canonique.
+ */
+export async function getCatalogMeta(opts: {
+  group: string;
+  category?: string;
+  page?: number;
+  locale: Locale;
+}): Promise<CatalogMeta | null> {
+  const group = await prisma.group.findUnique({
+    where: { slug: opts.group },
+    include: { categories: { orderBy: { position: "asc" } } },
+  });
+  if (!group) return null;
+
+  const traduire = needsTranslation(opts.locale);
+
+  let category: { slug: string; label: string } | undefined;
+  if (opts.category) {
+    const match = group.categories.find((c) => c.slug === opts.category);
+    if (!match) return null;
+    category = { slug: match.slug, label: pickText(match.label, traduire ? match.labelEn : undefined) };
+  }
+
+  const scope: Prisma.ProductWhereInput = {
+    active: true,
+    category: {
+      group: { slug: opts.group },
+      ...(opts.category ? { slug: opts.category } : {}),
+    },
+  };
+
+  const total = await prisma.product.count({ where: scope });
+  const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
+  const page = Math.min(Math.max(opts.page ?? 1, 1), pageCount);
+
+  return {
+    group: { slug: group.slug, label: pickText(group.label, traduire ? group.labelEn : undefined) },
+    category,
+    page,
+    pageCount,
+  };
 }
 
 /** Condition « le produit porte au moins une de ces étiquettes ». */

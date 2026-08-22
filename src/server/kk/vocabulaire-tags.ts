@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/server/prisma";
 import {
   FAMILLE_PEAU,
@@ -13,8 +14,14 @@ import type { ProductTag } from "@/generated/prisma/client";
  * Seules les familles « peau » et « preoccupation » remontent : les autres tags
  * (budget_eco, premium…) servent le diagnostic et n'ont rien à faire dans une
  * barre de filtres.
+ *
+ * Mémoïsée par `cache()` de React (comme ailleurs dans le dépôt — voir
+ * src/server/kk/navigation.ts) : sur une page de rayon, `getCatalog` lit ce
+ * même vocabulaire pour ses décomptes, et la page appelle aussi cette fonction
+ * directement pour les libellés — deux appels, mêmes arguments, un seul rendu.
+ * Sans mémoïsation, ça fait une requête de plus à chaque affichage de rayon.
  */
-export async function lireVocabulaire(locale: string): Promise<OptionFacette[]> {
+export const lireVocabulaire = cache(async (locale: string): Promise<OptionFacette[]> => {
   const lignes = await prisma.productTag.findMany({
     where: { active: true, family: { in: [FAMILLE_PEAU, FAMILLE_PREOCCUPATION] } },
     orderBy: [{ family: "asc" }, { position: "asc" }],
@@ -30,7 +37,7 @@ export async function lireVocabulaire(locale: string): Promise<OptionFacette[]> 
     label: pickText(l.labelFr, locale === "en" ? l.labelEn : undefined),
     family: l.family,
   }));
-}
+});
 
 /** Une entrée du vocabulaire telle que l'écran d'administration la manipule. */
 export type ProductTagAdmin = Pick<

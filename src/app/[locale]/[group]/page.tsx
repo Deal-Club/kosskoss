@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
-import { getCatalog } from "@/server/kk/catalog";
+import { getCatalog, getCatalogMeta } from "@/server/kk/catalog";
 import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
 import { parseBrands, parseFacettes, parsePage, parsePrix, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
@@ -24,7 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, group } = await params;
   const page = parsePage((await searchParams).page);
-  const view = await getCatalog({ group, page, locale });
+  const view = await getCatalogMeta({ group, page, locale });
   if (!view) return {};
 
   const t = await getTranslations({ locale, namespace: "catalog" });
@@ -55,26 +55,28 @@ export default async function GroupPage({
 
   const brands = parseBrands(sp.marque);
   const sort = parseSort(sp.tri);
+  // Le vocabulaire est lu D'ABORD : `parseFacettes` en a besoin pour router
+  // un `besoin` hérité vers la bonne famille (voir catalog-params.ts). Il est
+  // mémoïsé par `cache()` — le second appel, à l'intérieur de `getCatalog`,
+  // ne coûte donc pas de requête supplémentaire.
+  const vocabulaire = await lireVocabulaire(locale);
   // `besoin` — l'ancien paramètre à choix unique — est versé dans la bonne
   // famille par `parseFacettes` : un lien de diagnostic ou un lien déjà
   // partagé continue de filtrer correctement (voir catalog-params.ts).
-  const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin });
+  const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin }, vocabulaire);
   const prix = parsePrix({ prixMin: sp.prixMin, prixMax: sp.prixMax });
   const page = parsePage(sp.page);
-  const [view, vocabulaire] = await Promise.all([
-    getCatalog({
-      group,
-      brands,
-      peau: selection.peau,
-      preoccupation: selection.preoccupation,
-      prixMin: prix.min,
-      prixMax: prix.max,
-      sort,
-      page,
-      locale,
-    }),
-    lireVocabulaire(locale),
-  ]);
+  const view = await getCatalog({
+    group,
+    brands,
+    peau: selection.peau,
+    preoccupation: selection.preoccupation,
+    prixMin: prix.min,
+    prixMax: prix.max,
+    sort,
+    page,
+    locale,
+  });
   if (!view) notFound();
 
   return (
