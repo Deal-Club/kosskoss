@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link, withLocale } from "./localized-link";
 import Image from "next/image";
 import {
@@ -90,6 +91,7 @@ export function DiagnosticFlow({
   /** Libellés des gestes actifs, dans l'ordre — voir `DiagnosticAnalyse`. */
   gestes: string[];
 }) {
+  const t = useTranslations("diagnostic");
   const { add } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -234,7 +236,7 @@ export function DiagnosticFlow({
       setPhase("result");
     } catch {
       // Un échec ne se fait pas attendre : on rend la main tout de suite.
-      setError("L'analyse a échoué. Choisissez à nouveau votre réponse.");
+      setError(t("analysisFailed"));
       setPhase(retourEnErreur);
     }
   }
@@ -337,21 +339,21 @@ export function DiagnosticFlow({
           const minutes = data.retryAfterSeconds ? Math.ceil(data.retryAfterSeconds / 60) : null;
           setEnvoiMessage(
             minutes
-              ? `Trop de demandes d'envoi. Réessayez dans environ ${minutes} min.`
-              : "Trop de demandes d'envoi. Merci de patienter un instant avant de réessayer.",
+              ? t("rateLimitedWithMinutes", { minutes })
+              : t("rateLimited"),
           );
           setEnvoiStatut("erreur");
           return;
         }
         if (!res.ok) {
-          setEnvoiMessage(data.error ?? "L'envoi a échoué. Réessayez.");
+          setEnvoiMessage(data.error ?? t("sendFailed"));
           setEnvoiStatut("erreur");
           return;
         }
-        setEnvoiMessage("Envoyée ! Vérifiez votre boîte de réception.");
+        setEnvoiMessage(t("sendSuccess"));
         setEnvoiStatut("ok");
       } catch {
-        setEnvoiMessage("Vérifiez votre connexion et réessayez.");
+        setEnvoiMessage(t("checkConnection"));
         setEnvoiStatut("erreur");
       }
     })();
@@ -366,14 +368,14 @@ export function DiagnosticFlow({
             });
             const data = (await res.json()) as { error?: string };
             if (!res.ok) {
-              setInscriptionMessage(data.error ?? "Inscription à la lettre d'information impossible.");
+              setInscriptionMessage(data.error ?? t("subscribeFailed"));
               setInscriptionStatut("erreur");
               return;
             }
-            setInscriptionMessage("Inscription à la lettre d'information confirmée.");
+            setInscriptionMessage(t("subscribeSuccess"));
             setInscriptionStatut("ok");
           } catch {
-            setInscriptionMessage("Inscription à la lettre d'information impossible.");
+            setInscriptionMessage(t("subscribeFailed"));
             setInscriptionStatut("erreur");
           }
         })()
@@ -388,19 +390,16 @@ export function DiagnosticFlow({
     return (
       <MinimalShell>
         <section className="kk-rise mx-auto max-w-2xl px-6 py-16 text-center">
-          <p className="eyebrow">Bon retour</p>
-          <h1 className="mt-2 text-deep">Vous avez déjà fait votre diagnostic</h1>
-          <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-            Revoyez la routine construite à partir de vos réponses — recalculée sur les produits
-            disponibles aujourd&rsquo;hui — ou refaites le questionnaire si votre peau a changé.
-          </p>
+          <p className="eyebrow">{t("proposeEyebrow")}</p>
+          <h1 className="mt-2 text-deep">{t("proposeTitle")}</h1>
+          <p className="mx-auto mt-3 max-w-md text-muted-foreground">{t("proposeText")}</p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <button
               type="button"
               onClick={revoirRoutine}
               className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition"
             >
-              Revoir ma routine
+              {t("reviewRoutine")}
               <ArrowRight className="h-4 w-4" />
             </button>
             <button
@@ -408,7 +407,7 @@ export function DiagnosticFlow({
               onClick={refaireQuestionnaire}
               className="text-sm font-medium text-muted-foreground transition hover:text-deep"
             >
-              Refaire le questionnaire
+              {t("retakeQuiz")}
             </button>
           </div>
           {error && (
@@ -438,8 +437,8 @@ export function DiagnosticFlow({
             suite du pétale qui vient de se remplir, et le raccord entre les
             deux écrans se lit comme un seul geste. */}
         <section className="kk-rise mx-auto max-w-6xl px-6 py-12">
-          <p className="eyebrow">Votre routine personnalisée</p>
-          <h1 className="mt-2 text-deep">Votre profil beauté</h1>
+          <p className="eyebrow">{t("resultEyebrow")}</p>
+          <h1 className="mt-2 text-deep">{t("resultTitle")}</h1>
           {result.chips.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
               {result.chips.map((c) => (
@@ -449,10 +448,7 @@ export function DiagnosticFlow({
               ))}
             </div>
           )}
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            D&rsquo;après vos réponses, voici la routine que nous vous recommandons — un geste après
-            l&rsquo;autre, avec des produits sélectionnés pour vous.
-          </p>
+          <p className="mt-4 max-w-2xl text-muted-foreground">{t("resultIntro")}</p>
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_22rem]">
             {/* Étapes */}
@@ -527,7 +523,7 @@ export function DiagnosticFlow({
 
                 <div className="p-6">
                   <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-gold-soft">
-                    Votre routine complète
+                    {t("summaryTitle")}
                   </h2>
 
                   <ul className="mt-4 divide-y divide-white/10 border-y border-white/10">
@@ -546,7 +542,7 @@ export function DiagnosticFlow({
 
                   <div className="mt-5 flex items-baseline justify-between gap-3">
                     <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
-                      Total routine
+                      {t("summaryTotal")}
                     </span>
                     <span className="figure text-2xl font-semibold text-primary-foreground">
                       {formatFcfa(result.totalFcfa)}
@@ -558,18 +554,18 @@ export function DiagnosticFlow({
                   <button
                     type="button"
                     onClick={acheterRoutine}
-                    aria-label={`Commander la routine — ${result.steps.length} produits`}
+                    aria-label={t("orderRoutineAria", { count: result.steps.length })}
                     className="kk-fill kk-fill-deep mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-sand px-6 py-3.5 text-sm font-semibold text-deep"
                   >
                     <Zap className="h-4 w-4" />
-                    Commander la routine
+                    {t("orderRoutine")}
                   </button>
 
                   {/* Le nombre de produits est dit sous le bouton : « Commander
                       la routine » seul laisse croire à un article unique, et la
                       surprise se paierait à l'écran suivant. */}
                   <p className="mt-2.5 text-center text-xs text-primary-foreground/60">
-                    {result.steps.length} produits · paiement à l&apos;étape suivante
+                    {t("productsCountNote", { count: result.steps.length })}
                   </p>
 
                   {/* Envoi par e-mail : une action distincte de l'achat, posée
@@ -585,10 +581,10 @@ export function DiagnosticFlow({
                       substituer. */}
                   <form onSubmit={envoyerRoutineParEmail} className="mt-6 border-t border-white/10 pt-5">
                     <h3 className="text-xs font-semibold tracking-[0.14em] text-gold-soft uppercase">
-                      Recevoir cette routine par e-mail
+                      {t("emailFormTitle")}
                     </h3>
                     <label htmlFor="diagnostic-routine-email" className="sr-only">
-                      Votre adresse e-mail
+                      {t("emailLabel")}
                     </label>
                     <input
                       id="diagnostic-routine-email"
@@ -597,7 +593,7 @@ export function DiagnosticFlow({
                       autoComplete="email"
                       value={routineEmail}
                       onChange={(e) => setRoutineEmail(e.target.value)}
-                      placeholder="Votre adresse e-mail"
+                      placeholder={t("emailLabel")}
                       aria-invalid={envoiStatut === "erreur"}
                       aria-describedby={envoiMessage ? "diagnostic-routine-email-message" : undefined}
                       className="mt-3 w-full rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.08] px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:border-gold focus:outline-none"
@@ -609,7 +605,7 @@ export function DiagnosticFlow({
                       className="kk-fill kk-fill-deep mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-deep disabled:opacity-60"
                     >
                       {enCoursEnvoi && <Loader2 className="h-4 w-4 animate-spin" />}
-                      Recevoir ma routine par e-mail
+                      {t("sendRoutineEmail")}
                     </button>
 
                     {/* Case décochée par défaut : cocher inscrit, ne pas cocher
@@ -621,7 +617,7 @@ export function DiagnosticFlow({
                         onChange={(e) => setInscrireLettre(e.target.checked)}
                         className="mt-0.5 h-4 w-4 accent-gold"
                       />
-                      <span>M&rsquo;inscrire aussi à la lettre d&rsquo;information</span>
+                      <span>{t("subscribeNewsletterCheckbox")}</span>
                     </label>
 
                     {/* Les deux messages sont indépendants : l'un peut confirmer
@@ -668,7 +664,7 @@ export function DiagnosticFlow({
             derrière, à sa place d'ornement. */}
         <Petal className="pointer-events-none absolute -left-24 top-20 -z-10 hidden h-72 w-72 text-sand/60 lg:block" />
         <p className="eyebrow text-center">
-          Étape {qIndex + 1} sur {questions.length}
+          {t("stepOf", { current: qIndex + 1, total: questions.length })}
         </p>
         <div className="mx-auto mt-3 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand">
           <div
@@ -746,7 +742,7 @@ export function DiagnosticFlow({
               href="/"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
             >
-              <ArrowLeft className="h-4 w-4" /> Quitter
+              <ArrowLeft className="h-4 w-4" /> {t("exit")}
             </Link>
           ) : (
             <button
@@ -754,7 +750,7 @@ export function DiagnosticFlow({
               onClick={() => setQIndex((i) => i - 1)}
               className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
             >
-              <ArrowLeft className="h-4 w-4" /> Précédent
+              <ArrowLeft className="h-4 w-4" /> {t("previous")}
             </button>
           )}
 
@@ -764,7 +760,7 @@ export function DiagnosticFlow({
             disabled={!selected}
             className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition disabled:pointer-events-none disabled:opacity-40"
           >
-            {qIndex < questions.length - 1 ? "Suivant" : "Voir mon résultat"}
+            {qIndex < questions.length - 1 ? t("next") : t("seeResult")}
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
@@ -775,6 +771,7 @@ export function DiagnosticFlow({
 
 /** Coquille immersive : en-tête minimal (logo + quitter). */
 function MinimalShell({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("diagnostic");
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* En-tête collant. Les écrans longs du parcours — la liste des produits
@@ -790,7 +787,7 @@ function MinimalShell({ children }: { children: React.ReactNode }) {
           KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep">SELECT</span>
         </Link>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-deep">
-          Quitter le diagnostic <X className="h-4 w-4" />
+          {t("exitDiagnostic")} <X className="h-4 w-4" />
         </Link>
       </header>
       <main className="flex-1">{children}</main>
