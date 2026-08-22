@@ -3,8 +3,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
-import { getCatalog } from "@/server/kk/catalog";
-import { parseBesoin, parseBrands, parsePage, parseSort } from "@/lib/kk/catalog-params";
+import { getCatalog, getCatalogMeta } from "@/server/kk/catalog";
+import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
+import { parseBrands, parseFacettes, parsePage, parsePrix, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -23,7 +24,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, group, category } = await params;
   const page = parsePage((await searchParams).page);
-  const view = await getCatalog({ group, category, page, locale });
+  const view = await getCatalogMeta({ group, category, page, locale });
   if (!view || !view.category) return {};
 
   const t = await getTranslations({ locale, namespace: "category" });
@@ -55,9 +56,29 @@ export default async function CategoryPage({
 
   const brands = parseBrands(sp.marque);
   const sort = parseSort(sp.tri);
-  const besoin = parseBesoin(sp.besoin);
+  // Le vocabulaire est lu D'ABORD : `parseFacettes` en a besoin pour router
+  // un `besoin` hérité vers la bonne famille (voir catalog-params.ts). Il est
+  // mémoïsé par `cache()` — le second appel, à l'intérieur de `getCatalog`,
+  // ne coûte donc pas de requête supplémentaire.
+  const vocabulaire = await lireVocabulaire(locale);
+  // `besoin` — l'ancien paramètre à choix unique — est versé dans la bonne
+  // famille par `parseFacettes` : un lien de diagnostic ou un lien déjà
+  // partagé continue de filtrer correctement (voir catalog-params.ts).
+  const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin }, vocabulaire);
+  const prix = parsePrix({ prixMin: sp.prixMin, prixMax: sp.prixMax });
   const page = parsePage(sp.page);
-  const view = await getCatalog({ group, category, brands, besoin, sort, page, locale });
+  const view = await getCatalog({
+    group,
+    category,
+    brands,
+    peau: selection.peau,
+    preoccupation: selection.preoccupation,
+    prixMin: prix.min,
+    prixMax: prix.max,
+    sort,
+    page,
+    locale,
+  });
   if (!view) notFound();
 
   return (
@@ -70,8 +91,11 @@ export default async function CategoryPage({
           groupSlug={group}
           currentCategory={category}
           brands={brands}
-          besoin={besoin}
+          selection={selection}
+          prix={prix}
           sort={sort}
+          vocabulaire={vocabulaire}
+          locale={locale}
         />
       </main>
       <SiteFooter />

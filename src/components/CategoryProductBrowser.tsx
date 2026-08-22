@@ -9,7 +9,7 @@ import { Reveal } from "@/components/Reveal";
 import { parsePrice } from "@/lib/price";
 import { normaliserBadge } from "@/lib/kk/badges";
 import { useDismissable } from "@/lib/useDismissable";
-import { produitCorrespond, FAMILLE_PEAU, FAMILLE_PREOCCUPATION, type OptionFacette } from "@/lib/kk/facettes";
+import { produitCorrespondFacettes, FAMILLE_PEAU, FAMILLE_PREOCCUPATION, type OptionFacette } from "@/lib/kk/facettes";
 import type { Product } from "@/types/home";
 
 // Valeurs internes : elles ne sont jamais affichées, seul le libellé est traduit.
@@ -80,8 +80,18 @@ export function CategoryProductBrowser({
 
     const filtered = products.filter((product) => {
       if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
-      if (!produitCorrespond(product.tags ?? [], selectedPeau)) return false;
-      if (!produitCorrespond(product.tags ?? [], selectedPreoccupation)) return false;
+      // Union DANS une famille, intersection ENTRE familles — la même règle
+      // que `getCatalog` applique en base pour le rayon KK, exprimée ici en
+      // mémoire par le module pur qui la porte (voir src/lib/kk/facettes.ts),
+      // plutôt que réimplémentée à la main avec deux `produitCorrespond`.
+      if (
+        !produitCorrespondFacettes(product.tags ?? [], {
+          peau: selectedPeau,
+          preoccupation: selectedPreoccupation,
+        })
+      ) {
+        return false;
+      }
       if (activePriceRange) {
         const price = parsePrice(product.price);
         if (price < activePriceRange.min || price > activePriceRange.max) return false;
