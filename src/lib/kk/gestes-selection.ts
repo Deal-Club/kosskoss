@@ -1,9 +1,12 @@
+import { pickText } from "@/server/localizedContent";
+
 /**
  * Sélection des gestes du Diagnostic Beauté.
  *
  * Isolé du stockage parce que les tests du projet n'ont pas d'accès base, et
  * que c'est ici qu'une erreur se verrait : un geste disparu de la routine, ou
- * une clé brute affichée au visiteur.
+ * une clé brute affichée au visiteur. `pickText` (import pur, sans accès
+ * base tant qu'on ne l'appelle pas) reste la seule règle de repli du projet.
  */
 
 export type GesteLigne = {
@@ -32,5 +35,5 @@ export function gestesActifs(lignes: GesteLigne[]): GesteLigne[] {
  * vaut un libellé dans l'autre langue qu'une clé technique à l'écran.
  */
 export function libelleGeste(geste: GesteLigne, locale: string): string {
-  return locale === "en" ? geste.labelEn || geste.labelFr : geste.labelFr;
+  return pickText(geste.labelFr, locale === "en" ? geste.labelEn : undefined);
 }

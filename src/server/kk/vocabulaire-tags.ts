@@ -4,6 +4,7 @@ import {
   FAMILLE_PREOCCUPATION,
   type OptionFacette,
 } from "@/lib/kk/facettes";
+import { pickText } from "@/server/localizedContent";
 import type { ProductTag } from "@/generated/prisma/client";
 
 /**
@@ -22,9 +23,11 @@ export async function lireVocabulaire(locale: string): Promise<OptionFacette[]> 
 
   return lignes.map((l) => ({
     key: l.key,
-    // Repli sur le français si la traduction n'a pas encore été saisie : mieux
-    // vaut un libellé dans l'autre langue qu'une case sans étiquette.
-    label: locale === "en" ? l.labelEn || l.labelFr : l.labelFr,
+    // Repli sur le français si la traduction n'a pas encore été saisie —
+    // via `pickText`, la seule règle de repli du projet (voir
+    // src/server/localizedContent.ts). Un `||` direct sur `labelEn` laissait
+    // passer une traduction faite uniquement d'espaces.
+    label: pickText(l.labelFr, locale === "en" ? l.labelEn : undefined),
     family: l.family,
   }));
 }
