@@ -201,7 +201,7 @@
     "quick": {
       "heading": "Donnez votre avis",
       "intro": "Votre avis est relu par notre équipe avant publication. Votre adresse e-mail, si vous l’indiquez, ne sera jamais affichée.",
-      "starAriaLabel": "{count} étoile{suffix} sur 5",
+      "starAriaLabel": "{count, plural, one {# étoile} other {# étoiles}} sur 5",
       "firstName": "Prénom",
       "city": "Ville",
       "optional": "(facultatif)",
@@ -316,7 +316,7 @@
     "increaseShort": "Augmenter",
     "removeItemLabel": "Retirer {name}",
     "drawerOrder": "Commander",
-    "buttonAriaLabel": "Panier, {count} article",
+    "buttonAriaLabel": "Panier, {count, plural, one {# article} other {# articles}}",
     "suggestionsLoading": "Chargement des suggestions…",
     "suggestionsTitle": "Vous aimeriez aussi",
     "suggestionsChooseVariant": "Choisir une contenance pour {name}",
@@ -615,7 +615,7 @@
     "emptyTitle": "Votre liste de favoris est encore vide.",
     "emptyText": "Cliquez sur le cœur d'un article pour le retrouver ici plus tard.",
     "emptyCta": "Découvrir le catalogue",
-    "navAriaLabelWithCount": "Favoris, {count} article",
+    "navAriaLabelWithCount": "Favoris, {count, plural, one {# article} other {# articles}}",
     "addShort": "Ajouter",
     "choose": "Choisir",
     "loadingSelection": "Chargement de votre sélection…",
@@ -870,7 +870,7 @@
     "brandFocus": {
       "eyebrow": "Focus marque",
       "cta": "Découvrir la marque",
-      "referenceCount": "{count} référence{suffix} au catalogue"
+      "referenceCount": "{count, plural, one {# référence} other {# références}} au catalogue"
     },
     "categoryPills": {
       "eyebrow": "Shoppez par catégorie",

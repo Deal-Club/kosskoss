@@ -33,11 +33,7 @@ export function FavoritesLink() {
   return (
     <Link
       href="/favoris"
-      aria-label={
-        visible > 0
-          ? `${t("navAriaLabelWithCount", { count: visible })}${visible > 1 ? "s" : ""}`
-          : t("title")
-      }
+      aria-label={visible > 0 ? t("navAriaLabelWithCount", { count: visible }) : t("title")}
       className="relative grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand max-[359px]:hidden"
     >
       <Heart className="h-5 w-5" />

@@ -14,7 +14,7 @@ export function CartButton() {
     <button
       type="button"
       onClick={openDrawer}
-      aria-label={`${t("buttonAriaLabel", { count })}${count > 1 ? "s" : ""}`}
+      aria-label={t("buttonAriaLabel", { count })}
       // Cible du vol : la copie du produit converge vers le centre de ce
       // bouton, qui pulse à l'arrivée. Voir src/lib/kk/fly-to-cart.ts.
       {...{ [CIBLE_PANIER]: "" }}

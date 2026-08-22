@@ -122,7 +122,7 @@ export function ReviewForm({ productId }: { productId: string }) {
                 type="button"
                 onClick={() => setNote(valeur)}
                 onMouseEnter={() => setSurvol(valeur)}
-                aria-label={t("quick.starAriaLabel", { count: valeur, suffix: valeur > 1 ? "s" : "" })}
+                aria-label={t("quick.starAriaLabel", { count: valeur })}
                 aria-pressed={valeur === note}
                 className="rounded-full p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
               >

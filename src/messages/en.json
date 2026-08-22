@@ -201,7 +201,7 @@
     "quick": {
       "heading": "Give your review",
       "intro": "Your review is read by our team before publishing. Your email address, if you enter it, will never be shown.",
-      "starAriaLabel": "{count} star{suffix} out of 5",
+      "starAriaLabel": "{count, plural, one {# star} other {# stars}} out of 5",
       "firstName": "First name",
       "city": "Town",
       "optional": "(optional)",
@@ -316,7 +316,7 @@
     "increaseShort": "Increase",
     "removeItemLabel": "Remove {name}",
     "drawerOrder": "Order",
-    "buttonAriaLabel": "Cart, {count} item",
+    "buttonAriaLabel": "Cart, {count, plural, one {# item} other {# items}}",
     "suggestionsLoading": "Loading suggestions…",
     "suggestionsTitle": "You might also like",
     "suggestionsChooseVariant": "Choose a size for {name}",
@@ -615,7 +615,7 @@
     "emptyTitle": "Your wishlist is still empty.",
     "emptyText": "Click the heart on an item to collect it here and find it again later.",
     "emptyCta": "Discover the range",
-    "navAriaLabelWithCount": "Wishlist, {count} item",
+    "navAriaLabelWithCount": "Wishlist, {count, plural, one {# item} other {# items}}",
     "addShort": "Add",
     "choose": "Choose",
     "loadingSelection": "Loading your selection…",
@@ -870,7 +870,7 @@
     "brandFocus": {
       "eyebrow": "Brand focus",
       "cta": "Discover the brand",
-      "referenceCount": "{count} product{suffix} in the catalogue"
+      "referenceCount": "{count, plural, one {# product} other {# products}} in the catalogue"
     },
     "categoryPills": {
       "eyebrow": "Shop by category",

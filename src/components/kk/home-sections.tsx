@@ -203,10 +203,7 @@ export function BrandFocus({
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <span className="figure text-sm text-primary-foreground">
-              {t("brandFocus.referenceCount", {
-                count: focus.productCount,
-                suffix: focus.productCount > 1 ? "s" : "",
-              })}
+              {t("brandFocus.referenceCount", { count: focus.productCount })}
             </span>
           </div>
 
