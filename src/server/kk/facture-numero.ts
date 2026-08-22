@@ -12,27 +12,13 @@
  * qu'aucune page ne rend plus.
  */
 
-export const PREFIXE_FACTURE = "FAC-";
+import { numeroSuivant } from "@/lib/kk/numerotation";
 
-/** Six chiffres : de quoi tenir un million de factures par an. */
-const LARGEUR = 6;
+export const PREFIXE_FACTURE = "FAC-";
 
 export function numeroFactureSuivant(
   dernierNumero: string | null,
   annee: number
 ): string {
-  const prefixe = `${PREFIXE_FACTURE}${annee}-`;
-
-  // Un dernier numéro d'une autre année ne poursuit pas le compteur : la
-  // séquence est annuelle.
-  const compteur =
-    dernierNumero && dernierNumero.startsWith(prefixe)
-      ? Number.parseInt(dernierNumero.slice(prefixe.length), 10)
-      : 0;
-
-  // Une ligne corrompue rendrait NaN : on repart à 1 plutôt que d'écrire
-  // « FAC-2026-NaN » en base.
-  const suivant = Number.isFinite(compteur) ? compteur + 1 : 1;
-
-  return `${prefixe}${String(suivant).padStart(LARGEUR, "0")}`;
+  return numeroSuivant(PREFIXE_FACTURE, dernierNumero, annee);
 }
