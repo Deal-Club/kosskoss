@@ -26,6 +26,7 @@ import {
   Tag,
   Tags,
   Ticket,
+  Languages,
   TrendingUp,
   Truck,
   Users,
@@ -176,13 +177,22 @@ export function AdminSidebar({
       ],
     },
     {
-      title: "Éditorial",
+      title: "Contenu",
       entries: [
-        // Une seule entrée : les rubriques, tags et auteurs sont accessibles
-        // depuis l'écran du Journal. Trois lignes de menu de plus pour des
-        // réglages qu'on touche au démarrage puis presque jamais auraient
-        // surtout allongé la barre.
+        // Une seule entrée pour le Journal : les rubriques, tags et auteurs
+        // sont accessibles depuis son propre écran. Trois lignes de menu de
+        // plus pour des réglages qu'on touche au démarrage puis presque
+        // jamais auraient surtout allongé la barre.
         { label: "Le Journal", href: "/admin/journal", icon: Newspaper, famille: "journal" },
+        // Ce que la boutique anglaise affiche encore en français, tous
+        // modèles confondus — voir CAPACITE_PAR_FAMILLE : famille
+        // "traductions" sous la même capacité "contenu".
+        {
+          label: "Traductions",
+          href: "/admin/traductions",
+          icon: Languages,
+          famille: "traductions",
+        },
       ],
     },
     {
