@@ -7,6 +7,7 @@ import { resolvePaymentMethod } from "@/server/kk/payments";
 import { consommerCoupon, validerCoupon } from "@/server/coupons";
 import { normaliserTelephone } from "@/lib/kk/telephone";
 import { choisirLangue } from "@/lib/kk/langue";
+import { pickText, needsTranslation } from "@/server/localizedContent";
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -66,6 +67,24 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     return { ok: false, error: "paiement_invalide" };
   }
 
+  // Langue de l'acheteur, résolue ICI — AVANT de construire les lignes de
+  // commande, pas seize lignes plus bas comme précédemment.
+  //
+  // Une commande fige la langue dans laquelle l'achat a été fait, parce que
+  // c'est celle qui fait foi entre l'acheteur et la boutique : le nom et le
+  // libellé de variante inscrits sur la ligne sont ceux montrés au client au
+  // moment où il a payé, pas ceux du catalogue à l'instant où quelqu'un
+  // rouvre la commande. Résoudre la langue après coup fige alors la mauvaise
+  // — le français, quel que soit l'acheteur — et aucune traduction ultérieure
+  // de la fiche produit ne peut plus corriger une commande déjà écrite.
+  //
+  // SANS CETTE NOTE : ne re-traduis JAMAIS `name`/`variantLabel` à l'affichage
+  // (confirmation, e-mails, espace client, facture) une fois la commande
+  // écrite — un client verrait sa commande changer de langue après coup, ce
+  // qui n'a pas de sens pour un document historique.
+  const langue = choisirLangue(input.locale);
+  const traduireLignes = needsTranslation(langue);
+
   const ids = [...new Set(input.items.map((i) => i.productId))];
   const products = await prisma.product.findMany({
     where: { id: { in: ids }, active: true },
@@ -105,7 +124,9 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       const v = p.variants.find((x) => x.id === item.variantId && x.active);
       if (!v) return { ok: false, error: "variante_indisponible" };
       unit = v.priceCents;
-      variantLabel = v.label;
+      // Libellé figé dans la langue de l'acheteur — voir le commentaire sur
+      // `langue` ci-dessus. Repli par `pickText`, comme partout ailleurs.
+      variantLabel = pickText(v.label, traduireLignes ? v.labelEn : undefined);
       variantId = v.id;
     }
     if (p.stock < qty) return { ok: false, error: "stock_insuffisant" };
@@ -117,7 +138,8 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       variantId,
       variantLabel,
       brand: p.brand,
-      name: p.name,
+      // Nom figé dans la langue de l'acheteur — même règle que `variantLabel`.
+      name: pickText(p.name, traduireLignes ? p.nameEn : undefined),
       sku: p.sku,
       slug: p.slug,
       image: p.image ?? "",
@@ -149,11 +171,9 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   }
   const total = Math.max(0, subtotal - discountCents);
 
-  // Langue de l'acheteur, résolue une fois pour toutes. Elle sert au compte
-  // client, à la commande et aux e-mails transactionnels : trois écritures qui
-  // doivent s'accorder, et qui recopiaient jusqu'ici le même test à la main.
-  // `choisirLangue` est le seul endroit où se décide le repli sur le français.
-  const langue = choisirLangue(input.locale);
+  // `langue` est déjà résolue plus haut (avant la construction des lignes) ;
+  // elle sert aussi au compte client et aux e-mails transactionnels ci-dessous
+  // : trois écritures qui doivent s'accorder, une seule résolution.
 
   const name = input.fullName.trim();
   const space = name.indexOf(" ");

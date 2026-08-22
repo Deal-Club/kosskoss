@@ -86,11 +86,18 @@ export async function getProductDetail(
     stock: p.stock,
     image: p.image,
     images: parseStringArray(p.images),
-    group: { slug: p.category.group.slug, label: p.category.group.label },
-    category: { slug: p.category.slug, label: p.category.label },
+    // Fil d'Ariane de la fiche : mêmes libellés que le catalogue, même repli.
+    group: {
+      slug: p.category.group.slug,
+      label: pickText(p.category.group.label, traduire ? p.category.group.labelEn : undefined),
+    },
+    category: {
+      slug: p.category.slug,
+      label: pickText(p.category.label, traduire ? p.category.labelEn : undefined),
+    },
     variants: p.variants.map((v) => ({
       id: v.id,
-      label: v.label,
+      label: pickText(v.label, traduire ? v.labelEn : undefined),
       priceFcfa: v.priceCents,
       oldPriceFcfa: v.oldPriceCents ?? undefined,
     })),

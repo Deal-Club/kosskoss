@@ -1,5 +1,6 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import { pickText, needsTranslation } from "@/server/localizedContent";
 import type { KKRoutineView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 
@@ -23,11 +24,6 @@ const ROUTINE_INCLUDE = {
   },
 } as const;
 
-/** Repli sur le français quand la traduction anglaise est vide. */
-function t(fr: string, en: string, locale: Locale): string {
-  return locale === "en" && en.trim().length > 0 ? en : fr;
-}
-
 type RoutineRow = Awaited<ReturnType<typeof lireRoutines>>[number];
 
 function lireRoutines(where: { slug?: string }) {
@@ -39,12 +35,16 @@ function lireRoutines(where: { slug?: string }) {
 }
 
 function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
+  // Repli identique à `toProductView` : `pickText`, jamais un accès direct à
+  // un champ `*En` — c'est la seule règle de repli du projet
+  // (`src/server/localizedContent.ts`).
+  const traduire = needsTranslation(locale);
   const steps = row.steps
     .filter((s) => s.product.active && s.product.stock > 0)
     .map((s, i) => ({
       id: s.id,
-      label: t(s.label, s.labelEn, locale),
-      why: t(s.why, s.whyEn, locale),
+      label: pickText(s.label, traduire ? s.labelEn : undefined),
+      why: pickText(s.why, traduire ? s.whyEn : undefined),
       product: toProductView(s.product, locale, i),
     }));
 
@@ -53,9 +53,9 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
   return {
     id: row.id,
     slug: row.slug,
-    name: t(row.name, row.nameEn, locale),
-    claim: t(row.claim, row.claimEn, locale),
-    description: t(row.description, row.descriptionEn, locale),
+    name: pickText(row.name, traduire ? row.nameEn : undefined),
+    claim: pickText(row.claim, traduire ? row.claimEn : undefined),
+    description: pickText(row.description, traduire ? row.descriptionEn : undefined),
     besoinTag: row.besoinTag,
     tint: row.tint,
     image: row.image || null,
