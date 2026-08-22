@@ -13,6 +13,15 @@ describe("cleMarque", () => {
     assert.equal(cleMarque("Nivéa"), cleMarque("Nivea"));
   });
 
+  it("réduit les ligatures œ et æ à leurs deux lettres", () => {
+    // `normalize("NFD")` ne décompose PAS œ/æ en o+e ou a+e : ce sont des
+    // lettres à part entière, pas des lettres accentuées. Sans le
+    // remplacement explicite qui les précède dans `cleMarque`, « Sœur » et
+    // « Soeur » resteraient deux clés distinctes.
+    assert.equal(cleMarque("Sœur"), cleMarque("Soeur"));
+    assert.equal(cleMarque("Nævus"), cleMarque("Naevus"));
+  });
+
   it("ignore les espaces de bord", () => {
     assert.equal(cleMarque("  Nivea "), cleMarque("Nivea"));
   });

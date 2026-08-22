@@ -115,6 +115,21 @@ export async function listerMarques(options?: {
   return rows.map(versMarqueRecord);
 }
 
+/**
+ * Slugs des marques ayant réellement une page — même filtre que
+ * `marqueVitrineParSlug` : actives, avec au moins un produit actif. Alimente
+ * `src/app/sitemap.ts`, qui ne déclare que ce qui a de la matière, comme il
+ * le fait déjà pour les rubriques et auteurs du Journal.
+ */
+export async function listerSlugsMarquesVitrine(): Promise<string[]> {
+  const rows = await prisma.brand.findMany({
+    where: { active: true, products: { some: { active: true } } },
+    select: { slug: true },
+    orderBy: { slug: "asc" },
+  });
+  return rows.map((row) => row.slug);
+}
+
 /** Marque telle que présentée sur sa page de vitrine, avec ses produits actifs. */
 export interface MarqueVitrine {
   slug: string;

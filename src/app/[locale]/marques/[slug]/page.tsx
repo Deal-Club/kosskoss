@@ -7,24 +7,39 @@ import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome"
 import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { ProductCard } from "@/components/kk/product-card";
+import { Pagination } from "@/components/kk/pagination";
 import { marqueVitrineParSlug } from "@/server/kk/marques";
+import { parsePage } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale; slug: string }>;
+type Search = Promise<Record<string, string | string[] | undefined>>;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: Search;
+}): Promise<Metadata> {
   const { locale, slug } = await params;
-  const marque = await marqueVitrineParSlug(slug, locale);
+  const page = parsePage((await searchParams).page);
+  const marque = await marqueVitrineParSlug(slug, locale, page);
   if (!marque) return { title: `Marque introuvable — ${BRAND.name}` };
 
+  // Voir la note des pages de rayon : chaque page au-delà de la première se
+  // désigne elle-même comme canonique, sinon Google la replie sur la page 1
+  // et n'explore jamais les produits qu'elle seule contient.
+  const suffixe = marque.page > 1 ? ` — Page ${marque.page}` : "";
+  const requete = marque.page > 1 ? `?page=${marque.page}` : "";
   return {
-    title: `${marque.name} — ${BRAND.name}`,
+    title: `${marque.name}${suffixe} — ${BRAND.name}`,
     description: marque.description
       ? marque.description.slice(0, 155)
       : `Les produits ${marque.name} chez ${BRAND.name}.`,
-    alternates: alternatesFor(`/marques/${marque.slug}`, locale),
+    alternates: alternatesFor(`/marques/${marque.slug}`, locale, requete),
   };
 }
 
@@ -40,11 +55,18 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
  * déçoit plus qu'une absence, et sortir la page du référencement vaut mieux
  * que d'y laisser une grille vide.
  */
-export default async function MarquePage({ params }: { params: Params }) {
+export default async function MarquePage({
+  params,
+  searchParams,
+}: {
+  params: Params;
+  searchParams: Search;
+}) {
   const { locale, slug } = await params;
+  const page = parsePage((await searchParams).page);
   setRequestLocale(locale);
 
-  const marque = await marqueVitrineParSlug(slug, locale);
+  const marque = await marqueVitrineParSlug(slug, locale, page);
   if (!marque) notFound();
 
   return (
@@ -96,7 +118,12 @@ export default async function MarquePage({ params }: { params: Params }) {
 
         <section className="mx-auto max-w-7xl px-6 py-14">
           <p className="eyebrow">
-            {marque.products.length} produit{marque.products.length > 1 ? "s" : ""}
+            {/* Sur une marque paginée, « 60 produits » seul induit en erreur :
+                on en voit trente. On situe donc la tranche dès qu'il y a plus
+                d'une page — même règle que sur une page de rayon. */}
+            {marque.pageCount > 1
+              ? `Produits ${marque.firstItem}–${marque.lastItem} sur ${marque.total}`
+              : `${marque.total} produit${marque.total > 1 ? "s" : ""}`}
           </p>
           <h2 className="mt-2 text-deep">Le rayon {marque.name}</h2>
 
@@ -105,6 +132,13 @@ export default async function MarquePage({ params }: { params: Params }) {
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
+
+          <Pagination
+            page={marque.page}
+            pageCount={marque.pageCount}
+            hrefForPage={(n) => (n > 1 ? `/marques/${marque.slug}?page=${n}` : `/marques/${marque.slug}`)}
+            ariaLabel="Pagination des produits de la marque"
+          />
         </section>
       </main>
 

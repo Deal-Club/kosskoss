@@ -7,6 +7,7 @@ import {
   listCategories,
   listTags,
 } from "@/server/journal/taxonomy";
+import { listerSlugsMarquesVitrine } from "@/server/kk/marques";
 import { routing } from "@/i18n/routing";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mlc-bois.fr";
@@ -30,13 +31,15 @@ interface SitemapPath {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [categories, articles, journalCategories, journalTags, journalAuthors] = await Promise.all([
-    getCategoryPages(),
-    listPublishedSlugs(),
-    listCategories(),
-    listTags(),
-    listAuthors(),
-  ]);
+  const [categories, articles, journalCategories, journalTags, journalAuthors, brandSlugs] =
+    await Promise.all([
+      getCategoryPages(),
+      listPublishedSlugs(),
+      listCategories(),
+      listTags(),
+      listAuthors(),
+      listerSlugsMarquesVitrine(),
+    ]);
 
   const paths: SitemapPath[] = [{ path: "/", priority: 1, changeFrequency: "daily" }];
 
@@ -53,6 +56,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "weekly",
       });
     }
+  }
+
+  // ---- Marques ----
+  //
+  // Une page de marque n'existe — au sens de `marqueVitrineParSlug` — que
+  // pour une marque active ayant au moins un produit actif : la même règle
+  // que pour les rubriques et auteurs du Journal ci-dessous. `brandSlugs` est
+  // déjà filtré sur ce critère, donc chaque slug déclaré ici a réellement une
+  // page à montrer, sans garde supplémentaire.
+  for (const slug of brandSlugs) {
+    paths.push({ path: `/marques/${slug}`, priority: 0.6, changeFrequency: "weekly" });
   }
 
   // ---- Le Journal ----

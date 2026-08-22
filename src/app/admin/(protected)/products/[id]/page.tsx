@@ -7,10 +7,14 @@ import { listerMarques } from "@/server/kk/marques";
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   await requireCapacitePage("catalogue");
   const { id } = await params;
+  // Actives seulement — voir la note de la page de création. Si le produit en
+  // cours d'édition est déjà rattaché à une marque désactivée entre-temps,
+  // son nom reste affiché dans le champ de saisie libre : seule la liste
+  // déroulante des marques proposées à la sélection se filtre.
   const [product, categories, marques] = await Promise.all([
     getProductRecord(id),
     listCategories(),
-    listerMarques(),
+    listerMarques({ seulementActives: true }),
   ]);
   if (!product) notFound();
 
