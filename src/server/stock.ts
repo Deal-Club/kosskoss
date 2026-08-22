@@ -20,6 +20,22 @@ export function isStockReason(value: unknown): value is StockReason {
   return typeof value === "string" && (STOCK_REASONS as readonly string[]).includes(value);
 }
 
+/**
+ * Délai de transaction partagé par toutes les écritures de stock qui peuvent
+ * se heurter au verrou d'une grosse réception (`recevoirLignes`,
+ * `src/server/kk/bons.ts`, qui utilise ce même délai).
+ *
+ * Avant la correction, `adjustStock`/`setStock` gardaient le défaut Prisma de
+ * 5 s alors que la réception peut retenir un verrou de ligne jusqu'à 30 s :
+ * un client qui valide son panier sur un produit en cours de réception
+ * attendait le verrou et voyait SA transaction expirer la première — l'échec
+ * du magasinier se déplaçait vers le client, qui perd un panier qu'une
+ * réception, elle, peut se permettre de relancer. Donner ici le même délai
+ * qu'à la réception laisse le client attendre aussi longtemps que la
+ * réception peut retenir le verrou, au lieu d'échouer plus tôt qu'elle.
+ */
+export const DELAI_TRANSACTION_STOCK_MS = 30_000;
+
 export interface StockProductRow {
   id: string;
   brand: string;
@@ -197,7 +213,7 @@ export async function adjustStock(
       stock: nextStock,
       movement: toMovementRecord(movement),
     };
-  });
+  }, { timeout: DELAI_TRANSACTION_STOCK_MS });
 }
 
 /** Fixe le stock à une valeur absolue et en déduit le mouvement correspondant. */
@@ -250,5 +266,5 @@ export async function setStock(
       stock: value,
       movement: toMovementRecord(movement),
     };
-  });
+  }, { timeout: DELAI_TRANSACTION_STOCK_MS });
 }

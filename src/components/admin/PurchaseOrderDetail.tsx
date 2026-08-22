@@ -56,7 +56,11 @@ export function PurchaseOrderDetail({
 
   const modifiable = bon.status === "brouillon";
   const receptionPossible = bon.status === "envoye" || bon.status === "recu_partiel";
-  const peutAnnuler = bon.status !== "annule";
+  // En accord avec `annulerBon` (src/server/kk/bons.ts) : un bon `annule` ou
+  // déjà `recu` refuse l'annulation côté serveur. Sans ce second cas ici, le
+  // bouton restait affiché sur un bon soldé et ne pouvait que produire une
+  // erreur après confirmation.
+  const peutAnnuler = bon.status !== "annule" && bon.status !== "recu";
 
   const produitsDisponibles = useMemo(
     () => products.filter((p) => !bon.items.some((item) => item.productId === p.id)),
@@ -402,10 +406,10 @@ export function PurchaseOrderDetail({
                   Mettre à jour le coût d&apos;achat des produits
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  Le coût du produit devient le coût payé sur cette réception — pour CHAQUE produit
-                  rattaché à une ligne cochée, dans tout le catalogue, et pour toutes les ventes à venir,
-                  pas seulement pour ce bon. À décocher pour un achat exceptionnel, qui ne doit pas
-                  s&apos;imposer comme référence.
+                  Le coût du produit devient le coût payé sur cette réception — pour chaque produit
+                  rattaché à une ligne où une quantité reçue est saisie ci-dessus, dans tout le
+                  catalogue, et pour toutes les ventes à venir, pas seulement pour ce bon. À décocher
+                  pour un achat exceptionnel, qui ne doit pas s&apos;imposer comme référence.
                 </span>
               </span>
             </label>

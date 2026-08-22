@@ -12,7 +12,7 @@ import {
 // la source reste `src/lib/kk/approvisionnement.ts`, un module pur qu'un
 // composant client peut importer directement sans tirer Prisma.
 export { STATUT_BON_LABELS };
-import type { StockReason } from "@/server/stock";
+import { DELAI_TRANSACTION_STOCK_MS, type StockReason } from "@/server/stock";
 
 /**
  * Bons de commande fournisseur, et la réception — le cœur du lot.
@@ -405,6 +405,14 @@ export interface ResultatReception {
  *    jamais en valeur absolue recalculée à partir d'un objet chargé avant la
  *    boucle : deux écritures sur la même ligne s'additionnent alors
  *    correctement au lieu de s'écraser l'une l'autre.
+ * 7. Les lignes se VERROUILLENT (via l'`update` du produit) dans l'ordre
+ *    croissant de `productId`, jamais dans l'ordre où l'appelant les a
+ *    envoyées. Sans cet ordre total, deux réceptions concurrentes portant sur
+ *    les deux mêmes produits, dans des ordres opposés, peuvent s'attendre
+ *    mutuellement — le seul inter-blocage possible de cette fonction. Trier
+ *    avant d'écrire ne change ni les produits crédités ni les quantités,
+ *    seul l'ordre des écritures change ; le résultat rendu à l'appelant, lui,
+ *    respecte toujours l'ordre de SA requête.
  */
 export async function recevoirLignes(
   bonId: string,
@@ -449,7 +457,14 @@ export async function recevoirLignes(
   // l'aller-retour : (4 × 220 ms) × 15 lignes + 2 × 220 ms ≈ 13,6 s pour un
   // bon de quinze lignes. 30 s laisse une marge confortable jusqu'à une
   // trentaine de lignes sans risquer un refus incompréhensible sur un gros bon.
-  const DELAI_TRANSACTION_MS = 30_000;
+  //
+  // Repris de `src/server/stock.ts` (`DELAI_TRANSACTION_STOCK_MS`), pas
+  // redéfini à côté : `adjustStock`/`setStock` peuvent attendre le verrou
+  // qu'une réception retient sur un produit, et leur donner un délai plus
+  // court ferait échouer CE client-là avant que la réception ne cède la
+  // main — un échec qui coûte plus cher (un panier perdu) que celui,
+  // relançable, d'une réception qui expire.
+  const DELAI_TRANSACTION_MS = DELAI_TRANSACTION_STOCK_MS;
 
   return prisma.$transaction(async (tx) => {
     const bon = await tx.purchaseOrder.findUnique({ where: { id: bonId }, include: { items: true } });
@@ -464,9 +479,30 @@ export async function recevoirLignes(
       );
     }
 
-    const lignesResultat: ReceptionLigneResultat[] = [];
+    // Règle 7 — traite les lignes dans l'ordre croissant de `productId`,
+    // jamais dans l'ordre reçu de l'appelant : un ordre total sur les
+    // verrous supprime le seul inter-blocage possible ici (deux réceptions
+    // concurrentes sur les deux mêmes produits, dans des ordres opposés,
+    // s'attendraient sinon mutuellement). Une ligne sans produit rattaché
+    // (`productId` nul) ne verrouille rien : elle est traitée en premier,
+    // son ordre relatif aux autres n'a donc aucune conséquence.
+    const receptionsParVerrou = [...receptions].sort((a, b) => {
+      const produitA = bon.items.find((item) => item.id === a.ligneId)?.productId ?? "";
+      const produitB = bon.items.find((item) => item.id === b.ligneId)?.productId ?? "";
+      if (produitA !== produitB) return produitA < produitB ? -1 : 1;
+      // À égalité de produit (ou deux lignes sans produit), l'ordre entre
+      // elles est arbitraire mais doit être STABLE d'un appel à l'autre :
+      // trancher sur `ligneId` plutôt que de laisser `sort` réordonner au
+      // hasard entre deux exécutions.
+      return a.ligneId < b.ligneId ? -1 : a.ligneId > b.ligneId ? 1 : 0;
+    });
 
-    for (const reception of receptions) {
+    // Les écritures suivent l'ordre de verrouillage ci-dessus, mais le
+    // résultat rendu à l'appelant respecte l'ordre de SA requête — on
+    // réordonne à la sortie de la boucle, pas pendant.
+    const resultatsParLigneId = new Map<string, ReceptionLigneResultat>();
+
+    for (const reception of receptionsParVerrou) {
       const ligne = bon.items.find((item) => item.id === reception.ligneId);
       if (!ligne) throw new Error(`Ligne ${reception.ligneId} introuvable sur ce bon.`);
 
@@ -552,7 +588,7 @@ export async function recevoirLignes(
         }
       }
 
-      lignesResultat.push({
+      resultatsParLigneId.set(ligne.id, {
         ligneId: ligne.id,
         brand: ligne.brand,
         name: ligne.name,
@@ -565,6 +601,11 @@ export async function recevoirLignes(
         message,
       });
     }
+
+    // Reconstruit dans l'ordre de la requête d'origine — voir règle 7.
+    const lignesResultat = receptions.map(
+      (reception) => resultatsParLigneId.get(reception.ligneId) as ReceptionLigneResultat,
+    );
 
     // Le statut se recalcule sur TOUTES les lignes du bon, y compris celles
     // que cette réception n'a pas touchées.
