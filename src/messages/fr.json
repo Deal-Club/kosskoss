@@ -691,7 +691,7 @@
       "network": "Aucune connexion au serveur. Merci de vérifier votre connexion Internet."
     },
     "login": {
-      "metaTitle": "Connexion",
+      "metaTitle": "Connexion | KossKoss Select",
       "title": "Connexion",
       "intro": "Connectez-vous pour consulter vos commandes et gérer vos adresses.",
       "submit": "Se connecter",
