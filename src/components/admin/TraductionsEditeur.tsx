@@ -33,6 +33,10 @@ interface LigneVue {
   libelle: string;
   valeurs: Record<string, string>;
   etat: EtatVue;
+  /** Corps de l'article traduit ou non — absent hors du modèle Article. Déjà
+   * répercuté sur `etat.complet` ; affiché à part pour que ce ne soit jamais
+   * silencieux. */
+  corpsTraduit?: boolean;
 }
 
 interface Apercu {
@@ -140,7 +144,12 @@ export function TraductionsEditeur({
       }
 
       const valeursAJour = { ...ligne.valeurs, ...valeursEnvoyees };
-      const nouvelEtat = etatTraduction(valeursAJour, modeleActuel.champs);
+      const etatChamps = etatTraduction(valeursAJour, modeleActuel.champs);
+      // Cet enregistrement n'écrit jamais le corps (blocksEn n'est pas
+      // éditable ici) : son état de traduction ne change pas au fil de cette
+      // sauvegarde, mais reste pris en compte dans `complet` pour qu'un
+      // article au corps non traduit ne bascule pas sous « Traduit ».
+      const nouvelEtat = { ...etatChamps, complet: etatChamps.complet && (ligne.corpsTraduit ?? true) };
 
       // Le complément qui vient d'être traduit doit s'ajuster à l'écran (et à
       // la vue d'ensemble) sans attendre un rechargement : traduire un champ
@@ -276,7 +285,9 @@ export function TraductionsEditeur({
           <p className="rounded-sm border border-border bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
             Le corps de chaque article (ses blocs) ne se traduit pas ici : il se modifie dans
             l&apos;éditeur d&apos;article, article par article. Cet écran ne couvre que le titre,
-            le chapeau, le texte alternatif de couverture et les champs SEO.
+            le chapeau, le texte alternatif de couverture et les champs SEO. Une pastille indique
+            si le corps est traduit ; un article au corps encore en français ne se range jamais
+            sous « Traduit », même quand ces champs le sont tous.
           </p>
         )}
 
@@ -301,6 +312,19 @@ export function TraductionsEditeur({
                   >
                     {ligne.etat.traduits} / {ligne.etat.total} traduits
                   </span>
+                  {modele === "Article" && ligne.corpsTraduit === false && (
+                    <span
+                      title="Le corps de l'article (ses blocs) est encore en français : les champs ci-dessus ne comptent pas cet article comme traduit."
+                      className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-bold text-destructive"
+                    >
+                      Corps non traduit
+                    </span>
+                  )}
+                  {modele === "Article" && ligne.corpsTraduit === true && (
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-bold text-primary">
+                      Corps traduit
+                    </span>
+                  )}
                   {modele === "Article" && (
                     <Link
                       href={`/admin/journal/${ligne.id}`}

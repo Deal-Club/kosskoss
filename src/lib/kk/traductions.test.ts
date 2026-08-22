@@ -144,13 +144,29 @@ describe("registre face au schéma", () => {
     return resultat;
   }
 
+  /**
+   * Isole le corps de chaque `model` par comptage d'accolades, pas par un
+   * `[^}]*` qui s'arrête à la première accolade fermante rencontrée — y
+   * compris celle d'un commentaire (ex. `// JSON : { "a": 1 }` dans
+   * `DiagAnswer` ou `ArticleAuthor`). Un `[^}]*` tronqué là ferait passer
+   * inaperçu tout champ `*En` ajouté après ce commentaire : c'est exactement
+   * ce que ce test doit détecter.
+   */
   function corpsParModele(): Map<string, string> {
     const resultat = new Map<string, string>();
-    const modeleRegex = /model\s+(\w+)\s*\{([^}]*)\}/g;
-    let match: RegExpExecArray | null;
-    while ((match = modeleRegex.exec(schema))) {
-      const [, nom, corps] = match;
-      resultat.set(nom, corps);
+    const debutRegex = /model\s+(\w+)\s*\{/g;
+    let debutMatch: RegExpExecArray | null;
+    while ((debutMatch = debutRegex.exec(schema))) {
+      const nom = debutMatch[1];
+      const debutCorps = debutRegex.lastIndex;
+      let profondeur = 1;
+      let i = debutCorps;
+      for (; i < schema.length && profondeur > 0; i++) {
+        if (schema[i] === "{") profondeur += 1;
+        else if (schema[i] === "}") profondeur -= 1;
+      }
+      resultat.set(nom, schema.slice(debutCorps, i - 1));
+      debutRegex.lastIndex = i;
     }
     return resultat;
   }

@@ -5,6 +5,7 @@ import {
   type ChampTraduisible,
   type EtatTraduction,
 } from "@/lib/kk/traductions";
+import { parseStoredBlocks } from "@/lib/journal/blocks";
 
 /**
  * Lecture et écriture des traductions, un modèle à la fois.
@@ -31,12 +32,38 @@ export interface LigneTraduction {
   /** Valeurs françaises et anglaises, indexées par nom de champ Prisma. */
   valeurs: Record<string, string>;
   etat: EtatTraduction;
+  /**
+   * Corps de l'article (`blocks` / `blocksEn`) traduit ou non — `undefined`
+   * pour tout modèle sans notion de corps. Ce champ n'entre pas dans `etat`
+   * (qui ne compte que le registre) mais EST déjà répercuté sur
+   * `etat.complet` : un article au corps non traduit ne doit jamais se
+   * ranger sous « Traduit », même si titre, chapeau et SEO le sont tous.
+   * Voir le commentaire d'en-tête de src/lib/kk/traductions.ts.
+   */
+  corpsTraduit?: boolean;
 }
 
 interface EnregistrementBrut {
   id: string;
   libelle: string;
   valeurs: Record<string, string>;
+  /** Voir `LigneTraduction.corpsTraduit`. Absent hors du modèle Article. */
+  corpsTraduit?: boolean;
+}
+
+/** Un tableau de blocs sérialisé contient-il au moins un bloc réel ? */
+function aDuContenu(blocksJson: string): boolean {
+  return parseStoredBlocks(blocksJson).length > 0;
+}
+
+/**
+ * Le corps d'un article compte comme traduit si le français n'a rien à
+ * traduire (aucun bloc), ou si l'anglais porte lui aussi au moins un bloc.
+ * Même règle que `etatTraduction` pour les champs de texte : un français
+ * vide n'attend aucune contrepartie.
+ */
+function corpsArticleTraduit(blocksFr: string, blocksEn: string): boolean {
+  return !aDuContenu(blocksFr) || aDuContenu(blocksEn);
 }
 
 interface EntreeModele {
@@ -471,13 +498,22 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
   Article: {
     champs: registreDe("Article"),
     async lister() {
+      // deletedAt: null — comme toute autre lecture d'article (voir
+      // src/server/journal/read.ts et store.ts) : un article à la corbeille
+      // ne doit ni se lister, ni compter, ni s'ouvrir en édition ici.
       const lignes = await prisma.article.findMany({
+        where: { deletedAt: null },
         select: {
           id: true,
           title: true,
           titleEn: true,
           excerpt: true,
           excerptEn: true,
+          // Lus pour dire si le corps est traduit — jamais renvoyés dans
+          // `valeurs`, jamais éditables ici. Voir le commentaire d'en-tête de
+          // src/lib/kk/traductions.ts : ce n'est pas un champ de texte.
+          blocks: true,
+          blocksEn: true,
           coverAlt: true,
           coverAltEn: true,
           metaTitle: true,
@@ -502,6 +538,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
           metaDescription: a.metaDescription,
           metaDescriptionEn: a.metaDescriptionEn,
         },
+        corpsTraduit: corpsArticleTraduit(a.blocks, a.blocksEn),
       }));
     },
     async ecrire(id, donnees) {
@@ -590,10 +627,29 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
   },
 };
 
+// `Object.hasOwn`, jamais `CARTE_MODELES[cleModele]` seul : un littéral
+// d'objet hérite de `Object.prototype`, donc `entreeDe("constructor")` ou
+// `entreeDe("toString")` renverrait une valeur exploitable (une fonction)
+// avant d'échouer plus loin avec une erreur opaque. Inatteignable par HTTP
+// aujourd'hui (la route valide `cleModele` contre le registre avant tout
+// appel), mais un futur appelant direct de ce module s'y casserait sans
+// comprendre pourquoi.
 function entreeDe(cleModele: string): EntreeModele {
-  const entree = CARTE_MODELES[cleModele];
-  if (!entree) throw new Error(`Modèle de traduction inconnu : ${cleModele}`);
-  return entree;
+  if (!Object.hasOwn(CARTE_MODELES, cleModele)) {
+    throw new Error(`Modèle de traduction inconnu : ${cleModele}`);
+  }
+  return CARTE_MODELES[cleModele];
+}
+
+/**
+ * État « complet » d'un enregistrement : les champs du registre ET, quand
+ * elle existe, la traduction du corps (`corpsTraduit`, Article seulement).
+ * Ne pas se fier à `etatTraduction(...).complet` seul ailleurs dans ce
+ * fichier — il ignorerait le corps et ferait passer un article au corps
+ * français pour un article traduit.
+ */
+function estComplet(ligne: EnregistrementBrut, champs: ChampTraduisible[]): boolean {
+  return etatTraduction(ligne.valeurs, champs).complet && (ligne.corpsTraduit ?? true);
 }
 
 /** Compte, pour chaque modèle traduisible, le nombre d'enregistrements complètement traduits. */
@@ -604,9 +660,7 @@ export async function compterParModele(): Promise<
     MODELES_TRADUISIBLES.map(async (modele) => {
       const entree = entreeDe(modele.cle);
       const lignes = await entree.lister();
-      const complets = lignes.filter(
-        (ligne) => etatTraduction(ligne.valeurs, entree.champs).complet,
-      ).length;
+      const complets = lignes.filter((ligne) => estComplet(ligne, entree.champs)).length;
       return { cle: modele.cle, libelle: modele.libelle, total: lignes.length, complets };
     }),
   );
@@ -620,12 +674,20 @@ export async function listerEnregistrements(
   const entree = entreeDe(cleModele);
   const lignes = await entree.lister();
   return lignes
-    .map((ligne) => ({
-      id: ligne.id,
-      libelle: ligne.libelle,
-      valeurs: ligne.valeurs,
-      etat: etatTraduction(ligne.valeurs, entree.champs),
-    }))
+    .map((ligne) => {
+      const etatChamps = etatTraduction(ligne.valeurs, entree.champs);
+      const complet = etatChamps.complet && (ligne.corpsTraduit ?? true);
+      return {
+        id: ligne.id,
+        libelle: ligne.libelle,
+        valeurs: ligne.valeurs,
+        corpsTraduit: ligne.corpsTraduit,
+        // `complet` reflète le corps quand il existe ; `traduits`/`total`
+        // restent la mesure du registre seul — c'est ce que la pastille
+        // « x / y traduits » affiche à l'écran.
+        etat: { ...etatChamps, complet },
+      };
+    })
     .filter((ligne) => {
       if (filtre === "a-traduire") return !ligne.etat.complet;
       if (filtre === "traduit") return ligne.etat.complet;
@@ -651,6 +713,11 @@ export async function enregistrerTraduction(
   for (const champ of entree.champs) {
     if (champ.en in valeurs) donnees[champ.en] = valeurs[champ.en];
   }
+
+  // Rien à écrire : sortir avant d'appeler `ecrire`, qui déclencherait sinon
+  // une mise à jour vide — et avec elle, sur les modèles à `updatedAt`
+  // automatique, une date de modification qui bouge pour rien.
+  if (Object.keys(donnees).length === 0) return;
 
   await entree.ecrire(id, donnees);
 }
