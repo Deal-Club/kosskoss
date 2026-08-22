@@ -26,7 +26,11 @@
       "hygiene": "Hygiene",
       "homme": "Men"
     },
-    "from": "from"
+    "from": "from",
+    "close": "Close",
+    "whatsappPrefill": "Hello, I have a question about a KossKoss Select product.",
+    "whatsappAriaLabel": "Message us on WhatsApp",
+    "whatsappWriteToUs": "Message us"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – home page",
@@ -36,7 +40,34 @@
     "beratung": "Advice & orders",
     "oeffnung": "Mon–Fri 8am–5pm · Sat 9am–1pm",
     "lieferbanner": "Free delivery from 6 loose m³",
-    "anrufenAria": "Call: {nummer}"
+    "anrufenAria": "Call: {nummer}",
+    "searchClose": "Close search",
+    "searchLabel": "Search for a product",
+    "searchPlaceholder": "A brand, a product, a need…",
+    "searchSubmit": "Search",
+    "openMenu": "Open menu",
+    "menuLabel": "Menu",
+    "closeMenu": "Close menu",
+    "routinesCta": "Our ready-to-use routines",
+    "diagnosticCta": "Take my diagnostic",
+    "seeAllGroup": "All {group}",
+    "brandsLink": "Our brands",
+    "helpLink": "Advice & questions",
+    "myWishlist": "My wishlist",
+    "stepsCount": "{count} steps",
+    "viewAllRoutines": "View all routines",
+    "diagnosticPromptTitle": "Not sure which one?",
+    "diagnosticPromptText": "Five questions about your skin, and we put together the routine that matches it.",
+    "doDiagnostic": "Take the diagnostic",
+    "discoverLabel": "To discover",
+    "viewAllCatalog": "View the whole catalogue",
+    "routinesShort": "Our routines",
+    "securedShort": "Secure",
+    "announcementsAriaLabel": "Shop announcements",
+    "navHome": "Home",
+    "navShop": "Shop",
+    "navRoutines": "Routines",
+    "navDiagnostic": "Diagnostic"
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
@@ -186,7 +217,13 @@
     "linkTerms": "Terms & conditions",
     "linkCookies": "Cookie settings",
     "copyright": "© {year} KossKoss Select.",
-    "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm"
+    "oeffnung": "Monday to Friday 8am–5pm · Saturday 9am–1pm",
+    "linkRetractation": "Withdrawal",
+    "linkDelivery": "Delivery",
+    "linkReturnsShort": "Returns",
+    "linkPayment": "Payment",
+    "whatsappCta": "A question? WhatsApp",
+    "copyrightNotice": "© 2026 {brand}. All rights reserved."
   },
   "cart": {
     "title": "Cart",
@@ -231,7 +268,19 @@
     "drawerTitle": "Your cart",
     "drawerClose": "Close cart",
     "drawerViewCart": "View cart",
-    "campaignFreeShipping": "Free delivery through your offer"
+    "campaignFreeShipping": "Free delivery through your offer",
+    "drawerEmptyText": "Your cart is empty.",
+    "drawerEmptyCta": "Discover the shop",
+    "decreaseShort": "Decrease",
+    "increaseShort": "Increase",
+    "removeItemLabel": "Remove {name}",
+    "drawerOrder": "Order",
+    "buttonAriaLabel": "Cart, {count} item",
+    "suggestionsLoading": "Loading suggestions…",
+    "suggestionsTitle": "You might also like",
+    "suggestionsChooseVariant": "Choose a size for {name}",
+    "suggestionsChooseVariantTitle": "Choose a size",
+    "suggestionsAddLabel": "Add {name} to cart"
   },
   "checkout": {
     "metaTitle": "Checkout | KossKoss Select",
@@ -484,7 +533,8 @@
     "clear": "Clear wishlist",
     "emptyTitle": "Your wishlist is still empty.",
     "emptyText": "Click the heart on an item to collect it here and find it again later.",
-    "emptyCta": "Discover the range"
+    "emptyCta": "Discover the range",
+    "navAriaLabelWithCount": "Wishlist, {count} item"
   },
   "account": {
     "metaTitle": "My account",

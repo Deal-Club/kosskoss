@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
@@ -76,6 +77,8 @@ function useDismiss(open: boolean, close: () => void) {
  * les connexions mobiles auxquelles s'adresse cette boutique.
  */
 export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "icon" }) {
+  const t = useTranslations("header");
+  const tCommon = useTranslations("common");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -105,13 +108,13 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
           className="hidden items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm text-muted-foreground transition hover:border-deep/40 hover:text-deep lg:inline-flex"
         >
           <Search className="h-4 w-4" />
-          Rechercher
+          {t("search")}
         </button>
       ) : (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label="Rechercher"
+          aria-label={t("search")}
           aria-expanded={open}
           aria-controls={panelId}
           className="grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand lg:hidden"
@@ -129,10 +132,10 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
           corrigé, la recherche non. */}
       {open &&
         createPortal(
-        <div id={panelId} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Rechercher">
+        <div id={panelId} className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label={t("search")}>
           <button
             type="button"
-            aria-label="Fermer la recherche"
+            aria-label={t("searchClose")}
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
           />
@@ -149,7 +152,7 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
               className="mx-auto flex max-w-2xl items-center gap-2 sm:gap-3"
             >
               <label htmlFor="recherche-boutique" className="sr-only">
-                Rechercher un produit
+                {t("searchLabel")}
               </label>
               <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full border border-border bg-card px-4 py-3 sm:gap-3 sm:px-5">
                 <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -160,7 +163,7 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
                   name="q"
                   required
                   maxLength={80}
-                  placeholder="Une marque, un produit, un besoin…"
+                  placeholder={t("searchPlaceholder")}
                   autoComplete="off"
                   className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
                 />
@@ -169,12 +172,12 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
                 type="submit"
                 className="hidden shrink-0 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-deep/90 sm:block"
               >
-                Chercher
+                {t("searchSubmit")}
               </button>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Fermer"
+                aria-label={tCommon("close")}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-deep transition hover:bg-sand"
               >
                 <X className="h-5 w-5" />
@@ -190,6 +193,10 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
 
 /** Panneau de navigation mobile : tout le catalogue, plus l'espace client. */
 export function MobileMenu({ groups }: { groups: NavGroup[] }) {
+  const t = useTranslations("header");
+  const tCommon = useTranslations("common");
+  const tAccount = useTranslations("account");
+  const tOrders = useTranslations("account.orders");
   const [open, setOpen] = useState(false);
 
   useDismiss(open, () => setOpen(false));
@@ -210,7 +217,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Ouvrir le menu"
+        aria-label={t("openMenu")}
         aria-expanded={open}
         className="grid h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand lg:hidden"
       >
@@ -226,10 +233,10 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
           et ne passe à vrai que sur un clic, donc côté client uniquement. */}
       {open &&
         createPortal(
-          <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
+          <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label={t("menuLabel")}>
           <button
             type="button"
-            aria-label="Fermer le menu"
+            aria-label={t("closeMenu")}
             onClick={() => setOpen(false)}
             className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
           />
@@ -244,7 +251,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                aria-label="Fermer"
+                aria-label={tCommon("close")}
                 className="grid h-9 w-9 place-items-center rounded-full text-deep transition hover:bg-sand"
               >
                 <X className="h-5 w-5" />
@@ -260,14 +267,14 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
                 {...closeOnNavigate}
                 className="flex items-center gap-2 rounded-full bg-deep px-5 py-3 text-sm font-semibold text-primary-foreground"
               >
-                <Sparkles className="h-4 w-4" /> Nos routines prêtes à l&rsquo;emploi
+                <Sparkles className="h-4 w-4" /> {t("routinesCta")}
               </Link>
               <Link
                 href="/diagnostic"
                 {...closeOnNavigate}
                 className="mt-3 flex items-center justify-center gap-2 rounded-full border border-deep/30 px-5 py-3 text-sm font-semibold text-deep"
               >
-                Faire mon diagnostic
+                {t("diagnosticCta")}
               </Link>
 
               {/* Les univers en accordéons, et non tous déployés.
@@ -303,7 +310,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
                           {...closeOnNavigate}
                           className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium text-deep underline-offset-4 hover:underline"
                         >
-                          Tout {group.label.toLowerCase()}
+                          {t("seeAllGroup", { group: group.label.toLowerCase() })}
                           <ChevronRight className="h-3.5 w-3.5" />
                         </Link>
                       </li>
@@ -316,8 +323,8 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
                   ici : deux rubriques entières inaccessibles au téléphone. */}
               <ul className="mt-5 space-y-1">
                 {[
-                  { href: "/marques", label: "Nos marques", icon: Store },
-                  { href: "/faq", label: "Conseils & questions", icon: MessageCircleQuestion },
+                  { href: "/marques", label: t("brandsLink"), icon: Store },
+                  { href: "/faq", label: t("helpLink"), icon: MessageCircleQuestion },
                 ].map(({ href, label, icon: Icon }) => (
                   <li key={href}>
                     <Link
@@ -335,9 +342,9 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
             <div className="border-t border-border px-5 py-4">
               <ul className="space-y-1">
                 {[
-                  { href: "/compte", label: "Mon compte", icon: User },
-                  { href: "/favoris", label: "Mes favoris", icon: Heart },
-                  { href: "/compte/commandes", label: "Mes commandes", icon: Package },
+                  { href: "/compte", label: tAccount("title"), icon: User },
+                  { href: "/favoris", label: t("myWishlist"), icon: Heart },
+                  { href: "/compte/commandes", label: tOrders("title"), icon: Package },
                 ].map(({ href, label, icon: Icon }) => (
                   <li key={href}>
                     <Link
@@ -377,6 +384,7 @@ export function DesktopNav({
   /** Routines montrées dans le panneau « Routines ». */
   routines?: NavRoutine[];
 }) {
+  const t = useTranslations("header");
   const pathname = usePathname();
   // Un seul panneau ouvert à la fois, désigné par sa clé. Un booléen ne
   // suffisait plus dès qu'il y a eu deux entrées déroulantes : passer de
@@ -426,15 +434,15 @@ export function DesktopNav({
   const homme = groups.find((group) => group.slug === UNIVERS_EN_BARRE);
 
   const entries = [
-    { href: "/", label: "Accueil" },
-    { href: groups[0]?.href ?? "/soins-visage", label: "Boutique", deroulant: "boutique" as const },
+    { href: "/", label: t("navHome") },
+    { href: groups[0]?.href ?? "/soins-visage", label: t("navShop"), deroulant: "boutique" as const },
     ...(homme ? [{ href: homme.href, label: homme.label }] : []),
     // « Routines » s'ouvre à son tour : c'est la porte que la marque met en
     // avant, et un simple lien obligeait à charger une page pour découvrir ce
     // qu'elle contient. Le panneau ne s'ouvre que s'il y a de quoi le remplir.
     {
       href: "/routines",
-      label: "Routines",
+      label: t("navRoutines"),
       ...(routines.length > 0 ? { deroulant: "routines" as const } : {}),
     },
     // « Conseils » (la FAQ), puis « Marques », ont été retirés de la barre :
@@ -445,7 +453,7 @@ export function DesktopNav({
     // Les deux rubriques restent atteignables : « Nos marques » et « Conseils &
     // questions » figurent dans le menu mobile, et la page marques est aussi
     // reprise depuis le bloc « marques » de l'accueil.
-    { href: "/diagnostic", label: "Diagnostic" },
+    { href: "/diagnostic", label: t("navDiagnostic") },
   ];
 
   /** « / » ne doit s'allumer que sur l'accueil, pas sur toutes les pages. */
@@ -575,6 +583,7 @@ function RoutinesMenu({
   ouvert: boolean;
   onFermer: () => void;
 }) {
+  const t = useTranslations("header");
   return (
     <div
       className={`absolute inset-x-0 top-full z-50 pt-2 transition duration-200 ${
@@ -592,7 +601,7 @@ function RoutinesMenu({
                 d'œil — ce qu'on attend d'un menu. */}
             <div>
               <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-gold-ink uppercase">
-                Nos routines prêtes à l&apos;emploi
+                {t("routinesCta")}
               </p>
 
               <ul className="mt-3 space-y-1.5">
@@ -636,7 +645,7 @@ function RoutinesMenu({
                           métadonnée, elle n'a pas à s'intercaler entre le nom et
                           l'accroche. */}
                       <span className="shrink-0 text-[0.62rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
-                        {routine.stepCount} gestes
+                        {t("stepsCount", { count: routine.stepCount })}
                       </span>
 
                       <ChevronRight className="h-3.5 w-3.5 shrink-0 text-deep/40 transition-transform duration-200 group-hover/routine:translate-x-0.5" />
@@ -652,7 +661,7 @@ function RoutinesMenu({
                 onClick={onFermer}
                 className="group/toutes mt-3 inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[0.7rem] font-semibold tracking-[0.12em] text-deep uppercase transition hover:border-deep hover:bg-sand"
               >
-                Voir toutes les routines
+                {t("viewAllRoutines")}
                 <ChevronRight className="h-3 w-3 transition-transform duration-200 group-hover/toutes:translate-x-0.5" />
               </Link>
             </div>
@@ -662,10 +671,10 @@ function RoutinesMenu({
                 un grand aplat vide. */}
             <aside className="self-start rounded-xl bg-sand p-4">
               <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-gold-ink uppercase">
-                Vous hésitez ?
+                {t("diagnosticPromptTitle")}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-deep">
-                Cinq questions sur votre peau, et nous composons la routine qui lui correspond.
+                {t("diagnosticPromptText")}
               </p>
               <Link
                 href="/diagnostic"
@@ -673,7 +682,7 @@ function RoutinesMenu({
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-deep px-5 py-2.5 text-xs font-semibold text-primary-foreground transition hover:brightness-110"
               >
                 <Sparkles className="h-3.5 w-3.5" />
-                Faire le diagnostic
+                {t("doDiagnostic")}
               </Link>
             </aside>
           </div>
@@ -703,6 +712,7 @@ function MegaMenu({
   ouvert: boolean;
   onFermer: () => void;
 }) {
+  const t = useTranslations("header");
   // « Homme » ne figure pas dans le panneau : il a sa propre entrée dans la
   // barre (voir `UNIVERS_EN_BARRE`). L'y laisser reviendrait à proposer deux
   // fois le même rayon à dix centimètres d'écart, dont une fois caché sous un
@@ -774,7 +784,7 @@ function MegaMenu({
             {highlights.length > 0 && (
               <aside className="rounded-xl bg-sand p-4">
                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-gold-ink">
-                  À découvrir
+                  {t("discoverLabel")}
                 </p>
                 <ul className="mt-3 space-y-2">
                   {highlights.map((produit) => (
@@ -828,7 +838,7 @@ function MegaMenu({
               {/* Le total entre parenthèses — « Voir tout le catalogue (71) » —
                   a suivi les compteurs de rayon, pour la même raison : un
                   catalogue ne s'annonce pas par son inventaire. */}
-              Voir tout le catalogue
+              {t("viewAllCatalog")}
               <ChevronRight className="h-4 w-4 transition-transform duration-200 group-hover/tout:translate-x-1" />
             </Link>
             <span className="flex items-center gap-2">
@@ -837,14 +847,14 @@ function MegaMenu({
                 onClick={onFermer}
                 className="inline-flex items-center gap-1.5 rounded-full bg-deep px-4 py-2 text-xs font-semibold text-primary-foreground transition hover:bg-deep/90"
               >
-                <Sparkles className="h-3.5 w-3.5" /> Nos routines
+                <Sparkles className="h-3.5 w-3.5" /> {t("routinesShort")}
               </Link>
               <Link
                 href="/diagnostic"
                 onClick={onFermer}
                 className="rounded-full border border-deep/30 px-4 py-2 text-xs font-semibold text-deep transition hover:bg-background"
               >
-                Faire mon diagnostic
+                {t("diagnosticCta")}
               </Link>
             </span>
           </div>

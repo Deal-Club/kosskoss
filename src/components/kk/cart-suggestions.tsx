@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Plus, ChevronRight, Loader2 } from "lucide-react";
 import { LocalizedLink as Link } from "./localized-link";
 import { useCart } from "@/components/cart/CartProvider";
@@ -22,6 +22,7 @@ import type { KKProductView } from "@/types/kk";
  * « Vous aimeriez aussi » suivi du vide vaut moins que rien.
  */
 export function CartSuggestions() {
+  const t = useTranslations("cart");
   const { lines, add } = useCart();
   const locale = useLocale();
   const [items, setItems] = useState<KKProductView[]>([]);
@@ -64,7 +65,7 @@ export function CartSuggestions() {
     return (
       <div className="flex items-center justify-center py-6 text-muted-foreground">
         <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-        <span className="sr-only">Chargement des suggestions…</span>
+        <span className="sr-only">{t("suggestionsLoading")}</span>
       </div>
     );
   }
@@ -74,7 +75,7 @@ export function CartSuggestions() {
   return (
     <section className="border-t border-border px-6 py-5">
       <h3 className="text-[0.78rem] font-bold uppercase tracking-[0.14em] text-deep">
-        Vous aimeriez aussi
+        {t("suggestionsTitle")}
       </h3>
 
       <ul className="mt-3 space-y-3">
@@ -114,8 +115,8 @@ export function CartSuggestions() {
               {decline ? (
                 <Link
                   href={p.href ?? "#"}
-                  aria-label={`Choisir une contenance pour ${p.name}`}
-                  title="Choisir une contenance"
+                  aria-label={t("suggestionsChooseVariant", { name: p.name })}
+                  title={t("suggestionsChooseVariantTitle")}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-deep transition hover:border-deep/50 hover:bg-sand"
                 >
                   <ChevronRight className="h-4 w-4" />
@@ -138,8 +139,8 @@ export function CartSuggestions() {
                       1,
                     )
                   }
-                  aria-label={`Ajouter ${p.name} au panier`}
-                  title="Ajouter au panier"
+                  aria-label={t("suggestionsAddLabel", { name: p.name })}
+                  title={t("addToCart")}
                   className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-deep text-primary-foreground transition hover:bg-deep/90"
                 >
                   <Plus className="h-4 w-4" />

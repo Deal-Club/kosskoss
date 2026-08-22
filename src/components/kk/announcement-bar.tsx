@@ -1,4 +1,5 @@
 import { Sparkles, Truck, Gift, Percent, BadgeCheck, Clock, MessageCircle, Star } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import type { AnnouncementConfig, AnnouncementItem } from "@/lib/kk/announcement";
 
 /**
@@ -48,7 +49,7 @@ function Message({ item }: { item: AnnouncementItem }) {
   );
 }
 
-export function AnnouncementBar({
+export async function AnnouncementBar({
   items,
   config,
 }: {
@@ -56,6 +57,8 @@ export function AnnouncementBar({
   config: AnnouncementConfig;
 }) {
   if (!config.enabled || items.length === 0) return null;
+
+  const t = await getTranslations("header");
 
   const style = {
     background: config.background,
@@ -92,7 +95,7 @@ export function AnnouncementBar({
         `role="marquee"` n'existe pas ; on s'en tient à une région signalée,
         que les lecteurs d'écran restituent d'un bloc, sans mouvement.
       */}
-      <div className="kk-marquee flex w-max py-2" role="region" aria-label="Annonces de la boutique">
+      <div className="kk-marquee flex w-max py-2" role="region" aria-label={t("announcementsAriaLabel")}>
         <div className={`flex shrink-0 items-center ${classesTexte}`}>
           {items.map((item) => (
             <Message key={item.id} item={item} />

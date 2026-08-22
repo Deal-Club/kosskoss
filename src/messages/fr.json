@@ -26,7 +26,11 @@
       "hygiene": "Hygiène",
       "homme": "Homme"
     },
-    "from": "dès"
+    "from": "dès",
+    "close": "Fermer",
+    "whatsappPrefill": "Bonjour, j'ai une question sur un produit KossKoss Select.",
+    "whatsappAriaLabel": "Nous écrire sur WhatsApp",
+    "whatsappWriteToUs": "Écrivez-nous"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – page d'accueil",
@@ -36,7 +40,34 @@
     "beratung": "Conseil & commande",
     "oeffnung": "Lun–Ven 8h–17h · Sam 9h–13h",
     "lieferbanner": "Livraison offerte dès 6 MAP",
-    "anrufenAria": "Appeler le {nummer}"
+    "anrufenAria": "Appeler le {nummer}",
+    "searchClose": "Fermer la recherche",
+    "searchLabel": "Rechercher un produit",
+    "searchPlaceholder": "Une marque, un produit, un besoin…",
+    "searchSubmit": "Chercher",
+    "openMenu": "Ouvrir le menu",
+    "menuLabel": "Menu",
+    "closeMenu": "Fermer le menu",
+    "routinesCta": "Nos routines prêtes à l'emploi",
+    "diagnosticCta": "Faire mon diagnostic",
+    "seeAllGroup": "Tout {group}",
+    "brandsLink": "Nos marques",
+    "helpLink": "Conseils & questions",
+    "myWishlist": "Mes favoris",
+    "stepsCount": "{count} gestes",
+    "viewAllRoutines": "Voir toutes les routines",
+    "diagnosticPromptTitle": "Vous hésitez ?",
+    "diagnosticPromptText": "Cinq questions sur votre peau, et nous composons la routine qui lui correspond.",
+    "doDiagnostic": "Faire le diagnostic",
+    "discoverLabel": "À découvrir",
+    "viewAllCatalog": "Voir tout le catalogue",
+    "routinesShort": "Nos routines",
+    "securedShort": "Sécurisé",
+    "announcementsAriaLabel": "Annonces de la boutique",
+    "navHome": "Accueil",
+    "navShop": "Boutique",
+    "navRoutines": "Routines",
+    "navDiagnostic": "Diagnostic"
   },
   "category": {
     "metaTitle": "{label} | KossKoss Select",
@@ -186,7 +217,13 @@
     "linkTerms": "CGV",
     "linkCookies": "Préférences cookies",
     "copyright": "© {year} KossKoss Select.",
-    "oeffnung": "Du lundi au vendredi 8h–17h · Samedi 9h–13h"
+    "oeffnung": "Du lundi au vendredi 8h–17h · Samedi 9h–13h",
+    "linkRetractation": "Rétractation",
+    "linkDelivery": "Livraison",
+    "linkReturnsShort": "Retours",
+    "linkPayment": "Paiement",
+    "whatsappCta": "Une question ? WhatsApp",
+    "copyrightNotice": "© 2026 {brand}. Tous droits réservés."
   },
   "cart": {
     "title": "Panier",
@@ -231,7 +268,19 @@
     "drawerTitle": "Votre panier",
     "drawerClose": "Fermer le panier",
     "drawerViewCart": "Voir le panier",
-    "campaignFreeShipping": "Livraison offerte grâce à votre offre"
+    "campaignFreeShipping": "Livraison offerte grâce à votre offre",
+    "drawerEmptyText": "Votre panier est vide.",
+    "drawerEmptyCta": "Découvrir la boutique",
+    "decreaseShort": "Diminuer",
+    "increaseShort": "Augmenter",
+    "removeItemLabel": "Retirer {name}",
+    "drawerOrder": "Commander",
+    "buttonAriaLabel": "Panier, {count} article",
+    "suggestionsLoading": "Chargement des suggestions…",
+    "suggestionsTitle": "Vous aimeriez aussi",
+    "suggestionsChooseVariant": "Choisir une contenance pour {name}",
+    "suggestionsChooseVariantTitle": "Choisir une contenance",
+    "suggestionsAddLabel": "Ajouter {name} au panier"
   },
   "checkout": {
     "metaTitle": "Commande | KossKoss Select",
@@ -484,7 +533,8 @@
     "clear": "Vider les favoris",
     "emptyTitle": "Votre liste de favoris est encore vide.",
     "emptyText": "Cliquez sur le cœur d'un article pour le retrouver ici plus tard.",
-    "emptyCta": "Découvrir le catalogue"
+    "emptyCta": "Découvrir le catalogue",
+    "navAriaLabelWithCount": "Favoris, {count} article"
   },
   "account": {
     "metaTitle": "Mon compte",

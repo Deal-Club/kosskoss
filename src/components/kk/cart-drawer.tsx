@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import { X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
@@ -47,6 +48,9 @@ import { CartSuggestions } from "./cart-suggestions";
  * remonté ailleurs.
  */
 export function CartDrawerKK() {
+  const t = useTranslations("cart");
+  const tCommande = useTranslations("commande");
+  const tCommon = useTranslations("common");
   const { lines, ready, drawerOpen, closeDrawer, setQuantity, remove } = useCart();
   const subtotal = cartSubtotalFcfa(lines);
   const empty = ready && lines.length === 0;
@@ -63,10 +67,10 @@ export function CartDrawerKK() {
   if (!drawerOpen) return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Panier">
+    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label={t("title")}>
       <button
         type="button"
-        aria-label="Fermer le panier"
+        aria-label={t("drawerClose")}
         onClick={closeDrawer}
         className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
       />
@@ -77,11 +81,11 @@ export function CartDrawerKK() {
       <aside className="absolute inset-y-0 right-0 flex h-[100dvh] w-full max-w-md flex-col bg-background shadow-2xl">
         <header className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6 sm:py-5">
           <h2 className="flex items-center gap-2 text-lg text-deep">
-            <ShoppingBag className="h-5 w-5 shrink-0" /> Votre panier
+            <ShoppingBag className="h-5 w-5 shrink-0" /> {t("drawerTitle")}
           </h2>
           <button
             type="button"
-            aria-label="Fermer"
+            aria-label={tCommon("close")}
             onClick={closeDrawer}
             className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-deep transition hover:bg-sand"
           >
@@ -92,13 +96,13 @@ export function CartDrawerKK() {
         {empty ? (
           <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
             <BottleMotif className="h-24 text-deep/30" />
-            <p className="text-deep/80">Votre panier est vide.</p>
+            <p className="text-deep/80">{t("drawerEmptyText")}</p>
             <Link
               href="/soins-visage"
               onClick={closeDrawer}
               className="kk-fill rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground"
             >
-              Découvrir la boutique
+              {t("drawerEmptyCta")}
             </Link>
           </div>
         ) : (
@@ -164,7 +168,7 @@ export function CartDrawerKK() {
                           <div className="flex shrink-0 items-center rounded-full border border-border">
                             <button
                               type="button"
-                              aria-label="Diminuer"
+                              aria-label={t("decreaseShort")}
                               onClick={() =>
                                 setQuantity(line.productId, line.variantId, line.quantity - 1)
                               }
@@ -175,7 +179,7 @@ export function CartDrawerKK() {
                             <span className="figure w-7 text-center text-sm">{line.quantity}</span>
                             <button
                               type="button"
-                              aria-label="Augmenter"
+                              aria-label={t("increaseShort")}
                               onClick={() =>
                                 setQuantity(line.productId, line.variantId, line.quantity + 1)
                               }
@@ -191,7 +195,7 @@ export function CartDrawerKK() {
                       </div>
                       <button
                         type="button"
-                        aria-label={`Retirer ${line.name}`}
+                        aria-label={t("removeItemLabel", { name: line.name })}
                         onClick={() => remove(line.productId, line.variantId)}
                         /* Pas de marge négative ici : `-mr-1.5` rentrait la
                            BOÎTE DE MARGE du bouton de 6 px, mais laissait sa
@@ -220,11 +224,11 @@ export function CartDrawerKK() {
                 inférieur et devient difficile à atteindre. */}
             <footer className="shrink-0 border-t border-border px-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pt-4 sm:px-6 sm:pt-5">
               <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-medium text-deep">Sous-total</span>
+                <span className="text-sm font-medium text-deep">{t("subtotal")}</span>
                 <span className="figure text-lg font-semibold text-deep">{formatFcfa(subtotal)}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
-                Livraison coordonnée via WhatsApp après commande.
+                {tCommande("summary.deliveryNote")}
               </p>
               <div className="mt-4 flex gap-3">
                 <Link
@@ -232,14 +236,14 @@ export function CartDrawerKK() {
                   onClick={closeDrawer}
                   className="flex-1 rounded-full border border-deep px-4 py-3 text-center text-sm font-semibold text-deep transition hover:bg-sand"
                 >
-                  Voir le panier
+                  {t("drawerViewCart")}
                 </Link>
                 <Link
                   href="/commande"
                   onClick={closeDrawer}
                   className="kk-fill flex-1 rounded-full bg-deep px-4 py-3 text-center text-sm font-semibold text-primary-foreground"
                 >
-                  Commander
+                  {t("drawerOrder")}
                 </Link>
               </div>
             </footer>

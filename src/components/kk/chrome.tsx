@@ -1,6 +1,6 @@
 import { User, Phone, MessageCircle, ChevronLeft, ShieldCheck } from "lucide-react";
 import Image from "next/image";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
 import { getShopNavigation, getNavHighlights, getNavRoutines } from "@/server/kk/navigation";
@@ -79,17 +79,21 @@ function FacebookIcon({ className }: { className?: string }) {
  * diagnostic », « Suivi de commande » et la FAQ se rejoignent par la
  * navigation ou depuis le compte.
  */
+/**
+ * Href et clé de traduction (dans l'espace `footer`) pour chaque lien. Le
+ * libellé lui-même est résolu dans `SiteFooter`, qui a accès à `getTranslations`.
+ */
 const FOOTER_LEGAL = [
   // Libellé aligné sur celui déclaré pour le slug dans content/legal/index.ts.
-  { label: "À propos", href: "/a-propos" },
-  { label: "Mentions légales", href: "/mentions-legales" },
-  { label: "CGV", href: "/cgv" },
-  { label: "Confidentialité", href: "/confidentialite" },
-  { label: "Rétractation", href: "/retractation" },
-  { label: "Livraison", href: "/livraison" },
-  { label: "Retours", href: "/retours" },
-  { label: "Paiement", href: "/moyens-de-paiement" },
-];
+  { key: "linkAboutUs", href: "/a-propos" },
+  { key: "linkImprint", href: "/mentions-legales" },
+  { key: "linkTerms", href: "/cgv" },
+  { key: "linkPrivacy", href: "/confidentialite" },
+  { key: "linkRetractation", href: "/retractation" },
+  { key: "linkDelivery", href: "/livraison" },
+  { key: "linkReturnsShort", href: "/retours" },
+  { key: "linkPayment", href: "/moyens-de-paiement" },
+] as const;
 
 /* `FOOTER_LINK` habillait les colonnes de liens du pied de page. Ces colonnes
    ont disparu avec la refonte compacte : la seule liste restante, celle des
@@ -104,14 +108,13 @@ const FOOTER_LEGAL = [
  * Calculé dans `SiteFooter` — composant serveur — plutôt qu'au niveau du
  * module : la valeur dépend désormais de la base, elle ne peut plus être une
  * constante figée à l'import.
+ *
+ * Le message pré-rempli est fourni par l'appelant, déjà traduit dans la
+ * langue du visiteur : cette fonction n'a pas accès aux messages next-intl.
  */
-function lienWhatsapp(numero: string): string {
+function lienWhatsapp(numero: string, message: string): string {
   const digits = numero || CONTACT.phone.replace(/\D/g, "");
-  return digits
-    ? `https://wa.me/${digits}?text=${encodeURIComponent(
-        "Bonjour, j'ai une question sur un produit KossKoss Select.",
-      )}`
-    : "";
+  return digits ? `https://wa.me/${digits}?text=${encodeURIComponent(message)}` : "";
 }
 
 /**
@@ -184,6 +187,7 @@ function Wordmark({ className = "", aligne = false }: { className?: string; alig
  */
 export async function SiteHeader() {
   const locale = (await getLocale()) as Locale;
+  const tAccount = await getTranslations("account");
   const [groups, highlights, routines] = await Promise.all([
     getShopNavigation(locale),
     getNavHighlights(locale),
@@ -232,7 +236,7 @@ export async function SiteHeader() {
           <FavoritesLink />
           <Link
             href="/compte"
-            aria-label="Mon compte"
+            aria-label={tAccount("title")}
             className="hidden h-10 w-10 place-items-center rounded-full text-deep transition hover:bg-sand sm:grid"
           >
             <User className="h-5 w-5" />
@@ -253,7 +257,10 @@ export async function SiteHeader() {
  * une pastille verte, présente à toutes les tailles : sur mobile le mot
  * « Sécurisé » suffit, la mention complète revient dès qu'il y a la place.
  */
-export function CheckoutHeader() {
+export async function CheckoutHeader() {
+  const tCart = await getTranslations("cart");
+  const tFooter = await getTranslations("footer");
+  const tHeader = await getTranslations("header");
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 backdrop-blur-md">
       <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 sm:px-6">
@@ -262,16 +269,16 @@ export function CheckoutHeader() {
           className="inline-flex w-fit items-center gap-1.5 text-sm text-deep transition hover:opacity-80"
         >
           <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">Continuer mes achats</span>
-          <span className="sr-only sm:hidden">Continuer mes achats</span>
+          <span className="hidden sm:inline">{tCart("continueShopping")}</span>
+          <span className="sr-only sm:hidden">{tCart("continueShopping")}</span>
         </Link>
         <div className="justify-self-center">
           <Wordmark />
         </div>
         <span className="inline-flex items-center gap-1.5 justify-self-end rounded-full border border-trust-line bg-trust-soft px-2.5 py-1.5 text-xs font-semibold text-trust sm:px-3">
           <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden />
-          <span className="hidden sm:inline">Paiement sécurisé</span>
-          <span className="sm:hidden">Sécurisé</span>
+          <span className="hidden sm:inline">{tFooter("paymentTitle")}</span>
+          <span className="sm:hidden">{tHeader("securedShort")}</span>
         </span>
       </div>
     </header>
@@ -322,13 +329,18 @@ export function CheckoutHeader() {
  * liens : le catalogue est dans l'en-tête, c'est là qu'on navigue.
  */
 export async function SiteFooter() {
+  const t = await getTranslations("footer");
+  const tCommon = await getTranslations("common");
   // Même condition qu'au layout : sans traceur actif, pas de bandeau, donc pas
   // de lien pour le rouvrir.
   const tracage = await tracageActif();
   // `getParametres` est mémoïsé par requête : ce pied de page, le bouton
   // flottant du gabarit et la page de confirmation peuvent chacun l'appeler
   // sans multiplier les requêtes. L'en-tête, lui, ne s'en sert pas.
-  const whatsappLink = lienWhatsapp(numeroWhatsappEffectif(await getParametres()));
+  const whatsappLink = lienWhatsapp(
+    numeroWhatsappEffectif(await getParametres()),
+    tCommon("whatsappPrefill"),
+  );
 
   return (
     <footer className="relative overflow-hidden bg-footer text-footer-foreground">
@@ -369,7 +381,7 @@ export async function SiteFooter() {
                 className="inline-flex items-center gap-2 rounded-full bg-sand px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-primary-foreground"
               >
                 <MessageCircle className="h-4 w-4" />
-                Une question ? WhatsApp
+                {t("whatsappCta")}
               </a>
             )}
 
@@ -432,7 +444,7 @@ export async function SiteFooter() {
             donc présent ; jamais une invitation à quitter la page. */}
         <div className="mt-7 flex flex-col items-center gap-3 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-footer-foreground">
-            © 2026 {BRAND.name}. Tous droits réservés.
+            {t("copyrightNotice", { brand: BRAND.name })}
           </p>
           <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             {FOOTER_LEGAL.map((entry) => (
@@ -441,7 +453,7 @@ export async function SiteFooter() {
                   href={entry.href}
                   className="text-xs text-footer-foreground transition hover:text-gold-soft"
                 >
-                  {entry.label}
+                  {t(entry.key)}
                 </Link>
               </li>
             ))}
