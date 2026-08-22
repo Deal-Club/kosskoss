@@ -68,10 +68,36 @@ model GuideSection {
   @@index([categoryId])
 }
 
+/// Marque du catalogue. Le libellé reste recopié sur `Product.brand` : la
+/// relation apporte ce que la chaîne ne peut pas porter — logo, description,
+/// ordre, état — sans obliger à réécrire tout ce qui lit la chaîne.
+model Brand {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String    @unique
+  nameEn        String    @default("")
+  description   String    @default("")
+  descriptionEn String    @default("")
+  logo          String    @default("")
+  /// Ordre d'affichage ; à égalité, l'ordre alphabétique tranche.
+  position      Int       @default(0)
+  /// Une marque inactive quitte la vitrine sans qu'on touche à ses produits.
+  active        Boolean   @default(true)
+  products      Product[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([position])
+}
+
 model Product {
   id                    String   @id @default(cuid())
   categoryId            String
   brand                 String
+  /// Rattachement facultatif à une marque. NULL = pas encore rattaché ; le
+  /// libellé `brand` reste la source d'affichage dans tous les cas.
+  /// `SetNull` : supprimer une marque ne doit pas emporter ses produits.
+  brandId               String?
   name                  String
   slug                  String   @unique
   sku                   String
@@ -124,6 +150,7 @@ model Product {
   updatedAt             DateTime @updatedAt
 
   category       Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  marque         Brand?             @relation(fields: [brandId], references: [id], onDelete: SetNull)
   reviews        Review[]
   stockMovements StockMovement[]
   orderItems     OrderItem[]
@@ -134,6 +161,7 @@ model Product {
 
   @@index([categoryId])
   @@index([brand])
+  @@index([brandId])
 }
 
 // ---- Paiement ----

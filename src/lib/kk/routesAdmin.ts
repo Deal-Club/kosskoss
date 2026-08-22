@@ -17,6 +17,7 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   "product-tags": "catalogue",
   categories: "catalogue",
   groups: "catalogue",
+  brands: "catalogue",
   stock: "catalogue",
   merchant: "catalogue",
   upload: "catalogue",

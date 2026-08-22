@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
 import { packshot } from "@/lib/kk/packshot";
+import { pickText } from "@/server/localizedContent";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Navigation de la boutique, lue en base.
@@ -116,15 +118,73 @@ export const getNavHighlights = cache(async (limit = 2): Promise<NavHighlight[]>
   }));
 });
 
-/** Marques présentes au catalogue, par ordre alphabétique. */
-export const getShopBrands = cache(async (): Promise<string[]> => {
-  const rows = await prisma.product.findMany({
+/**
+ * Marque telle que montrée sur `/marques` : soit une entité (logo, accroche,
+ * fiche dédiée), soit un simple nom en mode repli — voir `getShopBrands`.
+ */
+export interface NavBrand {
+  /** Chemin de la fiche marque, préfixe de langue non compris ; absent en repli. */
+  href: string | null;
+  name: string;
+  logo: string | null;
+  tagline: string | null;
+}
+
+/**
+ * Marques de la vitrine, dans l'ordre `position` puis alphabétique.
+ *
+ * Lit la table `Brand` : marques actives ayant au moins un produit actif — une
+ * marque sans produit ne s'affiche pas, une page vide déçoit plus qu'une
+ * absence.
+ *
+ * ── REPLI SUR LE CATALOGUE, ET POURQUOI IL RESTE NÉCESSAIRE ─────────────────
+ *
+ * Le rattachement `Product.brandId` se fait par un bouton du back-office
+ * (`importerMarquesDuCatalogue`), pas par la migration : une installation où
+ * personne ne l'a encore lancé a une table `Brand` VIDE alors que son
+ * catalogue affiche déjà des marques sur chaque fiche produit. Sans ce repli,
+ * `/marques` — qui existait avant cette table — se viderait le jour du
+ * déploiement de cette lecture, et le resterait tant que l'import n'a pas été
+ * cliqué. Ce n'est donc pas du code mort : ne le retire que si l'import
+ * devient automatique ou obligatoire au déploiement.
+ *
+ * Le repli se décide sur `prisma.brand.count() === 0` — la table est-elle
+ * VIDE — et non sur `rows.length === 0` : `rows` est déjà filtré sur les
+ * marques ACTIVES ayant un produit actif, donc un administrateur qui masque
+ * ses douze marques (le geste que ce lot introduit) viderait `rows` sans
+ * vider la table. Décider sur `rows` ferait alors resurgir, via le repli, les
+ * douze noms qu'on vient précisément de masquer — le masquage ne masquerait
+ * plus rien.
+ *
+ * En repli, chaque marque n'est qu'un nom sans fiche dédiée (`href: null`) :
+ * `/marques/[slug]` n'existe que pour les marques réellement rattachées.
+ */
+export const getShopBrands = cache(async (locale: Locale = "fr"): Promise<NavBrand[]> => {
+  const totalMarques = await prisma.brand.count();
+
+  if (totalMarques > 0) {
+    const rows = await prisma.brand.findMany({
+      where: { active: true, products: { some: { active: true } } },
+      orderBy: [{ position: "asc" }, { name: "asc" }],
+    });
+    return rows.map((row) => ({
+      href: `/marques/${row.slug}`,
+      name: pickText(row.name, locale === "en" ? row.nameEn : undefined),
+      logo: row.logo || null,
+      tagline: pickText(row.description, locale === "en" ? row.descriptionEn : undefined) || null,
+    }));
+  }
+
+  const fallback = await prisma.product.findMany({
     where: { active: true },
     select: { brand: true },
     distinct: ["brand"],
     orderBy: { brand: "asc" },
   });
-  return rows.map((row) => row.brand).filter((brand) => brand.length > 0);
+  return fallback
+    .map((row) => row.brand.trim())
+    .filter((name) => name.length > 0)
+    .map((name) => ({ href: null, name, logo: null, tagline: null }));
 });
 
 /** Routine telle qu'annoncée dans le méga-menu. */

@@ -68,6 +68,13 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
     else values.brand = brand;
   }
 
+  // Rattachement facultatif à la table Brand. `null` (ou une chaîne vide)
+  // efface le rattachement — c'est le cas d'une saisie libre qui ne
+  // correspond à aucune marque existante ; le prochain import la reliera.
+  if (has("brandId")) {
+    values.brandId = asTrimmedString(body.brandId) || null;
+  }
+
   const name = asTrimmedString(body.name);
   if (mode === "create" || has("name")) {
     if (!name) errors.push("Nom manquant.");

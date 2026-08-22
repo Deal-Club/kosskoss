@@ -29,6 +29,13 @@ export interface ProductRecord {
   id: string;
   categoryId: string;
   brand: string;
+  /**
+   * Rattachement à la table `Brand`, facultatif. `brand` reste le libellé
+   * affiché — figé comme ceux de `OrderItem` — et `brandId` apporte ce que la
+   * chaîne ne peut pas porter (logo, description, ordre, état). `null` efface
+   * le rattachement ; `undefined` le laisse inchangé lors d'une mise à jour.
+   */
+  brandId?: string | null;
   name: string;
   bullets: string[];
   /** Description courte, affichée sous le titre de la fiche produit */

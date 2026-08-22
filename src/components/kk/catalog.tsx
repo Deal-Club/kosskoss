@@ -1,10 +1,11 @@
 import { LocalizedLink as Link } from "./localized-link";
-import { SlidersHorizontal, RotateCcw, Check, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { SlidersHorizontal, RotateCcw, Check, X } from "lucide-react";
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
 import { besoinParTag } from "@/lib/kk/besoins";
 import { ProductCard } from "./product-card";
 import { PatternBackdrop } from "./pattern-backdrop";
 import { DiagnosticFlottant } from "./diagnostic-flottant";
+import { Pagination } from "./pagination";
 
 const SORTS: { key: CatalogSort; label: string }[] = [
   { key: "pertinence", label: "Pertinence" },
@@ -37,112 +38,6 @@ function withParams(
   if (page && page > 1) sp.set("page", String(page));
   const qs = sp.toString();
   return qs ? `${basePath}?${qs}` : basePath;
-}
-
-/**
- * Numéros à afficher : toujours la première et la dernière page, la page
- * courante et ses voisines, un « … » pour les trous. Sur vingt pages, aligner
- * vingt numéros donne une barre plus large que la grille.
- */
-function numerosDePage(page: number, pageCount: number): (number | "gap")[] {
-  if (pageCount <= 7) return Array.from({ length: pageCount }, (_, i) => i + 1);
-
-  const autour = new Set([1, pageCount, page, page - 1, page + 1]);
-  if (page <= 3) [2, 3, 4].forEach((n) => autour.add(n));
-  if (page >= pageCount - 2) [pageCount - 3, pageCount - 2, pageCount - 1].forEach((n) => autour.add(n));
-
-  const retenus = [...autour].filter((n) => n >= 1 && n <= pageCount).sort((a, b) => a - b);
-  const sortie: (number | "gap")[] = [];
-  let precedent = 0;
-  for (const n of retenus) {
-    if (precedent && n - precedent > 1) sortie.push("gap");
-    sortie.push(n);
-    precedent = n;
-  }
-  return sortie;
-}
-
-function Pagination({
-  view,
-  basePath,
-  brands,
-  sort,
-  besoin,
-}: {
-  view: CatalogView;
-  basePath: string;
-  brands: string[];
-  sort: CatalogSort;
-  besoin?: string;
-}) {
-  if (view.pageCount <= 1) return null;
-
-  const lien = (n: number) => withParams(basePath, brands, sort, besoin, n);
-  const base =
-    "inline-flex h-10 min-w-10 items-center justify-center rounded-full px-3 text-sm transition";
-
-  return (
-    <nav aria-label="Pagination des produits" className="mt-12 flex flex-col items-center gap-4">
-      <ul className="flex flex-wrap items-center justify-center gap-1.5">
-        <li>
-          {view.page > 1 ? (
-            <a href={lien(view.page - 1)} rel="prev" className={`${base} gap-1 text-deep hover:bg-cream`}>
-              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Précédent</span>
-              <span className="sr-only sm:hidden">Page précédente</span>
-            </a>
-          ) : (
-            // Désactivé = absent du parcours au clavier, mais la place reste
-            // prise : sinon la barre saute latéralement d'une page à l'autre.
-            <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
-              <ChevronLeft className="h-4 w-4" />
-              <span className="hidden sm:inline">Précédent</span>
-            </span>
-          )}
-        </li>
-
-        {numerosDePage(view.page, view.pageCount).map((n, i) =>
-          n === "gap" ? (
-            <li key={`gap-${i}`} aria-hidden="true" className="px-1 text-muted-foreground">
-              &hellip;
-            </li>
-          ) : (
-            <li key={n}>
-              {n === view.page ? (
-                <span aria-current="page" className={`${base} bg-deep font-semibold text-primary-foreground`}>
-                  {n}
-                </span>
-              ) : (
-                <a href={lien(n)} className={`${base} text-foreground hover:bg-cream hover:text-deep`}>
-                  <span className="sr-only">Page </span>
-                  {n}
-                </a>
-              )}
-            </li>
-          ),
-        )}
-
-        <li>
-          {view.page < view.pageCount ? (
-            <a href={lien(view.page + 1)} rel="next" className={`${base} gap-1 text-deep hover:bg-cream`}>
-              <span className="hidden sm:inline">Suivant</span>
-              <span className="sr-only sm:hidden">Page suivante</span>
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
-            </a>
-          ) : (
-            <span aria-hidden="true" className={`${base} gap-1 text-muted-foreground/40`}>
-              <span className="hidden sm:inline">Suivant</span>
-              <ChevronRight className="h-4 w-4" />
-            </span>
-          )}
-        </li>
-      </ul>
-
-      <p className="text-xs text-muted-foreground">
-        Page {view.page} sur {view.pageCount}
-      </p>
-    </nav>
-  );
 }
 
 type FilterState = {
@@ -384,11 +279,10 @@ export function CatalogView({
             <>
               <div className="grid grid-cols-2 gap-x-5 gap-y-9 lg:grid-cols-3">{cells}</div>
               <Pagination
-                view={view}
-                basePath={basePath}
-                brands={brands}
-                sort={sort}
-                besoin={besoin}
+                page={view.page}
+                pageCount={view.pageCount}
+                hrefForPage={(n) => withParams(basePath, brands, sort, besoin, n)}
+                ariaLabel="Pagination des produits"
               />
             </>
           )}
