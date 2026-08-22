@@ -71,6 +71,26 @@
     "guideDiscover": "Discover {label}",
     "guideAdvice": "Ask for advice"
   },
+  "catalog": {
+    "filtersTitle": "Filters",
+    "filtersAndSort": "Filters & sorting",
+    "reset": "Reset",
+    "categoryLabel": "Category",
+    "allProducts": "All products",
+    "brandLabel": "Brand",
+    "sortLabel": "Sort by",
+    "sortRelevance": "Relevance",
+    "sortNewest": "New arrivals",
+    "sortPriceAsc": "Price low to high",
+    "sortPriceDesc": "Price high to low",
+    "emptyText": "No product matches these filters.",
+    "emptyReset": "Reset filters",
+    "removeBesoinFilter": "Remove this filter",
+    "searchingFor": "Looking for :",
+    "countRange": "Products <b>{first}</b>–<b>{last}</b> of {total}",
+    "countTotal": "{total, plural, one {# product} other {# products}}",
+    "paginationAriaLabel": "Product pagination"
+  },
   "product": {
     "details": "Product details & service information",
     "description": "Product description",

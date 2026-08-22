@@ -71,6 +71,26 @@
     "guideDiscover": "Découvrir {label}",
     "guideAdvice": "Demander conseil"
   },
+  "catalog": {
+    "filtersTitle": "Filtres",
+    "filtersAndSort": "Filtres & tri",
+    "reset": "Réinitialiser",
+    "categoryLabel": "Catégorie",
+    "allProducts": "Tous les produits",
+    "brandLabel": "Marque",
+    "sortLabel": "Trier par",
+    "sortRelevance": "Pertinence",
+    "sortNewest": "Nouveautés",
+    "sortPriceAsc": "Prix croissant",
+    "sortPriceDesc": "Prix décroissant",
+    "emptyText": "Aucun produit ne correspond à ces filtres.",
+    "emptyReset": "Réinitialiser les filtres",
+    "removeBesoinFilter": "Retirer ce filtre",
+    "searchingFor": "Vous cherchez :",
+    "countRange": "Produits <b>{first}</b>–<b>{last}</b> sur {total}",
+    "countTotal": "{total, plural, one {# produit} other {# produits}}",
+    "paginationAriaLabel": "Pagination des produits"
+  },
   "product": {
     "details": "Détails du produit & informations service",
     "description": "Description de l'article",

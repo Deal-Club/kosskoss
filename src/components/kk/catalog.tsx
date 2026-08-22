@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { SlidersHorizontal, RotateCcw, Check, X } from "lucide-react";
 import type { CatalogView, CatalogSort } from "@/server/kk/catalog";
@@ -7,11 +8,13 @@ import { PatternBackdrop } from "./pattern-backdrop";
 import { DiagnosticFlottant } from "./diagnostic-flottant";
 import { Pagination } from "./pagination";
 
-const SORTS: { key: CatalogSort; label: string }[] = [
-  { key: "pertinence", label: "Pertinence" },
-  { key: "nouveautes", label: "Nouveautés" },
-  { key: "prix-asc", label: "Prix croissant" },
-  { key: "prix-desc", label: "Prix décroissant" },
+type CatalogT = Awaited<ReturnType<typeof getTranslations>>;
+
+const SORT_KEYS: { key: CatalogSort; labelKey: "sortRelevance" | "sortNewest" | "sortPriceAsc" | "sortPriceDesc" }[] = [
+  { key: "pertinence", labelKey: "sortRelevance" },
+  { key: "nouveautes", labelKey: "sortNewest" },
+  { key: "prix-asc", labelKey: "sortPriceAsc" },
+  { key: "prix-desc", labelKey: "sortPriceDesc" },
 ];
 
 /**
@@ -48,35 +51,36 @@ type FilterState = {
   besoin?: string;
   sort: CatalogSort;
   basePath: string;
+  t: CatalogT;
 };
 
-function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, basePath }: FilterState) {
+function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, basePath, t }: FilterState) {
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-deep">
-          <SlidersHorizontal className="h-4 w-4" /> Filtres
+          <SlidersHorizontal className="h-4 w-4" /> {t("filtersTitle")}
         </h2>
         {(brands.length > 0 || sort !== "pertinence" || besoin) && (
-          <a href={basePath} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-deep">
-            <RotateCcw className="h-3 w-3" /> Réinitialiser
-          </a>
+          <Link href={basePath} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-deep">
+            <RotateCcw className="h-3 w-3" /> {t("reset")}
+          </Link>
         )}
       </div>
 
       {/* Catégorie */}
       <div>
         <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          Catégorie
+          {t("categoryLabel")}
         </h3>
         <ul className="mt-3 space-y-1.5">
           <li>
-            <a
+            <Link
               href={`/${groupSlug}`}
               className={`text-sm transition hover:text-deep ${!currentCategory ? "font-semibold text-deep" : "text-foreground"}`}
             >
-              Tous les produits
-            </a>
+              {t("allProducts")}
+            </Link>
           </li>
           {view.categories.map((c) => {
             const active = c.slug === currentCategory;
@@ -88,12 +92,12 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
                     ajoutait une colonne de chiffres à droite d'une liste qu'on
                     parcourt à gauche. Une catégorie sans produit est de toute
                     façon écartée en amont, jamais affichée. */}
-                <a
+                <Link
                   href={`/${groupSlug}/${c.slug}`}
                   className={`block text-sm transition hover:text-deep ${active ? "font-semibold text-deep" : "text-foreground"}`}
                 >
                   {c.label}
-                </a>
+                </Link>
               </li>
             );
           })}
@@ -104,7 +108,7 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
       {view.brands.length > 0 && (
         <div>
           <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-            Marque
+            {t("brandLabel")}
           </h3>
           <ul className="mt-3 space-y-1.5">
             {view.brands.map((b) => {
@@ -112,7 +116,7 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
               const nextBrands = active ? brands.filter((x) => x !== b) : [...brands, b];
               return (
                 <li key={b}>
-                  <a
+                  <Link
                     href={withParams(basePath, nextBrands, sort)}
                     className="flex items-center gap-2.5 text-sm text-foreground transition hover:text-deep"
                   >
@@ -122,7 +126,7 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
                       {active && <Check className="h-3 w-3" />}
                     </span>
                     {b}
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -133,19 +137,19 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
       {/* Tri */}
       <div>
         <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-          Trier par
+          {t("sortLabel")}
         </h3>
         <ul className="mt-3 space-y-1.5">
-          {SORTS.map((s) => {
+          {SORT_KEYS.map((s) => {
             const active = s.key === sort;
             return (
               <li key={s.key}>
-                <a
+                <Link
                   href={withParams(basePath, brands, s.key)}
                   className={`text-sm transition hover:text-deep ${active ? "font-semibold text-deep" : "text-foreground"}`}
                 >
-                  {s.label}
-                </a>
+                  {t(s.labelKey)}
+                </Link>
               </li>
             );
           })}
@@ -155,7 +159,7 @@ function FiltersPanel({ view, groupSlug, currentCategory, brands, besoin, sort, 
   );
 }
 
-export function CatalogView({
+export async function CatalogView({
   view,
   groupSlug,
   currentCategory,
@@ -170,9 +174,10 @@ export function CatalogView({
   besoin?: string;
   sort: CatalogSort;
 }) {
+  const t = await getTranslations("catalog");
   const basePath = currentCategory ? `/${groupSlug}/${currentCategory}` : `/${groupSlug}`;
   const title = view.category?.label ?? view.group.label;
-  const filterState: FilterState = { view, groupSlug, currentCategory, brands, besoin, sort, basePath };
+  const filterState: FilterState = { view, groupSlug, currentCategory, brands, besoin, sort, basePath, t };
   const besoinActif = besoinParTag(besoin);
 
   // Grille : rien que des produits. L'appel au diagnostic occupait ici une
@@ -201,18 +206,16 @@ export function CatalogView({
               comment revenir au complet. La croix lève le filtre. */}
           {besoinActif && (
             <p className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
-              <span className="text-primary-foreground">Vous cherchez&nbsp;:</span>
+              <span className="text-primary-foreground">{t("searchingFor")}</span>
               <Link
                 href={withParams(basePath, brands, sort)}
                 className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/30 bg-primary-foreground/10 px-4 py-1.5 font-medium text-primary-foreground transition hover:bg-primary-foreground/20"
               >
                 {besoinActif.label}
                 <X className="h-3.5 w-3.5 opacity-70 transition group-hover:opacity-100" aria-hidden="true" />
-                <span className="sr-only">Retirer ce filtre</span>
+                <span className="sr-only">{t("removeBesoinFilter")}</span>
               </Link>
-              <span className="text-primary-foreground">
-                {view.total} produit{view.total > 1 ? "s" : ""}
-              </span>
+              <span className="text-primary-foreground">{t("countTotal", { total: view.total })}</span>
             </p>
           )}
         </div>
@@ -222,7 +225,7 @@ export function CatalogView({
         {/* Filtres mobile */}
         <details className="mb-6 rounded-2xl border border-border/70 bg-card p-4 lg:hidden">
           <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-deep">
-            <SlidersHorizontal className="h-4 w-4" /> Filtres & tri
+            <SlidersHorizontal className="h-4 w-4" /> {t("filtersAndSort")}
           </summary>
           <div className="mt-5">
             <FiltersPanel {...filterState} />
@@ -256,24 +259,21 @@ export function CatalogView({
             {/* Sur un rayon paginé, « 60 produits » seul induit en erreur : on
                 en voit trente. On situe donc la tranche dès qu'il y a plus
                 d'une page. */}
-            {view.pageCount > 1 ? (
-              <>
-                Produits <span className="font-semibold text-foreground">{view.firstItem}</span>
-                {"\u2013"}
-                <span className="font-semibold text-foreground">{view.lastItem}</span> sur {view.total}
-              </>
-            ) : (
-              <>
-                {view.total} produit{view.total > 1 ? "s" : ""}
-              </>
-            )}
+            {view.pageCount > 1
+              ? t.rich("countRange", {
+                  first: view.firstItem,
+                  last: view.lastItem,
+                  total: view.total,
+                  b: (chunks) => <span className="font-semibold text-foreground">{chunks}</span>,
+                })
+              : t("countTotal", { total: view.total })}
           </p>
           {view.products.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-12 text-center">
-              <p className="text-muted-foreground">Aucun produit ne correspond à ces filtres.</p>
-              <a href={basePath} className="mt-3 inline-block text-sm font-semibold text-deep underline underline-offset-4">
-                Réinitialiser les filtres
-              </a>
+              <p className="text-muted-foreground">{t("emptyText")}</p>
+              <Link href={basePath} className="mt-3 inline-block text-sm font-semibold text-deep underline underline-offset-4">
+                {t("emptyReset")}
+              </Link>
             </div>
           ) : (
             <>
@@ -282,7 +282,7 @@ export function CatalogView({
                 page={view.page}
                 pageCount={view.pageCount}
                 hrefForPage={(n) => withParams(basePath, brands, sort, besoin, n)}
-                ariaLabel="Pagination des produits"
+                ariaLabel={t("paginationAriaLabel")}
               />
             </>
           )}
