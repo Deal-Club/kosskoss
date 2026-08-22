@@ -6,6 +6,8 @@ import {
   type AnnouncementConfig,
   type AnnouncementItem,
 } from "@/lib/kk/announcement";
+import { pickText, needsTranslation } from "@/server/localizedContent";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Bandeau d'annonce défilant.
@@ -58,20 +60,29 @@ export async function saveAnnouncementConfig(
   return fusion;
 }
 
-/** Messages affichés en boutique : actifs seulement, dans l'ordre choisi. */
-export const getActiveAnnouncements = cache(async (): Promise<AnnouncementItem[]> => {
-  const lignes = await prisma.announcement.findMany({
-    where: { active: true },
-    orderBy: [{ position: "asc" }, { createdAt: "asc" }],
-  });
-  return lignes.map((l) => ({
-    id: l.id,
-    message: l.message,
-    icon: l.icon,
-    active: l.active,
-    position: l.position,
-  }));
-});
+/**
+ * Messages affichés en boutique : actifs seulement, dans l'ordre choisi.
+ *
+ * `locale` est facultative, comme sur `getShopNavigation` — le bandeau est
+ * lui aussi présent sur toutes les pages, et un message resté en français y
+ * serait tout aussi visible qu'un menu qui l'est resté.
+ */
+export const getActiveAnnouncements = cache(
+  async (locale: Locale = "fr"): Promise<AnnouncementItem[]> => {
+    const lignes = await prisma.announcement.findMany({
+      where: { active: true },
+      orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+    });
+    const traduire = needsTranslation(locale);
+    return lignes.map((l) => ({
+      id: l.id,
+      message: pickText(l.message, traduire ? l.messageEn : undefined),
+      icon: l.icon,
+      active: l.active,
+      position: l.position,
+    }));
+  },
+);
 
 /** Tous les messages, actifs ou non — vue du back-office. */
 export async function listAnnouncements(): Promise<AnnouncementItem[]> {

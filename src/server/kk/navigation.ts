@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
 import { packshot } from "@/lib/kk/packshot";
-import { pickText } from "@/server/localizedContent";
+import { pickText, needsTranslation } from "@/server/localizedContent";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -30,7 +30,13 @@ export interface NavGroup {
   categories: NavCategory[];
 }
 
-export const getShopNavigation = cache(async (): Promise<NavGroup[]> => {
+/**
+ * Le méga-menu est sur toutes les pages : un menu français y annulerait
+ * l'effet de toute autre traduction. `locale` est facultative, comme sur
+ * `getShopBrands` ci-dessous — le français par défaut couvre les appelants
+ * qui ne connaissent pas encore la langue de la page.
+ */
+export const getShopNavigation = cache(async (locale: Locale = "fr"): Promise<NavGroup[]> => {
   const groups = await prisma.group.findMany({
     orderBy: { position: "asc" },
     include: {
@@ -41,11 +47,13 @@ export const getShopNavigation = cache(async (): Promise<NavGroup[]> => {
     },
   });
 
+  const traduire = needsTranslation(locale);
+
   return (
     groups
       .map((group) => ({
         slug: group.slug,
-        label: group.label,
+        label: pickText(group.label, traduire ? group.labelEn : undefined),
         href: `/${group.slug}`,
         categories: group.categories
           // Une catégorie vide n'a rien à proposer : elle mènerait à une page
@@ -53,7 +61,7 @@ export const getShopNavigation = cache(async (): Promise<NavGroup[]> => {
           .filter((category) => category._count.products > 0)
           .map((category) => ({
             slug: category.slug,
-            label: category.label,
+            label: pickText(category.label, traduire ? category.labelEn : undefined),
             href: `/${group.slug}/${category.slug}`,
             productCount: category._count.products,
           })),
@@ -87,36 +95,41 @@ export interface NavHighlight {
  * c'est le seul signal de mise en avant que le catalogue porte réellement.
  * À défaut, les dernières références entrées. Aucun classement inventé.
  */
-export const getNavHighlights = cache(async (limit = 2): Promise<NavHighlight[]> => {
-  const rows = await prisma.product.findMany({
-    where: { active: true, badge: { in: ["bestseller", "nouveau"] } },
-    orderBy: [{ badge: "asc" }, { createdAt: "desc" }],
-    take: limit,
-    include: { category: { include: { group: true } } },
-  });
+export const getNavHighlights = cache(
+  async (locale: Locale = "fr", limit = 2): Promise<NavHighlight[]> => {
+    const rows = await prisma.product.findMany({
+      where: { active: true, badge: { in: ["bestseller", "nouveau"] } },
+      orderBy: [{ badge: "asc" }, { createdAt: "desc" }],
+      take: limit,
+      include: { category: { include: { group: true } } },
+    });
 
-  // Repli : catalogue sans aucun produit badgé — on montre les plus récents
-  // plutôt que de laisser un trou dans le menu.
-  const complement =
-    rows.length < limit
-      ? await prisma.product.findMany({
-          where: { active: true, id: { notIn: rows.map((r) => r.id) } },
-          orderBy: { createdAt: "desc" },
-          take: limit - rows.length,
-          include: { category: { include: { group: true } } },
-        })
-      : [];
+    // Repli : catalogue sans aucun produit badgé — on montre les plus récents
+    // plutôt que de laisser un trou dans le menu.
+    const complement =
+      rows.length < limit
+        ? await prisma.product.findMany({
+            where: { active: true, id: { notIn: rows.map((r) => r.id) } },
+            orderBy: { createdAt: "desc" },
+            take: limit - rows.length,
+            include: { category: { include: { group: true } } },
+          })
+        : [];
 
-  return [...rows, ...complement].map((row) => ({
-    id: row.id,
-    brand: row.brand,
-    name: row.name,
-    priceFcfa: row.priceCents,
-    image: packshot(row.image),
-    href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
-    badge: row.badge,
-  }));
-});
+    const traduire = needsTranslation(locale);
+
+    return [...rows, ...complement].map((row) => ({
+      id: row.id,
+      // La marque ne se traduit jamais.
+      brand: row.brand,
+      name: pickText(row.name, traduire ? row.nameEn : undefined),
+      priceFcfa: row.priceCents,
+      image: packshot(row.image),
+      href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
+      badge: row.badge,
+    }));
+  },
+);
 
 /**
  * Marque telle que montrée sur `/marques` : soit une entité (logo, accroche,
@@ -218,30 +231,36 @@ export interface NavRoutine {
  * la ligne — on y lisait moins bien que sur la page elle-même, qui reste à un
  * clic par le bouton « Voir toutes les routines ».
  */
-export const getNavRoutines = cache(async (limit = 3): Promise<NavRoutine[]> => {
-  const rows = await prisma.routine.findMany({
-    where: { active: true },
-    orderBy: [{ position: "asc" }, { createdAt: "asc" }],
-    select: {
-      slug: true,
-      name: true,
-      claim: true,
-      tint: true,
-      image: true,
-      _count: { select: { steps: true } },
-    },
-  });
+export const getNavRoutines = cache(
+  async (locale: Locale = "fr", limit = 3): Promise<NavRoutine[]> => {
+    const rows = await prisma.routine.findMany({
+      where: { active: true },
+      orderBy: [{ position: "asc" }, { createdAt: "asc" }],
+      select: {
+        slug: true,
+        name: true,
+        nameEn: true,
+        claim: true,
+        claimEn: true,
+        tint: true,
+        image: true,
+        _count: { select: { steps: true } },
+      },
+    });
 
-  return rows
-    .filter((row) => row._count.steps > 0)
-    .slice(0, limit)
-    .map((row) => ({
-      slug: row.slug,
-      name: row.name,
-      claim: row.claim,
-      tint: row.tint,
-      image: packshot(row.image) || null,
-      href: `/routines/${row.slug}`,
-      stepCount: row._count.steps,
-    }));
-});
+    const traduire = needsTranslation(locale);
+
+    return rows
+      .filter((row) => row._count.steps > 0)
+      .slice(0, limit)
+      .map((row) => ({
+        slug: row.slug,
+        name: pickText(row.name, traduire ? row.nameEn : undefined),
+        claim: pickText(row.claim, traduire ? row.claimEn : undefined),
+        tint: row.tint,
+        image: packshot(row.image) || null,
+        href: `/routines/${row.slug}`,
+        stepCount: row._count.steps,
+      }));
+  },
+);

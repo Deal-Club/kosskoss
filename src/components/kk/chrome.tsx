@@ -1,5 +1,6 @@
 import { User, Phone, MessageCircle, ChevronLeft, ShieldCheck } from "lucide-react";
 import Image from "next/image";
+import { getLocale } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { BRAND, CONTACT } from "@/config/brand";
 import { getShopNavigation, getNavHighlights, getNavRoutines } from "@/server/kk/navigation";
@@ -13,6 +14,7 @@ import { PatternBackdrop } from "./pattern-backdrop";
 import { CookiePreferencesButton } from "@/components/kk/cookie-consent";
 import { tracageActif } from "@/server/consent";
 import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
+import type { Locale } from "@/i18n/routing";
 
 // Icônes de marque : lucide a retiré Instagram/Facebook (marques déposées),
 // on les redéfinit en SVG inline.
@@ -124,7 +126,11 @@ function lienWhatsapp(numero: string): string {
  * bandeau vide vaut mieux qu'un message de remplissage que personne n'a écrit.
  */
 export async function AnnouncementBar() {
-  const [items, config] = await Promise.all([getActiveAnnouncements(), getAnnouncementConfig()]);
+  const locale = (await getLocale()) as Locale;
+  const [items, config] = await Promise.all([
+    getActiveAnnouncements(locale),
+    getAnnouncementConfig(),
+  ]);
   return <AnnouncementBarView items={items} config={config} />;
 }
 
@@ -177,10 +183,11 @@ function Wordmark({ className = "", aligne = false }: { className?: string; alig
  * à traverser la frontière client.
  */
 export async function SiteHeader() {
+  const locale = (await getLocale()) as Locale;
   const [groups, highlights, routines] = await Promise.all([
-    getShopNavigation(),
-    getNavHighlights(),
-    getNavRoutines(),
+    getShopNavigation(locale),
+    getNavHighlights(locale),
+    getNavRoutines(locale),
   ]);
 
   return (

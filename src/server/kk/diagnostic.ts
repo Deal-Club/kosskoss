@@ -34,7 +34,7 @@ export async function buildRoutine(
   answerIds: string[],
   locale: Locale = "fr",
 ): Promise<DiagnosticResult> {
-  const { tags, chips } = await aggregateProfileFromAnswers(answerIds);
+  const { tags, chips } = await aggregateProfileFromAnswers(answerIds, locale);
 
   const rows = await prisma.product.findMany({
     where: { active: true, stock: { gt: 0 }, category: { group: { slug: "soins-visage" } } },

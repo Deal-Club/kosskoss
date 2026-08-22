@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 export default async function DiagnosticPage({ params }: { params: Params }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const questions = await getQuestions();
+  const questions = await getQuestions(locale);
 
   // Profil du client connecté, s'il en a déjà un : `lireProfil` rend un
   // tableau vide (jamais une erreur) pour un visiteur sans session, sans
