@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Star, Check, Loader2 } from "lucide-react";
 
 /**
@@ -33,6 +34,7 @@ const TEXTE_MIN = 10;
 const TEXTE_MAX = 2000;
 
 export function ReviewForm({ productId }: { productId: string }) {
+  const t = useTranslations("reviews");
   const [note, setNote] = useState(0);
   const [survol, setSurvol] = useState(0);
   const [nom, setNom] = useState("");
@@ -48,10 +50,10 @@ export function ReviewForm({ productId }: { productId: string }) {
     e.preventDefault();
     setErreur("");
 
-    if (note < 1) return setErreur("Merci de choisir une note de 1 à 5 étoiles.");
-    if (nom.trim().length < NOM_MIN) return setErreur("Merci d’indiquer votre prénom.");
+    if (note < 1) return setErreur(t("formRatingRequired"));
+    if (nom.trim().length < NOM_MIN) return setErreur(t("quick.nameRequired"));
     if (texte.trim().length < TEXTE_MIN)
-      return setErreur(`Votre avis doit faire au moins ${TEXTE_MIN} caractères.`);
+      return setErreur(t("quick.bodyMinLength", { min: TEXTE_MIN }));
 
     setEnvoi(true);
     try {
@@ -71,14 +73,14 @@ export function ReviewForm({ productId }: { productId: string }) {
 
       const donnees = (await reponse.json().catch(() => null)) as { error?: string } | null;
       if (!reponse.ok) {
-        setErreur(donnees?.error ?? "L’envoi a échoué. Merci de réessayer.");
+        setErreur(donnees?.error ?? t("quick.submitFailed"));
         return;
       }
       setEnvoye(true);
     } catch {
       // Coupure réseau : le message ne doit pas laisser croire que l'avis est
       // parti, sans quoi la personne ne le redéposera jamais.
-      setErreur("Connexion interrompue : votre avis n’a pas été envoyé.");
+      setErreur(t("quick.networkError"));
     } finally {
       setEnvoi(false);
     }
@@ -89,10 +91,10 @@ export function ReviewForm({ productId }: { productId: string }) {
       <div className="rounded-2xl border border-border/70 bg-card p-6">
         <p className="flex items-center gap-2 font-semibold text-deep">
           <Check className="h-5 w-5 text-gold-ink" />
-          Merci, votre avis a bien été reçu.
+          {t("quick.successTitle")}
         </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Il sera publié sur cette page après vérification par notre équipe.
+          {t("quick.successText")}
         </p>
       </div>
     );
@@ -100,17 +102,16 @@ export function ReviewForm({ productId }: { productId: string }) {
 
   return (
     <form onSubmit={handleSubmit} className="rounded-2xl border border-border/70 bg-card p-6">
-      <h3 className="text-deep">Donnez votre avis</h3>
+      <h3 className="text-deep">{t("quick.heading")}</h3>
       <p className="mt-1.5 text-sm text-muted-foreground">
-        Votre avis est relu par notre équipe avant publication. Votre adresse e-mail, si vous
-        l’indiquez, ne sera jamais affichée.
+        {t("quick.intro")}
       </p>
 
       {/* Note. Des boutons et non des étoiles décoratives : la note se choisit
           au clavier comme à la souris, et chacune porte son intitulé. */}
       <fieldset className="mt-5">
         <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Votre note
+          {t("formRatingLabel")}
         </legend>
         <div className="mt-2 flex items-center gap-1" onMouseLeave={() => setSurvol(0)}>
           {[1, 2, 3, 4, 5].map((valeur) => {
@@ -121,7 +122,7 @@ export function ReviewForm({ productId }: { productId: string }) {
                 type="button"
                 onClick={() => setNote(valeur)}
                 onMouseEnter={() => setSurvol(valeur)}
-                aria-label={`${valeur} étoile${valeur > 1 ? "s" : ""} sur 5`}
+                aria-label={t("quick.starAriaLabel", { count: valeur, suffix: valeur > 1 ? "s" : "" })}
                 aria-pressed={valeur === note}
                 className="rounded-full p-1 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
               >
@@ -137,7 +138,7 @@ export function ReviewForm({ productId }: { productId: string }) {
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Prénom
+            {t("quick.firstName")}
           </span>
           <input
             value={nom}
@@ -149,7 +150,7 @@ export function ReviewForm({ productId }: { productId: string }) {
         </label>
         <label className="block">
           <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Ville <span className="normal-case tracking-normal">(facultatif)</span>
+            {t("quick.city")} <span className="normal-case tracking-normal">{t("quick.optional")}</span>
           </span>
           <input
             value={ville}
@@ -162,7 +163,7 @@ export function ReviewForm({ productId }: { productId: string }) {
 
       <label className="mt-4 block">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          E-mail <span className="normal-case tracking-normal">(facultatif, jamais publié)</span>
+          {t("quick.emailLabel")} <span className="normal-case tracking-normal">{t("quick.emailOptionalNote")}</span>
         </span>
         <input
           type="email"
@@ -174,7 +175,7 @@ export function ReviewForm({ productId }: { productId: string }) {
 
       <label className="mt-4 block">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Titre <span className="normal-case tracking-normal">(facultatif)</span>
+          {t("quick.titleLabel")} <span className="normal-case tracking-normal">{t("quick.optional")}</span>
         </span>
         <input
           value={titre}
@@ -186,7 +187,7 @@ export function ReviewForm({ productId }: { productId: string }) {
 
       <label className="mt-4 block">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          Votre avis
+          {t("quick.bodyLabel")}
         </span>
         <textarea
           value={texte}
@@ -194,11 +195,11 @@ export function ReviewForm({ productId }: { productId: string }) {
           rows={5}
           maxLength={TEXTE_MAX}
           required
-          placeholder="Texture, tenue sur la journée, résultat après quelques semaines…"
+          placeholder={t("quick.bodyPlaceholder")}
           className="mt-1.5 w-full rounded-xl border border-input bg-card px-4 py-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
         />
         <span className="figure mt-1 block text-right text-xs text-muted-foreground">
-          {texte.length} / {TEXTE_MAX}
+          {t("quick.counter", { count: texte.length, max: TEXTE_MAX })}
         </span>
       </label>
 
@@ -214,7 +215,7 @@ export function ReviewForm({ productId }: { productId: string }) {
         className="kk-fill group mt-5 inline-flex items-center justify-center gap-2 rounded-full bg-deep px-7 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
       >
         {envoi && <Loader2 className="h-4 w-4 animate-spin" />}
-        {envoi ? "Envoi…" : "Publier mon avis"}
+        {envoi ? t("quick.submitting") : t("quick.submit")}
       </button>
     </form>
   );

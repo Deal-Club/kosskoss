@@ -1,5 +1,6 @@
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Sparkles, ArrowRight } from "lucide-react";
 import type { KKProductView } from "@/types/kk";
 import { ProductCard } from "./product-card";
@@ -35,6 +36,7 @@ import { ProductCarousel } from "./product-carousel";
  *    la maquette, ce qui lui donne le poids qu'un visuel de tête doit avoir.
  */
 export function Hero() {
+  const t = useTranslations("home");
   return (
     // Le fond de section ne se voit qu'au chargement, la photo le couvrant
     // entièrement dès qu'elle arrive. Il reste au vert profond de la marque :
@@ -107,7 +109,7 @@ export function Hero() {
                 lettres, la nuance de la marque tient la même lisibilité en
                 restant posée. */}
             <h1 className="kk-rise text-primary-foreground" style={{ "--d": "0ms" } as React.CSSProperties}>
-              Des soins conçus pour sublimer les peaux noires &amp; métissées
+              {t("hero.title")}
             </h1>
 
             {/* Le chapô quitte le gris d'encre de `.lead`, illisible sur une
@@ -116,8 +118,7 @@ export function Hero() {
               className="lead kk-rise mt-5 max-w-md text-primary-foreground/90"
               style={{ "--d": "80ms" } as React.CSSProperties}
             >
-              Sélection rigoureuse, formules efficaces, résultats visibles. Et des routines déjà
-              composées, pour ne pas avoir à choisir seul.
+              {t("hero.subtitle")}
             </p>
 
             {/* Deux portes, dans l'ordre d'engagement décroissant.
@@ -141,7 +142,7 @@ export function Hero() {
                 href="/routines"
                 className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep [text-shadow:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
               >
-                Trouvez votre routine
+                {t("hero.ctaRoutine")}
                 <Sparkles className="h-4 w-4 shrink-0" />
               </Link>
               {/* Contour clair à 55 %, au-dessus des 3:1 qu'un contrôle doit
@@ -152,7 +153,7 @@ export function Hero() {
                 href="/diagnostic"
                 className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/55 px-7 py-3.5 text-sm font-semibold text-primary-foreground backdrop-blur-[2px] transition hover:border-primary-foreground hover:bg-primary-foreground/10"
               >
-                Commencer le diagnostic
+                {t("diagnosticCta")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
@@ -185,7 +186,7 @@ export function Hero() {
         >
           <Image
             src="/images/editorial/hero-serum.webp"
-            alt="Femme à la peau riche en mélanine tenant un flacon de sérum"
+            alt={t("hero.imageAlt")}
             fill
             sizes="100vw"
             className="object-cover object-[68%_center] lg:object-right"

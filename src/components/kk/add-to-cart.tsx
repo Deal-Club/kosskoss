@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Plus, Minus, ShoppingBag, Check, Zap } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
@@ -11,6 +12,7 @@ import { FavoriteHeart } from "./product-actions";
 import { withLocale } from "./localized-link";
 
 export function AddToCart({ product }: { product: KKProductDetail }) {
+  const t = useTranslations("product");
   const { add, openDrawer } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -87,7 +89,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           « 20 500 FCFA » n'apprend rien et alourdit le bloc d'achat. */}
       {qty > 1 && (
         <p className="mt-2 text-sm text-muted-foreground" aria-live="polite">
-          Total&nbsp;:{" "}
+          {t("totalLabel")}{" "}
           <span className="figure text-base font-semibold text-deep">
             {formatFcfa(priceFcfa * qty)}
           </span>{" "}
@@ -101,7 +103,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
       {product.variants.length > 0 && (
         <fieldset className="mt-5">
           <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            Contenance
+            {t("contentLabel")}
           </legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {product.variants.map((v) => {
@@ -150,7 +152,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         className="kk-fill kk-fill-deep group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-ink px-7 py-4 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Zap className="h-4 w-4 shrink-0" />
-        {outOfStock ? "Indisponible" : "Payer maintenant"}
+        {outOfStock ? t("unavailable") : t("payNow")}
       </button>
 
       {/* Quantité + ajout */}
@@ -158,7 +160,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         <div className="flex items-center rounded-full border border-border bg-cream">
           <button
             type="button"
-            aria-label="Diminuer la quantité"
+            aria-label={t("decreaseQuantityShort")}
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             className="grid h-11 w-11 place-items-center rounded-full text-deep transition hover:bg-sand disabled:opacity-40"
             disabled={qty <= 1}
@@ -170,7 +172,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           </span>
           <button
             type="button"
-            aria-label="Augmenter la quantité"
+            aria-label={t("increaseQuantityShort")}
             onClick={() => setQty((q) => Math.min(product.stock || 99, q + 1))}
             className="grid h-11 w-11 place-items-center rounded-full text-deep transition hover:bg-sand"
           >
@@ -190,11 +192,11 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           type="button"
           onClick={handleAdd}
           disabled={outOfStock}
-          aria-label={outOfStock ? "Produit indisponible" : "Ajouter au panier"}
+          aria-label={outOfStock ? t("unavailableAria") : t("addToCart")}
           className="kk-fill group inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50 sm:px-7"
         >
           <ShoppingBag className="h-4 w-4 shrink-0" />
-          {outOfStock ? "Indisponible" : <span className="hidden sm:inline">Ajouter au panier</span>}
+          {outOfStock ? t("unavailable") : <span className="hidden sm:inline">{t("addToCart")}</span>}
         </button>
 
         <FavoriteHeart
@@ -224,9 +226,9 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
       >
         {added && (
           <>
-            <Check className="h-4 w-4" /> Ajouté au panier —{" "}
+            <Check className="h-4 w-4" /> {t("addedToCart")}{" "}
             <button type="button" onClick={openDrawer} className="underline underline-offset-2">
-              voir le panier
+              {t("viewCartLink")}
             </button>
           </>
         )}

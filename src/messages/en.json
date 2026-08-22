@@ -149,7 +149,24 @@
     "galleryLabel": "More product views",
     "galleryView": "Show view {index} of {total}",
     "chooseVolume": "Choose a volume",
-    "fromPrice": "from"
+    "fromPrice": "from",
+    "sectionDescription": "Description",
+    "keyIngredients": "Key ingredients",
+    "usageTitle": "How to use",
+    "usageText": "Apply to clean, dry skin, morning and/or evening as needed. If in doubt, take our beauty diagnostic for a routine that fits.",
+    "inStockShort": "In stock",
+    "unavailable": "Unavailable",
+    "unavailableAria": "Product unavailable",
+    "relatedEyebrow": "Pairs well with",
+    "relatedTitle": "You might also like",
+    "relatedAction": "View the category",
+    "payNow": "Pay now",
+    "decreaseQuantityShort": "Decrease quantity",
+    "increaseQuantityShort": "Increase quantity",
+    "contentLabel": "Size",
+    "totalLabel": "Total:",
+    "addedToCart": "Added to cart —",
+    "viewCartLink": "view cart"
   },
   "reviews": {
     "title": "Customer reviews",
@@ -179,7 +196,29 @@
     "formModerationNote": "Every review is checked before it is published.",
     "formError": "Your review could not be sent. Please try again.",
     "formSuccessTitle": "Thank you! Your review will be published once checked.",
-    "formSuccessHint": "We read every review ourselves. Approval usually takes one to two working days."
+    "formSuccessHint": "We read every review ourselves. Approval usually takes one to two working days.",
+    "quick": {
+      "heading": "Give your review",
+      "intro": "Your review is read by our team before publishing. Your email address, if you enter it, will never be shown.",
+      "starAriaLabel": "{count} star{suffix} out of 5",
+      "firstName": "First name",
+      "city": "Town",
+      "optional": "(optional)",
+      "emailLabel": "Email",
+      "emailOptionalNote": "(optional, never published)",
+      "titleLabel": "Title",
+      "bodyLabel": "Your review",
+      "bodyPlaceholder": "Texture, how it wears through the day, results after a few weeks…",
+      "counter": "{count} / {max}",
+      "submit": "Publish my review",
+      "submitting": "Sending…",
+      "nameRequired": "Please enter your first name.",
+      "bodyMinLength": "Your review must be at least {min} characters.",
+      "submitFailed": "Sending failed. Please try again.",
+      "networkError": "Connection interrupted: your review was not sent.",
+      "successTitle": "Thank you, your review has been received.",
+      "successText": "It will be published on this page once checked by our team."
+    }
   },
   "payment": {
     "title": "Secure payment methods",
@@ -751,7 +790,90 @@
   },
   "home": {
     "slogan": "The beauty selection that chooses you.",
-    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment."
+    "metaDescription": "Multi-brand cosmetics concept store in Cameroon. Ready-to-use routines by concern, a five-question beauty diagnostic, and Mobile Money payment.",
+    "diagnosticCta": "Start the diagnostic",
+    "hero": {
+      "imageAlt": "Woman with melanin-rich skin holding a bottle of serum",
+      "title": "Skincare designed to enhance Black & mixed-race skin",
+      "subtitle": "Rigorous selection, effective formulas, visible results. And routines already put together, so you don't have to choose alone.",
+      "ctaRoutine": "Find your routine"
+    },
+    "promises": {
+      "selectionTitle": "Expert selection",
+      "selectionText": "Products tested and approved",
+      "paymentTitle": "Secure payment",
+      "paymentText": "Protected transactions",
+      "deliveryTitle": "Fast delivery",
+      "deliveryText": "Anywhere in Cameroon",
+      "adviceTitle": "Personalised advice",
+      "adviceText": "From skincare experts"
+    },
+    "diagnosticCard": {
+      "eyebrow": "Beauty diagnostic",
+      "title": "Your ideal routine in 3 minutes",
+      "text": "Answer {count} questions and get your personalised routine.",
+      "badge": "100% personalised · Free · No commitment"
+    },
+    "brandFocus": {
+      "eyebrow": "Brand focus",
+      "cta": "Discover the brand",
+      "referenceCount": "{count} product{suffix} in the catalogue"
+    },
+    "categoryPills": {
+      "eyebrow": "Shop by category",
+      "title": "Where to start",
+      "viewAll": "View all categories",
+      "orRoutine": "Or start from a routine"
+    },
+    "insights": {
+      "adviceTitle": "Advice & guides",
+      "viewAll": "See all",
+      "beforeAfterTitle": "Before / after",
+      "before": "Before",
+      "after": "After",
+      "viewRoutine": "View the routine",
+      "eyebrow": "Good to know",
+      "title": "Your questions, our results"
+    },
+    "services": {
+      "authenticTitle": "Authentic products",
+      "authenticText": "Traceable supply chains",
+      "expertsTitle": "Experts on hand",
+      "expertsText": "Advice before and after your purchase",
+      "satisfactionTitle": "Satisfied or refunded",
+      "satisfactionText": "14 days to change your mind",
+      "mobileMoneyTitle": "Mobile Money",
+      "mobileMoneyText": "Orange Money & MTN",
+      "whatsappPrompt": "A question before you buy? <link>Message us on WhatsApp</link> — we reply the same day."
+    },
+    "diagnosticReminder": {
+      "title": "Not sure where to start?",
+      "text": "Five questions about your skin, and we put together your routine."
+    },
+    "raisonDetre": {
+      "eyebrow": "Our reason for being",
+      "titlePart1": "Choosing well shouldn't be",
+      "titlePart2": "an obstacle course.",
+      "text": "Finding skincare that truly suits Black, olive or mixed-race skin takes hours of research today. We built KossKoss Select to remove three obstacles at once.",
+      "whoWeAre": "Who we are",
+      "obstacles": {
+        "catalog": {
+          "probleme": "Entire aisles of products that all look alike",
+          "reponse": "A curated catalogue",
+          "precision": "references kept, not four thousand"
+        },
+        "routine": {
+          "probleme": "Advice written for other skin tones",
+          "reponse": "A routine put together for your skin",
+          "precision": "questions, and we put yours together"
+        },
+        "circuits": {
+          "probleme": "The constant doubt over where what you buy comes from",
+          "reponse": "Identified supply chains",
+          "precision": "houses distributed, named one by one"
+        }
+      }
+    }
   },
   "diagnostic": {
     "metaTitle": "Beauty Diagnostic — KossKoss Select",

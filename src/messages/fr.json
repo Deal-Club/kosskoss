@@ -149,7 +149,24 @@
     "galleryLabel": "Autres vues du produit",
     "galleryView": "Afficher la vue {index} sur {total}",
     "chooseVolume": "Choisissez un volume",
-    "fromPrice": "à partir de"
+    "fromPrice": "à partir de",
+    "sectionDescription": "Description",
+    "keyIngredients": "Ingrédients clés",
+    "usageTitle": "Conseils d'utilisation",
+    "usageText": "Appliquer sur peau propre et sèche, matin et/ou soir selon vos besoins. En cas de doute, réalisez notre diagnostic beauté pour une routine adaptée.",
+    "inStockShort": "En stock",
+    "unavailable": "Indisponible",
+    "unavailableAria": "Produit indisponible",
+    "relatedEyebrow": "À associer",
+    "relatedTitle": "Vous aimerez aussi",
+    "relatedAction": "Voir la catégorie",
+    "payNow": "Payer maintenant",
+    "decreaseQuantityShort": "Diminuer la quantité",
+    "increaseQuantityShort": "Augmenter la quantité",
+    "contentLabel": "Contenance",
+    "totalLabel": "Total :",
+    "addedToCart": "Ajouté au panier —",
+    "viewCartLink": "voir le panier"
   },
   "reviews": {
     "title": "Avis clients",
@@ -179,7 +196,29 @@
     "formModerationNote": "Chaque avis est vérifié avant publication.",
     "formError": "Votre avis n'a pas pu être envoyé. Merci de réessayer.",
     "formSuccessTitle": "Merci ! Votre avis sera publié après vérification.",
-    "formSuccessHint": "Nous lisons chaque avis nous-mêmes. La validation prend en général un à deux jours ouvrés."
+    "formSuccessHint": "Nous lisons chaque avis nous-mêmes. La validation prend en général un à deux jours ouvrés.",
+    "quick": {
+      "heading": "Donnez votre avis",
+      "intro": "Votre avis est relu par notre équipe avant publication. Votre adresse e-mail, si vous l’indiquez, ne sera jamais affichée.",
+      "starAriaLabel": "{count} étoile{suffix} sur 5",
+      "firstName": "Prénom",
+      "city": "Ville",
+      "optional": "(facultatif)",
+      "emailLabel": "E-mail",
+      "emailOptionalNote": "(facultatif, jamais publié)",
+      "titleLabel": "Titre",
+      "bodyLabel": "Votre avis",
+      "bodyPlaceholder": "Texture, tenue sur la journée, résultat après quelques semaines…",
+      "counter": "{count} / {max}",
+      "submit": "Publier mon avis",
+      "submitting": "Envoi…",
+      "nameRequired": "Merci d’indiquer votre prénom.",
+      "bodyMinLength": "Votre avis doit faire au moins {min} caractères.",
+      "submitFailed": "L’envoi a échoué. Merci de réessayer.",
+      "networkError": "Connexion interrompue : votre avis n’a pas été envoyé.",
+      "successTitle": "Merci, votre avis a bien été reçu.",
+      "successText": "Il sera publié sur cette page après vérification par notre équipe."
+    }
   },
   "payment": {
     "title": "Moyens de paiement sécurisés",
@@ -751,7 +790,90 @@
   },
   "home": {
     "slogan": "La Sélection beauté qui vous choisit.",
-    "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money."
+    "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money.",
+    "diagnosticCta": "Commencer le diagnostic",
+    "hero": {
+      "imageAlt": "Femme à la peau riche en mélanine tenant un flacon de sérum",
+      "title": "Des soins conçus pour sublimer les peaux noires & métissées",
+      "subtitle": "Sélection rigoureuse, formules efficaces, résultats visibles. Et des routines déjà composées, pour ne pas avoir à choisir seul.",
+      "ctaRoutine": "Trouvez votre routine"
+    },
+    "promises": {
+      "selectionTitle": "Sélection experte",
+      "selectionText": "Produits testés et approuvés",
+      "paymentTitle": "Paiement sécurisé",
+      "paymentText": "Transactions protégées",
+      "deliveryTitle": "Livraison rapide",
+      "deliveryText": "Partout au Cameroun",
+      "adviceTitle": "Conseils personnalisés",
+      "adviceText": "Par des experts skincare"
+    },
+    "diagnosticCard": {
+      "eyebrow": "Diagnostic beauté",
+      "title": "Votre routine idéale en 3 minutes",
+      "text": "Répondez à {count} questions et recevez votre routine personnalisée.",
+      "badge": "100 % personnalisé · Gratuit · Sans engagement"
+    },
+    "brandFocus": {
+      "eyebrow": "Focus marque",
+      "cta": "Découvrir la marque",
+      "referenceCount": "{count} référence{suffix} au catalogue"
+    },
+    "categoryPills": {
+      "eyebrow": "Shoppez par catégorie",
+      "title": "Par où commencer",
+      "viewAll": "Voir toutes les catégories",
+      "orRoutine": "Ou partez d'une routine"
+    },
+    "insights": {
+      "adviceTitle": "Conseils & guides",
+      "viewAll": "Tout voir",
+      "beforeAfterTitle": "Avant / après",
+      "before": "Avant",
+      "after": "Après",
+      "viewRoutine": "Voir la routine",
+      "eyebrow": "Bon à savoir",
+      "title": "Vos questions, nos résultats"
+    },
+    "services": {
+      "authenticTitle": "Produits authentiques",
+      "authenticText": "Circuits d'approvisionnement tracés",
+      "expertsTitle": "Experts à votre écoute",
+      "expertsText": "Conseil avant et après l'achat",
+      "satisfactionTitle": "Satisfait ou remboursé",
+      "satisfactionText": "14 jours pour changer d'avis",
+      "mobileMoneyTitle": "Mobile Money",
+      "mobileMoneyText": "Orange Money & MTN",
+      "whatsappPrompt": "Une question avant d'acheter ? <link>Écrivez-nous sur WhatsApp</link> — on répond dans la journée."
+    },
+    "diagnosticReminder": {
+      "title": "Vous ne savez pas par où commencer ?",
+      "text": "Cinq questions sur votre peau, et nous composons votre routine."
+    },
+    "raisonDetre": {
+      "eyebrow": "Notre raison d'être",
+      "titlePart1": "Bien choisir ne devrait pas être",
+      "titlePart2": "un parcours du combattant.",
+      "text": "Trouver un soin qui convienne vraiment à une peau noire, mate ou métissée demande aujourd'hui des heures de recherche. Nous avons construit KossKoss Select pour lever trois obstacles à la fois.",
+      "whoWeAre": "Qui nous sommes",
+      "obstacles": {
+        "catalog": {
+          "probleme": "Des rayons entiers de produits qui se ressemblent",
+          "reponse": "Un catalogue filtré",
+          "precision": "références retenues, pas quatre mille"
+        },
+        "routine": {
+          "probleme": "Des conseils écrits pour d’autres carnations",
+          "reponse": "Une routine composée pour votre peau",
+          "precision": "questions, et nous composons la vôtre"
+        },
+        "circuits": {
+          "probleme": "Le doute permanent sur l’origine de ce qu’on achète",
+          "reponse": "Des circuits identifiés",
+          "precision": "maisons distribuées, nommées une à une"
+        }
+      }
+    }
   },
   "diagnostic": {
     "metaTitle": "Diagnostic Beauté — KossKoss Select",

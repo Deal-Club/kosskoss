@@ -46,10 +46,20 @@ export const PRODUCT_BADGES: readonly BadgeDefinition[] = [
   },
 ] as const;
 
-/** Clé → libellé client. */
-export const BADGE_LABEL: Record<Exclude<KKBadge, null>, string> = {
-  bestseller: "Meilleure vente",
-  nouveau: "Nouveauté",
+/**
+ * Clé → libellé client, dans les deux langues de la boutique.
+ *
+ * Même convention que `ORDER_STATUS_LABELS` (src/lib/orderStatus.ts) et que
+ * `Besoin.label`/`labelEn` (src/lib/kk/besoins.ts) : une valeur bilingue
+ * portée par ce module, plutôt qu'une clé next-intl. Ces trois fichiers ne
+ * dépendent ni de Prisma ni du serveur — badges, statuts et besoins doivent
+ * rester importables depuis le bundle du navigateur comme depuis le
+ * back-office — et c'est ce qui les distingue des messages next-intl, qui
+ * exigent un contexte de requête.
+ */
+export const BADGE_LABEL: Record<Exclude<KKBadge, null>, { en: string; fr: string }> = {
+  bestseller: { en: "Bestseller", fr: "Meilleure vente" },
+  nouveau: { en: "New", fr: "Nouveauté" },
 };
 
 /**

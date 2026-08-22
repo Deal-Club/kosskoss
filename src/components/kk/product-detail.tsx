@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { KKProductDetail } from "@/server/kk/product";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
@@ -13,15 +14,23 @@ import type { KKProductReviews } from "@/server/kk/product-reviews";
 
 // Libellés partagés : voir `lib/kk/badges`.
 
-function Breadcrumb({ product }: { product: KKProductDetail }) {
+function Breadcrumb({
+  product,
+  homeLabel,
+  ariaLabel,
+}: {
+  product: KKProductDetail;
+  homeLabel: string;
+  ariaLabel: string;
+}) {
   const crumbs = [
-    { label: "Accueil", href: "/" },
+    { label: homeLabel, href: "/" },
     { label: product.group.label, href: `/${product.group.slug}` },
     { label: product.category.label, href: `/${product.group.slug}/${product.category.slug}` },
     { label: product.name },
   ];
   return (
-    <nav aria-label="Fil d'Ariane" className="mx-auto max-w-7xl px-6 py-5">
+    <nav aria-label={ariaLabel} className="mx-auto max-w-7xl px-6 py-5">
       <ol className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
         {crumbs.map((c, i) => (
           <li key={c.label} className="flex items-center gap-1.5">
@@ -121,7 +130,7 @@ function Accordion({ title, children, open = false }: { title: string; children:
   );
 }
 
-export function ProductDetail({
+export async function ProductDetail({
   product,
   related,
   reviews,
@@ -130,9 +139,13 @@ export function ProductDetail({
   related: KKProductView[];
   reviews: KKProductReviews;
 }) {
+  const locale = await getLocale();
+  const t = await getTranslations("product");
+  const tCommon = await getTranslations("common");
+
   return (
     <>
-      <Breadcrumb product={product} />
+      <Breadcrumb product={product} homeLabel={tCommon("home")} ariaLabel={tCommon("breadcrumb")} />
 
       <section className="mx-auto max-w-7xl px-6 pb-8">
         {/* `items-start` sur la grille, `sticky` sur le bloc d'achat : la
@@ -157,7 +170,7 @@ export function ProductDetail({
                       : "bg-gold text-deep"
                   }`}
                 >
-                  {BADGE_LABEL[product.badge]}
+                  {BADGE_LABEL[product.badge][locale === "en" ? "en" : "fr"]}
                 </span>
               )}
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
@@ -184,11 +197,11 @@ export function ProductDetail({
               </div>
 
               <div className="mt-8">
-                <Accordion title="Description" open>
+                <Accordion title={t("sectionDescription")} open>
                   {product.description || product.shortDescription}
                 </Accordion>
                 {product.bullets.length > 0 && (
-                  <Accordion title="Ingrédients clés">
+                  <Accordion title={t("keyIngredients")}>
                     <ul className="space-y-2">
                       {product.bullets.map((b) => (
                         <li key={b} className="flex items-center gap-2">
@@ -198,14 +211,13 @@ export function ProductDetail({
                     </ul>
                   </Accordion>
                 )}
-                <Accordion title="Conseils d'utilisation">
-                  Appliquer sur peau propre et sèche, matin et/ou soir selon vos besoins. En cas de
-                  doute, réalisez notre diagnostic beauté pour une routine adaptée.
+                <Accordion title={t("usageTitle")}>
+                  {t("usageText")}
                 </Accordion>
               </div>
 
               <p className="mt-5 text-xs text-muted-foreground">
-                Réf. {product.sku} · {product.stock > 0 ? "En stock" : "Indisponible"}
+                {t("sku")} {product.sku} · {product.stock > 0 ? t("inStockShort") : t("unavailable")}
               </p>
             </div>
           </div>
@@ -225,9 +237,9 @@ export function ProductDetail({
 
       {related.length > 0 && (
         <ProductRail
-          eyebrow="À associer"
-          title="Vous aimerez aussi"
-          action="Voir la catégorie"
+          eyebrow={t("relatedEyebrow")}
+          title={t("relatedTitle")}
+          action={t("relatedAction")}
           products={related}
         />
       )}

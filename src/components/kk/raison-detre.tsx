@@ -1,4 +1,5 @@
 import { LocalizedLink as Link } from "./localized-link";
+import { useTranslations } from "next-intl";
 import { ArrowRight, Sparkles } from "lucide-react";
 import type { RaisonDetreView } from "@/server/kk/raison-detre";
 
@@ -41,24 +42,26 @@ type Obstacle = {
 };
 
 export function RaisonDetre({ data }: { data: RaisonDetreView }) {
+  const t = useTranslations("home");
+  const tHeader = useTranslations("header");
   const obstacles: Obstacle[] = [
     {
-      probleme: "Des rayons entiers de produits qui se ressemblent",
-      reponse: "Un catalogue filtré",
+      probleme: t("raisonDetre.obstacles.catalog.probleme"),
+      reponse: t("raisonDetre.obstacles.catalog.reponse"),
       chiffre: `${data.produits}`,
-      precision: "références retenues, pas quatre mille",
+      precision: t("raisonDetre.obstacles.catalog.precision"),
     },
     {
-      probleme: "Des conseils écrits pour d’autres carnations",
-      reponse: "Une routine composée pour votre peau",
+      probleme: t("raisonDetre.obstacles.routine.probleme"),
+      reponse: t("raisonDetre.obstacles.routine.reponse"),
       chiffre: `${data.questions}`,
-      precision: "questions, et nous composons la vôtre",
+      precision: t("raisonDetre.obstacles.routine.precision"),
     },
     {
-      probleme: "Le doute permanent sur l’origine de ce qu’on achète",
-      reponse: "Des circuits identifiés",
+      probleme: t("raisonDetre.obstacles.circuits.probleme"),
+      reponse: t("raisonDetre.obstacles.circuits.reponse"),
       chiffre: `${data.marques}`,
-      precision: "maisons distribuées, nommées une à une",
+      precision: t("raisonDetre.obstacles.circuits.precision"),
     },
   ];
 
@@ -68,17 +71,15 @@ export function RaisonDetre({ data }: { data: RaisonDetreView }) {
         {/* ── Étage 1 : le propos, puis les trois obstacles ─────────────── */}
         <div className="grid gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-16">
           <div className="kk-enter lg:max-w-lg">
-            <p className="eyebrow eyebrow-on-dark">Notre raison d&rsquo;être</p>
+            <p className="eyebrow eyebrow-on-dark">{t("raisonDetre.eyebrow")}</p>
 
             <h2 className="mt-3 text-white">
-              Bien choisir ne devrait pas être{" "}
-              <span className="title-soft text-white/70">un parcours du combattant.</span>
+              {t("raisonDetre.titlePart1")}{" "}
+              <span className="title-soft text-white/70">{t("raisonDetre.titlePart2")}</span>
             </h2>
 
             <p className="mt-5 leading-relaxed text-white/85">
-              Trouver un soin qui convienne vraiment à une peau noire, mate ou métissée
-              demande aujourd&rsquo;hui des heures de recherche. Nous avons construit
-              KossKoss Select pour lever trois obstacles à la fois.
+              {t("raisonDetre.text")}
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
@@ -87,14 +88,14 @@ export function RaisonDetre({ data }: { data: RaisonDetreView }) {
                 className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep"
               >
                 <Sparkles className="h-4 w-4" />
-                Faire mon diagnostic
+                {tHeader("diagnosticCta")}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/a-propos"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-white underline-offset-4 hover:underline"
               >
-                Qui nous sommes
+                {t("raisonDetre.whoWeAre")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
