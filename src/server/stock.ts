@@ -20,6 +20,22 @@ export function isStockReason(value: unknown): value is StockReason {
   return typeof value === "string" && (STOCK_REASONS as readonly string[]).includes(value);
 }
 
+/**
+ * Délai de transaction partagé par toutes les écritures de stock qui peuvent
+ * se heurter au verrou d'une grosse réception (`recevoirLignes`,
+ * `src/server/kk/bons.ts`, qui utilise ce même délai).
+ *
+ * Avant la correction, `adjustStock`/`setStock` gardaient le défaut Prisma de
+ * 5 s alors que la réception peut retenir un verrou de ligne jusqu'à 30 s :
+ * un client qui valide son panier sur un produit en cours de réception
+ * attendait le verrou et voyait SA transaction expirer la première — l'échec
+ * du magasinier se déplaçait vers le client, qui perd un panier qu'une
+ * réception, elle, peut se permettre de relancer. Donner ici le même délai
+ * qu'à la réception laisse le client attendre aussi longtemps que la
+ * réception peut retenir le verrou, au lieu d'échouer plus tôt qu'elle.
+ */
+export const DELAI_TRANSACTION_STOCK_MS = 30_000;
+
 export interface StockProductRow {
   id: string;
   brand: string;
@@ -151,10 +167,17 @@ export async function adjustStock(
   }
 
   return prisma.$transaction(async (tx) => {
-    const current = await tx.product.findUnique({
-      where: { id: productId },
-      select: { id: true, stock: true },
-    });
+    // `SELECT … FOR UPDATE` verrouille la ligne : une autre transaction qui
+    // ajusterait le même produit attend ici plutôt que de lire un stock qui
+    // va changer sous elle. Sans ce verrou, deux appels concurrents peuvent
+    // lire le même stock de départ et l'un des deux deltas se perd — le
+    // même défaut que celui corrigé dans `recevoirLignes`
+    // (src/server/kk/bons.ts), pour la même raison : cette fonction déclare
+    // en tête de fichier que le stock et son journal ne divergent jamais.
+    const verrou = await tx.$queryRaw<{ stock: number }[]>`
+      SELECT stock FROM "Product" WHERE id = ${productId} FOR UPDATE
+    `;
+    const current = verrou[0];
     if (!current) return undefined;
 
     const nextStock = Math.max(0, current.stock + delta);
@@ -163,7 +186,15 @@ export async function adjustStock(
       throw new Error("Le stock est déjà à 0 et ne peut pas être réduit davantage.");
     }
 
-    await tx.product.update({ where: { id: productId }, data: { stock: nextStock } });
+    // Écrit en `{ increment }`, calculé sur le delta EFFECTIF (après le
+    // plancher à zéro) — un incrément nu ne borne rien, le plancher doit donc
+    // être appliqué avant l'écriture, pas après. La ligne reste verrouillée
+    // depuis le `SELECT … FOR UPDATE` ci-dessus : cette lecture et cette
+    // écriture forment un tout, aucune autre transaction ne peut s'intercaler.
+    await tx.product.update({
+      where: { id: productId },
+      data: { stock: { increment: effectiveDelta } },
+    });
 
     const movement = await tx.stockMovement.create({
       data: {
@@ -182,7 +213,7 @@ export async function adjustStock(
       stock: nextStock,
       movement: toMovementRecord(movement),
     };
-  });
+  }, { timeout: DELAI_TRANSACTION_STOCK_MS });
 }
 
 /** Fixe le stock à une valeur absolue et en déduit le mouvement correspondant. */
@@ -198,10 +229,17 @@ export async function setStock(
   }
 
   return prisma.$transaction(async (tx) => {
-    const current = await tx.product.findUnique({
-      where: { id: productId },
-      select: { id: true, stock: true },
-    });
+    // Même verrou que dans `adjustStock` ci-dessus, pour la même raison : sans
+    // lui, deux appels concurrents liraient le même stock de départ et l'un
+    // écraserait le mouvement de l'autre dans le journal. `setStock` fixe une
+    // valeur ABSOLUE — ce n'est pas un delta reçu de l'appelant — donc
+    // l'écriture reste `data: { stock: value }` plutôt qu'un `{ increment }` ;
+    // le verrou garantit déjà que `delta` ci-dessous reflète le bon stock de
+    // départ, ce qu'un incrément nu n'apporterait pas de plus ici.
+    const verrou = await tx.$queryRaw<{ stock: number }[]>`
+      SELECT stock FROM "Product" WHERE id = ${productId} FOR UPDATE
+    `;
+    const current = verrou[0];
     if (!current) return undefined;
 
     const delta = value - current.stock;
@@ -228,5 +266,5 @@ export async function setStock(
       stock: value,
       movement: toMovementRecord(movement),
     };
-  });
+  }, { timeout: DELAI_TRANSACTION_STOCK_MS });
 }

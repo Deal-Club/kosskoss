@@ -22,6 +22,12 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   merchant: "catalogue",
   upload: "catalogue",
   "vocabulaire-tags": "catalogue",
+  // Approvisionnement : de qui vient la marchandise, et ce qui reste à
+  // recevoir. Rattaché au catalogue comme `stock`, dont ce lot est le
+  // prolongement — pas aux commandes, qui décrivent ce qu'on vend, pas ce
+  // qu'on achète.
+  suppliers: "catalogue",
+  "purchase-orders": "catalogue",
 
   // Commandes — y compris les ventes : suivre les commandes sans voir ce
   // qu'elles rapportent n'aurait pas de sens.
