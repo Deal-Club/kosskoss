@@ -57,9 +57,9 @@ export function CartPageView() {
                       <p className="text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                         {line.brand}
                       </p>
-                      <a href={line.path} className="text-sm font-medium text-foreground hover:text-deep">
+                      <Link href={line.path} className="text-sm font-medium text-foreground hover:text-deep">
                         {line.name}
-                      </a>
+                      </Link>
                       {line.variantLabel && (
                         <p className="text-xs text-muted-foreground">{line.variantLabel}</p>
                       )}

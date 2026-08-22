@@ -4,6 +4,7 @@ import type { KKProductDetail } from "@/server/kk/product";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif, Petal } from "./motifs";
+import { LocalizedLink as Link } from "./localized-link";
 import { AddToCart } from "./add-to-cart";
 import { ProductRail } from "./home";
 import { ProductReviews } from "./product-reviews";
@@ -25,9 +26,9 @@ function Breadcrumb({ product }: { product: KKProductDetail }) {
         {crumbs.map((c, i) => (
           <li key={c.label} className="flex items-center gap-1.5">
             {c.href ? (
-              <a href={c.href} className="transition hover:text-deep">
+              <Link href={c.href} className="transition hover:text-deep">
                 {c.label}
-              </a>
+              </Link>
             ) : (
               <span className="text-deep">{c.label}</span>
             )}

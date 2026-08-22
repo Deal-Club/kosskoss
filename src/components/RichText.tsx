@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import Link from "next/link";
+import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { parseRichText, type RichTextNode } from "@/lib/richText";
 
 /**
