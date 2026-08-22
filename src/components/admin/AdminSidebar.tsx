@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Award,
+  ClipboardList,
   Code2,
   CreditCard,
   FileText,
@@ -26,6 +27,7 @@ import {
   Tags,
   Ticket,
   TrendingUp,
+  Truck,
   Users,
   Warehouse,
   X,
@@ -98,6 +100,18 @@ export function AdminSidebar({
           famille: "products",
         },
         { label: "Stock", href: "/admin/stock", icon: Warehouse, famille: "stock" },
+        {
+          label: "Fournisseurs",
+          href: "/admin/suppliers",
+          icon: Truck,
+          famille: "suppliers",
+        },
+        {
+          label: "Bons de commande",
+          href: "/admin/purchase-orders",
+          icon: ClipboardList,
+          famille: "purchase-orders",
+        },
         {
           label: "Diagnostic beauté",
           href: "/admin/diagnostic",

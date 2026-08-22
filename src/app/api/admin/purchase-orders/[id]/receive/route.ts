@@ -1,0 +1,37 @@
+import { NextResponse } from "next/server";
+import { requireCapaciteApi } from "@/lib/adminApi";
+import { recevoirLignes, type ReceptionLigneInput } from "@/server/kk/bons";
+import { adminActorLabel } from "@/server/admins";
+
+type Params = { params: Promise<{ id: string }> };
+
+interface ReceiveBody {
+  receptions?: ReceptionLigneInput[];
+  majCoutProduit?: boolean;
+  note?: string;
+}
+
+export async function POST(request: Request, { params }: Params) {
+  const { session, unauthorized } = await requireCapaciteApi("catalogue");
+  if (unauthorized) return unauthorized;
+
+  const { id } = await params;
+  const body = (await request.json().catch(() => null)) as ReceiveBody | null;
+  if (!body || !Array.isArray(body.receptions) || body.receptions.length === 0) {
+    return NextResponse.json({ error: "Aucune ligne à recevoir." }, { status: 400 });
+  }
+
+  const par = await adminActorLabel(session);
+
+  try {
+    const resultat = await recevoirLignes(id, body.receptions, {
+      majCoutProduit: body.majCoutProduit !== false,
+      note: body.note,
+      par,
+    });
+    return NextResponse.json(resultat);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Réception impossible.";
+    return NextResponse.json({ error: message }, { status: 400 });
+  }
+}

@@ -1,6 +1,17 @@
 import { prisma } from "@/server/prisma";
 import { numeroSuivant } from "@/lib/kk/numerotation";
-import { statutApresReception, totauxBon, type LigneBon, type StatutBon } from "@/lib/kk/approvisionnement";
+import {
+  statutApresReception,
+  totauxBon,
+  STATUT_BON_LABELS,
+  type LigneBon,
+  type StatutBon,
+} from "@/lib/kk/approvisionnement";
+
+// Réexporté pour les appelants côté serveur qui importent déjà ce module —
+// la source reste `src/lib/kk/approvisionnement.ts`, un module pur qu'un
+// composant client peut importer directement sans tirer Prisma.
+export { STATUT_BON_LABELS };
 import type { StockReason } from "@/server/stock";
 
 /**

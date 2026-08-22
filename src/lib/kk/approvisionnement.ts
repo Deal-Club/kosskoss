@@ -20,6 +20,21 @@
 
 export type StatutBon = "brouillon" | "envoye" | "recu_partiel" | "recu" | "annule";
 
+/**
+ * Libellés français, pour les écrans du back-office.
+ *
+ * Posés ici — module pur, sans import — pour rester importables depuis un
+ * composant client sans tirer `src/server/kk/bons.ts` (et donc Prisma) dans le
+ * paquet du navigateur.
+ */
+export const STATUT_BON_LABELS: Record<StatutBon, string> = {
+  brouillon: "Brouillon",
+  envoye: "Envoyé",
+  recu_partiel: "Reçu partiel",
+  recu: "Reçu",
+  annule: "Annulé",
+};
+
 export interface LigneBon {
   quantiteCommandee: number;
   quantiteRecue: number;

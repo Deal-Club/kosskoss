@@ -12,6 +12,7 @@ import {
   listStockMovements,
   listStockProducts,
 } from "@/server/stock";
+import { quantitesEnCommandeParProduit } from "@/server/kk/bons";
 
 // Nombre de mouvements chargés avant découpage. `listStockMovements` plafonne
 // la valeur à 200 : c'est donc la profondeur maximale de l'historique consultable.
@@ -43,11 +44,15 @@ export default async function AdminStockPage({
   const stockPage = parsePageParam(params.page);
   const movementsPage = parsePageParam(params.mvPage);
 
-  const [allProducts, lowStock, allMovements] = await Promise.all([
+  const [allProducts, lowStock, allMovements, enCommandeParProduit] = await Promise.all([
     listStockProducts(),
     listLowStockProducts(),
     listStockMovements({ limit: MOVEMENTS_HISTORY_LIMIT }),
+    quantitesEnCommandeParProduit(),
   ]);
+  // Converti en objet simple : une Map ne traverse pas proprement la frontière
+  // entre ce composant serveur et StockTable, qui est un composant client.
+  const enCommande = Object.fromEntries(enCommandeParProduit);
 
   const stockPageInfo = paginate(allProducts, stockPage);
   const movementsPageInfo = paginate(allMovements, movementsPage);
@@ -123,7 +128,7 @@ export default async function AdminStockPage({
           Stocks ({stockPageInfo.totalItems} produit{stockPageInfo.totalItems > 1 ? "s" : ""})
         </h2>
         {/* StockTable est un composant client : il ne reçoit que la tranche courante. */}
-        <StockTable products={stockPageInfo.items} />
+        <StockTable products={stockPageInfo.items} enCommande={enCommande} />
         <AdminPagination
           {...stockPageInfo}
           basePath="/admin/stock"

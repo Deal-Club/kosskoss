@@ -15,6 +15,12 @@ const REASON_OPTIONS: { value: StockReason; label: string }[] = [
 
 interface StockTableProps {
   products: StockProductRow[];
+  /**
+   * Quantités restant à recevoir sur les bons `envoye` et `recu_partiel`, par
+   * identifiant de produit. Répond à la seule question qu'on se pose devant
+   * une rupture : est-ce que ça arrive ?
+   */
+  enCommande: Record<string, number>;
 }
 
 interface AdjustPayload {
@@ -28,7 +34,7 @@ interface AdjustPayload {
 const controlClass =
   "rounded-sm border border-border px-2 py-1.5 text-sm outline-none focus:border-primary";
 
-export function StockTable({ products }: StockTableProps) {
+export function StockTable({ products, enCommande }: StockTableProps) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -95,13 +101,14 @@ export function StockTable({ products }: StockTableProps) {
               <th className="px-4 py-3">Catégorie</th>
               <th className="px-4 py-3">Stock</th>
               <th className="px-4 py-3">Seuil d&apos;alerte</th>
+              <th className="px-4 py-3">En commande</th>
               <th className="px-4 py-3 text-right">Mouvement</th>
             </tr>
           </thead>
           <tbody>
             {products.length === 0 && (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                <td colSpan={6} className="px-4 py-8 text-center text-muted-foreground">
                   Aucun produit disponible.
                 </td>
               </tr>
@@ -132,6 +139,18 @@ export function StockTable({ products }: StockTableProps) {
                     )}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{product.lowStockThreshold}</td>
+                  <td className="px-4 py-3">
+                    {enCommande[product.id] ? (
+                      <span
+                        title="Quantité restant à recevoir sur un bon de commande envoyé"
+                        className="rounded-sm bg-accent px-2 py-1 text-xs font-bold text-accent-foreground"
+                      >
+                        {enCommande[product.id]}
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex flex-wrap items-center justify-end gap-2">
                       <button
