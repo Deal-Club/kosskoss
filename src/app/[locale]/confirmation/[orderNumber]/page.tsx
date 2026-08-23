@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
+import { MesureAchat } from "@/components/kk/mesure-achat";
 import { getKossOrder } from "@/server/kk/checkout";
 import { lireAccesCommande } from "@/server/kk/acces-commande";
 import { getCurrentCustomer } from "@/server/customerSession";
@@ -122,6 +123,24 @@ export default async function ConfirmationPage({
 
   return (
     <div className="flex min-h-screen flex-col">
+      {/* `purchase` : uniquement si le webhook a déjà encaissé — jamais sur un
+          simple retour de navigateur, voir l'en-tête de MesureAchat. Le SKU
+          de chaque ligne sert de référence produit, comme sur la fiche et
+          l'ajout au panier ; une ligne peut avoir `sku` vide (colonne ajoutée
+          après coup) ou `productId` absent (produit supprimé depuis), d'où
+          les deux replis avant le nom, seule valeur garantie non vide. */}
+      {payee && (
+        <MesureAchat
+          orderNumber={order.orderNumber}
+          totalCents={order.totalCents}
+          articles={order.items.map((i) => ({
+            reference: i.sku || i.productId || i.name,
+            nom: i.name,
+            prixCents: i.unitPriceCents,
+            quantite: i.quantity,
+          }))}
+        />
+      )}
       <CheckoutHeader />
       <main className="flex-1">
         <div className="mx-auto max-w-2xl px-6 py-14">

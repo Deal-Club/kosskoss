@@ -26,6 +26,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
 import { normaliserTelephone } from "@/lib/kk/telephone";
+import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
 import type { PaymentMethodView } from "@/server/kk/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import { BottleMotif } from "./motifs";
@@ -234,6 +235,28 @@ export function CheckoutForm({
     observateur.observe(cible);
     return () => observateur.disconnect();
   }, [ready, lines.length]);
+
+  // `begin_checkout` : une fois par entrée dans le tunnel avec un panier non
+  // vide. `ready` distingue le panier réellement lu (localStorage hydraté) du
+  // panier vide affiché avant hydratation — sans quoi une visite avec panier
+  // enverrait d'abord un événement à zéro article. Le garde par `useRef` évite
+  // un second envoi au double montage du Strict Mode.
+  const debutTunnelEnvoye = useRef(false);
+  useEffect(() => {
+    if (!ready || lines.length === 0 || debutTunnelEnvoye.current) return;
+    debutTunnelEnvoye.current = true;
+    mesurerEvenement({
+      type: "begin_checkout",
+      reference: lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.quantity}`).join("|"),
+      articles: lines.map((l) => ({
+        reference: l.variantId ?? l.productId,
+        nom: l.name,
+        prixCents: l.priceCents,
+        quantite: l.quantity,
+      })),
+      totalCents: subtotal,
+    });
+  }, [ready, lines, subtotal]);
 
   const erreurs = useMemo(
     () => ({
