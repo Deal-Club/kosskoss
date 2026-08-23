@@ -1,6 +1,8 @@
 import path from "node:path";
 import { readSheet, type CellValue, type Row } from "read-excel-file/node";
 import { estNiveau, type NiveauRoutine } from "@/lib/kk/routines-niveau";
+import { isValidGtin } from "@/lib/gtin";
+import { prisma } from "@/server/prisma";
 
 /**
  * Lecteur du master client (KOSSKOSS_CATALOGUE_ROUTINES_V1_2.xlsx).
@@ -335,4 +337,245 @@ export async function lireMaster(chemin: string = CHEMIN_MASTER_PAR_DEFAUT): Pro
     liaisons: liaisons.valeurs,
     liaisonsIgnorees: liaisons.ignorees,
   };
+}
+
+// ---- Import des fiches produits (tâche 2) ------------------------------------
+
+/**
+ * Le master vérifie déjà, produit par produit, que sa colonne `Categorie`
+ * correspond à la catégorie du site (Nettoyant 16, Toner 6, Traitement 20,
+ * Hydratant 15, Protection 3, Corps 8, Hygiène 3 = 71). Cette table est donc
+ * un CONTRÔLE, jamais une réaffectation : déplacer un produit de rayon est une
+ * décision de merchandising, pas une correction que cet import doit prendre à
+ * la place du commerçant — vider un rayon en silence serait pire que signaler
+ * un écart qu'un humain tranche.
+ */
+export const CATEGORIE_MASTER_VERS_SLUG: Record<string, string> = {
+  Nettoyant: "nettoyants",
+  Toner: "toniques",
+  Traitement: "traitements",
+  Hydratant: "hydratants",
+  Protection: "solaires",
+  Corps: "corps",
+  "Hygiène": "hygiene",
+};
+
+export interface PrixModifie {
+  sku: string;
+  nom: string;
+  ancienFcfa: number;
+  nouveauFcfa: number;
+}
+
+export interface GtinModifie {
+  sku: string;
+  ancien: string | null;
+  nouveau: string;
+}
+
+export interface DivergenceCategorie {
+  sku: string;
+  nom: string;
+  categorieMaster: string;
+  categorieSite: string;
+}
+
+export interface FicheReperee {
+  sku: string;
+  nom: string;
+}
+
+export interface CompteRenduFiches {
+  /** Fiches dont au moins un champ de contenu (les 8 du lot 7A + shortDescription + bullets) a changé. */
+  misesAJour: FicheReperee[];
+  /** Fiches rapprochées, mais dont rien n'a changé — preuve d'idempotence. */
+  inchangees: FicheReperee[];
+  /** Chaque prix modifié, avec l'ancienne et la nouvelle valeur — jamais en silence. */
+  prixModifies: PrixModifie[];
+  /** GTIN écrits, avec l'ancienne et la nouvelle valeur. */
+  gtinModifies: GtinModifie[];
+  /** EAN_UPC présent mais dont la clé de contrôle ne passe pas `isValidGtin` — non écrit. */
+  gtinInvalides: { sku: string; ean: string }[];
+  /** SKU du master introuvable en base — SIGNALÉ, jamais créé. */
+  skusInconnus: { ligne: number; sku: string; nom: string }[];
+  /** SKU du master rapproché à PLUS D'UN produit en base — ambigu, aucune écriture. */
+  skusAmbigus: { sku: string; nombreDeProduits: number }[];
+  /** Produit en base dont le SKU n'apparaît dans aucune ligne du master — SIGNALÉ, jamais supprimé. */
+  produitsHorsMaster: FicheReperee[];
+  /** Catégorie du master différente de la catégorie du site pour ce SKU — jamais corrigée automatiquement. */
+  categoriesDivergentes: DivergenceCategorie[];
+  /** Lignes du master écartées à la lecture (voir `lireMaster`). */
+  lignesIgnorees: LigneIgnoree[];
+}
+
+type ProduitActuel = Awaited<ReturnType<typeof chargerProduitsActuels>>[number];
+
+function chargerProduitsActuels() {
+  return prisma.product.findMany({
+    select: {
+      id: true,
+      sku: true,
+      name: true,
+      priceCents: true,
+      gtin: true,
+      category: { select: { slug: true } },
+      shortDescription: true,
+      bullets: true,
+      problemeAccroche: true,
+      idealPour: true,
+      usageMatin: true,
+      usageSoir: true,
+      frequence: true,
+      conseilKossKoss: true,
+      precautions: true,
+      actifsCles: true,
+      statutPublication: true,
+      donneesAConfirmer: true,
+    },
+  });
+}
+
+/**
+ * Différence entre les huit champs de contenu du lot 7A + `shortDescription`
+ * et `bullets`, et ce que porte la fiche du master. `costCents` n'apparaît
+ * jamais ici — voir la remarque en tête de fichier : il vient des bons de
+ * commande, jamais du master.
+ */
+export function champsContenuDifferents(actuel: ProduitActuel, fiche: FicheMaster): Record<string, string> {
+  const paires: [string, string, string][] = [
+    ["shortDescription", actuel.shortDescription, fiche.shortDescription],
+    ["bullets", actuel.bullets, JSON.stringify(fiche.benefices)],
+    ["problemeAccroche", actuel.problemeAccroche, fiche.problemeAccroche],
+    ["idealPour", actuel.idealPour, fiche.idealPour],
+    ["usageMatin", actuel.usageMatin, fiche.usageMatin],
+    ["usageSoir", actuel.usageSoir, fiche.usageSoir],
+    ["frequence", actuel.frequence, fiche.frequence],
+    ["conseilKossKoss", actuel.conseilKossKoss, fiche.conseilKossKoss],
+    ["precautions", actuel.precautions, fiche.precautions],
+    ["actifsCles", actuel.actifsCles, fiche.actifsCles],
+    ["statutPublication", actuel.statutPublication, fiche.statutPublication],
+    ["donneesAConfirmer", actuel.donneesAConfirmer, fiche.donneesAConfirmer],
+  ];
+  const patch: Record<string, string> = {};
+  for (const [champ, valeurActuelle, valeurAttendue] of paires) {
+    if (valeurActuelle !== valeurAttendue) patch[champ] = valeurAttendue;
+  }
+  return patch;
+}
+
+/**
+ * Rapproche les 71 fiches du master aux produits en base par SKU, met à jour
+ * ce qui a changé, et NOMME chaque écriture — en particulier chaque prix
+ * modifié, avec son ancienne et sa nouvelle valeur (règle 5 des contraintes
+ * globales). N'écrit jamais un SKU inconnu, ne supprime jamais un produit
+ * absent du master, et ne déplace jamais un produit de catégorie.
+ */
+export async function importerFichesMaster(lecture: LectureMaster): Promise<CompteRenduFiches> {
+  const produits = await chargerProduitsActuels();
+
+  const parSku = new Map<string, ProduitActuel[]>();
+  for (const produit of produits) {
+    const liste = parSku.get(produit.sku) ?? [];
+    liste.push(produit);
+    parSku.set(produit.sku, liste);
+  }
+
+  const compteRendu: CompteRenduFiches = {
+    misesAJour: [],
+    inchangees: [],
+    prixModifies: [],
+    gtinModifies: [],
+    gtinInvalides: [],
+    skusInconnus: [],
+    skusAmbigus: [],
+    produitsHorsMaster: [],
+    categoriesDivergentes: [],
+    lignesIgnorees: lecture.fichesIgnorees,
+  };
+
+  const skusDuMaster = new Set(lecture.fiches.map((f) => f.sku));
+  const skusAmbigusDejaSignales = new Set<string>();
+
+  for (const fiche of lecture.fiches) {
+    const candidats = parSku.get(fiche.sku) ?? [];
+
+    if (candidats.length === 0) {
+      compteRendu.skusInconnus.push({ ligne: fiche.ligne, sku: fiche.sku, nom: fiche.nom });
+      continue;
+    }
+
+    if (candidats.length > 1) {
+      if (!skusAmbigusDejaSignales.has(fiche.sku)) {
+        compteRendu.skusAmbigus.push({ sku: fiche.sku, nombreDeProduits: candidats.length });
+        skusAmbigusDejaSignales.add(fiche.sku);
+      }
+      continue;
+    }
+
+    const actuel = candidats[0];
+    const patch: Record<string, unknown> = champsContenuDifferents(actuel, fiche);
+    const contenuChange = Object.keys(patch).length > 0;
+
+    // Prix : jamais réécrit sans le dire — chaque changement est nommé avec
+    // l'ancienne ET la nouvelle valeur.
+    if (fiche.prixFcfa !== actuel.priceCents) {
+      compteRendu.prixModifies.push({
+        sku: fiche.sku,
+        nom: actuel.name,
+        ancienFcfa: actuel.priceCents,
+        nouveauFcfa: fiche.prixFcfa,
+      });
+      patch.priceCents = fiche.prixFcfa;
+    }
+
+    // GTIN : un EAN_UPC vide ne détruit jamais une valeur déjà en base — le
+    // master ne renseigne pas systématiquement cette colonne. Un EAN présent
+    // mais dont la clé de contrôle échoue n'est jamais écrit non plus.
+    const eanNettoye = fiche.ean.replace(/[\s-]/g, "");
+    if (eanNettoye) {
+      if (isValidGtin(eanNettoye)) {
+        if (eanNettoye !== actuel.gtin) {
+          compteRendu.gtinModifies.push({ sku: fiche.sku, ancien: actuel.gtin, nouveau: eanNettoye });
+          patch.gtin = eanNettoye;
+        }
+      } else {
+        compteRendu.gtinInvalides.push({ sku: fiche.sku, ean: fiche.ean });
+      }
+    }
+
+    // Catégorie : signalement seul, jamais de réaffectation automatique — voir
+    // le commentaire de `CATEGORIE_MASTER_VERS_SLUG`.
+    const slugAttendu = CATEGORIE_MASTER_VERS_SLUG[fiche.categorie];
+    if (!slugAttendu || slugAttendu !== actuel.category.slug) {
+      compteRendu.categoriesDivergentes.push({
+        sku: fiche.sku,
+        nom: actuel.name,
+        categorieMaster: fiche.categorie,
+        categorieSite: actuel.category.slug,
+      });
+    }
+
+    if (Object.keys(patch).length === 0) {
+      compteRendu.inchangees.push({ sku: fiche.sku, nom: actuel.name });
+      continue;
+    }
+
+    await prisma.product.update({ where: { id: actuel.id }, data: patch });
+    if (contenuChange) {
+      // Le contenu éditorial a changé : la fiche apparaît dans cette
+      // section. Si seuls le prix et/ou le GTIN ont bougé, ils restent
+      // nommés dans leurs listes dédiées (`prixModifies`, `gtinModifies`)
+      // sans qu'il soit besoin de répéter le SKU ici — cette section ne
+      // décrit que le contenu éditorial.
+      compteRendu.misesAJour.push({ sku: fiche.sku, nom: actuel.name });
+    }
+  }
+
+  for (const produit of produits) {
+    if (!skusDuMaster.has(produit.sku)) {
+      compteRendu.produitsHorsMaster.push({ sku: produit.sku, nom: produit.name });
+    }
+  }
+
+  return compteRendu;
 }

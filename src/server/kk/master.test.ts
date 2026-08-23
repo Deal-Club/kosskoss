@@ -5,6 +5,9 @@ import {
   analyserLigneFiche,
   analyserLigneRoutine,
   analyserLigneLiaison,
+  champsContenuDifferents,
+  CATEGORIE_MASTER_VERS_SLUG,
+  type FicheMaster,
 } from "./master";
 import type { Row } from "read-excel-file/node";
 
@@ -236,5 +239,111 @@ describe("analyserLigneLiaison", () => {
     const resultat = analyserLigneLiaison(INDEX_LIAISONS, ligneLiaison({ Etape: "première" }), 4);
     assert.ok("ignoree" in resultat);
     if ("ignoree" in resultat) assert.match(resultat.ignoree.raison, /étape/);
+  });
+});
+
+// ---- Tâche 2 : diff de contenu et correspondance des catégories -------------
+
+function ficheDeTest(patch: Partial<FicheMaster> = {}): FicheMaster {
+  return {
+    ligne: 2,
+    sku: "ANU-HEA-TON-150",
+    ean: "",
+    marque: "Anua",
+    nom: "Lotion tonique",
+    prixFcfa: 18000,
+    categorie: "Toner",
+    shortDescription: "Tonique apaisant",
+    benefices: ["Apaise", "Hydrate"],
+    problemeAccroche: "Rougeurs ?",
+    idealPour: "Peaux sensibles",
+    usageMatin: "Au coton",
+    usageSoir: "Au coton",
+    frequence: "Quotidien",
+    conseilKossKoss: "Complète le nettoyage",
+    precautions: "Aucune",
+    actifsCles: "Heartleaf 77%",
+    statutPublication: "READY",
+    donneesAConfirmer: "",
+    ...patch,
+  };
+}
+
+function produitDeTest(patch: Record<string, unknown> = {}) {
+  return {
+    id: "prod-1",
+    sku: "ANU-HEA-TON-150",
+    name: "Lotion tonique",
+    priceCents: 18000,
+    gtin: null,
+    category: { slug: "toniques" },
+    shortDescription: "Tonique apaisant",
+    bullets: JSON.stringify(["Apaise", "Hydrate"]),
+    problemeAccroche: "Rougeurs ?",
+    idealPour: "Peaux sensibles",
+    usageMatin: "Au coton",
+    usageSoir: "Au coton",
+    frequence: "Quotidien",
+    conseilKossKoss: "Complète le nettoyage",
+    precautions: "Aucune",
+    actifsCles: "Heartleaf 77%",
+    statutPublication: "READY",
+    donneesAConfirmer: "",
+    ...patch,
+  };
+}
+
+describe("champsContenuDifferents", () => {
+  it("ne rend aucun champ quand la fiche et le produit sont déjà alignés", () => {
+    const patch = champsContenuDifferents(produitDeTest(), ficheDeTest());
+    assert.deepEqual(patch, {});
+  });
+
+  it("ne rend que les champs réellement différents", () => {
+    const patch = champsContenuDifferents(
+      produitDeTest({ precautions: "Ancien texte" }),
+      ficheDeTest({ precautions: "Nouveau texte" }),
+    );
+    assert.deepEqual(patch, { precautions: "Nouveau texte" });
+  });
+
+  it("compare les bullets comme le JSON des bénéfices non vides", () => {
+    const patch = champsContenuDifferents(
+      produitDeTest({ bullets: JSON.stringify(["Apaise"]) }),
+      ficheDeTest({ benefices: ["Apaise", "Hydrate", "Éclaircit"] }),
+    );
+    assert.deepEqual(patch, { bullets: JSON.stringify(["Apaise", "Hydrate", "Éclaircit"]) });
+  });
+
+  it("ignore costCents : ce champ n'entre jamais dans la comparaison", () => {
+    // Le type même de `champsContenuDifferents` n'accepte pas `costCents` en
+    // entrée : ce test documente l'absence de tout chemin qui l'écrirait,
+    // pas seulement l'absence de différence détectée.
+    const patch = champsContenuDifferents(produitDeTest(), ficheDeTest());
+    assert.ok(!("costCents" in patch));
+  });
+});
+
+describe("CATEGORIE_MASTER_VERS_SLUG", () => {
+  it("couvre exactement les sept catégories du master", () => {
+    assert.deepEqual(Object.keys(CATEGORIE_MASTER_VERS_SLUG).sort(), [
+      "Corps",
+      "Hydratant",
+      "Hygiène",
+      "Nettoyant",
+      "Protection",
+      "Toner",
+      "Traitement",
+    ]);
+  });
+
+  it("associe chaque libellé du master au slug réel de la catégorie du site", () => {
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Nettoyant"], "nettoyants");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Toner"], "toniques");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Traitement"], "traitements");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Hydratant"], "hydratants");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Protection"], "solaires");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Corps"], "corps");
+    assert.equal(CATEGORIE_MASTER_VERS_SLUG["Hygiène"], "hygiene");
   });
 });
