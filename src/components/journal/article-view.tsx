@@ -175,7 +175,7 @@ export function ArticleView({
         {/* Largeur de colonne volontairement bornée : au-delà d'une
             soixantaine de caractères, l'œil perd la ligne suivante. */}
         <div className="mt-8">
-          <ArticleBlocks blocks={article.blocks} products={products} />
+          <ArticleBlocks blocks={article.blocks} products={products} locale={locale} />
         </div>
 
         {/* ---- Tags ---- */}

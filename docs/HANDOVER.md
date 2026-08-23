@@ -1,151 +1,220 @@
-# Reprise du projet — état au 26 juillet 2026
+# Reprise du projet
 
-Ce document résume ce qui a été construit pendant la nuit, comment lancer le
-projet, et ce qui reste à faire côté commerçant.
+Ce document dit ce qui est vrai aujourd'hui sur l'infrastructure : la base de
+données, la façon de la faire évoluer sans danger, les variables
+d'environnement réellement lues, et le déploiement. Pour ce que fait la
+boutique (marché, marque, catalogue), voir `TARGET.md`. Pour le manuel du
+commerçant, voir [`docs/BACK-OFFICE.md`](BACK-OFFICE.md).
 
 ## Démarrer en local
 
 ```bash
-npm install
-npm run db:migrate     # applique les migrations sur la base SQLite locale
-npm run db:seed        # catalogue, moyens de paiement, compte administrateur
-npm run dev            # http://localhost:3000
+npm install     # installe les dépendances et génère le client Prisma (postinstall)
+cp .env.example .env.local   # puis renseigner DATABASE_URL et les secrets
+npm run dev     # http://localhost:3000
 ```
 
-Back-office : http://localhost:3000/admin — `admin@example.com` / `change-me`.
-Ces identifiants viennent de `.env.local` et ne servent qu'au premier démarrage :
-dès qu'un compte existe en base, c'est le mot de passe haché qui fait foi.
-**Change ce mot de passe avant toute mise en ligne** (Zugänge → changer le mot de passe).
+**Il n'y a rien à migrer pour démarrer.** La base est unique (voir plus bas) :
+elle porte déjà toutes les migrations du dépôt et le catalogue. `npm install`
+suffit — **ne pas lancer `npm run db:migrate`** à ce stade, voir la section
+suivante.
 
-## Ce qui a changé en profondeur
+Back-office : `http://localhost:3000/admin`. La connexion demande un mot de
+passe **puis** un code à six chiffres envoyé par e-mail (`AdminUser` +
+`AdminLoginChallenge`, deuxième facteur obligatoire, voir plus bas). Sans SMTP
+configuré, le code s'affiche dans la console du serveur — ce repli n'existe
+qu'en développement (`NODE_ENV === "development"` **et** SMTP non configuré,
+voir `src/server/adminOtp.ts`) ; en production, la connexion échoue proprement
+tant que l'envoi n'est pas possible.
 
-### Base de données
+## Base de données : une seule base, partagée
 
-Le site ne lit plus les fichiers `data/store/*.json` : tout est en base via
-Prisma 7. Ces fichiers ne servent plus qu'au premier peuplement (`db:seed`).
-La bascule vers PostgreSQL est documentée dans `docs/DATABASE.md` et ne demande
-qu'un changement de `DATABASE_URL` plus une régénération des migrations.
+**Une seule base PostgreSQL, hébergée sur Neon, sert le développement ET la
+production.** Il n'y a pas de base locale. Ce qui est modifié en
+développement — schéma comme données — l'est directement sur la même base
+qui sert les visiteurs du site en production.
 
-Modèles : Group, Category, GuideSection, Product, Review, PaymentMethod,
-Integration, StockMovement, AdminUser, Setting, et les modèles de commande.
+Vérifié dans cet environnement :
 
-### Authentification du back-office
+```bash
+npx prisma migrate status
+# → « N migrations found in prisma/migrations », « Database schema is up to date! »
+npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script
+# → rend une migration vide : la base et prisma/schema.prisma sont en phase
+```
 
-- Mots de passe hachés (scrypt), plusieurs comptes possibles, activation/désactivation.
-- Sessions signées (HMAC-SHA256), cookie httpOnly, 8 heures.
-- Cinq échecs de connexion par adresse → blocage de quinze minutes.
-- Le dernier compte actif ne peut être ni désactivé ni supprimé.
-- **Double facteur obligatoire** : après le mot de passe, un code à six chiffres
-  part par e-mail. Le cookie de session n'est posé qu'après validation du code.
-  Code valable 10 minutes, cinq tentatives, renvoi possible après 60 secondes.
-  Les codes sont hachés en base (table `AdminLoginChallenge`) et supprimés dès
-  qu'ils sont utilisés, expirés ou épuisés.
+Conséquence directe : **toute commande Prisma qui écrit sur la base agit sur
+la production**, pas sur un bac à sable. C'est la contrainte qui gouverne
+toute la procédure ci-dessous.
 
-Envoi des codes : SMTP de la boîte Hostinger de la boutique
-(`contact@mlc-bois.fr`, `smtp.hostinger.com:465`), via nodemailer. À
-renseigner dans `.env.local` : `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`,
-`SMTP_PASSWORD`, `MAIL_FROM` et `MAIL_FROM_NAME`. En développement, si ces
-variables manquent, le code s'affiche dans la console du serveur et sur la page
-de connexion — ce repli est verrouillé sur `NODE_ENV === "development"`. En
-production, la connexion échoue proprement (502) tant que l'envoi n'est pas
-possible.
+La connexion passe par `DATABASE_URL` (`postgresql://…/…?sslmode=require`),
+lue par l'adaptateur `@prisma/adapter-pg` (`src/server/prisma.ts`) et par la
+CLI Prisma via `prisma.config.ts`, qui charge `.env.local` puis `.env` — dans
+cet ordre, comme Next.js.
 
-Conséquence à ne pas perdre de vue : dès que le SMTP est configuré, le repli
-console disparaît, y compris en développement. L'adresse du compte admin doit
-donc être une boîte réellement relevable, sinon plus personne n'entre dans le
-back-office.
+Neon met le calcul en veille après une période d'inactivité : la première
+requête après une pause le réveille, ce qui peut prendre une à deux secondes
+et occasionnellement dépasser un délai d'attente. Ce n'est pas une panne.
 
-L'adresse se change depuis **Utilisateurs** (`/admin/users`), bouton « Modifier
-l'adresse e-mail » sur la ligne du compte. Elle sert à la fois d'identifiant de
-connexion et de destinataire du code : l'interface demande donc une
-confirmation avant d'enregistrer. `ADMIN_EMAIL` dans `.env.local` n'est qu'un
-compte d'amorçage, utilisé uniquement quand la table `AdminUser` est vide — le
-modifier ne change rien à un compte déjà créé.
+## Faire évoluer le schéma, sans danger
 
-L'e-mail reprend le logo sur fond blanc avec un filet rouge, en tableaux et
-styles en ligne, avec `color-scheme: light` pour empêcher l'inversion
-automatique des couleurs par Apple Mail et Outlook (le lettrage du logo est
-presque noir : inversé, il disparaîtrait).
+**`npm run db:migrate` (= `prisma migrate dev`) est PROSCRIT sur ce projet.**
+Ce n'est pas une préférence de style, ce sont deux faits vérifiés :
 
-### Boutique
+1. **Elle se bloque dans cet environnement.** `migrate dev` peut ouvrir une
+   invite interactive (confirmation d'une migration, choix en cas de dérive) ;
+   un shell non interactif comme celui utilisé pour développer ce projet n'a
+   personne pour y répondre, et la commande reste suspendue indéfiniment.
+2. **Elle peut proposer une réinitialisation.** Quand `migrate dev` détecte
+   une dérive entre l'historique des migrations et l'état réel de la base,
+   elle peut proposer de **réinitialiser la base** pour repartir d'un état
+   propre. Comme la base est unique et partagée (section précédente), un
+   « oui » — ou un défaut qui vaudrait oui — sur cette invite efface la
+   production. Ce risque à lui seul suffit à écarter la commande, indépendamment
+   du blocage du point 1.
 
-- Site bilingue français/anglais. Le français reste à la racine (`/`), l'anglais
-  vit sous `/en`. Le sélecteur de langue conserve la page courante.
-- Avis clients avec validation obligatoire par un administrateur avant publication.
-- Moyens de paiement et clés API configurables depuis le back-office ; les clés
-  sont chiffrées en AES-256-GCM et ne ressortent jamais en clair.
-- Tunnel d'achat complet et conforme au droit français de la vente à distance.
-- Flux et balisage conformes à Google Merchant Center.
+**La procédure qui marche réellement ici**, éprouvée sur ce dépôt (voir les
+migrations dans `prisma/migrations/`, écrites de cette façon depuis
+mi-août 2026) :
 
-### Espace client et liste de souhaits
+```bash
+# 1. Modifier prisma/schema.prisma normalement.
 
-- `/konto` : inscription, connexion, mot de passe oublié, historique des
-  commandes, adresses, données personnelles avec export et suppression du
-  compte. Détail dans `docs/ACCOUNTS.md`.
-- Le compte reste **facultatif** : la commande en tant qu'invité fonctionne
-  exactement comme avant, c'est une exigence du droit français.
-- Supprimer un compte n'efface pas les commandes : elles sont anonymisées, car
-  les pièces comptables doivent être conservées.
-- `/merkliste` : liste de souhaits conservée dans le navigateur, sans compte,
-  synchronisée entre les onglets. Le cœur figure sur chaque vignette et sur la
-  fiche produit, le compteur s'affiche dans l'en-tête.
+# 2. Lire le SQL que Prisma produirait, SANS RIEN ÉCRIRE (commande en lecture
+#    seule : elle n'ouvre aucune transaction d'écriture sur la base).
+npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script
 
-### Images
+# 3. Vérifier ce SQL À L'ŒIL avant d'aller plus loin. Sur ce projet, un ALTER
+#    TABLE ... ADD COLUMN est attendu ; un DROP ou un NOT NULL sans défaut sur
+#    une colonne existante doit arrêter la procédure et se discuter avant
+#    d'aller plus loin.
 
-Les visuels produits passent par Cloudinary dès que les trois clés sont saisies
-dans le back-office (Intégrations). Sans clés, l'envoi reste local en
-développement et est refusé en production. Voir `docs/IMAGES.md`.
+# 4. Créer le dossier de migration à la main, au format que Prisma utilise
+#    lui-même (horodatage UTC à la seconde + description) :
+mkdir -p "prisma/migrations/$(date -u +%Y%m%d%H%M%S)_description_courte"
+# … et y écrire le SQL vérifié à l'étape 3 dans un fichier migration.sql —
+# exactement, sans le modifier : c'est le même texte qui sera appliqué.
 
-### Back-office
+# 5. Appliquer la migration ainsi écrite. C'est la SEULE commande d'écriture
+#    de toute la procédure, et elle applique exactement le SQL relu :
+npx prisma migrate deploy
 
-Tableaux paginés à 25 lignes par page (produits, commandes, avis, stock, Google
-Merchant, catégories, clients, comptes, univers), filtres conservés au
-changement de page. Moyens de paiement et Intégrations restent sans pagination :
-ce sont des écrans de configuration courts avec réordonnancement.
+# 6. Régénérer le client, pour que TypeScript connaisse le nouveau schéma :
+npx prisma generate
+```
 
-## Ce qui a été vérifié
+`migrate diff` (étape 2) et `migrate status` sont les deux seules commandes
+Prisma sans danger à lancer librement : elles ne modifient jamais la base,
+quel que soit leur résultat.
 
-- `npm run lint`, `tsc --noEmit` et `npm run build` passent (245 pages générées).
-- Parcours d'achat complet dans le navigateur : fiche produit → panier → caisse
-  en trois étapes → commande `HP-2026-000003` créée → visible dans le back-office.
-  Le bouton final porte la mention légale « Zahlungspflichtig bestellen »
-  (§ 312j Abs. 3 BGB : sans elle, aucun contrat ne se forme).
-- Circuit des avis : dépôt par un visiteur → invisible sur le site → validation
-  par l'administrateur → publication et recalcul de la note.
-- Les deux langues : toutes les pages catégorie et les 78 fiches produit
-  répondent en français et en anglais.
-- Flux Google Merchant : 78 articles, XML validé, aucune balise vide.
+## Variables d'environnement
 
-Deux commandes de test restent en base (`test.kunde@example.de` et
-`test.bestellung@example.de`) ainsi que trois avis d'exemple : supprimables
-depuis le back-office.
+Modèle complet et commenté : [`.env.example`](../.env.example). Les valeurs
+réelles vivent dans `.env.local`, jamais dans le dépôt. Chaque variable
+ci-dessous a été vérifiée par une recherche de son usage dans le code
+(`process.env.<NOM>`) — aucune n'est recopiée d'une documentation antérieure
+sans ce contrôle.
 
-## Limites connues, à traiter avant d'ouvrir la boutique
+| Variable | Rôle | Secret ? |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | URL canonique, sitemap, flux Merchant, liens d'e-mail — lue **au build** | non |
+| `DATABASE_URL` | Connexion PostgreSQL (Neon), chaîne « pooled » avec `sslmode=require` | **oui** |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | Compte d'amorçage, utilisé uniquement si la table `AdminUser` est vide ; `ADMIN_EMAIL` sert aussi de destinataire à la notification « nouvelle commande » | **oui** |
+| `SUPERADMIN_EMAIL` / `SUPERADMIN_PASSWORD` | Lues seulement par `scripts/acces-admin.ts` (compte masqué, rôle `superadmin`) — jamais par l'application elle-même | **oui**, le temps du script |
+| `ADMIN_SESSION_SECRET` | Signature des cookies de session du back-office | **oui** |
+| `CUSTOMER_SESSION_SECRET` | Signature des cookies de session des clients | **oui** |
+| `INTEGRATION_ENCRYPTION_KEY` | Chiffrement AES-256-GCM des secrets d'intégration stockés en base (32 octets hex). **Ne doit jamais changer une fois des clés enregistrées** : elles deviendraient illisibles | **oui** |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASSWORD` | Envoi des e-mails transactionnels (code de connexion, confirmation de commande, facture) | `SMTP_PASSWORD` **oui**, le reste non |
+| `MAIL_FROM` / `MAIL_FROM_NAME` | Expéditeur des e-mails | non |
+| `ORDER_NOTIFICATION_EMAILS` | Destinataires de la notification « nouvelle commande » | non |
+| `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | Stockage des images produits. Sans elles, l'envoi reste local en développement et est **refusé en production** (les fichiers locaux disparaîtraient au déploiement suivant) | `CLOUDINARY_API_SECRET` **oui**, le reste non |
+| `CRON_SECRET` | Protège `/api/cron/campaigns` (envoi programmé des campagnes e-mail) | **oui** |
+| `NEXT_PUBLIC_SMARTSUPP_KEY` | Widget de chat flottant (facultatif) | non |
+| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Repli du numéro WhatsApp tant que le réglage back-office (**Paramètres**) est vide | non |
+| `MAINTENANCE_MODE` | `0` = boutique ouverte (défaut), `1` = page d'attente pour tout le monde sauf `/admin` — lue **au démarrage**, un changement impose un redémarrage | non |
+| `GENIUSPAY_API_KEY` / `GENIUSPAY_API_SECRET` / `GENIUSPAY_WEBHOOK_SECRET` | Passerelle de paiement GeniusPay (Mobile Money + carte). Sans elles, le tunnel reste en confirmation manuelle par WhatsApp | **oui** |
+| `GENIUSPAY_BASE_URL` | Base de l'API GeniusPay (forcée en `https://` par défaut) | non |
 
-1. **Aucun e-mail n'est envoyé** — la confirmation de commande par e-mail est
-   obligatoire (§ 312i Abs. 1 Nr. 3 BGB). La clé `smtp_password` existe déjà
-   dans Integrationen, il reste à brancher l'envoi. En attendant, la page de
-   confirmation ne promet pas d'e-mail.
-2. **Paiement en ligne à configurer** — Stripe, Square, Mollie, PayPal et Nexi
-   sont câblés mais inactifs tant que leurs clés ne sont pas saisies dans
-   **Admin → Moyens de paiement**. Voir [`PAIEMENT.md`](PAIEMENT.md). Sans clés,
-   toutes les commandes restent réglées hors ligne (virement). L'adaptateur Nexi
-   n'a jamais été éprouvé contre un vrai compte : à valider par un paiement de
-   test avant de s'en servir.
-3. **Bouton de rétractation en ligne** — obligatoire depuis le 19 juin 2026
-   (§ 356a BGB). Le texte est en place, la fonctionnalité reste à construire ;
-   sans elle, le délai de rétractation se prolonge.
-4. **IBAN de démonstration** sur la page de confirmation, signalée comme telle.
-5. **Livraison France métropolitaine uniquement**, standard offert et express 70 € codés dans
-   `src/lib/cart.ts` — pas encore pilotables depuis le back-office.
+Deux variables supplémentaires, hors `.env.example` car réservées au réglage
+fin du build ou fournies par la plateforme d'hébergement, pas à la saisie
+manuelle : `NEXT_BUILD_CPUS` (plafonne les workers du build Next, utile sur un
+hébergement mutualisé) et `PORT` (imposé par l'hébergeur, lu par `server.js`).
 
-## À faire avant la mise en ligne
+## Authentification du back-office
 
-1. Remplacer les informations d'entreprise fictives (voir `docs/LEGAL.md`).
-2. Faire relire les textes juridiques par un juriste.
-3. Renseigner les GTIN réels des produits (voir `docs/GOOGLE_MERCHANT.md`).
-4. Brancher une vraie base PostgreSQL (`docs/DATABASE.md`).
-5. Remplacer le stockage des images par un stockage objet si l'hébergement a un
-   système de fichiers éphémère (Vercel).
-6. Changer le mot de passe administrateur et régénérer `ADMIN_SESSION_SECRET`
-   ainsi que `INTEGRATION_ENCRYPTION_KEY`.
+- Mots de passe hachés (scrypt), plusieurs comptes possibles, activation et
+  désactivation par un compte disposant de la capacité `acces`.
+- Sessions signées (HMAC), cookie `httpOnly`, **8 heures** (`src/lib/adminAuth.ts`).
+- **Cinq échecs de connexion par adresse → blocage de quinze minutes**
+  (`src/server/loginRate.ts`). Ce compteur est **en mémoire du processus** :
+  il protège un serveur unique, pas plusieurs instances qui ne partageraient
+  rien entre elles.
+- Le dernier compte **actif** ne peut être ni désactivé ni supprimé
+  (`src/server/admins.ts`).
+- **Double facteur obligatoire** : après le mot de passe, un code à
+  **six chiffres** part par e-mail (`src/server/adminOtp.ts`). Valable
+  **10 minutes**, **5 tentatives**, renvoi possible après **60 secondes**. Les
+  codes sont hachés en base et jamais stockés en clair.
+- Le rôle d'un compte est **relu en base à chaque requête**
+  (`src/server/kk/acces.ts`), jamais mis en cache dans le jeton de session :
+  rétrograder ou désactiver un compte prend effet **immédiatement**, sans
+  attendre l'expiration de sa session. Détail dans
+  [`docs/BACK-OFFICE.md`](BACK-OFFICE.md).
+
+## Déploiement
+
+Deux procédures existent dans le dépôt : [`docs/DEPLOY.md`](DEPLOY.md)
+(hébergement Node.js Hostinger, VPS ou mutualisé) et
+[`docs/DEPLOY-VERCEL.md`](DEPLOY-VERCEL.md) (Vercel). **Aucune des deux n'est
+à jour sur la marque** : `DEPLOY.md` porte encore le domaine et les
+identifiants de l'activité précédente (bois de chauffage). Ce sont des guides
+de procédure technique restés valables sur le fond — postinstall qui génère le
+client Prisma, `npx prisma migrate deploy` (jamais `migrate dev`) pour
+appliquer les migrations en production, build qui interroge la base — mais
+leur texte n'a pas suivi le repositionnement KossKoss et reste à corriger.
+
+Ce qui ne dépend d'aucun des deux guides, vérifié ici :
+
+- **`npx prisma migrate deploy` est la seule commande de migration à lancer en
+  production.** Elle applique les migrations déjà écrites et relues dans le
+  dépôt ; elle n'en génère aucune, contrairement à `migrate dev`.
+- Le premier peuplement (`npm run db:seed` et ses variantes `db:seed:*`) ne se
+  relance pas sur une base déjà peuplée — c'est le cas ici, la même base sert
+  développement et production.
+- `DATABASE_URL` doit être une chaîne **poolée** (`-pooler` dans l'hôte) : le
+  build interroge la base pour pré-générer les pages du catalogue, et une
+  connexion directe s'épuise sous le nombre de workers d'un build.
+
+## Ce qui a été construit
+
+Le détail écran par écran du back-office — rôles, produits, marques, tags,
+approvisionnement, ventes, traductions, réglages, commandes et facturation,
+consentement et mesure — est dans [`docs/BACK-OFFICE.md`](BACK-OFFICE.md),
+vérifié dans le code au moment de la rédaction de ce document.
+
+Sur la boutique : site bilingue français/anglais (français à la racine),
+diagnostic beauté qui recommande une routine, avis clients avec validation
+obligatoire par un administrateur avant publication, moyens de paiement et
+clés d'intégration configurables depuis le back-office (secrets chiffrés,
+jamais ressortis en clair), espace client facultatif (la commande en invité
+reste possible), liste de souhaits sans compte.
+
+## Limites connues
+
+- **Le renvoi manuel d'une facture n'est pas outillé.** Si l'envoi de l'e-mail
+  échoue après l'émission (facture déjà écrée en base, numéro déjà consommé),
+  l'historique de la commande le signale, mais il n'existe pas d'écran de
+  factures ni de bouton « renvoyer » — voir `src/server/kk/facture.ts`.
+- **Aucune passerelle Mobile Money locale n'est pleinement validée pour le
+  Cameroun.** GeniusPay (`src/server/gateways/geniuspay.ts`) est câblée, mais
+  le prestataire ne liste pas le Cameroun dans sa couverture documentée et son
+  API refuse la devise XAF en l'état (elle n'accepte que le XOF) — à confirmer
+  avec le prestataire avant d'ouvrir le paiement en ligne. En attendant, le
+  tunnel reste en confirmation manuelle par WhatsApp.
+- **`src/data/categoryNav.ts` (catégories mises en avant sur l'accueil) est
+  vide** : le menu et la rangée de catégories ne s'affichent pas tant qu'il
+  n'est pas renseigné. Sans effet sur le catalogue lui-même, qui vit en base.
+- **Un chemin de création de commande antérieur est mort mais conservé**
+  (`src/server/orders.ts`, route HTTP toujours active) : il calcule les
+  montants autrement que le tunnel actuel (`src/server/kk/checkout.ts`) et
+  n'a plus d'appelant côté navigation.

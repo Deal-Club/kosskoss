@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { ArrowRight } from "lucide-react";
 import { RoutineCard } from "./routine-card";
@@ -16,26 +17,26 @@ import type { KKRoutineView } from "@/types/kk";
  * La charte pose le mobile-first : sur un écran étroit, cinq cartes empilées
  * feraient à elles seules la hauteur de la page.
  */
-export function RoutinesRail({ routines }: { routines: KKRoutineView[] }) {
+export async function RoutinesRail({ routines }: { routines: KKRoutineView[] }) {
   if (routines.length === 0) return null;
+
+  const t = await getTranslations("routine");
 
   return (
     <section className="section mx-auto max-w-7xl px-6">
       <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">Achat rapide</p>
-          <h2 className="mt-2 text-deep">Nos routines prêtes à l&rsquo;emploi</h2>
+          <p className="eyebrow">{t("railEyebrow")}</p>
+          <h2 className="mt-2 text-deep">{t("railTitle")}</h2>
           {/* Le chapô promettait « un seul ajout au panier ». Les vignettes ne
               déposent plus rien : leur bouton mène directement au paiement. */}
-          <p className="lead mt-2 max-w-xl">
-            Une préoccupation, trois gestes dans le bon ordre, une seule commande.
-          </p>
+          <p className="lead mt-2 max-w-xl">{t("railIntro")}</p>
         </div>
         <Link
           href="/routines"
           className="group inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-deep kk-underline"
         >
-          Voir toutes les routines
+          {t("railViewAll")}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

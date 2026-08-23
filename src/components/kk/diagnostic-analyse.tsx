@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { KK_PETAL_PATH, KK_PETAL_VEIN, KK_PETAL_VEINS_SIDE } from "./motifs";
 
 /**
@@ -31,13 +32,11 @@ import { KK_PETAL_PATH, KK_PETAL_VEIN, KK_PETAL_VEINS_SIDE } from "./motifs";
  * composition des gestes. Rien n'est ajouté pour meubler : une étape inventée
  * se verrait à la première lecture attentive, et c'est la crédibilité du
  * diagnostic entier qui tomberait avec elle.
+ *
+ * Les libellés viennent de next-intl (voir `useTemps` plus bas) ; seul
+ * l'instant `ms` de chacun est une constante, indépendante de la langue.
  */
-const TEMPS = [
-  { label: "Vos réponses sont relues", ms: 1200 },
-  { label: "Votre profil de peau se dessine", ms: 4000 },
-  { label: "Croisement avec nos formules", ms: 6800 },
-  { label: "Composition de votre routine", ms: 9200 },
-];
+const TEMPS_MS = [1200, 4000, 6800, 9200] as const;
 
 /** Instant où le premier geste s'inscrit, puis cadence entre les suivants. */
 const GESTE_DEPART = 9800;
@@ -76,15 +75,23 @@ export function DiagnosticAnalyse({ gestes }: {
    */
   gestes: string[];
 }) {
+  const t = useTranslations("diagnostic");
+  // Les libellés viennent de next-intl ; l'instant `ms` de chacun reste une
+  // constante (voir `TEMPS_MS`), indépendante de la langue.
+  const tempsListe = [
+    { label: t("analysisStepReadingAnswers"), ms: TEMPS_MS[0] },
+    { label: t("analysisStepProfile"), ms: TEMPS_MS[1] },
+    { label: t("analysisStepCrossReference"), ms: TEMPS_MS[2] },
+    { label: t("analysisStepRoutine"), ms: TEMPS_MS[3] },
+  ];
+
   // Les coches se posent au fil de la séquence. L'apparition du texte est
   // portée par le CSS (`--d`) ; seul le passage du rond vide à la coche demande
   // un état, parce qu'il change la structure et pas seulement le style.
   const [faits, setFaits] = useState(0);
 
   useEffect(() => {
-    const minuteries = TEMPS.map((temps, i) =>
-      setTimeout(() => setFaits(i + 1), temps.ms + 420),
-    );
+    const minuteries = TEMPS_MS.map((ms, i) => setTimeout(() => setFaits(i + 1), ms + 420));
     return () => minuteries.forEach(clearTimeout);
   }, []);
 
@@ -148,14 +155,14 @@ export function DiagnosticAnalyse({ gestes }: {
       </div>
 
       <h1 className="mt-9 font-display text-2xl text-deep sm:text-3xl">
-        Analyse de votre profil
+        {t("analysisTitle")}
       </h1>
 
       {/* Les quatre temps. `ol` et non `ul` : ils se suivent dans cet ordre, et
           c'est l'ordre qui porte l'information — on ne compose pas la routine
           avant d'avoir lu les réponses. */}
       <ol className="mt-7 space-y-3 text-left">
-        {TEMPS.map((temps, i) => {
+        {tempsListe.map((temps, i) => {
           const fait = i < faits;
           return (
             <li

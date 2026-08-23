@@ -179,7 +179,9 @@
     "contentLabel": "Contenance",
     "totalLabel": "Total :",
     "addedToCart": "Ajouté au panier —",
-    "viewCartLink": "voir le panier"
+    "viewCartLink": "voir le panier",
+    "hoverMultipleVariants": "Plusieurs contenances",
+    "hoverSeeSheet": "Voir la fiche"
   },
   "reviews": {
     "title": "Avis clients",
@@ -231,7 +233,15 @@
       "networkError": "Connexion interrompue : votre avis n’a pas été envoyé.",
       "successTitle": "Merci, votre avis a bien été reçu.",
       "successText": "Il sera publié sur cette page après vérification par notre équipe."
-    }
+    },
+    "homeNoteAria": "Note de {note} sur 5",
+    "homeSectionTitle": "Ce qu’en disent celles et ceux qui ont essayé.",
+    "publishedSuffix": "{count, plural, one {avis publié} other {avis publiés}}",
+    "productSectionTitle": "Ce qu’en disent nos clientes",
+    "writeReviewCta": "Donner mon avis sur ce produit",
+    "writeReviewCtaFirst": "Soyez la première à donner votre avis",
+    "seeMoreReviews": "Voir les {count, plural, one {# autre avis} other {# autres avis}}",
+    "emptyReviewsText": "Aucun avis publié pour le moment. Vous avez essayé ce produit ? Votre retour aidera les prochaines personnes à décider."
   },
   "payment": {
     "title": "Moyens de paiement sécurisés",
@@ -343,7 +353,9 @@
     "shippingLabel": "Livraison",
     "shippingCalculatedNextStep": "Calculée à l’étape suivante",
     "totalEstimated": "Total estimé",
-    "securePaymentNote": "Paiement Mobile Money sécurisé"
+    "securePaymentNote": "Paiement Mobile Money sécurisé",
+    "outOfStockAria": "{name} — épuisé",
+    "addedConfirmationAria": "{name} ajouté au panier"
   },
   "checkout": {
     "metaTitle": "Commande | KossKoss Select",
@@ -638,7 +650,11 @@
     "removeItemAria": "Retirer {name} des favoris",
     "savedOnAccount": "Votre sélection est enregistrée sur votre compte.",
     "savedInBrowser": "Cette sélection est conservée dans ce navigateur.",
-    "findOnAllDevices": "La retrouver sur tous mes appareils"
+    "findOnAllDevices": "La retrouver sur tous mes appareils",
+    "pageEyebrow": "Ma sélection",
+    "pageTitle": "Mes favoris",
+    "pageIntro": "Les produits que vous avez mis de côté, prêts à passer au panier.",
+    "addItemAria": "Ajouter {name} aux favoris"
   },
   "account": {
     "metaTitle": "Mon compte",
@@ -713,7 +729,15 @@
       "noAccount": "Pas encore de compte client ?",
       "registerLink": "Créer un compte",
       "registered": "Si l'adresse était encore disponible, votre compte est maintenant créé. Connectez-vous avec votre mot de passe.",
-      "passwordChanged": "Votre mot de passe a été modifié. Connectez-vous avec le nouveau mot de passe."
+      "passwordChanged": "Votre mot de passe a été modifié. Connectez-vous avec le nouveau mot de passe.",
+      "pageTitle": "Mon espace client",
+      "pageIntro": "Connectez-vous pour suivre vos commandes et votre routine.",
+      "guestNote": "Un compte n’est pas nécessaire pour commander. Il sert à suivre vos commandes, à conserver vos adresses et à retrouver vos favoris sur tous vos appareils.",
+      "emailFieldLabel": "E-mail",
+      "genericError": "E-mail ou mot de passe incorrect.",
+      "unexpectedError": "Une erreur est survenue. Réessayez.",
+      "noAccountShort": "Pas encore de compte ?",
+      "createOne": "En créer un"
     },
     "register": {
       "metaTitle": "Créer un compte",
@@ -938,6 +962,12 @@
           "precision": "maisons distribuées, nommées une à une"
         }
       }
+    },
+    "gammeSection": {
+      "eyebrow": "Marque à l’honneur",
+      "routinesCta": "Nos routines avec {brand}",
+      "productsCta": "Voir les produits {brand}",
+      "fallbackBrand": "cette maison"
     }
   },
   "diagnostic": {
@@ -973,7 +1003,15 @@
     "previous": "Précédent",
     "next": "Suivant",
     "seeResult": "Voir mon résultat",
-    "exitDiagnostic": "Quitter le diagnostic"
+    "exitDiagnostic": "Quitter le diagnostic",
+    "floatingCta": "Faire le diagnostic",
+    "floatingHideAria": "Masquer le raccourci vers le diagnostic",
+    "floatingSrText": "Diagnostic beauté : trouvez les produits faits pour votre peau",
+    "analysisTitle": "Analyse de votre profil",
+    "analysisStepReadingAnswers": "Vos réponses sont relues",
+    "analysisStepProfile": "Votre profil de peau se dessine",
+    "analysisStepCrossReference": "Croisement avec nos formules",
+    "analysisStepRoutine": "Composition de votre routine"
   },
   "recentlyViewed": {
     "title": "Consultés récemment",
@@ -1007,7 +1045,25 @@
     "othersTitle": "Nos autres routines",
     "metaNotFoundTitle": "Routine introuvable — {brand}",
     "listMetaTitle": "Routines prêtes à l'emploi — {brand}",
-    "listMetaDescription": "Des routines complètes par préoccupation : acné, taches et hyperpigmentation, éclat, anti-âge, hydratation. Trois gestes dans le bon ordre, un seul ajout au panier."
+    "listMetaDescription": "Des routines complètes par préoccupation : acné, taches et hyperpigmentation, éclat, anti-âge, hydratation. Trois gestes dans le bon ordre, un seul ajout au panier.",
+    "pageEyebrow": "Besoin par besoin",
+    "pageTitle": "Nos routines prêtes à l’emploi",
+    "pageIntro": "Nous ne vendons pas des produits isolés mais des suites de gestes. Choisissez la préoccupation qui est la vôtre : la routine est déjà composée, dans l’ordre qui la fait fonctionner.",
+    "diagnosticCtaLabel": "Faire mon diagnostic",
+    "emptyTitle": "Nos routines arrivent",
+    "emptyText": "En attendant, le diagnostic compose une routine adaptée à votre peau en cinq questions.",
+    "noneMatchTitle": "Aucune ne correspond ?",
+    "noneMatchText": "Cinq questions, et nous composons la vôtre.",
+    "addedToast": "Routine ajoutée",
+    "addButtonLabel": "Ajouter la routine",
+    "buyButtonLabel": "Acheter maintenant",
+    "buyAria": "Acheter la {name} — {count} produits",
+    "addAria": "Ajouter la {name} au panier — {count} produits",
+    "detailLink": "Détail",
+    "railEyebrow": "Achat rapide",
+    "railTitle": "Nos routines prêtes à l’emploi",
+    "railIntro": "Une préoccupation, trois gestes dans le bon ordre, une seule commande.",
+    "railViewAll": "Voir toutes les routines"
   },
   "marque": {
     "breadcrumbLabel": "Marques",

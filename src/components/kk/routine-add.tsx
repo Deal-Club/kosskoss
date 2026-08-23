@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { ShoppingBag, Check, Zap } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCart } from "@/components/cart/CartProvider";
 import { withLocale } from "./localized-link";
 import type { KKRoutineView } from "@/types/kk";
@@ -51,6 +52,7 @@ export function RoutineAddToCart({
   mode?: "panier" | "achat";
   className?: string;
 }) {
+  const t = useTranslations("routine");
   const { add } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -109,8 +111,8 @@ export function RoutineAddToCart({
       // seul laisse croire à un article unique.
       aria-label={
         achatDirect
-          ? `Acheter la ${routine.name} — ${routine.steps.length} produits`
-          : `Ajouter la ${routine.name} au panier — ${routine.steps.length} produits`
+          ? t("buyAria", { name: routine.name, count: routine.steps.length })
+          : t("addAria", { name: routine.name, count: routine.steps.length })
       }
       // `whitespace-nowrap` : dans une carte de routine, le bouton n'a que
       // ~15 rem de large et « Acheter maintenant » se coupait en deux lignes,
@@ -122,17 +124,17 @@ export function RoutineAddToCart({
       {achatDirect ? (
         <>
           <Zap className="h-4 w-4 shrink-0" />
-          Acheter maintenant
+          {t("buyButtonLabel")}
         </>
       ) : ajoutee ? (
         <>
           <Check className="h-4 w-4" />
-          Routine ajoutée
+          {t("addedToast")}
         </>
       ) : (
         <>
           <ShoppingBag className="h-4 w-4" />
-          Ajouter la routine
+          {t("addButtonLabel")}
         </>
       )}
     </button>

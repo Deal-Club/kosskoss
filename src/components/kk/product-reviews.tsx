@@ -1,4 +1,5 @@
 import { Star, ChevronDown, PenLine } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { ReviewForm } from "./review-form";
 import type { KKProductReviews, KKReviewView } from "@/server/kk/product-reviews";
 
@@ -66,7 +67,7 @@ function CarteAvis({ avis }: { avis: KKReviewView }) {
   );
 }
 
-export function ProductReviews({
+export async function ProductReviews({
   productId,
   reviews,
 }: {
@@ -76,6 +77,7 @@ export function ProductReviews({
   const { items, count, average } = reviews;
   const enVue = items.slice(0, 3);
   const reste = items.slice(3);
+  const t = await getTranslations("reviews");
 
   return (
     <section className="section mx-auto max-w-7xl px-6">
@@ -83,8 +85,8 @@ export function ProductReviews({
           au milieu, l'action à droite. */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="eyebrow">Avis clients</p>
-          <h2 className="mt-2 text-deep">Ce qu&rsquo;en disent nos clientes</h2>
+          <p className="eyebrow">{t("title")}</p>
+          <h2 className="mt-2 text-deep">{t("productSectionTitle")}</h2>
         </div>
 
         {count > 0 && (
@@ -95,7 +97,7 @@ export function ProductReviews({
             <div>
               <Etoiles note={Math.round(average)} />
               <p className="mt-0.5 text-xs text-muted-foreground">
-                {count} avis publié{count > 1 ? "s" : ""}
+                {count} {t("publishedSuffix", { count })}
               </p>
             </div>
           </div>
@@ -109,7 +111,7 @@ export function ProductReviews({
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-4 [&::-webkit-details-marker]:hidden">
           <span className="flex items-center gap-2 text-sm font-semibold text-deep">
             <PenLine className="h-4 w-4 text-gold-ink" />
-            {count > 0 ? "Donner mon avis sur ce produit" : "Soyez la première à donner votre avis"}
+            {count > 0 ? t("writeReviewCta") : t("writeReviewCtaFirst")}
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 text-deep transition-transform group-open:rotate-180" />
         </summary>
@@ -129,7 +131,7 @@ export function ProductReviews({
           {reste.length > 0 && (
             <details className="group mt-4">
               <summary className="flex cursor-pointer list-none items-center justify-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-deep transition hover:border-deep/50 [&::-webkit-details-marker]:hidden">
-                Voir les {reste.length} autre{reste.length > 1 ? "s" : ""} avis
+                {t("seeMoreReviews", { count: reste.length })}
                 <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
               </summary>
               <ul className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -141,10 +143,7 @@ export function ProductReviews({
           )}
         </>
       ) : (
-        <p className="mt-4 text-sm text-muted-foreground">
-          Aucun avis publié pour le moment. Vous avez essayé ce produit&nbsp;? Votre retour aidera
-          les prochaines personnes à décider.
-        </p>
+        <p className="mt-4 text-sm text-muted-foreground">{t("emptyReviewsText")}</p>
       )}
     </section>
   );
