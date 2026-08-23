@@ -7,6 +7,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { toggleFavorite, useFavorites, type FavoriteItem } from "@/lib/favorites";
 import { volVersPanier } from "@/lib/kk/fly-to-cart";
 import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import type { CartLine } from "@/lib/cart";
 import type { KKProductView } from "@/types/kk";
 
@@ -140,12 +141,14 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
    */
   async function handleAdd(event: React.MouseEvent<HTMLButtonElement>) {
     add(toCartLine(product), 1);
-    // La vignette n'a pas de SKU (voir `KKProductView`) : l'identifiant produit
-    // sert de référence, comme pour toute vignette sans variante.
+    // Identifiant ALIGNÉ SUR LE FLUX GOOGLE MERCHANT (voir
+    // `identifiantProduitCatalogue`), pas l'identifiant interne : `slug` est
+    // garanti présent ici (`isActionable` l'exige avant de rendre ce bouton).
+    const idCatalogue = identifiantProduitCatalogue(product.slug ?? "", product.id);
     mesurerEvenement({
       type: "add_to_cart",
-      reference: product.id,
-      articles: [{ reference: product.id, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
       totalCents: product.priceFcfa,
     });
     setAdded(true);

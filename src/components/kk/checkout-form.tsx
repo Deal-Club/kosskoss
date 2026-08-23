@@ -27,6 +27,7 @@ import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
 import { normaliserTelephone } from "@/lib/kk/telephone";
 import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import type { PaymentMethodView } from "@/server/kk/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import { BottleMotif } from "./motifs";
@@ -247,9 +248,16 @@ export function CheckoutForm({
     debutTunnelEnvoye.current = true;
     mesurerEvenement({
       type: "begin_checkout",
+      // Clé d'événement pour la déduplication navigateur/navigateur (pas de
+      // pendant serveur pour `begin_checkout`) : identifie CE panier précis,
+      // pas un article — `productId`/`variantId` y restent légitimes.
       reference: lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.quantity}`).join("|"),
+      // Références PAR ARTICLE, elles, alignées sur le flux Google Merchant
+      // (voir `identifiantProduitCatalogue`) — comme aux trois autres points
+      // d'émission — pour que Meta/GA4 apparient chaque ligne au bon produit
+      // du catalogue plutôt qu'à sa variante ou à son identifiant interne.
       articles: lines.map((l) => ({
-        reference: l.variantId ?? l.productId,
+        reference: identifiantProduitCatalogue(l.slug, l.productId),
         nom: l.name,
         prixCents: l.priceCents,
         quantite: l.quantity,

@@ -4,6 +4,7 @@ import {
   EVENEMENTS_MESURE,
   estEvenementMesure,
   identifiantEvenement,
+  identifiantProduitCatalogue,
   montantXaf,
   nomEvenementMeta,
   versGa4,
@@ -62,6 +63,31 @@ describe("identifiantEvenement", () => {
   it("distingue les quatre types d'événement pour la même référence", () => {
     const ids = new Set(EVENEMENTS_MESURE.map((type) => identifiantEvenement(type, "REF-1")));
     assert.equal(ids.size, EVENEMENTS_MESURE.length);
+  });
+});
+
+describe("identifiantProduitCatalogue", () => {
+  it("rend le slug tel quel — c'est l'identifiant que le flux Merchant connaît déjà pour ce produit", () => {
+    assert.equal(identifiantProduitCatalogue("buche-chene-stere", "cmid00000000000000000001"), "buche-chene-stere");
+  });
+
+  it("se rabat sur l'identifiant interne quand le slug est vide", () => {
+    assert.equal(identifiantProduitCatalogue("", "cmid00000000000000000001"), "cmid00000000000000000001");
+  });
+
+  it("tronque un slug de plus de 50 caractères et lui accole les 8 derniers caractères de l'identifiant — MÊME RÈGLE que merchantOfferId", () => {
+    const slugLong = "a".repeat(60);
+    const id = "cmid00000000000000000001";
+    assert.equal(identifiantProduitCatalogue(slugLong, id), `${"a".repeat(41)}-00000001`);
+  });
+
+  it("ne tronque pas un slug de 50 caractères exactement (la limite est inclusive)", () => {
+    const slugLimite = "a".repeat(50);
+    assert.equal(identifiantProduitCatalogue(slugLimite, "id"), slugLimite);
+  });
+
+  it("rogne les espaces avant de décider s'il faut tronquer", () => {
+    assert.equal(identifiantProduitCatalogue("  buche-chene-stere  ", "id"), "buche-chene-stere");
   });
 });
 

@@ -9,6 +9,7 @@ import {
 } from "@/server/gateways/geniuspay";
 import { getOrderByNumber, recordOrderEvent, updatePaymentStatus } from "@/server/orders";
 import { envoyerAchatCapi } from "@/server/kk/capi";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 
 /**
  * Paiement d'une commande KossKoss, via GeniusPay.
@@ -212,11 +213,13 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
       phone: commande.phone,
       totalCents: commande.totalCents,
       marketingConsent: commande.marketingConsent,
-      // Même repli qu'à la page de confirmation (MesureAchat, côté
-      // navigateur) : SKU, puis identifiant produit, puis nom — la seule
-      // valeur garantie non vide sur toute ligne de commande.
+      // Référence ALIGNÉE SUR LE FLUX GOOGLE MERCHANT (voir
+      // `identifiantProduitCatalogue`), même repli qu'à la page de confirmation
+      // (MesureAchat, côté navigateur) : slug, puis identifiant produit, puis
+      // nom — la seule valeur garantie non vide sur toute ligne de commande
+      // (colonne `slug` ajoutée après coup, produit parfois supprimé depuis).
       articles: commande.items.map((item) => ({
-        reference: item.sku || item.productId || item.name,
+        reference: identifiantProduitCatalogue(item.slug, item.productId || item.name),
         nom: item.name,
         prixCents: item.unitPriceCents,
         quantite: item.quantity,

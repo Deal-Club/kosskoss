@@ -9,6 +9,7 @@ import { formatFcfa } from "@/lib/kk/format";
 import type { KKProductDetail } from "@/server/kk/product";
 import { volVersPanier } from "@/lib/kk/fly-to-cart";
 import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import { FavoriteHeart } from "./product-actions";
 import { withLocale } from "./localized-link";
 
@@ -26,6 +27,13 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   const oldPriceFcfa = variant?.oldPriceFcfa ?? product.oldPriceFcfa;
   const outOfStock = product.stock <= 0;
 
+  // Identifiant produit ALIGNÉ SUR LE FLUX GOOGLE MERCHANT (voir
+  // `identifiantProduitCatalogue`) : le SKU ou l'identifiant de variante n'ont
+  // pas d'équivalent dans le catalogue déjà annoncé à Meta/Google, et les
+  // utiliser ici cassait l'appariement entre un événement de mesure et
+  // l'article correspondant du catalogue.
+  const idCatalogue = identifiantProduitCatalogue(product.slug, product.id);
+
   // `view_item` : une fois par affichage de la fiche, jamais à chaque
   // changement de variante ou de quantité — c'est la CONSULTATION du produit
   // qui est mesurée, pas chacune des interactions qui suivent. Le garde par
@@ -36,11 +44,11 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
     vueEnvoyee.current = true;
     mesurerEvenement({
       type: "view_item",
-      reference: product.sku,
-      articles: [{ reference: product.sku, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
       totalCents: product.priceFcfa,
     });
-  }, [product.sku, product.name, product.priceFcfa]);
+  }, [idCatalogue, product.name, product.priceFcfa]);
 
   /** La ligne de panier décrite par les choix en cours (variante, quantité). */
   function ligneCourante() {
@@ -58,13 +66,18 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
     };
   }
 
-  /** `add_to_cart` : la référence porte la variante choisie quand il y en a une. */
+  /**
+   * `add_to_cart` : référence = `idCatalogue`, comme `view_item` plus haut —
+   * pas la variante choisie. Le flux Merchant ne connaît qu'une offre par
+   * produit, jamais par variante ; y faire correspondre la mesure garantit
+   * l'appariement catalogue plutôt que de le casser pour gagner un détail que
+   * Meta/GA4 ne peuvent de toute façon pas relier à une fiche produit distincte.
+   */
   function mesurerAjout() {
-    const reference = variant?.id ?? product.sku;
     mesurerEvenement({
       type: "add_to_cart",
-      reference,
-      articles: [{ reference, nom: product.name, prixCents: priceFcfa, quantite: qty }],
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: priceFcfa, quantite: qty }],
       totalCents: priceFcfa * qty,
     });
   }

@@ -91,6 +91,40 @@ export function montantXaf(cents: number): number {
   return Math.round(cents);
 }
 
+/**
+ * Identifiant produit unique à travers TOUS les systèmes qui parlent du même
+ * article : le flux Google Merchant (`merchantOfferId` dans
+ * `@/server/merchant`, qui délègue à CETTE fonction plutôt que de dupliquer sa
+ * règle), le Pixel/CAPI Meta et GA4 (voir chaque point d'émission dans
+ * `mesurerEvenement`).
+ *
+ * ── C'EST LE FLUX MERCHANT QUI FAIT FOI ──────────────────────────────────────
+ *
+ * Avant cette fonction, trois points d'émission utilisaient trois identifiants
+ * différents pour le MÊME produit : l'identifiant de variante ou le SKU à
+ * l'ajout au panier, l'identifiant interne sur la fiche, le SKU puis
+ * l'identifiant interne à l'achat — et aucun des trois ne correspondait à
+ * celui déjà annoncé à Google (`merchantOfferId`, construit sur le slug).
+ * Résultat : l'appariement avec le catalogue Meta et les rapports par article
+ * de GA4 voyaient un produit différent à chaque étape du parcours.
+ *
+ * `slug` gagne donc partout où il est disponible — c'est lui que Google connaît
+ * déjà pour ce produit. Un identifiant de variante n'a pas d'équivalent côté
+ * catalogue Merchant (une seule offre par produit, pas par variante) : la
+ * mesure ne le distingue donc plus non plus, par cohérence.
+ *
+ * Reprend exactement la même règle de troncature que `merchantOfferId` (50
+ * caractères maximum, un slug plus long cède la place à un suffixe tiré de
+ * l'identifiant interne) : les deux DOIVENT produire la même chaîne pour le
+ * même produit, faute de quoi un slug long romprait l'appariement que cette
+ * fonction existe justement pour garantir.
+ */
+export function identifiantProduitCatalogue(slug: string, id: string): string {
+  const propre = slug.trim();
+  if (!propre) return id;
+  return propre.length <= 50 ? propre : `${propre.slice(0, 41)}-${id.slice(-8)}`;
+}
+
 /** Forme attendue par gtag/GA4 pour un événement e-commerce. */
 export interface EvenementGa4 {
   event_id: string;
