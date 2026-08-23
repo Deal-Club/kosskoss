@@ -184,6 +184,17 @@ champ de secret laissé vide au moment d'enregistrer ne l'efface pas** : il
 laisse la valeur déjà enregistrée inchangée. Pour retirer un secret, il n'y a
 qu'un moyen : le réécrire, ou passer par la suppression de l'intégration.
 
+**Un second piège, propre à l'écran Intégrations** : trois lignes y figurent
+pour **CinetPay** (clé API, identifiant de site, clé secrète) — le
+prestataire recommandé par le cahier des charges. **Les renseigner n'active
+rien** : aucun code du dépôt ne relit ces trois clés. Le paiement en ligne
+réellement branché passe par un prestataire différent (**GeniusPay**),
+configuré uniquement par variables d'environnement (`GENIUSPAY_API_KEY` et
+consorts, voir `docs/HANDOVER.md`), sans écran dédié dans ce back-office. Tant
+que ce doublon n'est pas retiré ou rendu fonctionnel, un commerçant qui
+remplit les champs CinetPay croira le paiement Mobile Money activé — il ne se
+passera rien. Détail dans `docs/ETAT-DES-LIEUX.md`.
+
 ## 7. Commandes et facturation
 
 **Écran : Commandes (`/admin/orders`).**

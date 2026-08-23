@@ -116,8 +116,7 @@ Select (voir « Marque » ci-dessus, et le cahier des charges synthétisé dans
   « Catalogue » ci-dessus)
 - Encaissement automatisé par un agrégateur Mobile Money local pleinement
   validé pour le Cameroun — voir `docs/HANDOVER.md` et
-  `.superpowers/brouillon-etat-des-lieux.md` pour l'état exact des passerelles
-  câblées
+  `docs/ETAT-DES-LIEUX.md` pour l'état exact des passerelles câblées
 
 ## À faire avant mise en ligne
 

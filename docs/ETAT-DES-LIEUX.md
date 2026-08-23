@@ -214,18 +214,24 @@ en est un, différent de celui recommandé.
 ### Ce qui manque réellement, aujourd'hui
 
 Trois réserves sont écrites dans le fichier du prestataire lui-même
-(`src/server/gateways/geniuspay.ts:9-41`), et une quatrième dans cet
+(`src/server/gateways/geniuspay.ts:9-41`), et une quatrième constatée dans cet
 environnement :
 
-1. **Aucune clé GeniusPay n'est configurée dans cet environnement** (pas de
-   fichier `.env`, vérifié). Sans `GENIUSPAY_API_KEY` /
-   `GENIUSPAY_API_SECRET`, `paiementDisponible()` renvoie `false` et le tunnel
-   retombe automatiquement sur la confirmation manuelle : **c'est exactement
-   le scénario que ce lot devait vérifier** — un client peut choisir Orange
-   Money ou MTN, la commande se crée, le stock se décrémente
-   (`createKossOrder`), et **aucune tentative de paiement en ligne n'est même
-   ouverte**. La commande reste « en attente de paiement », à reprendre par
-   WhatsApp.
+1. **Correction après vérification directe du fichier `.env.local` de cet
+   environnement** (première rédaction de ce document erronée sur ce point :
+   elle avait cherché un fichier `.env`, pas `.env.local`, celui que Next.js et
+   Prisma chargent réellement). Des clés GeniusPay **y sont bien renseignées**
+   — préfixe `pk_sandbox_…`, donc un compte de test, pas un compte de
+   production. `paiementDisponible()` y renvoie donc `true` : sur **ce poste**,
+   une commande Orange Money ou MTN ouvre réellement une session de paiement
+   sandbox chez GeniusPay. Ce que ce dépôt ne permet **pas** de savoir, parce
+   que les variables d'environnement ne sont jamais versionnées : si des clés
+   — sandbox ou live — sont configurées **en production**. C'est une question
+   à poser à qui gère l'hébergement, pas quelque chose que le code peut
+   trancher. Sans elles, en production, le scénario est bien celui que le
+   brouillon décrivait : commande créée, stock décrémenté, aucune tentative de
+   paiement en ligne ouverte, commande laissée « en attente de paiement » à
+   reprendre par WhatsApp.
 2. **La couverture Cameroun n'est pas confirmée par GeniusPay.** Leur
    documentation liste Sénégal, Côte d'Ivoire, Mali, Burkina Faso pour Orange
    Money, et Côte d'Ivoire/Burkina Faso pour MTN — pas le Cameroun.
@@ -255,11 +261,14 @@ environnement :
    soit écrire l'adaptateur qui les rend utiles — les laisser dans cet état
    trompe quiconque les remplit.
 
-Tant qu'aucune de ces actions n'est faite, **la réalité du brouillon reste
-vraie en pratique** : un client peut choisir Orange Money, la commande se
-crée, le stock se décrémente, et rien n'est encaissé en ligne. La différence
-est que le code pour l'encaisser existe déjà — il manque une décision
-commerciale (quel prestataire) et des identifiants, pas un chantier de
+Tant que la production n'a pas de clés confirmées (sandbox ou live) **et** que
+la couverture Cameroun n'est pas validée par écrit avec GeniusPay, **la
+réalité que le brouillon décrivait reste la plus prudente à retenir** : un
+client peut choisir Orange Money, la commande se crée, le stock se décrémente,
+et rien n'est encaissé en ligne en production. La différence avec ce que
+disait le brouillon est que le code pour encaisser existe déjà et fonctionne
+en sandbox sur ce poste — il manque une confirmation du prestataire pour le
+Cameroun et une décision sur les clés de production, pas un chantier de
 développement.
 
 ## 5. Questions au comptable
