@@ -89,6 +89,17 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
       { fr: "shortDescription", en: "shortDescriptionEn", libelle: "Description courte", format: "texte-long" },
       { fr: "description", en: "descriptionEn", libelle: "Description", format: "texte-long" },
       { fr: "bullets", en: "bulletsEn", libelle: "Caractéristiques", format: "liste" },
+      { fr: "problemeAccroche", en: "problemeAccrocheEn", libelle: "Accroche (problème)", format: "texte" },
+      { fr: "idealPour", en: "idealPourEn", libelle: "Idéal pour", format: "texte-long" },
+      { fr: "usageMatin", en: "usageMatinEn", libelle: "Usage du matin", format: "texte-long" },
+      { fr: "usageSoir", en: "usageSoirEn", libelle: "Usage du soir", format: "texte-long" },
+      { fr: "frequence", en: "frequenceEn", libelle: "Fréquence", format: "texte" },
+      { fr: "conseilKossKoss", en: "conseilKossKossEn", libelle: "Conseil KossKoss", format: "texte-long" },
+      { fr: "precautions", en: "precautionsEn", libelle: "Précautions", format: "texte-long" },
+      { fr: "actifsCles", en: "actifsClesEn", libelle: "Actifs clés", format: "texte" },
+      // statutPublication / donneesAConfirmer volontairement absents : voir
+      // les EXCLUSIONS de traductions.test.ts et le commentaire du modèle
+      // Product dans prisma/schema.prisma.
     ],
   },
   {
