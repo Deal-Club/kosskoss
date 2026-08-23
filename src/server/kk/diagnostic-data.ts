@@ -15,7 +15,20 @@ export type ClientQuestion = {
   answers: ClientAnswer[];
 };
 
-/** Questionnaire actif, pour le parcours front (ordre par position). */
+/**
+ * Questionnaire actif, pour le parcours front (ordre par position).
+ *
+ * Rend TOUTES les questions actives, y compris celles qui porteraient une
+ * condition (`DiagQuestion.conditionQuestion` / `conditionReponses` — voir
+ * src/lib/kk/diagnostic-conditions.ts). Aujourd'hui sans effet : toutes les
+ * questions en base ont une condition vide, donc `questionVisible()` les rend
+ * toutes visibles, et `questions.length` (utilisé par DiagnosticFlow pour
+ * l'étape courante et le total affiché — « Question X sur Y ») reste exact.
+ * Le jour où une question conditionnelle (le « Q5 pores » du quiz client) est
+ * créée, filtrer dynamiquement cette liste selon les réponses déjà données
+ * — pour que la question invisible ne compte ni dans le total, ni dans la
+ * navigation — sera à faire ici et dans DiagnosticFlow, avec ce module pur.
+ */
 export async function getQuestions(locale: Locale): Promise<ClientQuestion[]> {
   const questions = await prisma.diagQuestion.findMany({
     where: { active: true },

@@ -759,6 +759,19 @@ model DiagQuestion {
   titleEn    String  @default("")
   subtitle   String  @default("")
   subtitleEn String  @default("")
+  // Question conditionnelle (quiz client : Q5 « pores », qui ne s'affiche
+  // que si Q2 = « Boutons / Imperfections » ou « Glow / Éclat »).
+  //
+  // Une condition vide veut dire « toujours affichée » : c'est le cas de
+  // toutes les questions existantes, la migration n'a donc rien à rattraper.
+  // Visibilité évaluée par le module pur src/lib/kk/diagnostic-conditions.ts.
+  //
+  // `conditionQuestion` : clé (DiagQuestion.key) de la question dont dépend
+  // l'affichage.
+  conditionQuestion String @default("")
+  // `conditionReponses` : clés (DiagAnswer.key) qui déclenchent l'affichage,
+  // encodées en JSON — même convention que DiagAnswer.tags.
+  conditionReponses String @default("[]")
   position   Int     @default(0)
   active     Boolean @default(true)
 
