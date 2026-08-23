@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 import { Plus, Check, Heart, ChevronRight } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
@@ -102,6 +103,7 @@ const REVEAL =
  * peut commander sans chercher où aller.
  */
 export function QuickAddButton({ product }: { product: KKProductView }) {
+  const t = useTranslations("cart");
   const { add, openDrawer } = useCart();
   const [added, setAdded] = useState(false);
   const outOfStock = (product.stock ?? 0) <= 0;
@@ -121,8 +123,8 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
     return (
       <Link
         href={product.href as string}
-        aria-label={`Choisir une contenance pour ${product.name}`}
-        title="Choisir une contenance"
+        aria-label={t("suggestionsChooseVariant", { name: product.name })}
+        title={t("suggestionsChooseVariantTitle")}
         className={`absolute bottom-3 right-3 ${PASTILLE} ${REVEAL} bg-deep text-primary-foreground hover:scale-105 focus-visible:scale-105`}
       >
         <ChevronRight className="h-5 w-5" strokeWidth={2} />
@@ -165,8 +167,12 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
         type="button"
         onClick={handleAdd}
         disabled={outOfStock}
-        aria-label={outOfStock ? `${product.name} — épuisé` : `Ajouter ${product.name} au panier`}
-        title={outOfStock ? "Épuisé" : "Ajouter au panier"}
+        aria-label={
+          outOfStock
+            ? t("outOfStockAria", { name: product.name })
+            : t("suggestionsAddLabel", { name: product.name })
+        }
+        title={outOfStock ? t("soldOut") : t("addToCart")}
         className={`absolute bottom-3 right-3 ${PASTILLE} ${REVEAL} bg-deep text-primary-foreground enabled:hover:scale-105 enabled:focus-visible:scale-105 disabled:cursor-not-allowed disabled:bg-deep/30`}
       >
         {added ? (
@@ -177,7 +183,7 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
       </button>
       {/* Confirmation destinée aux lecteurs d'écran : la coche est visuelle. */}
       <span role="status" aria-live="polite" className="sr-only">
-        {added ? `${product.name} ajouté au panier` : ""}
+        {added ? t("addedConfirmationAria", { name: product.name }) : ""}
       </span>
     </>
   );
@@ -200,11 +206,14 @@ export function FavoriteHeart({
   /** « card » : pastille sur une vignette. « round » : bouton de la fiche produit. */
   size?: "card" | "round";
 }) {
+  const t = useTranslations("wishlist");
   const { items, ready } = useFavorites();
   // Avant hydratation la liste est vide : le cœur part toujours éteint, ce qui
   // évite un écart entre le HTML du serveur et celui du navigateur.
   const active = ready && items.some((entry) => entry.productId === product.id);
-  const label = active ? `Retirer ${product.name} des favoris` : `Ajouter ${product.name} aux favoris`;
+  const label = active
+    ? t("removeItemAria", { name: product.name })
+    : t("addItemAria", { name: product.name });
 
   if (!isActionable(product)) return null;
 
@@ -219,7 +228,7 @@ export function FavoriteHeart({
       onClick={() => toggleFavorite(toFavoriteItem(product))}
       aria-pressed={active}
       aria-label={label}
-      title={active ? "Retirer des favoris" : "Ajouter aux favoris"}
+      title={active ? t("remove") : t("add")}
       className={`${base} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 ${
         active
           ? "border-deep bg-deep text-primary-foreground"

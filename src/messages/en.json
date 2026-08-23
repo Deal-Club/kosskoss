@@ -179,7 +179,9 @@
     "contentLabel": "Size",
     "totalLabel": "Total:",
     "addedToCart": "Added to cart —",
-    "viewCartLink": "view cart"
+    "viewCartLink": "view cart",
+    "hoverMultipleVariants": "Multiple sizes",
+    "hoverSeeSheet": "View product"
   },
   "reviews": {
     "title": "Customer reviews",
@@ -231,7 +233,15 @@
       "networkError": "Connection interrupted: your review was not sent.",
       "successTitle": "Thank you, your review has been received.",
       "successText": "It will be published on this page once checked by our team."
-    }
+    },
+    "homeNoteAria": "Rating of {note} out of 5",
+    "homeSectionTitle": "What those who've tried it say.",
+    "publishedSuffix": "{count, plural, one {review published} other {reviews published}}",
+    "productSectionTitle": "What our customers say",
+    "writeReviewCta": "Write a review for this product",
+    "writeReviewCtaFirst": "Be the first to leave a review",
+    "seeMoreReviews": "See the {count, plural, one {# other review} other {# other reviews}}",
+    "emptyReviewsText": "No reviews yet. Have you tried this product? Your feedback will help others decide."
   },
   "payment": {
     "title": "Secure payment methods",
@@ -343,7 +353,9 @@
     "shippingLabel": "Delivery",
     "shippingCalculatedNextStep": "Calculated at the next step",
     "totalEstimated": "Estimated total",
-    "securePaymentNote": "Secure Mobile Money payment"
+    "securePaymentNote": "Secure Mobile Money payment",
+    "outOfStockAria": "{name} — sold out",
+    "addedConfirmationAria": "{name} added to your cart"
   },
   "checkout": {
     "metaTitle": "Checkout | KossKoss Select",
@@ -638,7 +650,11 @@
     "removeItemAria": "Remove {name} from favourites",
     "savedOnAccount": "Your selection is saved to your account.",
     "savedInBrowser": "This selection is kept in this browser.",
-    "findOnAllDevices": "Find it on all my devices"
+    "findOnAllDevices": "Find it on all my devices",
+    "pageEyebrow": "My selection",
+    "pageTitle": "My favourites",
+    "pageIntro": "The products you've set aside, ready to add to your cart.",
+    "addItemAria": "Add {name} to your favourites"
   },
   "account": {
     "metaTitle": "My account",
@@ -713,7 +729,15 @@
       "noAccount": "No customer account yet?",
       "registerLink": "Create an account",
       "registered": "If the address was still available, your account has now been created. Please sign in with your password.",
-      "passwordChanged": "Your password has been changed. Please sign in with the new password."
+      "passwordChanged": "Your password has been changed. Please sign in with the new password.",
+      "pageTitle": "My account",
+      "pageIntro": "Sign in to track your orders and your routine.",
+      "guestNote": "An account isn't required to place an order. It lets you track your orders, save your addresses, and find your favourites on all your devices.",
+      "emailFieldLabel": "Email",
+      "genericError": "Incorrect email or password.",
+      "unexpectedError": "Something went wrong. Please try again.",
+      "noAccountShort": "No account yet?",
+      "createOne": "Create one"
     },
     "register": {
       "metaTitle": "Create an account",
@@ -938,6 +962,12 @@
           "precision": "houses distributed, named one by one"
         }
       }
+    },
+    "gammeSection": {
+      "eyebrow": "Brand spotlight",
+      "routinesCta": "Our routines with {brand}",
+      "productsCta": "See {brand} products",
+      "fallbackBrand": "this brand"
     }
   },
   "diagnostic": {
@@ -973,7 +1003,15 @@
     "previous": "Previous",
     "next": "Next",
     "seeResult": "See my result",
-    "exitDiagnostic": "Leave the diagnostic"
+    "exitDiagnostic": "Leave the diagnostic",
+    "floatingCta": "Take the diagnostic",
+    "floatingHideAria": "Hide the diagnostic shortcut",
+    "floatingSrText": "Beauty diagnostic: find the products made for your skin",
+    "analysisTitle": "Analysing your profile",
+    "analysisStepReadingAnswers": "Reading your answers",
+    "analysisStepProfile": "Your skin profile is taking shape",
+    "analysisStepCrossReference": "Cross-checking with our formulas",
+    "analysisStepRoutine": "Building your routine"
   },
   "recentlyViewed": {
     "title": "Recently viewed",
@@ -1007,7 +1045,25 @@
     "othersTitle": "Our other routines",
     "metaNotFoundTitle": "Routine not found — {brand}",
     "listMetaTitle": "Ready-to-use routines — {brand}",
-    "listMetaDescription": "Complete routines by concern: acne, dark spots and hyperpigmentation, radiance, anti-ageing, hydration. Three steps in the right order, added to your cart in one go."
+    "listMetaDescription": "Complete routines by concern: acne, dark spots and hyperpigmentation, radiance, anti-ageing, hydration. Three steps in the right order, added to your cart in one go.",
+    "pageEyebrow": "By concern",
+    "pageTitle": "Our ready-to-use routines",
+    "pageIntro": "We don't sell products in isolation but sequences of steps. Choose the concern that's yours: the routine is already composed, in the order that makes it work.",
+    "diagnosticCtaLabel": "Take my diagnostic",
+    "emptyTitle": "Our routines are on their way",
+    "emptyText": "In the meantime, the diagnostic builds a routine suited to your skin in five questions.",
+    "noneMatchTitle": "None of them fit?",
+    "noneMatchText": "Five questions, and we'll build yours.",
+    "addedToast": "Routine added",
+    "addButtonLabel": "Add the routine",
+    "buyButtonLabel": "Buy now",
+    "buyAria": "Buy the {name} — {count} products",
+    "addAria": "Add the {name} to your cart — {count} products",
+    "detailLink": "Details",
+    "railEyebrow": "Quick shop",
+    "railTitle": "Our ready-to-use routines",
+    "railIntro": "One concern, three steps in the right order, a single order.",
+    "railViewAll": "View all routines"
   },
   "marque": {
     "breadcrumbLabel": "Brands",

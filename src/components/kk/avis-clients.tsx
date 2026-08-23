@@ -1,4 +1,5 @@
 import { Star, ArrowRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
 
@@ -46,12 +47,12 @@ import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
  */
 
 /** Rangée d'étoiles. Une seule étiquette pour le lecteur d'écran, pas cinq. */
-function Etoiles({ note, taille = "h-4 w-4" }: { note: number; taille?: string }) {
+function Etoiles({ note, taille = "h-4 w-4", label }: { note: number; taille?: string; label: string }) {
   return (
     <span
       className="inline-flex items-center gap-0.5"
       role="img"
-      aria-label={`Note de ${note.toString().replace(".", ",")} sur 5`}
+      aria-label={label}
     >
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
@@ -96,7 +97,14 @@ function moisAnnee(iso?: string): string | undefined {
   return new Intl.DateTimeFormat("fr-FR", { month: "long", year: "numeric" }).format(d);
 }
 
-function CarteAvis({ avis }: { avis: KKTestimonialView }) {
+function CarteAvis({
+  avis,
+  noteAria,
+}: {
+  avis: KKTestimonialView;
+  /** Étiquette de la note, déjà traduite (voir `homeNoteAria`). */
+  noteAria: (note: number) => string;
+}) {
   const date = moisAnnee(avis.publishedAt);
 
   return (
@@ -104,7 +112,7 @@ function CarteAvis({ avis }: { avis: KKTestimonialView }) {
        détachent, pas un aplat. `--card` et `--background` valent la même
        valeur (#ffffff), un fond de carte ne servirait donc à rien. */
     <article className="kk-lift relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card p-5 shadow-sm">
-      <Etoiles note={avis.rating} taille="h-4 w-4" />
+      <Etoiles note={avis.rating} taille="h-4 w-4" label={noteAria(avis.rating)} />
 
       {avis.title && (
         <h3 className="relative mt-3 font-display text-base leading-snug text-deep">{avis.title}</h3>
@@ -166,7 +174,7 @@ function CarteAvis({ avis }: { avis: KKTestimonialView }) {
   );
 }
 
-export function AvisClients({
+export async function AvisClients({
   avis,
   resume,
 }: {
@@ -175,6 +183,9 @@ export function AvisClients({
 }) {
   // Rien de publié, rien à montrer. Voir l'en-tête du fichier.
   if (avis.length === 0 || resume.total === 0) return null;
+
+  const t = await getTranslations("reviews");
+  const noteAria = (note: number) => t("homeNoteAria", { note: note.toString().replace(".", ",") });
 
   // Une seule rangée : au-delà de trois, la grille repasse à la ligne et la
   // section double de hauteur pour dire la même chose. La page n'en demande
@@ -215,9 +226,9 @@ export function AvisClients({
             deux informations qui se lisent d'un seul regard. */}
         <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <div>
-            <p className="eyebrow">Avis clients</p>
+            <p className="eyebrow">{t("title")}</p>
             <h2 className="mt-1.5 font-display text-2xl leading-tight text-deep sm:text-[1.75rem]">
-              Ce qu&rsquo;en disent celles et ceux qui ont essayé.
+              {t("homeSectionTitle")}
             </h2>
           </div>
 
@@ -227,10 +238,10 @@ export function AvisClients({
           <div className="flex items-center gap-3">
             <p className="figure font-display text-4xl leading-none text-deep">{moyenne}</p>
             <div>
-              <Etoiles note={resume.average} taille="h-4 w-4" />
+              <Etoiles note={resume.average} taille="h-4 w-4" label={noteAria(resume.average)} />
               <p className="mt-1 text-xs text-muted-foreground">
-                <span className="figure">{resume.total}</span> avis publié
-                {resume.total > 1 ? "s" : ""}
+                <span className="figure">{resume.total}</span>{" "}
+                {t("publishedSuffix", { count: resume.total })}
               </p>
             </div>
           </div>
@@ -248,7 +259,7 @@ export function AvisClients({
         <ul className="kk-piste -mx-6 mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 py-1 pb-3 xl:mx-0 xl:grid xl:grid-cols-3 xl:gap-5 xl:overflow-visible xl:px-0 xl:pb-1">
           {cartes.map((a) => (
             <li key={a.id} className="w-[min(82vw,20rem)] shrink-0 snap-start xl:w-auto xl:shrink">
-              <CarteAvis avis={a} />
+              <CarteAvis avis={a} noteAria={noteAria} />
             </li>
           ))}
         </ul>

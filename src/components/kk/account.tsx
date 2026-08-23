@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link, withLocale } from "./localized-link";
 import { Loader2, LogOut } from "lucide-react";
 import { resetFavoritesAfterLogout, syncFavoritesAfterLogin } from "@/lib/favorites";
@@ -10,6 +11,7 @@ const inputCls =
   "mt-1 w-full rounded-xl border border-border bg-card px-4 py-3 text-sm outline-none transition focus:border-deep";
 
 export function AccountLogin({ returnTo }: { returnTo?: string }) {
+  const t = useTranslations("account");
   const router = useRouter();
   const pathname = usePathname();
   const safeReturn =
@@ -32,7 +34,7 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
       if (!res.ok) {
         // Un seul message quel que soit le motif : distinguer « adresse
         // inconnue » de « mot de passe faux » permettrait d'énumérer les comptes.
-        setError("E-mail ou mot de passe incorrect.");
+        setError(t("login.genericError"));
         setSubmitting(false);
         return;
       }
@@ -45,7 +47,7 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
       router.push(withLocale(pathname, safeReturn));
       router.refresh();
     } catch {
-      setError("Une erreur est survenue. Réessayez.");
+      setError(t("login.unexpectedError"));
       setSubmitting(false);
     }
   }
@@ -53,11 +55,11 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
   return (
     <form onSubmit={submit} className="mx-auto max-w-md">
       <label className="block text-sm">
-        <span className="font-medium text-foreground">E-mail</span>
+        <span className="font-medium text-foreground">{t("login.emailFieldLabel")}</span>
         <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} autoComplete="email" />
       </label>
       <label className="mt-4 block text-sm">
-        <span className="font-medium text-foreground">Mot de passe</span>
+        <span className="font-medium text-foreground">{t("fields.password")}</span>
         <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} className={inputCls} autoComplete="current-password" />
       </label>
       {error && (
@@ -71,7 +73,7 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
         className="kk-fill mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground disabled:opacity-60"
       >
         {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
-        Se connecter
+        {t("login.submit")}
       </button>
 
       {/* Les deux issues d'un client bloqué devant ce formulaire : il n'a pas
@@ -81,12 +83,12 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
           href="/compte/mot-de-passe-oublie"
           className="text-muted-foreground underline underline-offset-4 transition hover:text-deep"
         >
-          Mot de passe oublié ?
+          {t("login.forgot")}
         </Link>
         <p className="text-muted-foreground">
-          Pas encore de compte ?{" "}
+          {t("login.noAccountShort")}{" "}
           <Link href="/compte/inscription" className="font-semibold text-deep underline underline-offset-4">
-            En créer un
+            {t("login.createOne")}
           </Link>
         </p>
       </div>
@@ -95,6 +97,7 @@ export function AccountLogin({ returnTo }: { returnTo?: string }) {
 }
 
 export function AccountLogout() {
+  const t = useTranslations("account");
   const router = useRouter();
   const pathname = usePathname();
   const [busy, setBusy] = useState(false);
@@ -118,7 +121,7 @@ export function AccountLogout() {
       disabled={busy}
       className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
     >
-      <LogOut className="h-4 w-4" /> Se déconnecter
+      <LogOut className="h-4 w-4" /> {t("nav.logout")}
     </button>
   );
 }

@@ -26,25 +26,40 @@ import type { KKProductView } from "@/types/kk";
 
 // ---- Encadrés ----
 
-const CALLOUT_STYLES: Record<CalloutTone, { wrapper: string; icon: typeof Info; label: string }> = {
+const CALLOUT_STYLES: Record<CalloutTone, { wrapper: string; icon: typeof Info }> = {
   info: {
     wrapper: "border-trust-line bg-trust-soft text-deep",
     icon: Info,
-    label: "Information",
   },
   conseil: {
     wrapper: "border-gold-soft bg-sand text-deep",
     icon: Lightbulb,
-    label: "Conseil",
   },
   avertissement: {
     wrapper: "border-destructive/30 bg-destructive/5 text-deep",
     icon: AlertTriangle,
-    label: "À savoir",
   },
 };
 
-function Callout({ tone, title, text }: { tone: CalloutTone; title: string; text: string }) {
+/** Libellé par défaut d'un encadré, quand l'article n'en fournit pas. */
+function calloutDefaultLabel(tone: CalloutTone, locale: string): string {
+  if (locale === "en") {
+    return tone === "info" ? "Information" : tone === "conseil" ? "Tip" : "Good to know";
+  }
+  return tone === "info" ? "Information" : tone === "conseil" ? "Conseil" : "À savoir";
+}
+
+function Callout({
+  tone,
+  title,
+  text,
+  locale,
+}: {
+  tone: CalloutTone;
+  title: string;
+  text: string;
+  locale: string;
+}) {
   const style = CALLOUT_STYLES[tone];
   const Icon = style.icon;
 
@@ -52,7 +67,9 @@ function Callout({ tone, title, text }: { tone: CalloutTone; title: string; text
     <aside className={cn("my-8 rounded-2xl border p-5 sm:p-6", style.wrapper)}>
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
-        <p className="text-xs font-bold tracking-wider uppercase">{title || style.label}</p>
+        <p className="text-xs font-bold tracking-wider uppercase">
+          {title || calloutDefaultLabel(tone, locale)}
+        </p>
       </div>
       <div className="mt-2 text-[15px] leading-relaxed">
         <RichText text={text} />
@@ -72,10 +89,12 @@ function VideoEmbed({
   provider,
   videoId,
   title,
+  locale,
 }: {
   provider: "youtube" | "vimeo";
   videoId: string;
   title: string;
+  locale: string;
 }) {
   const src =
     provider === "youtube"
@@ -87,7 +106,7 @@ function VideoEmbed({
       <div className="relative aspect-video overflow-hidden rounded-2xl bg-deep">
         <iframe
           src={src}
-          title={title || "Vidéo"}
+          title={title || (locale === "en" ? "Video" : "Vidéo")}
           loading="lazy"
           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
@@ -107,10 +126,12 @@ function Block({
   block,
   headingId,
   products,
+  locale,
 }: {
   block: JournalBlock;
   headingId?: string;
   products: ReadonlyMap<string, KKProductView>;
+  locale: string;
 }) {
   switch (block.kind) {
     case "paragraph":
@@ -202,10 +223,12 @@ function Block({
       );
 
     case "video":
-      return <VideoEmbed provider={block.provider} videoId={block.videoId} title={block.title} />;
+      return (
+        <VideoEmbed provider={block.provider} videoId={block.videoId} title={block.title} locale={locale} />
+      );
 
     case "callout":
-      return <Callout tone={block.tone} title={block.title} text={block.text} />;
+      return <Callout tone={block.tone} title={block.title} text={block.text} locale={locale} />;
 
     case "stats":
       return (
@@ -331,9 +354,12 @@ function Block({
 export function ArticleBlocks({
   blocks,
   products,
+  locale = "fr",
 }: {
   blocks: readonly JournalBlock[];
   products?: ReadonlyMap<string, KKProductView>;
+  /** Langue des libellés par défaut (encadrés et vidéos sans titre propre). */
+  locale?: string;
 }) {
   // Les ancres sont calculées par la MÊME fonction que le sommaire : les deux
   // ne peuvent donc pas diverger, et un lien du sommaire tombe toujours juste.
@@ -350,6 +376,7 @@ export function ArticleBlocks({
             block={block}
             headingId={headingId}
             products={products ?? new Map()}
+            locale={locale}
           />
         );
       })}

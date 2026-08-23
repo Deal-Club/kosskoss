@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { ArrowRight } from "lucide-react";
 import { BottleMotif } from "./motifs";
@@ -85,7 +86,8 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
  * gestes, le prix d'entrée, et l'ajout au panier sans passer par une page
  * intermédiaire.
  */
-export function RoutineCard({ routine }: { routine: KKRoutineView }) {
+export async function RoutineCard({ routine }: { routine: KKRoutineView }) {
+  const t = await getTranslations("routine");
   return (
     /* `group` : c'est la CARTE ENTIÈRE qui est survolée, pas chacun de ses
        morceaux. Sans elle, le visuel ne grossirait qu'au passage sur le visuel
@@ -140,7 +142,7 @@ export function RoutineCard({ routine }: { routine: KKRoutineView }) {
               href={routine.href}
               className="group inline-flex items-center gap-1 text-sm font-medium text-deep kk-underline"
             >
-              Détail
+              {t("detailLink")}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>

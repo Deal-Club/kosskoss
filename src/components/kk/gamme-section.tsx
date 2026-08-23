@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { ArrowRight } from "lucide-react";
 import type { BrandFocusView } from "@/server/kk/brand-focus";
@@ -32,7 +33,8 @@ import type { BrandFocusView } from "@/server/kk/brand-focus";
  * rayon filtré, et le méga-menu de l'en-tête ouvre le catalogue par besoin.
  * `PREOCCUPATIONS` (`src/lib/kk/besoins.ts`) reste la source de ces filtres.
  */
-export function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
+export async function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
+  const t = await getTranslations("home.gammeSection");
   return (
     <section className="relative overflow-hidden bg-deep text-primary-foreground">
       {/* La photo couvre TOUTE la section, bord à bord.
@@ -106,7 +108,7 @@ export function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
               {/* « La maison que nous mettons en avant » : sept mots pour dire
                   ce que trois disent mieux, et une formule qui parlait de nous
                   au moment de présenter quelqu'un d'autre. */}
-              <p className="eyebrow eyebrow-on-dark">Marque à l&rsquo;honneur</p>
+              <p className="eyebrow eyebrow-on-dark">{t("eyebrow")}</p>
 
               {/* Le nom porte le titre de la section — c'est lui qu'on doit
                   retenir. En Cinzel, la serif des logotypes de la maison : un
@@ -154,7 +156,7 @@ export function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
               href="/routines"
               className="group inline-flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-sm font-semibold text-deep transition hover:bg-white"
             >
-              Nos routines avec {focus?.brand ?? "cette maison"}
+              {t("routinesCta", { brand: focus?.brand ?? t("fallbackBrand") })}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
 
@@ -173,7 +175,7 @@ export function GammeSection({ focus }: { focus?: BrandFocusView | null }) {
                 href={`/recherche?q=${encodeURIComponent(focus.brand)}`}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-white underline-offset-4 hover:underline"
               >
-                Voir les produits {focus.brand}
+                {t("productsCta", { brand: focus.brand })}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             )}

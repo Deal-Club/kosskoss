@@ -2,6 +2,7 @@
 
 import { useCallback, useSyncExternalStore } from "react";
 import { Sparkles, ArrowRight, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
 
 /**
@@ -77,6 +78,7 @@ function instantaneServeur(): boolean {
 }
 
 export function DiagnosticFlottant() {
+  const t = useTranslations("diagnostic");
   const masque = useSyncExternalStore(souscrire, instantane, instantaneServeur);
 
   const masquer = useCallback(() => {
@@ -139,7 +141,7 @@ export function DiagnosticFlottant() {
                   "motion-reduce:transition-none motion-reduce:translate-x-0",
                 ].join(" ")}
               >
-                Faire le diagnostic
+                {t("floatingCta")}
                 <ArrowRight className="h-4 w-4 shrink-0" />
               </span>
             </span>
@@ -157,9 +159,7 @@ export function DiagnosticFlottant() {
             />
           </span>
 
-          <span className="sr-only">
-            Diagnostic beauté : trouvez les produits faits pour votre peau
-          </span>
+          <span className="sr-only">{t("floatingSrText")}</span>
         </Link>
 
         {/* La croix n'apparaît qu'une fois l'onglet déployé : au repos, l'onglet
@@ -169,7 +169,7 @@ export function DiagnosticFlottant() {
         <button
           type="button"
           onClick={masquer}
-          aria-label="Masquer le raccourci vers le diagnostic"
+          aria-label={t("floatingHideAria")}
           className={[
             "mt-1.5 mr-2 flex h-7 w-7 items-center justify-center rounded-full",
             "bg-deep/90 text-primary-foreground/70 ring-1 ring-white/10",

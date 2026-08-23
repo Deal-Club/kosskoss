@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function FavoritesPage({ params }: { params: Params }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "wishlist" });
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -32,11 +33,9 @@ export default async function FavoritesPage({ params }: { params: Params }) {
         <section className="relative overflow-hidden bg-deep text-primary-foreground">
           <PatternBackdrop align="center" />
           <div className="relative mx-auto max-w-4xl px-6 py-12 text-center">
-            <p className="eyebrow eyebrow-on-dark">Ma sélection</p>
-            <h1 className="mt-3">Mes favoris</h1>
-            <p className="lead mx-auto mt-3 max-w-xl text-primary-foreground">
-              Les produits que vous avez mis de côté, prêts à passer au panier.
-            </p>
+            <p className="eyebrow eyebrow-on-dark">{t("pageEyebrow")}</p>
+            <h1 className="mt-3">{t("pageTitle")}</h1>
+            <p className="lead mx-auto mt-3 max-w-xl text-primary-foreground">{t("pageIntro")}</p>
           </div>
         </section>
 

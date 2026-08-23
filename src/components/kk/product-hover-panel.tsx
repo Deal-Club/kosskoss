@@ -1,4 +1,5 @@
 import { ArrowRight, Layers } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import type { KKProductView } from "@/types/kk";
 
 /**
@@ -55,12 +56,14 @@ import type { KKProductView } from "@/types/kk";
 /** Durée et courbe communes, pour que les trois mouvements restent solidaires. */
 const GLISSE = "duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)]";
 
-export function ProductHoverPanel({ product }: { product: KKProductView }) {
+export async function ProductHoverPanel({ product }: { product: KKProductView }) {
   const resume = product.shortDescription?.trim();
 
   // Sans description ni contenance, le panneau n'apporterait qu'un « Voir la
   // fiche » redondant avec le lien qui l'entoure : on ne l'ouvre pas.
   if (!resume && !product.hasVariants) return null;
+
+  const t = await getTranslations("product");
 
   return (
     <div
@@ -110,7 +113,7 @@ export function ProductHoverPanel({ product }: { product: KKProductView }) {
             ].join(" ")}
           >
             <Layers className="h-3.5 w-3.5" />
-            Plusieurs contenances
+            {t("hoverMultipleVariants")}
           </p>
         ) : null}
 
@@ -123,7 +126,7 @@ export function ProductHoverPanel({ product }: { product: KKProductView }) {
             "motion-reduce:translate-y-0 motion-reduce:transition-none",
           ].join(" ")}
         >
-          Voir la fiche
+          {t("hoverSeeSheet")}
           {/* La flèche part avec un dernier décalage : elle ponctue la séquence
               plutôt que de l'accompagner. */}
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-500 delay-[300ms] group-hover:translate-x-1" />
