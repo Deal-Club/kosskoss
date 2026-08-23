@@ -28,6 +28,9 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   // qu'on achète.
   suppliers: "catalogue",
   "purchase-orders": "catalogue",
+  // Import du master client (fiches produits + routines) — voir
+  // src/server/kk/master.ts et docs/HANDOVER.md.
+  "master-import": "catalogue",
 
   // Commandes — y compris les ventes : suivre les commandes sans voir ce
   // qu'elles rapportent n'aurait pas de sens.

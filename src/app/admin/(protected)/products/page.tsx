@@ -4,6 +4,7 @@ import { requireCapacitePage } from "@/lib/dal";
 import { listCategories, listProducts } from "@/server/store";
 import { DeleteButton } from "@/components/admin/DeleteButton";
 import { IconActionLink } from "@/components/admin/IconAction";
+import { MasterImportButton } from "@/components/admin/MasterImportButton";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { ThumbnailZoom } from "@/components/admin/ThumbnailZoom";
 import { paginate, parsePageParam } from "@/lib/pagination";
@@ -91,6 +92,8 @@ export default async function AdminProductsPage({
           </Link>
         </div>
       </div>
+
+      <MasterImportButton />
 
       {/* Un seul formulaire GET : recherche, catégorie et tri restent ensemble dans l'URL */}
       <form method="get" className="mb-4 flex flex-wrap items-end gap-3">

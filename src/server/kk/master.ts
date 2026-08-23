@@ -898,3 +898,45 @@ export async function importerRoutinesMaster(lecture: LectureMaster): Promise<Co
 
   return compteRendu;
 }
+
+// ---- Déclenchement complet (tâche 4) -----------------------------------------
+
+export interface CompteRenduLecture {
+  totalFiches: number;
+  totalRoutines: number;
+  totalLiaisons: number;
+  fichesIgnorees: LigneIgnoree[];
+  routinesIgnorees: LigneIgnoree[];
+  liaisonsIgnorees: LigneIgnoree[];
+}
+
+export interface CompteRenduMaster {
+  lecture: CompteRenduLecture;
+  fiches: CompteRenduFiches;
+  routines: CompteRenduRoutines;
+}
+
+/**
+ * Lit le master puis lance les deux imports (fiches, routines) l'un après
+ * l'autre — les routines dépendent des produits déjà à jour pour résoudre
+ * leurs gestes par SKU. Point d'entrée unique appelé par la route du
+ * back-office (`src/app/api/admin/master-import/route.ts`).
+ */
+export async function importerMaster(chemin: string = CHEMIN_MASTER_PAR_DEFAUT): Promise<CompteRenduMaster> {
+  const lecture = await lireMaster(chemin);
+  const fiches = await importerFichesMaster(lecture);
+  const routines = await importerRoutinesMaster(lecture);
+
+  return {
+    lecture: {
+      totalFiches: lecture.fiches.length,
+      totalRoutines: lecture.routines.length,
+      totalLiaisons: lecture.liaisons.length,
+      fichesIgnorees: lecture.fichesIgnorees,
+      routinesIgnorees: lecture.routinesIgnorees,
+      liaisonsIgnorees: lecture.liaisonsIgnorees,
+    },
+    fiches,
+    routines,
+  };
+}
