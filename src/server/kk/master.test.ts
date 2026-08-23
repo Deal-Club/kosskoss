@@ -7,6 +7,7 @@ import {
   analyserLigneLiaison,
   champsContenuDifferents,
   CATEGORIE_MASTER_VERS_SLUG,
+  gestesIdentiques,
   type FicheMaster,
 } from "./master";
 import type { Row } from "read-excel-file/node";
@@ -345,5 +346,35 @@ describe("CATEGORIE_MASTER_VERS_SLUG", () => {
     assert.equal(CATEGORIE_MASTER_VERS_SLUG["Protection"], "solaires");
     assert.equal(CATEGORIE_MASTER_VERS_SLUG["Corps"], "corps");
     assert.equal(CATEGORIE_MASTER_VERS_SLUG["Hygiène"], "hygiene");
+  });
+});
+
+// ---- Tâche 3 : comparaison des gestes ---------------------------------------
+
+const GESTE_1 = { sku: "BOJ-PRU-CLE-100", role: "Nettoyer", moment: "AM/PM" };
+const GESTE_2 = { sku: "BOJ-INT-SER-30", role: "Corriger", moment: "AM/PM" };
+
+describe("gestesIdentiques", () => {
+  it("est vrai pour deux listes de gestes strictement identiques", () => {
+    assert.equal(gestesIdentiques([GESTE_1, GESTE_2], [GESTE_1, GESTE_2]), true);
+  });
+
+  it("est faux si un geste a disparu", () => {
+    assert.equal(gestesIdentiques([GESTE_1, GESTE_2], [GESTE_1]), false);
+  });
+
+  it("est faux si l'ordre change, même à composition égale", () => {
+    assert.equal(gestesIdentiques([GESTE_1, GESTE_2], [GESTE_2, GESTE_1]), false);
+  });
+
+  it("est faux si seul le rôle d'un geste change", () => {
+    assert.equal(
+      gestesIdentiques([GESTE_1], [{ ...GESTE_1, role: "Traiter" }]),
+      false,
+    );
+  });
+
+  it("est vrai pour deux listes vides", () => {
+    assert.equal(gestesIdentiques([], []), true);
   });
 });

@@ -2,6 +2,7 @@ import path from "node:path";
 import { readSheet, type CellValue, type Row } from "read-excel-file/node";
 import { estNiveau, type NiveauRoutine } from "@/lib/kk/routines-niveau";
 import { isValidGtin } from "@/lib/gtin";
+import { slugify } from "@/lib/slugify";
 import { prisma } from "@/server/prisma";
 
 /**
@@ -575,6 +576,324 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
     if (!skusDuMaster.has(produit.sku)) {
       compteRendu.produitsHorsMaster.push({ sku: produit.sku, nom: produit.name });
     }
+  }
+
+  return compteRendu;
+}
+
+// ---- Import des routines et de leurs gestes (tâche 3) ------------------------
+
+export interface RoutineReperee {
+  code: string;
+  nom: string;
+}
+
+export interface RoutineAnnulee {
+  code: string;
+  ligne: number;
+  raison: string;
+}
+
+export interface GestesRemplaces {
+  code: string;
+  nom: string;
+  /** Nombre de gestes avant remplacement (0 pour une routine nouvellement créée). */
+  avant: number;
+  apres: number;
+}
+
+export interface RoutineHorsMaster {
+  slug: string;
+  nom: string;
+}
+
+export interface CompteRenduRoutines {
+  creees: RoutineReperee[];
+  /** Routines rapprochées dont au moins un champ de contenu a changé. */
+  misesAJour: RoutineReperee[];
+  /** Routines rapprochées, contenu ET gestes identiques — preuve d'idempotence. */
+  inchangees: RoutineReperee[];
+  /** Le master fait foi sur la composition et l'ordre des gestes : ce bloc
+   *  nomme chaque routine dont les gestes ont été remplacés, avec le nombre
+   *  de gestes avant et après — à lire attentivement quand `apres < avant`,
+   *  un geste a disparu. */
+  gestesRemplaces: GestesRemplaces[];
+  /** Une routine dont au moins un geste pointe vers un SKU introuvable, ambigu
+   *  ou dupliqué : import annulé EN ENTIER pour cette routine, jamais amputé. */
+  routinesAnnulees: RoutineAnnulee[];
+  /** Les 5 routines historiques, sans code du master — jamais touchées, à
+   *  trancher par le client. */
+  routinesHorsMaster: RoutineHorsMaster[];
+  /** Un code déjà en base ne figure plus dans le master actuel — signalé,
+   *  jamais supprimé. */
+  routinesCodeesDisparuesDuMaster: RoutineReperee[];
+  lignesIgnoreesRoutines: LigneIgnoree[];
+  lignesIgnoreesLiaisons: LigneIgnoree[];
+  /** Messages d'attention générale (ex. teinte/étiquette par défaut à régler
+   *  manuellement sur les routines nouvellement créées). */
+  avertissements: string[];
+}
+
+/** Rend un slug de routine unique, en suffixant -2, -3… en cas de collision. */
+async function slugRoutineUnique(base: string): Promise<string> {
+  const racine = base || "routine";
+  let candidat = racine;
+  let suffixe = 2;
+  for (;;) {
+    const existante = await prisma.routine.findUnique({ where: { slug: candidat } });
+    if (!existante) return candidat;
+    candidat = `${racine}-${suffixe}`;
+    suffixe += 1;
+  }
+}
+
+type GesteResolu = {
+  position: number;
+  role: string;
+  moment: string;
+  sku: string;
+  productId: string;
+};
+
+/**
+ * Vrai si deux listes de gestes, DÉJÀ DANS L'ORDRE D'AFFICHAGE, décrivent
+ * exactement la même routine : même nombre de gestes, mêmes SKU, mêmes rôles,
+ * mêmes moments, dans le même ordre. Un ordre différent avec les mêmes
+ * produits n'est PAS considéré comme identique — le master fait foi sur
+ * l'ordre autant que sur la composition.
+ */
+export function gestesIdentiques(
+  actuels: { sku: string; role: string; moment: string }[],
+  attendus: { sku: string; role: string; moment: string }[],
+): boolean {
+  return (
+    actuels.length === attendus.length &&
+    actuels.every((g, i) => g.sku === attendus[i].sku && g.role === attendus[i].role && g.moment === attendus[i].moment)
+  );
+}
+
+/**
+ * Rapproche les 14 routines du master aux routines en base par `code`, crée
+ * celles qui manquent, met à jour les autres, et remplace en bloc les gestes
+ * d'une routine dès que leur composition ou leur ordre change.
+ *
+ * ── CE QUE LE MASTER NE DONNE PAS ───────────────────────────────────────────
+ *
+ * `slug`, `tint`, `besoinTag` et `image` n'ont pas de colonne source dans le
+ * master : une routine nouvellement créée reçoit un slug dérivé du nom (rendu
+ * unique) et les valeurs par défaut du schéma pour le reste (`tint: "acne"`,
+ * `besoinTag`/`image` vides). Les inventer autrement serait une décision de
+ * merchandising que ce module ne doit pas prendre à la place du commerçant —
+ * le compte rendu le rappelle (`avertissements`).
+ *
+ * `RoutineStep.label` (le « Geste » affiché aujourd'hui sur la page routine)
+ * n'a pas non plus de colonne dédiée : il reprend la valeur de `Role`, seule
+ * colonne du master qui joue ce rôle (« Nettoyer », « Corriger »…). `why`
+ * n'a aucune source dans le master ; il reste vide et NE SURVIT PAS à un
+ * remplacement de gestes — une valeur saisie à la main via l'écran de
+ * traduction serait perdue si les gestes de sa routine changent au master.
+ */
+export async function importerRoutinesMaster(lecture: LectureMaster): Promise<CompteRenduRoutines> {
+  const produits = await prisma.product.findMany({ select: { id: true, sku: true } });
+  const produitsParSku = new Map<string, { id: string; sku: string }[]>();
+  for (const produit of produits) {
+    const liste = produitsParSku.get(produit.sku) ?? [];
+    liste.push(produit);
+    produitsParSku.set(produit.sku, liste);
+  }
+
+  const liaisonsParCode = new Map<string, LiaisonMaster[]>();
+  for (const liaison of lecture.liaisons) {
+    const liste = liaisonsParCode.get(liaison.routineCode) ?? [];
+    liste.push(liaison);
+    liaisonsParCode.set(liaison.routineCode, liste);
+  }
+  for (const liste of liaisonsParCode.values()) liste.sort((a, b) => a.etape - b.etape);
+
+  const routinesExistantes = await prisma.routine.findMany({
+    where: { code: { not: null } },
+    include: {
+      steps: {
+        orderBy: { position: "asc" },
+        include: { product: { select: { sku: true } } },
+      },
+    },
+  });
+  const existantesParCode = new Map(routinesExistantes.map((r) => [r.code as string, r]));
+
+  const legacy = await prisma.routine.findMany({
+    where: { code: null },
+    select: { slug: true, name: true },
+  });
+
+  const compteRendu: CompteRenduRoutines = {
+    creees: [],
+    misesAJour: [],
+    inchangees: [],
+    gestesRemplaces: [],
+    routinesAnnulees: [],
+    routinesHorsMaster: legacy.map((r) => ({ slug: r.slug, nom: r.name })),
+    routinesCodeesDisparuesDuMaster: [],
+    lignesIgnoreesRoutines: lecture.routinesIgnorees,
+    lignesIgnoreesLiaisons: lecture.liaisonsIgnorees,
+    avertissements: [],
+  };
+
+  const codesDuMaster = new Set(lecture.routines.map((r) => r.code));
+
+  for (const routine of lecture.routines) {
+    const liaisons = liaisonsParCode.get(routine.code) ?? [];
+
+    if (liaisons.length === 0) {
+      compteRendu.routinesAnnulees.push({
+        code: routine.code,
+        ligne: routine.ligne,
+        raison: "aucun geste trouvé dans PRODUITS_ROUTINES pour ce code",
+      });
+      continue;
+    }
+
+    // Résolution des SKU. Un SKU introuvable, ambigu (plusieurs produits du
+    // même SKU) ou dupliqué DANS la routine annule TOUTE la routine — une
+    // routine amputée d'une étape est pire qu'une routine absente.
+    const skusIntrouvablesOuAmbigus = new Set<string>();
+    const skusEnDouble = new Set<string>();
+    const skusVus = new Set<string>();
+    const gestesResolus: GesteResolu[] = [];
+
+    for (const liaison of liaisons) {
+      const candidats = produitsParSku.get(liaison.sku) ?? [];
+      if (candidats.length !== 1) {
+        skusIntrouvablesOuAmbigus.add(liaison.sku);
+        continue;
+      }
+      if (skusVus.has(liaison.sku)) {
+        skusEnDouble.add(liaison.sku);
+        continue;
+      }
+      skusVus.add(liaison.sku);
+      gestesResolus.push({
+        position: liaison.etape,
+        role: liaison.role,
+        moment: liaison.moment,
+        sku: liaison.sku,
+        productId: candidats[0].id,
+      });
+    }
+
+    if (skusIntrouvablesOuAmbigus.size > 0 || skusEnDouble.size > 0) {
+      const raisons: string[] = [];
+      if (skusIntrouvablesOuAmbigus.size > 0) {
+        raisons.push(`SKU introuvable ou ambigu : ${[...skusIntrouvablesOuAmbigus].join(", ")}`);
+      }
+      if (skusEnDouble.size > 0) {
+        raisons.push(`SKU répété dans la même routine : ${[...skusEnDouble].join(", ")}`);
+      }
+      compteRendu.routinesAnnulees.push({
+        code: routine.code,
+        ligne: routine.ligne,
+        raison: raisons.join(" ; "),
+      });
+      continue;
+    }
+
+    const existante = existantesParCode.get(routine.code);
+
+    if (!existante) {
+      const slug = await slugRoutineUnique(slugify(routine.nom));
+      const position = await prisma.routine.count();
+      const cree = await prisma.routine.create({
+        data: {
+          code: routine.code,
+          slug,
+          name: routine.nom,
+          claim: routine.promesse,
+          niveau: routine.niveau,
+          profilCible: routine.profilCible,
+          usageMatin: routine.usageMatin,
+          usageSoir: routine.usageSoir,
+          badge: routine.badge,
+          noteKossKoss: routine.noteKossKoss,
+          position,
+        },
+      });
+      await prisma.routineStep.createMany({
+        data: gestesResolus.map((g) => ({
+          routineId: cree.id,
+          productId: g.productId,
+          label: g.role,
+          role: g.role,
+          moment: g.moment,
+          position: g.position,
+        })),
+      });
+      compteRendu.creees.push({ code: routine.code, nom: routine.nom });
+      compteRendu.gestesRemplaces.push({
+        code: routine.code,
+        nom: routine.nom,
+        avant: 0,
+        apres: gestesResolus.length,
+      });
+      continue;
+    }
+
+    const patchContenu: Record<string, string> = {};
+    if (existante.name !== routine.nom) patchContenu.name = routine.nom;
+    if (existante.claim !== routine.promesse) patchContenu.claim = routine.promesse;
+    if (existante.niveau !== routine.niveau) patchContenu.niveau = routine.niveau;
+    if (existante.profilCible !== routine.profilCible) patchContenu.profilCible = routine.profilCible;
+    if (existante.usageMatin !== routine.usageMatin) patchContenu.usageMatin = routine.usageMatin;
+    if (existante.usageSoir !== routine.usageSoir) patchContenu.usageSoir = routine.usageSoir;
+    if (existante.badge !== routine.badge) patchContenu.badge = routine.badge;
+    if (existante.noteKossKoss !== routine.noteKossKoss) patchContenu.noteKossKoss = routine.noteKossKoss;
+
+    const gestesActuels = existante.steps.map((s) => ({ sku: s.product.sku, role: s.role, moment: s.moment }));
+    const memesGestes = gestesIdentiques(gestesActuels, gestesResolus);
+
+    if (Object.keys(patchContenu).length === 0 && memesGestes) {
+      compteRendu.inchangees.push({ code: routine.code, nom: routine.nom });
+      continue;
+    }
+
+    if (Object.keys(patchContenu).length > 0) {
+      await prisma.routine.update({ where: { id: existante.id }, data: patchContenu });
+      compteRendu.misesAJour.push({ code: routine.code, nom: routine.nom });
+    }
+
+    if (!memesGestes) {
+      await prisma.$transaction([
+        prisma.routineStep.deleteMany({ where: { routineId: existante.id } }),
+        prisma.routineStep.createMany({
+          data: gestesResolus.map((g) => ({
+            routineId: existante.id,
+            productId: g.productId,
+            label: g.role,
+            role: g.role,
+            moment: g.moment,
+            position: g.position,
+          })),
+        }),
+      ]);
+      compteRendu.gestesRemplaces.push({
+        code: routine.code,
+        nom: routine.nom,
+        avant: gestesActuels.length,
+        apres: gestesResolus.length,
+      });
+    }
+  }
+
+  for (const [code, existante] of existantesParCode) {
+    if (!codesDuMaster.has(code)) {
+      compteRendu.routinesCodeesDisparuesDuMaster.push({ code, nom: existante.name });
+    }
+  }
+
+  if (compteRendu.creees.length > 0) {
+    compteRendu.avertissements.push(
+      `${compteRendu.creees.length} routine(s) créée(s) avec la teinte par défaut (« acne ») et une ` +
+        "étiquette de besoin vide — le master ne fournit ni l'une ni l'autre. À régler manuellement.",
+    );
   }
 
   return compteRendu;
