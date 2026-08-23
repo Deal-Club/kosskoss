@@ -9,7 +9,8 @@ import { RoutineAddToCart } from "@/components/kk/routine-add";
 import { tintClass } from "@/components/kk/routine-card";
 import { BottleMotif } from "@/components/kk/motifs";
 import { getRoutine, getRoutines } from "@/server/kk/routines";
-import { besoinParTag, libelleBesoin } from "@/lib/kk/besoins";
+import { PREOCCUPATIONS, libellesPourTags } from "@/lib/kk/besoins";
+import { libelleNiveau } from "@/lib/kk/routines-niveau";
 import { formatFcfa } from "@/lib/kk/format";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
@@ -54,7 +55,27 @@ export default async function RoutinePage({ params }: { params: Params }) {
   const routine = await getRoutine(slug, locale);
   if (!routine) notFound();
 
-  const besoin = besoinParTag(routine.besoinTag);
+  // Niveau en toutes lettres — jamais écrit en dur, toujours lu par ce module
+  // pur (`src/lib/kk/routines-niveau.ts`) : c'est lui qui sait que le « Eco »
+  // du master s'affiche « Essentielle ».
+  const niveauLabel = libelleNiveau(routine.niveau);
+
+  // Ligne de préoccupations du modèle client (« Boutons • Brillance • Marques
+  // post-imperfections ») : même registre et même fonction que la fiche
+  // produit (lot 7D, tâche 1) — `routine.tags` est l'union des tags des
+  // produits encore servables de la routine, posée côté serveur
+  // (`src/server/kk/routines.ts`). Peut être vide : aucune routine ne
+  // l'invente alors.
+  const preoccupationLabels = libellesPourTags(routine.tags, PREOCCUPATIONS, locale);
+
+  // Parcours numéroté du modèle (« 01 NETTOYER → 02 TRAITER → 03 PROTÉGER ») :
+  // le rôle du geste prime sur son étiquette générique — voir la note sur
+  // `KKRoutineStepView.role` — avec repli sur `label` pour les 5 routines
+  // historiques, non couvertes par le master.
+  const parcours = routine.steps
+    .map((s, i) => `${String(i + 1).padStart(2, "0")} ${s.role || s.label}`)
+    .join(" → ");
+
   const autres = (await getRoutines(locale)).filter((r) => r.id !== routine.id).slice(0, 3);
 
   return (
@@ -97,14 +118,40 @@ export default async function RoutinePage({ params }: { params: Params }) {
         <section className={`${tintClass(routine.tint)}`}>
           <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
             <div className="max-w-2xl">
+              {/* Niveau en toutes lettres (jamais « Eco » écrit en dur — voir
+                  `niveauLabel` ci-dessus) et nombre de gestes : les deux
+                  premiers repères du modèle client, avant même le nom. */}
               <p className="eyebrow">
-                {besoin ? libelleBesoin(besoin, locale) : t("needFallback")}
+                <span aria-label={t("levelBadgeAria", { level: niveauLabel })}>{niveauLabel}</span>
                 {" · "}
                 {tHeader("stepsCount", { count: routine.steps.length })}
               </p>
               <h1 className="mt-2 text-deep">{routine.name}</h1>
-              {routine.claim && (
-                <p className="mt-2 font-display text-lg text-deep">{routine.claim}</p>
+
+              {/* Accroche courte du master (« Meilleur rapport
+                  efficacité/prix »…) — absente sur certaines routines : la
+                  ligne ne s'affiche alors simplement pas. */}
+              {routine.badge && (
+                <p className="mt-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-gold-ink">
+                  {routine.badge}
+                </p>
+              )}
+
+              {/* Profil visé, texte libre du master (« Peaux mixtes à
+                  grasses, boutons, brillance… ») : c'est LUI qui porte le
+                  type de peau du modèle client — jamais recomposé à partir
+                  des tags, qui serviraient à mentir sur une distinction que
+                  le champ ne fait pas explicitement. */}
+              {routine.profilCible && (
+                <p className="mt-2 text-sm leading-relaxed text-deep/80">{routine.profilCible}</p>
+              )}
+
+              {/* Ligne de préoccupations, agrégée sur les produits de la
+                  routine — même registre que la fiche produit. */}
+              {preoccupationLabels.length > 0 && (
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-deep/60">
+                  {preoccupationLabels.join(" • ")}
+                </p>
               )}
             </div>
 
@@ -148,7 +195,26 @@ export default async function RoutinePage({ params }: { params: Params }) {
         <section className="section mx-auto max-w-6xl px-6">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-14">
             <div>
-              <p className="eyebrow">{t("detailEyebrow")}</p>
+              {/* La promesse (modèle client) — « Promesse » du master,
+                  `Routine.claim`. Absente sur aucune des 14 routines
+                  importées, mais gardée quand même : les 5 routines
+                  historiques, hors master, peuvent l'avoir vide. */}
+              {routine.claim && (
+                <>
+                  <h2 className="text-deep">{t("promiseTitle")}</h2>
+                  <p className="mt-3 max-w-2xl leading-relaxed text-foreground/85">{routine.claim}</p>
+                </>
+              )}
+
+              {/* Parcours numéroté (modèle client) — « 01 NETTOYER → 02
+                  TRAITER → 03 PROTÉGER » — avant le détail geste par geste
+                  qui suit. */}
+              <p className={`eyebrow ${routine.claim ? "mt-8" : ""}`}>
+                {t("journeyTitle", { count: routine.steps.length })}
+              </p>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-deep">{parcours}</p>
+
+              <p className="eyebrow mt-8">{t("detailEyebrow")}</p>
               <h2 className="mt-2 text-deep">{t("detailTitle")}</h2>
               {routine.description && (
                 <p className="mt-4 max-w-2xl leading-relaxed text-foreground/85">
@@ -192,8 +258,13 @@ export default async function RoutinePage({ params }: { params: Params }) {
                       <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-deep text-[0.65rem] font-semibold text-primary-foreground">
                         {i + 1}
                       </span>
+                      {/* Le rôle du geste, DANS CETTE routine, prime sur son
+                          étiquette générique — voir la note sur
+                          `KKRoutineStepView.role`. Repli sur `label` pour les
+                          5 routines historiques, hors master, où `role` est
+                          vide. */}
                       <span className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-deep">
-                        {step.label}
+                        {step.role || step.label}
                       </span>
                       <span aria-hidden="true" className="text-muted-foreground/40">
                         ·
@@ -224,6 +295,42 @@ export default async function RoutinePage({ params }: { params: Params }) {
               );
             })}
           </ol>
+
+              {/* Matin et soir, tels que le master les décrit (`usageMatin` /
+                  `usageSoir`, texte libre — ex. « Nettoyant → ACT-5 → SPF50 »).
+                  Chaque bloc ne s'affiche que si le champ est renseigné : une
+                  routine corps sans étape matin, par exemple, n'affiche que
+                  le soir. */}
+              {(routine.usageMatin || routine.usageSoir) && (
+                <div className="mt-10 grid gap-5 sm:grid-cols-2">
+                  {routine.usageMatin && (
+                    <div className="rounded-2xl border border-border/70 bg-card p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                        {t("morningTitle")}
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-foreground/85">{routine.usageMatin}</p>
+                    </div>
+                  )}
+                  {routine.usageSoir && (
+                    <div className="rounded-2xl border border-border/70 bg-card p-5">
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                        {t("eveningTitle")}
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-foreground/85">{routine.usageSoir}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Le mot de l'équipe — `noteKossKoss`. Toutes les routines
+                  n'en ont pas : un intertitre suivi du vide serait pire
+                  qu'une fiche courte. */}
+              {routine.noteKossKoss && (
+                <div className="mt-8">
+                  <h2 className="text-deep">{t("whyRoutineTitle")}</h2>
+                  <p className="mt-3 max-w-2xl leading-relaxed text-foreground/85">{routine.noteKossKoss}</p>
+                </div>
+              )}
 
               {/* Deuxième porte, en une phrase : les autres routines toutes
                   faites, ou le diagnostic qui en compose une sur mesure.
@@ -294,9 +401,20 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     ))}
                   </ul>
 
-                  <div className="mt-5 flex items-baseline justify-between gap-3">
+                  {/* Valeur des produits, puis prix de la routine — modèle
+                      client. Les DEUX se calculent depuis les produits liés
+                      (`routine.totalFcfa`, sommé côté serveur à chaque rendu,
+                      jamais lu en base) : le schéma ne porte aucune remise de
+                      bundle, les deux montants sont donc identiques
+                      aujourd'hui — mais restent deux lectures distinctes du
+                      même calcul, jamais une valeur figée recopiée. */}
+                  <div className="mt-5 flex items-baseline justify-between gap-3 text-xs text-primary-foreground/60">
+                    <span className="uppercase tracking-wide">{t("valueLabel")}</span>
+                    <span className="figure">{formatFcfa(routine.totalFcfa)}</span>
+                  </div>
+                  <div className="mt-1.5 flex items-baseline justify-between gap-3">
                     <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
-                      {t("summaryTotal")}
+                      {t("priceLabel")}
                     </span>
                     <span className="figure text-2xl font-semibold text-primary-foreground">
                       {formatFcfa(routine.totalFcfa)}

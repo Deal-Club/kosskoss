@@ -163,4 +163,18 @@ export type KKRoutineView = {
   usageSoir: string;
   /** Le mot de l'équipe sur cette routine. Peut être vide. */
   noteKossKoss: string;
+  /**
+   * Accroche courte du master (« Meilleur rapport efficacité/prix »…), champ
+   * `Routine.badge` — texte libre, SANS RAPPORT avec `KKBadge` (qui distingue
+   * « bestseller »/« nouveau » sur les produits). Peut être vide.
+   */
+  badge: string;
+  /**
+   * Union des `Product.tags` des produits encore servables de la routine —
+   * pour la ligne de préoccupations de la fiche routine (lot 7D), au même
+   * registre que la fiche produit (`src/lib/kk/besoins.ts`, `PREOCCUPATIONS`).
+   * Aucun champ dédié n'existe côté master pour une routine : ce sont les
+   * mêmes tags que ceux posés sur chaque produit qui la compose.
+   */
+  tags: string[];
 };

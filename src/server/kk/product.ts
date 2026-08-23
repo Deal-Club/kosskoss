@@ -1,19 +1,8 @@
 import { prisma } from "@/server/prisma";
-import { PRODUCT_VIEW_INCLUDE, toBadge, toProductView } from "./product-view";
+import { PRODUCT_VIEW_INCLUDE, parseStringArray, toBadge, toProductView } from "./product-view";
 import { pickText, pickList, needsTranslation } from "@/server/localizedContent";
 import type { KKProductView, KKBadge } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
-
-/** Les champs `bullets`/`images` sont des String JSON (défaut "[]"). */
-function parseStringArray(value: string | null): string[] {
-  if (!value) return [];
-  try {
-    const v: unknown = JSON.parse(value);
-    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
-  } catch {
-    return [];
-  }
-}
 
 export type KKVariant = {
   id: string;

@@ -1,5 +1,5 @@
 import { prisma } from "@/server/prisma";
-import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import { PRODUCT_VIEW_INCLUDE, parseStringArray, toProductView } from "./product-view";
 import { pickText, needsTranslation } from "@/server/localizedContent";
 import type { KKRoutineView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
@@ -39,20 +39,22 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
   // un champ `*En` — c'est la seule règle de repli du projet
   // (`src/server/localizedContent.ts`).
   const traduire = needsTranslation(locale);
-  const steps = row.steps
-    .filter((s) => s.product.active && s.product.stock > 0)
-    .map((s, i) => ({
-      id: s.id,
-      label: pickText(s.label, traduire ? s.labelEn : undefined),
-      why: pickText(s.why, traduire ? s.whyEn : undefined),
-      // `role` n'a pas de contrepartie *En sur les routines historiques (le
-      // champ y est vide) ; sur les routines du master, elle existe. Même
-      // règle de repli que partout ailleurs. `moment` n'a pas de contrepartie
-      // *En du tout — voir traductions.ts.
-      role: pickText(s.role, traduire ? s.roleEn : undefined),
-      moment: s.moment,
-      product: toProductView(s.product, locale, i),
-    }));
+  // Filtré une fois, réutilisé pour les gestes ET pour les tags agrégés
+  // ci-dessous — un produit retiré du catalogue ou en rupture ne doit
+  // alimenter ni l'un ni l'autre.
+  const gestesServables = row.steps.filter((s) => s.product.active && s.product.stock > 0);
+  const steps = gestesServables.map((s, i) => ({
+    id: s.id,
+    label: pickText(s.label, traduire ? s.labelEn : undefined),
+    why: pickText(s.why, traduire ? s.whyEn : undefined),
+    // `role` n'a pas de contrepartie *En sur les routines historiques (le
+    // champ y est vide) ; sur les routines du master, elle existe. Même
+    // règle de repli que partout ailleurs. `moment` n'a pas de contrepartie
+    // *En du tout — voir traductions.ts.
+    role: pickText(s.role, traduire ? s.roleEn : undefined),
+    moment: s.moment,
+    product: toProductView(s.product, locale, i),
+  }));
 
   if (steps.length < 2) return null;
 
@@ -67,6 +69,11 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     image: row.image || null,
     href: `/routines/${row.slug}`,
     steps,
+    // Le prix ne se lit JAMAIS en base (voir l'en-tête du fichier) : c'est la
+    // somme des gestes réellement servables, recalculée à chaque rendu. Sert
+    // à la fois la « valeur des produits » et le « prix de la routine » de la
+    // fiche (lot 7D, tâche 2) — aucun mécanisme de remise n'existe côté
+    // schéma, les deux se lisent donc sur ce même total.
     totalFcfa: steps.reduce((sum, s) => sum + s.product.priceFcfa, 0),
     niveau: row.niveau,
     code: row.code,
@@ -74,6 +81,11 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     usageMatin: pickText(row.usageMatin, traduire ? row.usageMatinEn : undefined),
     usageSoir: pickText(row.usageSoir, traduire ? row.usageSoirEn : undefined),
     noteKossKoss: pickText(row.noteKossKoss, traduire ? row.noteKossKossEn : undefined),
+    badge: pickText(row.badge, traduire ? row.badgeEn : undefined),
+    // Union des tags des produits encore servables, dans l'ordre où ces
+    // produits apparaissent dans la routine — pas de tri alphabétique qui
+    // désynchroniserait l'ordre d'affichage d'une locale à l'autre.
+    tags: Array.from(new Set(gestesServables.flatMap((s) => parseStringArray(s.product.tags)))),
   };
 }
 
