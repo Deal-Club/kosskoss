@@ -184,10 +184,13 @@ export function initialiserMesure(identifiants: { ga4Id: string; metaPixelId: st
  *
  * N'exige pas que `initialiserMesure` ait déjà tourné : si le traceur n'a pas
  * été chargé (identifiant absent au montage, consentement pas encore donné),
- * `window.gtag`/`window.fbq` sont simplement absents et rien ne part — mais si
- * le consentement vient d'être accordé sans rechargement de page, cette
- * fonction charge la bibliothèque à la volée, pour ne pas perdre l'événement
- * qui la déclenche.
+ * `window.gtag`/`window.fbq` sont simplement absents et rien ne part. Cette
+ * fonction ne charge JAMAIS la bibliothèque elle-même — seul `chargerGa4`/
+ * `chargerPixel`, appelés par `initialiserMesure`, le font. Un consentement
+ * accordé APRÈS le montage sans rechargement de page (bandeau rouvert depuis
+ * le pied de page, par exemple) n'active donc rien tant que la page n'a pas
+ * rappelé `initialiserMesure` : l'événement qui a déclenché ce constat-là est
+ * perdu, comme toute mesure manquée (voir l'en-tête du fichier).
  */
 export function mesurerEvenement(detail: EvenementDetail): void {
   try {
