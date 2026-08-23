@@ -83,6 +83,10 @@ export interface FicheMaster {
   /** Reprises telles quelles : ce sont des indications pour le commerçant, pas du contenu client. */
   statutPublication: string;
   donneesAConfirmer: string;
+  /** Besoin_Principal — jusqu'ici purement descriptive. Sert désormais à poser un
+   *  tag de préoccupation (voir `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`), quand
+   *  la valeur en désigne une. */
+  besoinPrincipal: string;
 }
 
 /** Une routine du master (onglet ROUTINES), colonnes validées. */
@@ -214,6 +218,7 @@ export function analyserLigneFiche(
       actifsCles: texte(cellule(index, ligne, "Actifs_Cles")),
       statutPublication: texte(cellule(index, ligne, "Statut_Publication")),
       donneesAConfirmer: texte(cellule(index, ligne, "Donnees_A_Confirmer")),
+      besoinPrincipal: texte(cellule(index, ligne, "Besoin_Principal")),
     },
   };
 }
@@ -361,6 +366,68 @@ export const CATEGORIE_MASTER_VERS_SLUG: Record<string, string> = {
   "Hygiène": "hygiene",
 };
 
+/**
+ * `Besoin_Principal` (onglet FICHES_PRODUITS) → tag de préoccupation
+ * (`ProductTag`, famille « preoccupation »). Relevé sur les 71 fiches du
+ * master, la colonne porte quinze valeurs distinctes ; seules celles qui
+ * désignent une VRAIE préoccupation de peau figurent ci-dessous.
+ *
+ * Volontairement ABSENTES de cette table, donc jamais transformées en tag de
+ * préoccupation :
+ *  - « Homme essentiel » (9 fiches) — un segment client, pas une
+ *    préoccupation ; les produits concernés portent déjà le tag `homme`
+ *    (famille « categorie »), posé ailleurs (installation du quiz client) ;
+ *  - « Démaquillage » (4), « Nettoyage » (3) — un geste de routine, pas une
+ *    préoccupation ;
+ *  - « Protection solaire » (2) — un geste, déjà couvert par le tag `solaire` ;
+ *  - « Hydratation corps » (4), « Fermeté corps » (3), « Hygiène corps » (1),
+ *    « Protection solaire corps » (1), « Taches corps » (1) — le rayon corps,
+ *    pas le visage : même une valeur qui contient « Taches » désigne ici un
+ *    soin corps, pas la préoccupation « taches » du visage.
+ *
+ * « Sensibilité / Barrière » (7 fiches) pointe vers `apaisant`, PAS vers un
+ * nouveau tag `sensibilite` : ce tag existe déjà (27 produits actifs) et
+ * porte déjà, à la date de cet ajout, les sept produits que le master range
+ * sous « Sensibilité / Barrière » — un second tag pour la même idée créerait
+ * deux vocabulaires là où un seul suffit.
+ *
+ * Une valeur de `Besoin_Principal` absente de cette table (ou vide) n'ajoute
+ * simplement aucun tag — le champ reste purement descriptif pour elle, comme
+ * avant cet import.
+ */
+export const BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION: Record<string, string> = {
+  "Hydratation / Confort": "hydratation",
+  "Boutons / Imperfections": "imperfections",
+  "Taches / Teint": "taches",
+  "Sensibilité / Barrière": "apaisant",
+  "Glow / Éclat": "eclat",
+  "Anti-Âge": "anti_age",
+};
+
+/**
+ * Le tag de préoccupation à ajouter aux tags déjà portés par le produit,
+ * d'après son `Besoin_Principal` — `null` si la valeur ne désigne aucune
+ * préoccupation (voir `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`) ou si le tag
+ * visé est déjà présent. Fonction pure : AJOUTE, ne retire jamais — les tags
+ * déjà posés à la main peuvent porter une intention que le master ignore.
+ */
+export function tagPreoccupationAAjouter(
+  besoinPrincipal: string,
+  tagsActuels: string[],
+): string | null {
+  const tag = BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION[besoinPrincipal];
+  if (!tag) return null;
+  if (tagsActuels.includes(tag)) return null;
+  return tag;
+}
+
+export interface PreoccupationAjoutee {
+  sku: string;
+  nom: string;
+  /** Tag de préoccupation posé (voir `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`). */
+  tag: string;
+}
+
 export interface PrixModifie {
   sku: string;
   nom: string;
@@ -405,6 +472,10 @@ export interface CompteRenduFiches {
   produitsHorsMaster: FicheReperee[];
   /** Catégorie du master différente de la catégorie du site pour ce SKU — jamais corrigée automatiquement. */
   categoriesDivergentes: DivergenceCategorie[];
+  /** Tags de préoccupation posés à partir de `Besoin_Principal` — chaque produit
+   *  nouvellement tagué est nommé, avec le tag posé. Ne contient jamais un tag
+   *  retiré : cette liste ne fait qu'ajouter (voir `tagPreoccupationAAjouter`). */
+  preoccupationsAjoutees: PreoccupationAjoutee[];
   /** Lignes du master écartées à la lecture (voir `lireMaster`). */
   lignesIgnorees: LigneIgnoree[];
 }
@@ -420,6 +491,7 @@ function chargerProduitsActuels() {
       priceCents: true,
       gtin: true,
       category: { select: { slug: true } },
+      tags: true,
       shortDescription: true,
       bullets: true,
       problemeAccroche: true,
@@ -491,6 +563,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
     skusAmbigus: [],
     produitsHorsMaster: [],
     categoriesDivergentes: [],
+    preoccupationsAjoutees: [],
     lignesIgnorees: lecture.fichesIgnorees,
   };
 
@@ -554,6 +627,23 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
         categorieMaster: fiche.categorie,
         categorieSite: actuel.category.slug,
       });
+    }
+
+    // Préoccupation issue de Besoin_Principal : AJOUTE un tag, n'en retire
+    // jamais — voir `tagPreoccupationAAjouter` et le commentaire de
+    // `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`. Les tags posés à la main
+    // restent tous en place, y compris ceux qu'aucun Besoin_Principal ne
+    // couvre.
+    let tagsActuels: string[];
+    try {
+      tagsActuels = JSON.parse(actuel.tags || "[]");
+    } catch {
+      tagsActuels = [];
+    }
+    const tagAAjouter = tagPreoccupationAAjouter(fiche.besoinPrincipal, tagsActuels);
+    if (tagAAjouter) {
+      patch.tags = JSON.stringify([...tagsActuels, tagAAjouter]);
+      compteRendu.preoccupationsAjoutees.push({ sku: fiche.sku, nom: actuel.name, tag: tagAAjouter });
     }
 
     if (Object.keys(patch).length === 0) {

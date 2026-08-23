@@ -7,6 +7,8 @@ import {
   analyserLigneLiaison,
   champsContenuDifferents,
   CATEGORIE_MASTER_VERS_SLUG,
+  BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION,
+  tagPreoccupationAAjouter,
   gestesIdentiques,
   type FicheMaster,
 } from "./master";
@@ -40,6 +42,7 @@ const ENTETES_FICHES = [
   "Actifs_Cles",
   "Statut_Publication",
   "Donnees_A_Confirmer",
+  "Besoin_Principal",
 ];
 const INDEX_FICHES = indexerEntetes(ENTETES_FICHES as Row);
 
@@ -65,6 +68,7 @@ function ligneFiche(patch: Record<string, unknown> = {}): Row {
     Actifs_Cles: "Heartleaf 77%",
     Statut_Publication: "READY",
     Donnees_A_Confirmer: "",
+    Besoin_Principal: "Sensibilité / Barrière",
     ...patch,
   };
   return ENTETES_FICHES.map((colonne) => base[colonne] ?? null) as Row;
@@ -134,6 +138,16 @@ describe("analyserLigneFiche", () => {
       assert.equal(resultat.fiche.statutPublication, "READY_WITH_CAUTION");
       assert.equal(resultat.fiche.donneesAConfirmer, "Format à vérifier");
     }
+  });
+
+  it("lit Besoin_Principal", () => {
+    const resultat = analyserLigneFiche(
+      INDEX_FICHES,
+      ligneFiche({ Besoin_Principal: "Taches / Teint" }),
+      14,
+    );
+    assert.ok("fiche" in resultat);
+    if ("fiche" in resultat) assert.equal(resultat.fiche.besoinPrincipal, "Taches / Teint");
   });
 
   it("tolère une colonne absente de l'en-tête (classeur remanié)", () => {
@@ -266,6 +280,7 @@ function ficheDeTest(patch: Partial<FicheMaster> = {}): FicheMaster {
     actifsCles: "Heartleaf 77%",
     statutPublication: "READY",
     donneesAConfirmer: "",
+    besoinPrincipal: "Sensibilité / Barrière",
     ...patch,
   };
 }
@@ -278,6 +293,7 @@ function produitDeTest(patch: Record<string, unknown> = {}) {
     priceCents: 18000,
     gtin: null,
     category: { slug: "toniques" },
+    tags: "[]",
     shortDescription: "Tonique apaisant",
     bullets: JSON.stringify(["Apaise", "Hydrate"]),
     problemeAccroche: "Rougeurs ?",
@@ -322,6 +338,46 @@ describe("champsContenuDifferents", () => {
     // pas seulement l'absence de différence détectée.
     const patch = champsContenuDifferents(produitDeTest(), ficheDeTest());
     assert.ok(!("costCents" in patch));
+  });
+});
+
+describe("BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION / tagPreoccupationAAjouter", () => {
+  it("ne couvre que les six valeurs qui désignent une vraie préoccupation de peau", () => {
+    assert.deepEqual(Object.keys(BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION).sort(), [
+      "Anti-Âge",
+      "Boutons / Imperfections",
+      "Glow / Éclat",
+      "Hydratation / Confort",
+      "Sensibilité / Barrière",
+      "Taches / Teint",
+    ]);
+  });
+
+  it("route « Sensibilité / Barrière » vers apaisant, pas vers un tag sensibilite", () => {
+    assert.equal(BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION["Sensibilité / Barrière"], "apaisant");
+  });
+
+  it("propose le tag attendu quand le produit ne le porte pas encore", () => {
+    assert.equal(tagPreoccupationAAjouter("Taches / Teint", []), "taches");
+    assert.equal(tagPreoccupationAAjouter("Taches / Teint", ["traitement", "eclat"]), "taches");
+  });
+
+  it("ne propose rien si le tag est déjà présent", () => {
+    assert.equal(tagPreoccupationAAjouter("Taches / Teint", ["taches"]), null);
+  });
+
+  it("ne propose rien pour une valeur hors préoccupation (corps, homme, geste…)", () => {
+    assert.equal(tagPreoccupationAAjouter("Homme essentiel", []), null);
+    assert.equal(tagPreoccupationAAjouter("Hydratation corps", []), null);
+    assert.equal(tagPreoccupationAAjouter("Démaquillage", []), null);
+    assert.equal(tagPreoccupationAAjouter("Nettoyage", []), null);
+    assert.equal(tagPreoccupationAAjouter("Protection solaire", []), null);
+    assert.equal(tagPreoccupationAAjouter("Taches corps", []), null);
+  });
+
+  it("ne propose rien pour une valeur vide ou inconnue", () => {
+    assert.equal(tagPreoccupationAAjouter("", []), null);
+    assert.equal(tagPreoccupationAAjouter("Valeur inventée", []), null);
   });
 });
 

@@ -171,6 +171,13 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
             vide="Aucune catégorie divergente."
           />
         </Section>
+
+        <Section titre={`Tags de préoccupation posés depuis Besoin_Principal (${fiches.preoccupationsAjoutees.length}) — ajoutés, jamais retirés`}>
+          <Liste
+            items={fiches.preoccupationsAjoutees.map((p) => `${p.sku} — ${p.nom} : +${p.tag}`)}
+            vide="Aucun tag de préoccupation posé."
+          />
+        </Section>
       </div>
 
       <div>
