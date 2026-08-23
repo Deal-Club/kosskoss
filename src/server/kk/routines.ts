@@ -26,7 +26,7 @@ const ROUTINE_INCLUDE = {
 
 type RoutineRow = Awaited<ReturnType<typeof lireRoutines>>[number];
 
-function lireRoutines(where: { slug?: string }) {
+function lireRoutines(where: { slug?: string; code?: string }) {
   return prisma.routine.findMany({
     where: { active: true, ...where },
     orderBy: { position: "asc" },
@@ -78,5 +78,17 @@ export async function getRoutines(locale: Locale, limit?: number): Promise<KKRou
 /** Une routine par son slug. `null` si elle n'existe pas ou n'est plus servable. */
 export async function getRoutine(slug: string, locale: Locale): Promise<KKRoutineView | null> {
   const [row] = await lireRoutines({ slug });
+  return row ? toView(row, locale) : null;
+}
+
+/**
+ * Une routine par son code du master (`Routine.code`, ex. « TAC-ECO ») —
+ * c'est ce que rend la matrice de décision du Diagnostic Beauté
+ * (src/lib/kk/diagnostic-matrice.ts), qui ne connaît que des codes, jamais de
+ * slugs. `null` si elle n'existe pas, plus n'est active, ou n'est plus
+ * servable (moins de deux gestes disponibles — voir `toView`).
+ */
+export async function getRoutineByCode(code: string, locale: Locale): Promise<KKRoutineView | null> {
+  const [row] = await lireRoutines({ code });
   return row ? toView(row, locale) : null;
 }

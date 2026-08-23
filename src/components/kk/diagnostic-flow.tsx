@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { LocalizedLink as Link, withLocale } from "./localized-link";
-import Image from "next/image";
+import { LocalizedLink as Link } from "./localized-link";
 import {
   Droplet,
   Wind,
@@ -21,16 +19,16 @@ import {
   X,
   ArrowLeft,
   ArrowRight,
-  Zap,
   Loader2,
 } from "lucide-react";
-import { useCart } from "@/components/cart/CartProvider";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
+import { questionVisible } from "@/lib/kk/diagnostic-conditions";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
-import { formatFcfa } from "@/lib/kk/format";
+import type { KKRoutineView } from "@/types/kk";
 import { questionnaireEntame, type Reprise } from "@/lib/kk/diagnostic-reprise";
-import { Petal, BottleMotif } from "./motifs";
+import { Petal } from "./motifs";
+import { RoutineAddToCart } from "./routine-add";
 import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
 const ICONS: Record<DiagIcon, typeof Droplet> = {
@@ -65,6 +63,16 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  *
  * Les réponses sont conservées le temps de l'onglet : un rechargement, un
  * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
+ *
+ * QUESTION CONDITIONNELLE (Q5 « pores » du quiz client, lot 7C) : elle ne
+ * s'affiche que si la réponse à Q2 (« priorite ») vaut « Boutons /
+ * Imperfections » ou « Glow / Éclat » — `questionVisible()`
+ * (src/lib/kk/diagnostic-conditions.ts) l'évalue à partir des CLÉS de réponse
+ * déjà données, pas de leurs identifiants de base. `visibleQuestions`, dérivée
+ * ci-dessous, est la liste qui compte réellement pour la navigation ET pour
+ * le total affiché (« Question X sur Y ») : une question restée invisible ne
+ * doit apparaître dans aucun des deux, sous peine d'annoncer un total que le
+ * parcours ne tiendra pas.
  */
 type Phase = "propose" | "question" | "loading" | "result";
 
@@ -76,25 +84,20 @@ export function DiagnosticFlow({
   questions,
   savedAnswerIds,
   locale = "fr",
-  gestes,
 }: {
   questions: ClientQuestion[];
   /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
    *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
    *  questionnaire — dans ce cas la page se comporte comme avant. */
   savedAnswerIds?: string[] | null;
-  /** Langue de la page, transmise aux trois routes appelées depuis le parcours
-   *  (calcul de la routine, envoi de la routine par e-mail, inscription à la
-   *  lettre d'information) — même usage que sur `NewsletterBand`, qui ne s'en
-   *  sert que pour l'appel réseau, jamais pour changer le texte affiché. */
+  /** Langue de la page, transmise à la route de calcul de la routine et à
+   *  l'envoi de la routine par e-mail — même usage que sur `NewsletterBand`,
+   *  qui ne s'en sert que pour l'appel réseau, jamais pour changer le texte
+   *  affiché. */
   locale?: string;
-  /** Libellés des gestes actifs, dans l'ordre — voir `DiagnosticAnalyse`. */
-  gestes: string[];
 }) {
   const t = useTranslations("diagnostic");
-  const { add } = useCart();
-  const router = useRouter();
-  const pathname = usePathname();
+  const tRoutine = useTranslations("routine");
   const [phase, setPhase] = useState<Phase>("question");
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -105,7 +108,6 @@ export function DiagnosticFlow({
    *  le QCM. C'est ce tableau, pas `answers`, qu'il faut renvoyer au serveur
    *  pour que l'e-mail envoyé corresponde à la routine affichée. */
   const [lastAnswerIds, setLastAnswerIds] = useState<string[]>([]);
-  /** Passage automatique en cours : neutralise un second clic pendant le délai. */
   /** Attente de fin de séquence d'analyse, à annuler si l'écran est quitté. */
   const attenteAnalyse = useRef<number | null>(null);
 
@@ -124,11 +126,35 @@ export function DiagnosticFlow({
   const [inscriptionStatut, setInscriptionStatut] = useState<"repos" | "ok" | "erreur">("repos");
   const [inscriptionMessage, setInscriptionMessage] = useState<string | null>(null);
 
-  const question = questions[qIndex];
+  // Clés (DiagAnswer.key) des réponses déjà données, dérivées de `answers`
+  // (qui stocke des identifiants de base). C'est cet ensemble, pas `answers`
+  // lui-même, que `questionVisible()` attend — voir sa signature.
+  const answerKeysDonnees = useMemo(() => {
+    const cles = new Set<string>();
+    for (const q of questions) {
+      const id = answers[q.id];
+      if (!id) continue;
+      const a = q.answers.find((a) => a.id === id);
+      if (a) cles.add(a.key);
+    }
+    return cles;
+  }, [questions, answers]);
+
+  /** Les questions RÉELLEMENT posées, dans l'ordre : c'est cette liste, pas
+   *  `questions`, qui pilote la navigation et le total affiché. */
+  const visibleQuestions = useMemo(
+    () => questions.filter((q) => questionVisible(q, answerKeysDonnees)),
+    [questions, answerKeysDonnees],
+  );
+
+  const question = visibleQuestions[qIndex];
   const selected = question ? answers[question.id] : undefined;
 
   // Reprise. Lue une seule fois au montage ; l'index est borné au cas où le
-  // questionnaire aurait raccourci entre-temps au back-office.
+  // questionnaire aurait raccourci entre-temps au back-office. Bornée sur la
+  // liste COMPLÈTE des questions ici (celle restaurée pour `answers` n'est
+  // pas encore posée à ce point de l'effet) — le clamp exact sur les
+  // questions réellement visibles est repris juste en dessous, à chaque rendu.
   useEffect(() => {
     try {
       const brut = sessionStorage.getItem(REPRISE);
@@ -142,6 +168,14 @@ export function DiagnosticFlow({
       /* Stockage indisponible ou illisible : on repart simplement de zéro. */
     }
   }, [questions.length]);
+
+  // Clamp final : si la reprise (ou un changement de réponse à Q2 qui masque
+  // Q5 après coup) laisse `qIndex` au-delà des questions réellement visibles,
+  // on ramène sur la dernière plutôt que de rendre `question` undefined.
+  useEffect(() => {
+    if (visibleQuestions.length === 0) return;
+    if (qIndex > visibleQuestions.length - 1) setQIndex(visibleQuestions.length - 1);
+  }, [qIndex, visibleQuestions.length]);
 
   // Profil client : proposer de revoir la routine plutôt que de relancer le
   // QCM. N'écrase pas une reprise d'onglet déjà en cours — un questionnaire
@@ -199,8 +233,6 @@ export function DiagnosticFlow({
     // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
     // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
     // l'écran ne passe pas pour rapide — il passe pour n'avoir rien regardé.
-    // Les trois temps montrés (lecture, croisement, composition) sont ceux que
-    // le moteur exécute réellement ; on leur laisse le temps d'être lus.
     //
     // L'attente est un PLANCHER, jamais un ajout : si la requête dure plus
     // longtemps que la séquence, rien n'est rallongé.
@@ -211,11 +243,6 @@ export function DiagnosticFlow({
       const res = await fetch("/api/kk/diagnostic", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // `locale` n'est pas décoratif : le moteur traduit les libellés de
-        // gestes (`libelleGeste`) avec ce qu'il reçoit ici. Sans lui, la route
-        // retombait sur le français, et l'écran de résultat affichait
-        // « Nettoyer » là où l'écran d'attente qui le précède — rendu côté
-        // serveur avec la langue de la page — venait d'annoncer « Cleanse ».
         body: JSON.stringify({ answers: answerIds, locale }),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -242,12 +269,16 @@ export function DiagnosticFlow({
   }
 
   async function avancer(reponses: Record<string, string>) {
-    if (qIndex < questions.length - 1) {
+    if (qIndex < visibleQuestions.length - 1) {
       setQIndex((i) => i + 1);
       return;
     }
-    // Dernière question → analyse.
-    const answerIds = questions.map((q) => reponses[q.id]).filter(Boolean);
+    // Dernière question visible → analyse. Seules les questions réellement
+    // posées entrent dans `answerIds` : une question restée invisible (Q5,
+    // le plus souvent) n'a jamais reçu de réponse dans `reponses`, et
+    // `filter(Boolean)` l'exclut naturellement plutôt que d'envoyer un
+    // identifiant vide au moteur.
+    const answerIds = visibleQuestions.map((q) => reponses[q.id]).filter(Boolean);
     await soumettre(answerIds, "question");
   }
 
@@ -264,44 +295,6 @@ export function DiagnosticFlow({
     setQIndex(0);
     setError(null);
     setPhase("question");
-  }
-
-  /**
-   * Achat direct de la routine recommandée.
-   *
-   * Le bouton déposait au panier et ouvrait le tiroir. Or on arrive ici APRÈS
-   * avoir répondu à cinq questions et lu la composition geste par geste : la
-   * décision est prise. Renvoyer vers un tiroir, puis vers le panier, puis vers
-   * le tunnel, c'est ajouter trois écrans à un achat déjà consenti — l'inverse
-   * de l'orientation conversion demandée.
-   *
-   * Le panier reste le passage obligé : c'est lui qui porte l'état de la
-   * commande et le tunnel le lit. Il est traversé, pas exposé. Même dispositif
-   * que le mode « achat » de `RoutineAddToCart` et que « Payer maintenant » sur
-   * une fiche produit.
-   */
-  function acheterRoutine() {
-    if (!result) return;
-    for (const step of result.steps) {
-      const p = step.product;
-      add(
-        {
-          productId: p.id,
-          slug: (p.href ?? "").split("/").pop() ?? "",
-          brand: p.brand,
-          name: p.name,
-          image: p.image ?? "",
-          path: p.href ?? "#",
-          priceCents: p.priceFcfa,
-          stock: 99,
-        },
-        1,
-      );
-    }
-
-    // Ni confirmation ni tiroir : deux interruptions qui ne feraient que
-    // retarder le paiement.
-    router.push(withLocale(pathname, "/commande"));
   }
 
   /**
@@ -424,232 +417,192 @@ export function DiagnosticFlow({
   if (phase === "loading") {
     return (
       <MinimalShell>
-        <DiagnosticAnalyse gestes={gestes} />
+        <DiagnosticAnalyse />
       </MinimalShell>
     );
   }
 
   /* ----------------------------------------------------------- Result -- */
   if (phase === "result" && result) {
+    // Chips du profil déclaré : type de peau, préoccupation déclarée (celle
+    // dite à Q2, CONSERVÉE même quand la bascule de sécurité l'a emportée —
+    // c'est elle qui permet au bandeau de sécurité, plus bas, de dire « avant
+    // votre préoccupation » plutôt que d'avoir l'air de s'être trompé), et
+    // réactivité déclarée.
+    const profil = [result.peauLabel, result.besoinDeclareLabel, result.reactiviteLabel].filter(Boolean);
+
+    // Routine à proposer au formulaire d'envoi par e-mail : l'Essentielle en
+    // priorité, la Premium en repli — voir la route qui applique la même
+    // règle côté serveur.
+    const routinePourEmail = result.essentielle ?? result.premium;
+    const niveauPourEmail = result.essentielle ? t("resultEssentialBadge") : t("resultPremiumBadge");
+
+    const aucuneRoutine = !result.essentielle && !result.premium;
+
     return (
       <MinimalShell>
         {/* Le résultat se lève au lieu d'apparaître d'un coup : il prend la
             suite du pétale qui vient de se remplir, et le raccord entre les
             deux écrans se lit comme un seul geste. */}
-        <section className="kk-rise mx-auto max-w-6xl px-6 py-12">
+        <section className="kk-rise mx-auto max-w-4xl px-6 py-12">
           <p className="eyebrow">{t("resultEyebrow")}</p>
           <h1 className="mt-2 text-deep">{t("resultTitle")}</h1>
-          {result.chips.length > 0 && (
+
+          {/* Le profil en une ligne : type de peau, besoin, sensibilité. */}
+          {profil.length > 0 && (
             <div className="mt-5 flex flex-wrap gap-2">
-              {result.chips.map((c) => (
+              {profil.map((c) => (
                 <span key={c} className="rounded-full bg-sand px-4 py-1.5 text-sm font-medium text-deep">
                   {c}
                 </span>
               ))}
             </div>
           )}
-          <p className="mt-4 max-w-2xl text-muted-foreground">{t("resultIntro")}</p>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_22rem]">
-            {/* Étapes */}
-            {/* Cartes compactes, alignées sur celles de la page routine.
-                Elles occupaient une hauteur d'image de 128 px pour quatre
-                lignes de texte empilées — numéro, geste, marque, nom — dans
-                20 px de marge intérieure. Sur une routine de cinq gestes, le
-                résultat du diagnostic demandait deux écrans de défilement. */}
-            <ol className="space-y-3">
-              {result.steps.map((step) => {
-                const p = step.product;
-                const hasImage = typeof p.image === "string" && p.image.length > 0;
-                return (
-                  <li key={step.key} className="flex gap-4 rounded-2xl border border-border/70 bg-card p-4">
-                    <div className="relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#f7eee2] to-[#dcc7ab] sm:block">
-                      {hasImage ? (
-                        <Image src={p.image as string} alt={p.name} fill sizes="80px" className="object-contain p-1.5" />
-                      ) : (
-                        <BottleMotif className="absolute inset-0 m-auto h-3/5 text-deep/60" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      {/* Numéro, geste et marque sur une seule ligne : trois
-                          informations courtes qui tenaient sur trois lignes. */}
-                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-deep text-[0.65rem] font-semibold text-primary-foreground">
-                          {step.index}
-                        </span>
-                        <span className="text-[0.7rem] font-semibold tracking-[0.14em] text-deep uppercase">
-                          {step.label}
-                        </span>
-                        <span aria-hidden="true" className="text-muted-foreground/40">
-                          ·
-                        </span>
-                        <span className="text-[0.7rem] font-semibold tracking-[0.12em] text-muted-foreground uppercase">
-                          {p.brand}
-                        </span>
-                      </div>
+          {/* La phrase de priorité. */}
+          {result.prioriteTexte && (
+            <p className="mt-4 max-w-2xl text-muted-foreground">
+              {t("resultPriority", { texte: result.prioriteTexte })}
+            </p>
+          )}
 
-                      <h3 className="mt-1.5 font-display text-[1.15rem] leading-snug">
-                        <Link href={p.href ?? "#"} className="text-deep transition hover:text-deep/70">
-                          {p.name}
-                        </Link>
-                      </h3>
+          {/* Conseil selon le type de peau (Q1) — texte exact du document du
+              client, jamais reformulé ici (src/lib/kk/diagnostic-matrice.ts). */}
+          {result.conseilTypePeau && (
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+              {t("resultSkinAdvice", { texte: result.conseilTypePeau })}
+            </p>
+          )}
 
-                      {step.why && (
-                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.why}</p>
-                      )}
+          {/* La bascule de sécurité, quand elle s'est appliquée : le texte
+              exact du document du client, recopié mot pour mot par
+              diagnostic-matrice.ts (MESSAGE_SECURITE) — jamais reformulé ici.
+              Elle explique pourquoi la routine ci-dessous n'est pas celle de
+              la préoccupation déclarée plus haut. */}
+          {result.messageSecurite && (
+            <div
+              role="status"
+              className="mt-6 flex items-start gap-3 rounded-2xl border border-gold/40 bg-sand/70 p-4"
+            >
+              <Shield className="mt-0.5 h-5 w-5 shrink-0 text-deep" aria-hidden="true" />
+              <p className="text-sm leading-relaxed text-deep">{result.messageSecurite}</p>
+            </div>
+          )}
 
-                      {/* Pas de prix à l'unité, comme sur la page routine : la
-                          routine se vend comme un tout, et aligner cinq montants
-                          invite à les additionner de tête au lieu de lire la
-                          composition. Le seul montant qui engage est celui du
-                          récapitulatif, à droite, qui reste sous les yeux
-                          pendant toute la lecture. */}
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-
-            {/* Résumé routine, au vert profond.
-
-                Même raison que sur la fiche routine : il portait l'habillage
-                des cartes de produit qui le précèdent et se lisait comme l'une
-                d'elles, alors qu'il ne décrit rien — il totalise et il engage.
-                L'écran de résultat étant clair de bout en bout, le fond sombre
-                en fait le seul point d'ancrage, à l'endroit où l'on décide. */}
-            <aside className="lg:sticky lg:top-24 lg:self-start">
-              <div className="overflow-hidden rounded-2xl bg-deep text-primary-foreground shadow-[0_18px_40px_-24px_rgba(17,41,45,0.7)]">
-                <div aria-hidden="true" className="h-0.5 w-full bg-gradient-to-r from-gold/70 via-gold to-gold/20" />
-
-                <div className="p-6">
-                  <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-gold-soft">
-                    {t("summaryTitle")}
-                  </h2>
-
-                  <ul className="mt-4 divide-y divide-white/10 border-y border-white/10">
-                    {result.steps.map((step) => (
-                      <li key={step.key} className="flex justify-between gap-3 py-3 text-sm">
-                        <span className="text-primary-foreground/90">
-                          <span className="figure text-primary-foreground/55">{step.index}. </span>
-                          {step.product.name}
-                        </span>
-                        <span className="figure shrink-0 text-primary-foreground/80">
-                          {formatFcfa(step.product.priceFcfa)}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="mt-5 flex items-baseline justify-between gap-3">
-                    <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
-                      {t("summaryTotal")}
-                    </span>
-                    <span className="figure text-2xl font-semibold text-primary-foreground">
-                      {formatFcfa(result.totalFcfa)}
-                    </span>
-                  </div>
-
-                  {/* Bouton sable sur fond sombre, qui se remplit de vert au
-                      survol — la même inversion que sur la fiche routine. */}
-                  <button
-                    type="button"
-                    onClick={acheterRoutine}
-                    aria-label={t("orderRoutineAria", { count: result.steps.length })}
-                    className="kk-fill kk-fill-deep mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-sand px-6 py-3.5 text-sm font-semibold text-deep"
-                  >
-                    <Zap className="h-4 w-4" />
-                    {t("orderRoutine")}
-                  </button>
-
-                  {/* Le nombre de produits est dit sous le bouton : « Commander
-                      la routine » seul laisse croire à un article unique, et la
-                      surprise se paierait à l'écran suivant. */}
-                  <p className="mt-2.5 text-center text-xs text-primary-foreground/60">
-                    {t("productsCountNote", { count: result.steps.length })}
-                  </p>
-
-                  {/* Envoi par e-mail : une action distincte de l'achat, posée
-                      sous elle plutôt que rivalisant avec elle. Même balisage
-                      que `NewsletterBand`, sur le même fond — les deux
-                      formulaires du site sur bg-deep se ressemblent
-                      volontairement.
-
-                      Deux consentements, deux actions : le bouton n'engage que
-                      l'envoi de la routine, demandé par le visiteur en étant
-                      ici. La case, EN DESSOUS et décochée par défaut, propose
-                      l'inscription à la lettre d'information sans jamais s'y
-                      substituer. */}
-                  <form onSubmit={envoyerRoutineParEmail} className="mt-6 border-t border-white/10 pt-5">
-                    <h3 className="text-xs font-semibold tracking-[0.14em] text-gold-soft uppercase">
-                      {t("emailFormTitle")}
-                    </h3>
-                    <label htmlFor="diagnostic-routine-email" className="sr-only">
-                      {t("emailLabel")}
-                    </label>
-                    <input
-                      id="diagnostic-routine-email"
-                      type="email"
-                      required
-                      autoComplete="email"
-                      value={routineEmail}
-                      onChange={(e) => setRoutineEmail(e.target.value)}
-                      placeholder={t("emailLabel")}
-                      aria-invalid={envoiStatut === "erreur"}
-                      aria-describedby={envoiMessage ? "diagnostic-routine-email-message" : undefined}
-                      className="mt-3 w-full rounded-full border border-primary-foreground/25 bg-primary-foreground/[0.08] px-4 py-3 text-sm text-primary-foreground placeholder:text-primary-foreground/50 focus:border-gold focus:outline-none"
-                    />
-
-                    <button
-                      type="submit"
-                      disabled={enCoursEnvoi}
-                      className="kk-fill kk-fill-deep mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-semibold text-deep disabled:opacity-60"
-                    >
-                      {enCoursEnvoi && <Loader2 className="h-4 w-4 animate-spin" />}
-                      {t("sendRoutineEmail")}
-                    </button>
-
-                    {/* Case décochée par défaut : cocher inscrit, ne pas cocher
-                        n'inscrit à rien — même en demandant l'envoi. */}
-                    <label className="mt-3 flex items-start gap-2.5 text-xs text-primary-foreground/75">
-                      <input
-                        type="checkbox"
-                        checked={inscrireLettre}
-                        onChange={(e) => setInscrireLettre(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 accent-gold"
-                      />
-                      <span>{t("subscribeNewsletterCheckbox")}</span>
-                    </label>
-
-                    {/* Les deux messages sont indépendants : l'un peut confirmer
-                        pendant que l'autre signale un échec, et chacun nomme ce
-                        qui le concerne — jamais un « une erreur est survenue »
-                        générique qui laisserait deviner lequel des deux appels
-                        a manqué. */}
-                    {envoiMessage && (
-                      <p
-                        id="diagnostic-routine-email-message"
-                        role={envoiStatut === "erreur" ? "alert" : "status"}
-                        className="mt-2.5 text-xs text-gold"
-                      >
-                        {envoiMessage}
-                      </p>
-                    )}
-                    {inscriptionMessage && (
-                      <p role={inscriptionStatut === "erreur" ? "alert" : "status"} className="mt-1.5 text-xs text-gold">
-                        {inscriptionMessage}
-                      </p>
-                    )}
-                  </form>
-                </div>
+          {/* Les deux routines : Essentielle et Premium du même besoin. Si
+              l'une des deux n'existe pas ou n'est plus servable, l'écran le
+              dit plutôt que d'en inventer une (contrainte n°3 du lot). */}
+          {aucuneRoutine ? (
+            <div className="mt-8 rounded-2xl border border-border/70 bg-card p-6 text-center">
+              <p className="text-muted-foreground">{t("resultNoRecommendation")}</p>
+              <button
+                type="button"
+                onClick={refaireQuestionnaire}
+                className="kk-fill mt-4 inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition"
+              >
+                {t("retakeQuiz")}
+              </button>
+            </div>
+          ) : (
+            <div className="mt-8">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-deep">
+                {t("resultSelectionTitle")}
+              </h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                {result.essentielle ? (
+                  <ResultRoutineCard routine={result.essentielle} niveau="essentielle" t={t} tRoutine={tRoutine} />
+                ) : (
+                  <ResultRoutineMissing niveau="essentielle" t={t} />
+                )}
+                {result.premium ? (
+                  <ResultRoutineCard routine={result.premium} niveau="premium" t={t} tRoutine={tRoutine} />
+                ) : (
+                  <ResultRoutineMissing niveau="premium" t={t} />
+                )}
               </div>
-            </aside>
-          </div>
+            </div>
+          )}
+
+          {/* Conseil selon l'environnement (Q4) — dernier de l'ordre demandé,
+              texte exact du document du client. */}
+          {result.conseilEnvironnement && (
+            <div className="mt-8 rounded-2xl bg-sand/60 p-5 text-sm leading-relaxed text-deep">
+              {t("resultEnvironmentAdvice", { texte: result.conseilEnvironnement })}
+            </div>
+          )}
+
+          {/* Envoi par e-mail de la routine proposée en premier (Essentielle,
+              repli sur Premium). Le libellé nomme explicitement laquelle est
+              envoyée — plutôt que de laisser croire que « cette routine »
+              recouvre les deux. */}
+          {routinePourEmail && (
+            <form
+              onSubmit={envoyerRoutineParEmail}
+              className="mt-10 max-w-md rounded-2xl border border-border/70 bg-card p-5"
+            >
+              <h3 className="text-xs font-semibold tracking-[0.14em] text-deep uppercase">
+                {t("emailFormTitle", { niveau: niveauPourEmail })}
+              </h3>
+              <label htmlFor="diagnostic-routine-email" className="sr-only">
+                {t("emailLabel")}
+              </label>
+              <input
+                id="diagnostic-routine-email"
+                type="email"
+                required
+                autoComplete="email"
+                value={routineEmail}
+                onChange={(e) => setRoutineEmail(e.target.value)}
+                placeholder={t("emailLabel")}
+                aria-invalid={envoiStatut === "erreur"}
+                aria-describedby={envoiMessage ? "diagnostic-routine-email-message" : undefined}
+                className="mt-3 w-full rounded-full border border-border bg-background px-4 py-3 text-sm text-deep placeholder:text-muted-foreground focus:border-deep focus:outline-none"
+              />
+
+              <button
+                type="submit"
+                disabled={enCoursEnvoi}
+                className="kk-fill mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
+              >
+                {enCoursEnvoi && <Loader2 className="h-4 w-4 animate-spin" />}
+                {t("sendRoutineEmail")}
+              </button>
+
+              {/* Case décochée par défaut : cocher inscrit, ne pas cocher
+                  n'inscrit à rien — même en demandant l'envoi. */}
+              <label className="mt-3 flex items-start gap-2.5 text-xs text-muted-foreground">
+                <input
+                  type="checkbox"
+                  checked={inscrireLettre}
+                  onChange={(e) => setInscrireLettre(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-deep"
+                />
+                <span>{t("subscribeNewsletterCheckbox")}</span>
+              </label>
+
+              {envoiMessage && (
+                <p
+                  id="diagnostic-routine-email-message"
+                  role={envoiStatut === "erreur" ? "alert" : "status"}
+                  className="mt-2.5 text-xs text-deep"
+                >
+                  {envoiMessage}
+                </p>
+              )}
+              {inscriptionMessage && (
+                <p role={inscriptionStatut === "erreur" ? "alert" : "status"} className="mt-1.5 text-xs text-deep">
+                  {inscriptionMessage}
+                </p>
+              )}
+            </form>
+          )}
         </section>
       </MinimalShell>
     );
   }
 
   /* --------------------------------------------------------- Question -- */
+  if (!question) return null;
   const Icon = (icon: string) => ICONS[icon as DiagIcon] ?? Check;
   return (
     <MinimalShell>
@@ -664,12 +617,12 @@ export function DiagnosticFlow({
             derrière, à sa place d'ornement. */}
         <Petal className="pointer-events-none absolute -left-24 top-20 -z-10 hidden h-72 w-72 text-sand/60 lg:block" />
         <p className="eyebrow text-center">
-          {t("stepOf", { current: qIndex + 1, total: questions.length })}
+          {t("stepOf", { current: qIndex + 1, total: visibleQuestions.length })}
         </p>
         <div className="mx-auto mt-3 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand">
           <div
             className="kk-fill h-full rounded-full bg-deep transition-all"
-            style={{ width: `${((qIndex + 1) / questions.length) * 100}%` }}
+            style={{ width: `${((qIndex + 1) / visibleQuestions.length) * 100}%` }}
           />
         </div>
 
@@ -684,9 +637,11 @@ export function DiagnosticFlow({
         <h1 className="mt-6 text-center text-[clamp(1.75rem,1.4rem+1.2vw,2.25rem)] leading-tight text-deep">
           {question.title}
         </h1>
-        <p className="mx-auto mt-2 max-w-md text-center text-base text-muted-foreground">
-          {question.subtitle}
-        </p>
+        {question.subtitle && (
+          <p className="mx-auto mt-2 max-w-md text-center text-base text-muted-foreground">
+            {question.subtitle}
+          </p>
+        )}
 
         {/* Cartes de réponse resserrées dans les mêmes proportions que la
             question : quatre choix courts n'ont pas besoin de 20 px de marge
@@ -712,9 +667,11 @@ export function DiagnosticFlow({
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-[0.95rem] font-medium text-deep">{a.label}</span>
-                  <span className="mt-0.5 block text-[0.8125rem] leading-snug text-muted-foreground">
-                    {a.description}
-                  </span>
+                  {a.description && (
+                    <span className="mt-0.5 block text-[0.8125rem] leading-snug text-muted-foreground">
+                      {a.description}
+                    </span>
+                  )}
                 </span>
                 <span className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${active ? "border-deep bg-deep text-primary-foreground" : "border-border"}`}>
                   {active && <Check className="h-3 w-3" />}
@@ -760,12 +717,81 @@ export function DiagnosticFlow({
             disabled={!selected}
             className="kk-fill inline-flex items-center gap-2 rounded-full bg-deep px-6 py-3 text-sm font-semibold text-primary-foreground transition disabled:pointer-events-none disabled:opacity-40"
           >
-            {qIndex < questions.length - 1 ? t("next") : t("seeResult")}
+            {qIndex < visibleQuestions.length - 1 ? t("next") : t("seeResult")}
             <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </section>
     </MinimalShell>
+  );
+}
+
+/**
+ * Une des deux routines du résultat (Essentielle ou Premium).
+ *
+ * Volontairement sans visuel : le composant serveur `RoutineCard`
+ * (src/components/kk/routine-card.tsx) importe `next-intl/server`, incompatible
+ * avec un rendu client — dupliquer sa mise en page ici sans cette dépendance
+ * reste plus sûr qu'un import qui casserait le paquet client.
+ */
+function ResultRoutineCard({
+  routine,
+  niveau,
+  t,
+  tRoutine,
+}: {
+  routine: KKRoutineView;
+  niveau: "essentielle" | "premium";
+  t: ReturnType<typeof useTranslations>;
+  tRoutine: ReturnType<typeof useTranslations>;
+}) {
+  const Badge = niveau === "essentielle" ? Leaf : Gem;
+  return (
+    <article className="flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5">
+      <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-deep uppercase">
+        <Badge className="h-4 w-4" aria-hidden="true" />
+        {niveau === "essentielle" ? t("resultEssentialBadge") : t("resultPremiumBadge")}
+      </div>
+      <h3 className="mt-2 font-display text-xl leading-snug">
+        <Link href={routine.href} className="text-deep transition hover:text-deep/70">
+          {routine.name}
+        </Link>
+      </h3>
+      {routine.claim && <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{routine.claim}</p>}
+
+      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4">
+        <RoutineAddToCart routine={routine} mode="achat" />
+        <Link
+          href={routine.href}
+          className="group inline-flex items-center gap-1 text-sm font-medium text-deep kk-underline"
+        >
+          {tRoutine("detailLink")}
+          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      </div>
+    </article>
+  );
+}
+
+/** Quand une des deux routines n'existe pas (ou plus) pour le besoin retenu :
+ *  l'écran le dit plutôt que d'en inventer une (contrainte n°3 du lot). */
+function ResultRoutineMissing({
+  niveau,
+  t,
+}: {
+  niveau: "essentielle" | "premium";
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const Badge = niveau === "essentielle" ? Leaf : Gem;
+  const libelle = niveau === "essentielle" ? t("resultEssentialBadge") : t("resultPremiumBadge");
+  return (
+    <div className="flex h-full flex-col justify-center rounded-2xl border border-dashed border-border bg-sand/30 p-5">
+      <div className="flex items-center gap-2 text-xs font-semibold tracking-[0.14em] text-deep/70 uppercase">
+        <Badge className="h-4 w-4" aria-hidden="true" />
+        {libelle}
+      </div>
+      <p className="mt-2 text-sm text-muted-foreground">{t("resultRoutineMissing", { niveau: libelle })}</p>
+    </div>
   );
 }
 

@@ -4,30 +4,40 @@ import type { Locale } from "@/i18n/routing";
 
 export type ClientAnswer = {
   id: string;
+  /** DiagAnswer.key — stable, indépendante de la langue. C'est elle que lit
+   *  `questionVisible()` (src/lib/kk/diagnostic-conditions.ts) pour évaluer la
+   *  condition d'affichage de Q5, et c'est elle que le moteur (tâche 3, voir
+   *  src/server/kk/diagnostic.ts) route vers la matrice de décision. */
+  key: string;
   label: string;
   description: string;
   icon: string;
 };
 export type ClientQuestion = {
   id: string;
+  /** DiagQuestion.key — voir ClientAnswer.key ci-dessus. */
+  key: string;
   title: string;
   subtitle: string;
   answers: ClientAnswer[];
+  /** Condition d'affichage (voir src/lib/kk/diagnostic-conditions.ts). Une
+   *  `conditionQuestion` vide veut dire « toujours affichée ». */
+  conditionQuestion: string;
+  conditionReponses: string;
 };
 
 /**
  * Questionnaire actif, pour le parcours front (ordre par position).
  *
- * Rend TOUTES les questions actives, y compris celles qui porteraient une
- * condition (`DiagQuestion.conditionQuestion` / `conditionReponses` — voir
- * src/lib/kk/diagnostic-conditions.ts). Aujourd'hui sans effet : toutes les
- * questions en base ont une condition vide, donc `questionVisible()` les rend
- * toutes visibles, et `questions.length` (utilisé par DiagnosticFlow pour
- * l'étape courante et le total affiché — « Question X sur Y ») reste exact.
- * Le jour où une question conditionnelle (le « Q5 pores » du quiz client) est
- * créée, filtrer dynamiquement cette liste selon les réponses déjà données
- * — pour que la question invisible ne compte ni dans le total, ni dans la
- * navigation — sera à faire ici et dans DiagnosticFlow, avec ce module pur.
+ * Rend TOUTES les questions actives, y compris la question conditionnelle
+ * (Q5 « pores » du quiz client) — c'est au parcours (DiagnosticFlow), qui
+ * connaît les réponses déjà données, de filtrer dynamiquement cette liste
+ * avec `questionVisible()` avant d'en tirer la navigation et le total affiché
+ * (« Question X sur Y ») : une question conditionnelle non encore déclenchée
+ * ne doit compter ni dans l'un ni dans l'autre. Ce module reste pur de ce
+ * filtrage : il rend la liste brute, dans l'ordre de `position`, avec de quoi
+ * l'évaluer (`conditionQuestion`/`conditionReponses`) et de quoi la router
+ * (`key` de chaque question et de chaque réponse).
  */
 export async function getQuestions(locale: Locale): Promise<ClientQuestion[]> {
   const questions = await prisma.diagQuestion.findMany({
@@ -38,10 +48,14 @@ export async function getQuestions(locale: Locale): Promise<ClientQuestion[]> {
   const traduire = needsTranslation(locale);
   return questions.map((q) => ({
     id: q.id,
+    key: q.key,
     title: pickText(q.title, traduire ? q.titleEn : undefined),
     subtitle: pickText(q.subtitle, traduire ? q.subtitleEn : undefined),
+    conditionQuestion: q.conditionQuestion,
+    conditionReponses: q.conditionReponses,
     answers: q.answers.map((a) => ({
       id: a.id,
+      key: a.key,
       label: pickText(a.label, traduire ? a.labelEn : undefined),
       description: pickText(a.description, traduire ? a.descriptionEn : undefined),
       icon: a.icon,
