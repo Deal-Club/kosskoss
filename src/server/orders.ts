@@ -105,6 +105,12 @@ export interface OrderRecord {
   adminNote: string;
   termsAcceptedAt?: string;
   withdrawalAcknowledgedAt?: string;
+  /**
+   * Consentement « marketing » au moment de la COMMANDE (voir le commentaire
+   * sur la colonne, dans le schéma) — c'est cette valeur, figée, que la CAPI
+   * lit à l'encaissement, pas un cookie relu après coup.
+   */
+  marketingConsent: boolean;
   createdAt: string;
   updatedAt: string;
   paidAt?: string;
@@ -185,6 +191,7 @@ function toRecord(row: NonNullable<OrderRow>): OrderRecord {
     adminNote: row.adminNote,
     termsAcceptedAt: row.termsAcceptedAt?.toISOString(),
     withdrawalAcknowledgedAt: row.withdrawalAcknowledgedAt?.toISOString(),
+    marketingConsent: row.marketingConsent,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     paidAt: row.paidAt?.toISOString(),

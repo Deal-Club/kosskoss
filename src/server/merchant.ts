@@ -10,6 +10,7 @@ import {
   GOOGLE_CATEGORY_BY_SLUG,
 } from "@/lib/googleTaxonomy";
 import { isValidGtin } from "@/lib/gtin";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 
 export { GOOGLE_CATEGORY_BY_SLUG, googleCategoryPath } from "@/lib/googleTaxonomy";
 export type { GoogleCategory } from "@/lib/googleTaxonomy";
@@ -302,12 +303,18 @@ function plainText(value: string): string {
     .trim();
 }
 
-/** Identifiant de l'offre : unique, stable, 50 caractères au maximum. */
+/**
+ * Identifiant de l'offre : unique, stable, 50 caractères au maximum.
+ *
+ * Délègue à `identifiantProduitCatalogue` (`@/lib/kk/mesure`), PARTAGÉE avec
+ * les points d'émission de la mesure d'audience (GA4/Pixel/CAPI) : c'est CE
+ * flux Merchant qui fait foi pour l'identifiant d'un produit, et la mesure
+ * doit voir exactement la même chaîne pour que Meta et GA4 apparient un
+ * événement au bon article du catalogue — voir l'en-tête de cette fonction
+ * partagée.
+ */
 export function merchantOfferId(product: MerchantProduct): string {
-  // Le SKU interne n'est pas unique (troncature à 10 caractères) : on part du
-  // slug, qui l'est par construction, et on borne la longueur à 50 caractères.
-  if (product.slug.length <= 50) return product.slug;
-  return `${product.slug.slice(0, 41)}-${product.id.slice(-8)}`;
+  return identifiantProduitCatalogue(product.slug, product.id);
 }
 
 /** URL publique de la fiche produit (le français vit à la racine du site). */

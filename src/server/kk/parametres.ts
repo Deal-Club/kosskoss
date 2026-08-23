@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { prisma } from "@/server/prisma";
-import { normaliserParametres, PARAMETRES_PAR_DEFAUT, type ParametresBoutique } from "@/lib/kk/parametres";
+import { normaliserParametres, PARAMETRES_PAR_DEFAUT, CLE_JETON_CAPI, jetonCapiValide, type ParametresBoutique } from "@/lib/kk/parametres";
+import { getIntegration, setIntegrationSecret } from "@/server/integrations";
 
 /**
  * Réglages de la boutique, côté serveur.
@@ -9,9 +10,11 @@ import { normaliserParametres, PARAMETRES_PAR_DEFAUT, type ParametresBoutique } 
  * `@/lib/kk/parametres`, que le back-office — composant client — peut importer.
  * On les réexporte ici pour que les appelants serveur n'aient qu'un import.
  *
- * Seul ce dont un appelant serveur se sert est réexporté : les quatre
- * validateurs individuels s'atteignent par `CHAMPS_PARAMETRES`, personne ne les
- * nomme un par un.
+ * Seul ce dont un appelant serveur se sert est réexporté : les cinq
+ * validateurs individuels de `ParametresBoutique` s'atteignent par
+ * `CHAMPS_PARAMETRES`, personne ne les nomme un par un. `jetonCapiValide` fait
+ * exception : la route d'enregistrement doit l'appeler explicitement, le jeton
+ * n'étant justement PAS un champ de `CHAMPS_PARAMETRES` (voir plus bas).
  */
 export type { ParametresBoutique } from "@/lib/kk/parametres";
 export {
@@ -19,6 +22,7 @@ export {
   normaliserParametres,
   saisieEffacee,
   CHAMPS_PARAMETRES,
+  jetonCapiValide,
 } from "@/lib/kk/parametres";
 
 const CLE_REGLAGES = "boutique.parametres";
@@ -74,4 +78,55 @@ export async function saveParametres(
 export function numeroWhatsappEffectif(p: ParametresBoutique): string {
   if (p.whatsapp) return p.whatsapp;
   return (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/\D/g, "");
+}
+
+/**
+ * Le jeton CAPI, comme les clés des passerelles de paiement : chiffré dans
+ * `Integration`, jamais dans la ligne `Setting` de `ParametresBoutique`. Ce
+ * module s'assure que la ligne existe avant toute lecture ou écriture — sans
+ * quoi `setIntegrationSecret` (voir `@/server/integrations`) rendrait
+ * silencieusement `undefined`, exactement comme `ensureGatewayIntegrations`
+ * le fait déjà pour les passerelles de paiement.
+ */
+async function ensureCapiIntegration(): Promise<void> {
+  await prisma.integration.upsert({
+    where: { key: CLE_JETON_CAPI },
+    update: {},
+    create: {
+      key: CLE_JETON_CAPI,
+      label: "Jeton API de conversions Meta (CAPI)",
+      description:
+        "Jeton d'accès système, utilisé pour envoyer les achats confirmés à l'API de conversions Meta sans passer par le navigateur.",
+      enabled: false,
+    },
+  });
+}
+
+/**
+ * Le jeton CAPI est-il enregistré ? Ne rend JAMAIS la valeur — seulement
+ * « configuré » ou « non configuré », comme l'écran des passerelles de
+ * paiement le fait déjà pour leurs clés.
+ */
+export async function jetonCapiConfigure(): Promise<boolean> {
+  await ensureCapiIntegration();
+  const integration = await getIntegration(CLE_JETON_CAPI);
+  return integration?.configured ?? false;
+}
+
+/**
+ * Enregistre un nouveau jeton CAPI, chiffré. Lève si le format ne correspond
+ * pas à `jetonCapiValide` — c'est à l'appelant de traduire ça en réponse 400.
+ *
+ * N'accepte jamais la chaîne vide : un champ vide dans le formulaire signifie
+ * « ne pas toucher au jeton », pas « effacer le jeton ». C'est à l'appelant de
+ * ne PAS invoquer cette fonction quand le champ est vide (voir la route
+ * d'enregistrement) — la répéter ici serait une seconde source de vérité pour
+ * la même règle.
+ */
+export async function enregistrerJetonCapi(jeton: string, actor?: string): Promise<void> {
+  if (!jetonCapiValide(jeton)) {
+    throw new Error("format_invalide:capiToken");
+  }
+  await ensureCapiIntegration();
+  await setIntegrationSecret(CLE_JETON_CAPI, jeton, actor);
 }

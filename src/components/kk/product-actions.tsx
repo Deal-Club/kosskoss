@@ -6,6 +6,8 @@ import { Plus, Check, Heart, ChevronRight } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { toggleFavorite, useFavorites, type FavoriteItem } from "@/lib/favorites";
 import { volVersPanier } from "@/lib/kk/fly-to-cart";
+import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import type { CartLine } from "@/lib/cart";
 import type { KKProductView } from "@/types/kk";
 
@@ -139,6 +141,16 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
    */
   async function handleAdd(event: React.MouseEvent<HTMLButtonElement>) {
     add(toCartLine(product), 1);
+    // Identifiant ALIGNÉ SUR LE FLUX GOOGLE MERCHANT (voir
+    // `identifiantProduitCatalogue`), pas l'identifiant interne : `slug` est
+    // garanti présent ici (`isActionable` l'exige avant de rendre ce bouton).
+    const idCatalogue = identifiantProduitCatalogue(product.slug ?? "", product.id);
+    mesurerEvenement({
+      type: "add_to_cart",
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
+      totalCents: product.priceFcfa,
+    });
     setAdded(true);
     window.setTimeout(() => setAdded(false), 1800);
 

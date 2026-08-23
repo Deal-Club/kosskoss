@@ -26,6 +26,8 @@ import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
 import { normaliserTelephone } from "@/lib/kk/telephone";
+import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
+import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import type { PaymentMethodView } from "@/server/kk/payments";
 import { brandMarksFor } from "@/components/PaymentIcons";
 import { BottleMotif } from "./motifs";
@@ -234,6 +236,35 @@ export function CheckoutForm({
     observateur.observe(cible);
     return () => observateur.disconnect();
   }, [ready, lines.length]);
+
+  // `begin_checkout` : une fois par entrée dans le tunnel avec un panier non
+  // vide. `ready` distingue le panier réellement lu (localStorage hydraté) du
+  // panier vide affiché avant hydratation — sans quoi une visite avec panier
+  // enverrait d'abord un événement à zéro article. Le garde par `useRef` évite
+  // un second envoi au double montage du Strict Mode.
+  const debutTunnelEnvoye = useRef(false);
+  useEffect(() => {
+    if (!ready || lines.length === 0 || debutTunnelEnvoye.current) return;
+    debutTunnelEnvoye.current = true;
+    mesurerEvenement({
+      type: "begin_checkout",
+      // Clé d'événement pour la déduplication navigateur/navigateur (pas de
+      // pendant serveur pour `begin_checkout`) : identifie CE panier précis,
+      // pas un article — `productId`/`variantId` y restent légitimes.
+      reference: lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.quantity}`).join("|"),
+      // Références PAR ARTICLE, elles, alignées sur le flux Google Merchant
+      // (voir `identifiantProduitCatalogue`) — comme aux trois autres points
+      // d'émission — pour que Meta/GA4 apparient chaque ligne au bon produit
+      // du catalogue plutôt qu'à sa variante ou à son identifiant interne.
+      articles: lines.map((l) => ({
+        reference: identifiantProduitCatalogue(l.slug, l.productId),
+        nom: l.name,
+        prixCents: l.priceCents,
+        quantite: l.quantity,
+      })),
+      totalCents: subtotal,
+    });
+  }, [ready, lines, subtotal]);
 
   const erreurs = useMemo(
     () => ({

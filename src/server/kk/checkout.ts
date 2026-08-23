@@ -8,6 +8,7 @@ import { consommerCoupon, validerCoupon } from "@/server/coupons";
 import { normaliserTelephone } from "@/lib/kk/telephone";
 import { choisirLangue } from "@/lib/kk/langue";
 import { pickText, needsTranslation } from "@/server/localizedContent";
+import { serverAllows } from "@/server/consent";
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -220,6 +221,14 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   const orderNumber = `KOSS-${year}-${String(count + 1).padStart(6, "0")}`;
   const accessToken = randomBytes(24).toString("hex");
 
+  // Consentement « marketing » figé ICI, à la commande — voir le commentaire
+  // sur la colonne `marketingConsent` dans le schéma. C'est un cookie de la
+  // REQUÊTE EN COURS (cette fonction est appelée depuis la route
+  // `/api/kk/checkout`, qui a `cookies()` dans sa portée) : la CAPI, elle,
+  // partira plus tard depuis un webhook du prestataire de paiement, qui n'a
+  // par construction aucun cookie de navigateur à relire.
+  const marketingConsent = await serverAllows("marketing");
+
   await prisma.$transaction(async (tx) => {
     await tx.order.create({
       data: {
@@ -255,6 +264,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         taxRatePercent: 0,
         currency: "XAF",
         customerNote: input.followOrder ? "Client a demandé le suivi de commande." : "",
+        marketingConsent,
         items: { create: orderItems },
       },
     });

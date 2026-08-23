@@ -63,6 +63,7 @@ function order(overrides: Partial<OrderRecord> = {}): OrderRecord {
     currency: "XAF",
     customerNote: "",
     adminNote: "",
+    marketingConsent: false,
     createdAt: "2026-07-30T09:24:00.000Z",
     updatedAt: "2026-07-30T09:24:00.000Z",
     items: [

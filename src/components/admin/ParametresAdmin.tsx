@@ -7,6 +7,7 @@ import {
   normaliserParametres,
   saisieEffacee,
   CHAMPS_PARAMETRES,
+  jetonCapiValide,
   type ParametresBoutique,
 } from "@/lib/kk/parametres";
 
@@ -37,9 +38,20 @@ const INFOS_AFFICHAGE: Record<keyof ParametresBoutique, { label: string; aide: s
     label: "Identifiant du Pixel Meta",
     aide: "Suite de chiffres, dans le Gestionnaire d'événements Meta",
   },
+  metaCapiDatasetId: {
+    label: "Identifiant du jeu de données Meta (CAPI)",
+    aide:
+      "Suite de chiffres, dans Gestionnaire d'événements Meta › Paramètres. Souvent identique au Pixel.",
+  },
 };
 
-export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
+interface ParametresAdminProps {
+  initial: ParametresBoutique;
+  /** Le jeton CAPI est-il déjà enregistré ? La valeur, elle, ne quitte jamais le serveur. */
+  capiConfigured: boolean;
+}
+
+export function ParametresAdmin({ initial, capiConfigured: capiConfiguredInitial }: ParametresAdminProps) {
   const router = useRouter();
   // `baseline` est ce qui est réellement en base ; `values` est la saisie en
   // cours. Les deux démarrent identiques et ne divergent qu'aux frappes de
@@ -50,6 +62,18 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
   const [values, setValues] = useState<ParametresBoutique>(initial);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState<"saved" | "error" | null>(null);
+
+  // Le jeton CAPI ne revient jamais du serveur : ce champ reste vide au
+  // chargement, comme celui des clés de passerelle de paiement. `capiConfigured`
+  // est mis à jour depuis la réponse de l'enregistrement, pas depuis une
+  // lecture directe — la valeur en clair, elle, ne quitte jamais le serveur.
+  const [capiToken, setCapiToken] = useState("");
+  const [capiConfigured, setCapiConfigured] = useState(capiConfiguredInitial);
+  const capiTokenSaisi = capiToken.trim();
+  const capiTokenErreur =
+    capiTokenSaisi && !jetonCapiValide(capiTokenSaisi)
+      ? "Format attendu : jeton d'accès Meta (20 à 512 caractères, sans espace)"
+      : null;
 
   // NORMALISER D'ABORD, VALIDER ENSUITE (règle du contrôleur sur la tâche 1) :
   // sans cette étape, un numéro écrit naturellement avec des espaces ou un
@@ -94,27 +118,34 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
   // tri, la seule issue pour l'administrateur serait un appel direct à
   // l'API, ce qui n'est pas l'utilisateur de cet écran.
   const peutEnregistrer = useMemo(() => {
+    if (capiTokenErreur) return false;
     for (const cle of dirty) {
       if (erreurs[cle]) return false;
     }
     return true;
-  }, [dirty, erreurs]);
+  }, [dirty, erreurs, capiTokenErreur]);
+
+  // Rien à enregistrer : ni champ modifié, ni jeton saisi.
+  const rienAEnregistrer = dirty.size === 0 && !capiTokenSaisi;
 
   function patch(cle: keyof ParametresBoutique, value: string) {
     setValues((v) => ({ ...v, [cle]: value }));
   }
 
   async function save() {
-    if (!peutEnregistrer || dirty.size === 0) return;
+    if (!peutEnregistrer || rienAEnregistrer) return;
     setSaving(true);
     setStatus(null);
     try {
       // On n'envoie que les champs modifiés : la route ne valide que ce
-      // qu'on lui soumet (les quatre clés sont facultatives), donc un champ
+      // qu'on lui soumet (les cinq clés sont facultatives), donc un champ
       // déjà en base et invalide, mais non touché, n'est jamais renvoyé et ne
       // peut jamais faire échouer la requête.
-      const partiel: Partial<ParametresBoutique> = {};
+      const partiel: Partial<ParametresBoutique> & { capiToken?: string } = {};
       for (const cle of dirty) partiel[cle] = values[cle];
+      // Le jeton n'est envoyé que s'il a été saisi : un champ vide laisse le
+      // jeton déjà enregistré inchangé, la route ne le touche alors pas.
+      if (capiTokenSaisi) partiel.capiToken = capiTokenSaisi;
 
       const res = await fetch("/api/admin/parametres", {
         method: "POST",
@@ -128,11 +159,16 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
         // exemple le numéro réduit à ses chiffres) : on en fait la nouvelle
         // référence, si bien que ce qui vient d'être sauvegardé n'est plus
         // « modifié » — sans attendre un rechargement complet de la page.
-        const data = (await res.json()) as { parametres?: ParametresBoutique };
+        const data = (await res.json()) as {
+          parametres?: ParametresBoutique;
+          capiConfigured?: boolean;
+        };
         if (data.parametres) {
           setBaseline(data.parametres);
           setValues(data.parametres);
         }
+        if (typeof data.capiConfigured === "boolean") setCapiConfigured(data.capiConfigured);
+        setCapiToken("");
         setStatus("saved");
         router.refresh();
       }
@@ -158,7 +194,7 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
           <button
             type="button"
             onClick={save}
-            disabled={saving || !peutEnregistrer || dirty.size === 0}
+            disabled={saving || !peutEnregistrer || rienAEnregistrer}
             className="inline-flex items-center gap-2 rounded bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-60"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
@@ -180,15 +216,62 @@ export function ParametresAdmin({ initial }: { initial: ParametresBoutique }) {
         })}
       </div>
 
-      {/* Honnêteté requise par la tâche : ces deux identifiants sont enregistrés
-          dès aujourd'hui, mais aucune balise ne les lit encore sur le site — la
-          pose des balises appartient au lot de mesure d'audience. Sans cette
-          phrase, le client croirait la mesure déjà active et découvrirait des
-          mois plus tard que rien n'a jamais été collecté. */}
+      {/* Le jeton CAPI suit le patron des clés de passerelle de paiement
+          (GatewaySettingsForm) : stocké chiffré, jamais réaffiché — seulement
+          « configuré » ou « non configuré ». Un champ vide au moment d'enregistrer
+          laisse le jeton déjà enregistré inchangé. */}
+      <div className="max-w-xl space-y-3 rounded-lg border border-border bg-card p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="text-sm font-black text-foreground">
+            Jeton de l&rsquo;API de conversions Meta (CAPI)
+          </h2>
+          {capiConfigured ? (
+            <span className="rounded-sm bg-accent px-2 py-0.5 text-[11px] font-bold text-accent-foreground">
+              Configuré
+            </span>
+          ) : (
+            <span className="rounded-sm bg-muted px-2 py-0.5 text-[11px] font-bold text-muted-foreground">
+              Non configuré
+            </span>
+          )}
+        </div>
+        <label className="block">
+          <span className={labelCls}>{capiConfigured ? "Saisir un nouveau jeton" : "Saisir le jeton"}</span>
+          <input
+            type="password"
+            autoComplete="off"
+            value={capiToken}
+            onChange={(e) => setCapiToken(e.target.value)}
+            placeholder={capiConfigured ? "•••••••••••••••• (inchangé)" : "Jeton d'accès système Meta"}
+            className={`${inputCls} font-mono`}
+          />
+          {capiTokenErreur ? (
+            <p className={erreurCls}>{capiTokenErreur}</p>
+          ) : (
+            <p className={aideCls}>
+              Jeton système du Gestionnaire d&rsquo;événements Meta. Laissez vide pour conserver le
+              jeton déjà enregistré : il n&rsquo;est jamais réaffiché ici.
+            </p>
+          )}
+        </label>
+      </div>
+
+      {/* Honnêteté requise par la tâche : cette phrase disait « enregistrés mais
+          pas encore posés », vrai après la tâche 2 — mais les tâches 3 et 4 ont
+          depuis branché les balises GA4/Pixel et la CAPI dessus. La laisser
+          telle quelle inverserait son sens : un exploitant qui la croit encore
+          rassurerait un jeton MIS EN PRODUCTION en pensant qu'il ne partira
+          nulle part, et ne se poserait alors ni la question du bandeau de
+          consentement ni celle de la mention légale — les deux conditions qui
+          rendent cette collecte licite. */}
       <p className="max-w-xl text-sm text-muted-foreground">
-        Les identifiants GA4 et Pixel Meta sont{" "}
-        <strong className="font-bold text-foreground">enregistrés mais pas encore posés</strong> sur le
-        site : les balises de mesure correspondantes appartiennent à un lot ultérieur.
+        Dès leur enregistrement, ces identifiants{" "}
+        <strong className="font-bold text-foreground">activent réellement</strong> la mesure : GA4 et le
+        Pixel se chargent dans le navigateur, et l&rsquo;API de conversions Meta envoie les achats
+        confirmés côté serveur — dans les deux cas uniquement pour un visiteur ayant donné son
+        consentement (catégories « mesure » et « marketing » du bandeau). Assurez-vous que le bandeau
+        de consentement et la mention légale correspondante sont à jour avant d&rsquo;enregistrer un
+        identifiant ici.
       </p>
     </div>
   );

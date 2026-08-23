@@ -9,7 +9,9 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SmartsuppChat } from "@/components/SmartsuppChat";
 import { CodeSnippets } from "@/components/CodeSnippets";
 import { CookieConsent } from "@/components/kk/cookie-consent";
+import { MesureAudience } from "@/components/kk/mesure-audience";
 import { tracageActif } from "@/server/consent";
+import { getParametres } from "@/server/kk/parametres";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -30,6 +32,10 @@ export default async function LocaleLayout({
   // Permet le rendu statique des pages qui utilisent les traductions
   setRequestLocale(locale);
 
+  // Mémoïsé par requête (voir server/kk/parametres.ts) : le pied de page et le
+  // bouton WhatsApp le lisent déjà, cet appel ne coûte rien de plus.
+  const parametres = await getParametres();
+
   // Le panier vit dans localStorage : le fournisseur enveloppe toute la
   // boutique pour que le Header et les fiches produit y accèdent. Les pages
   // restent des composants serveur, seul le contexte est côté client.
@@ -46,6 +52,11 @@ export default async function LocaleLayout({
       <CartProvider>
         {children}
         <CartDrawerKK />
+        {/* GA4 et le Pixel Meta : ne charge et n'émet RIEN sans identifiant
+            configuré ET consentement — voir @/lib/kk/mesureNavigateur. Monté
+            même si les deux identifiants sont vides : le composant ne fait
+            alors rien, `initialiserMesure` sort au premier test. */}
+        <MesureAudience ga4Id={parametres.ga4} metaPixelId={parametres.metaPixel} />
         {/* Boutons de contact flottants : WhatsApp à gauche, chat Smartsupp à
             droite. Smartsupp ne s'affiche que si sa clé d'environnement est
             renseignée. */}
