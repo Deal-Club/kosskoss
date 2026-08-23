@@ -45,6 +45,12 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
       id: s.id,
       label: pickText(s.label, traduire ? s.labelEn : undefined),
       why: pickText(s.why, traduire ? s.whyEn : undefined),
+      // `role` n'a pas de contrepartie *En sur les routines historiques (le
+      // champ y est vide) ; sur les routines du master, elle existe. Même
+      // règle de repli que partout ailleurs. `moment` n'a pas de contrepartie
+      // *En du tout — voir traductions.ts.
+      role: pickText(s.role, traduire ? s.roleEn : undefined),
+      moment: s.moment,
       product: toProductView(s.product, locale, i),
     }));
 
@@ -62,6 +68,12 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     href: `/routines/${row.slug}`,
     steps,
     totalFcfa: steps.reduce((sum, s) => sum + s.product.priceFcfa, 0),
+    niveau: row.niveau,
+    code: row.code,
+    profilCible: pickText(row.profilCible, traduire ? row.profilCibleEn : undefined),
+    usageMatin: pickText(row.usageMatin, traduire ? row.usageMatinEn : undefined),
+    usageSoir: pickText(row.usageSoir, traduire ? row.usageSoirEn : undefined),
+    noteKossKoss: pickText(row.noteKossKoss, traduire ? row.noteKossKossEn : undefined),
   };
 }
 
@@ -91,4 +103,25 @@ export async function getRoutine(slug: string, locale: Locale): Promise<KKRoutin
 export async function getRoutineByCode(code: string, locale: Locale): Promise<KKRoutineView | null> {
   const [row] = await lireRoutines({ code });
   return row ? toView(row, locale) : null;
+}
+
+/**
+ * Les routines qui contiennent ce produit, dans l'ordre d'affichage habituel
+ * (`position`). Sert la section « Complétez votre routine » de la fiche
+ * produit (lot 7D).
+ *
+ * Un produit peut appartenir à plusieurs routines (par exemple un nettoyant
+ * repris dans une routine Éco et sa version Premium) : elles sont TOUTES
+ * rendues, plutôt qu'une seule choisie arbitrairement — voir le rapport du
+ * lot 7D pour la décision. La liste peut être vide (produit d'appoint hors
+ * de toute routine), ce qui est un état normal : la section correspondante
+ * ne s'affiche alors pas.
+ */
+export async function getRoutinesForProduct(productId: string, locale: Locale): Promise<KKRoutineView[]> {
+  const rows = await prisma.routine.findMany({
+    where: { active: true, steps: { some: { productId } } },
+    orderBy: { position: "asc" },
+    include: ROUTINE_INCLUDE,
+  });
+  return rows.map((r) => toView(r, locale)).filter((v): v is KKRoutineView => v !== null);
 }

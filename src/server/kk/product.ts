@@ -41,6 +41,23 @@ export type KKProductDetail = {
   category: { slug: string; label: string };
   variants: KKVariant[];
   href: string;
+  // ---- Champs du master (lot 7B), pour la présentation de la fiche (lot 7D).
+  // Chacun retombe sur "" quand le master ne l'a pas renseigné — c'est à
+  // l'affichage de décider si une section vide se montre ou non, jamais ici.
+  /** Tags bruts (préoccupation + type de peau), pour la ligne de préoccupations
+   *  et le tableau « en bref » — voir `src/lib/kk/besoins.ts`. */
+  tags: string[];
+  /** Question d'accroche du problème que le produit résout. */
+  problemeAccroche: string;
+  /** À qui il s'adresse — texte libre du master, pas une liste. */
+  idealPour: string;
+  usageMatin: string;
+  usageSoir: string;
+  /** Fréquence d'usage (« Quotidien », « 2x/semaine »…). */
+  frequence: string;
+  conseilKossKoss: string;
+  /** Actifs clés, texte libre (« Propolis 60 % ; Niacinamide 2 % »). */
+  actifsCles: string;
 };
 
 /** Fiche produit complète, résolue par univers/catégorie/slug. `null` si absente. */
@@ -70,6 +87,15 @@ export async function getProductDetail(
   const shortDescription = pickText(p.shortDescription ?? "", traduire ? p.shortDescriptionEn : undefined);
   const description = pickText(p.description ?? "", traduire ? p.descriptionEn : undefined);
   const bullets = pickList(parseStringArray(p.bullets), traduire ? parseStringArray(p.bulletsEn) : undefined);
+  // Champs du master (lot 7D) : même règle de repli que le reste de la fiche —
+  // pickText, jamais un accès direct au champ *En.
+  const problemeAccroche = pickText(p.problemeAccroche, traduire ? p.problemeAccrocheEn : undefined);
+  const idealPour = pickText(p.idealPour, traduire ? p.idealPourEn : undefined);
+  const usageMatin = pickText(p.usageMatin, traduire ? p.usageMatinEn : undefined);
+  const usageSoir = pickText(p.usageSoir, traduire ? p.usageSoirEn : undefined);
+  const frequence = pickText(p.frequence, traduire ? p.frequenceEn : undefined);
+  const conseilKossKoss = pickText(p.conseilKossKoss, traduire ? p.conseilKossKossEn : undefined);
+  const actifsCles = pickText(p.actifsCles, traduire ? p.actifsClesEn : undefined);
 
   return {
     id: p.id,
@@ -102,6 +128,14 @@ export async function getProductDetail(
       oldPriceFcfa: v.oldPriceCents ?? undefined,
     })),
     href: `/${p.category.group.slug}/${p.category.slug}/${p.slug}`,
+    tags: parseStringArray(p.tags),
+    problemeAccroche,
+    idealPour,
+    usageMatin,
+    usageSoir,
+    frequence,
+    conseilKossKoss,
+    actifsCles,
   };
 }
 
