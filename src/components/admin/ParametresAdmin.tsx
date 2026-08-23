@@ -256,17 +256,22 @@ export function ParametresAdmin({ initial, capiConfigured: capiConfiguredInitial
         </label>
       </div>
 
-      {/* Honnêteté requise par la tâche : ces identifiants et ce jeton sont
-          enregistrés dès aujourd'hui, mais aucune balise ni CAPI ne les lit
-          encore — leur branchement appartient à la suite du lot de mesure
-          d'audience. Sans cette phrase, le client croirait la mesure déjà
-          active et découvrirait des mois plus tard que rien n'a jamais été
-          collecté. */}
+      {/* Honnêteté requise par la tâche : cette phrase disait « enregistrés mais
+          pas encore posés », vrai après la tâche 2 — mais les tâches 3 et 4 ont
+          depuis branché les balises GA4/Pixel et la CAPI dessus. La laisser
+          telle quelle inverserait son sens : un exploitant qui la croit encore
+          rassurerait un jeton MIS EN PRODUCTION en pensant qu'il ne partira
+          nulle part, et ne se poserait alors ni la question du bandeau de
+          consentement ni celle de la mention légale — les deux conditions qui
+          rendent cette collecte licite. */}
       <p className="max-w-xl text-sm text-muted-foreground">
-        Les identifiants GA4, Pixel et jeu de données Meta, ainsi que le jeton CAPI, sont{" "}
-        <strong className="font-bold text-foreground">enregistrés mais pas encore posés</strong> sur le
-        site : les balises et l&rsquo;envoi côté serveur correspondants appartiennent à la suite de ce
-        lot.
+        Dès leur enregistrement, ces identifiants{" "}
+        <strong className="font-bold text-foreground">activent réellement</strong> la mesure : GA4 et le
+        Pixel se chargent dans le navigateur, et l&rsquo;API de conversions Meta envoie les achats
+        confirmés côté serveur — dans les deux cas uniquement pour un visiteur ayant donné son
+        consentement (catégories « mesure » et « marketing » du bandeau). Assurez-vous que le bandeau
+        de consentement et la mention légale correspondante sont à jour avant d&rsquo;enregistrer un
+        identifiant ici.
       </p>
     </div>
   );
