@@ -1,16 +1,20 @@
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { requireCapaciteApi } from "@/lib/adminApi";
+import { adminActorLabel } from "@/server/admins";
 import {
   saveParametres,
   normaliserParametres,
   saisieEffacee,
   CHAMPS_PARAMETRES,
+  jetonCapiValide,
+  jetonCapiConfigure,
+  enregistrerJetonCapi,
   type ParametresBoutique,
 } from "@/server/kk/parametres";
 
 export async function POST(request: Request) {
-  const { unauthorized } = await requireCapaciteApi("reglages");
+  const { session, unauthorized } = await requireCapaciteApi("reglages");
   if (unauthorized) return unauthorized;
 
   let body: unknown;
@@ -35,6 +39,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: `champ_invalide:${cle}` }, { status: 400 });
     }
   }
+  // `capiToken` n'est pas dans CHAMPS_PARAMETRES : ce n'est pas un champ de
+  // ParametresBoutique, c'est un secret qui vit chiffré dans Integration (voir
+  // l'en-tête de src/lib/kk/parametres.ts). Même contrôle de type que les
+  // quatre autres, à part.
+  if ("capiToken" in raw && typeof raw.capiToken !== "string") {
+    return NextResponse.json({ error: "champ_invalide:capiToken" }, { status: 400 });
+  }
 
   // NORMALISER D'ABORD, VALIDER ENSUITE (règle du contrôleur sur la tâche 1) :
   // un numéro saisi « +237 658 01 36 46 » — la façon naturelle de l'écrire —
@@ -45,7 +56,7 @@ export async function POST(request: Request) {
   // qu'on ira lire ensuite.
   const normalise = normaliserParametres(raw);
 
-  // Les quatre champs sont facultatifs : un champ absent du corps ne doit pas
+  // Tous ces champs sont facultatifs : un champ absent du corps ne doit pas
   // écraser le réglage déjà enregistré. On ne verse dans `partiel` que ce que
   // l'administrateur a explicitement soumis, validé APRÈS normalisation.
   // L'écran, lui, ne soumet que les champs qu'il a effectivement modifiés
@@ -72,6 +83,26 @@ export async function POST(request: Request) {
 
   const resultat = await saveParametres(partiel);
 
+  // Jeton CAPI : un champ VIDE laisse le jeton déjà enregistré inchangé — sinon
+  // toute sauvegarde de cet écran, même sans y toucher, l'effacerait. C'est le
+  // même principe que les clés des passerelles de paiement (voir
+  // /api/admin/payment-gateway) : on n'écrit que ce qui est réellement fourni.
+  const capiTokenBrut = typeof raw.capiToken === "string" ? raw.capiToken.trim() : "";
+  if (capiTokenBrut) {
+    if (!jetonCapiValide(capiTokenBrut)) {
+      return NextResponse.json(
+        {
+          error: "format_invalide:capiToken",
+          champ: "capiToken",
+          format: "jeton d'accès Meta (20 à 512 caractères, sans espace)",
+        },
+        { status: 400 },
+      );
+    }
+    await enregistrerJetonCapi(capiTokenBrut, await adminActorLabel(session));
+  }
+  const capiConfigured = await jetonCapiConfigure();
+
   // Rafraîchit la boutique. Le passage par la racine est nécessaire : le numéro
   // WhatsApp est lu par le pied de page et par le bouton flottant du gabarit,
   // donc présent sur TOUTES les pages — même raison qui fait invalider depuis
@@ -88,5 +119,5 @@ export async function POST(request: Request) {
   // vide en outre le cache de navigation côté client.
   revalidatePath("/", "layout");
 
-  return NextResponse.json({ ok: true, parametres: resultat });
+  return NextResponse.json({ ok: true, parametres: resultat, capiConfigured });
 }

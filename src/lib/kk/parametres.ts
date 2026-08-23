@@ -13,7 +13,9 @@
  *
  * Aucun secret. Ces valeurs partent dans le HTML ou dans un lien cliquable ;
  * le jeton de l'API Conversions, lui, doit rester au serveur et va dans
- * `Integration`, qui le chiffre.
+ * `Integration`, qui le chiffre — voir `CLE_JETON_CAPI` et `jetonCapiValide`
+ * plus bas : ils décrivent le format attendu, mais la valeur elle-même ne
+ * transite JAMAIS par `ParametresBoutique`.
  */
 
 export interface ParametresBoutique {
@@ -25,17 +27,26 @@ export interface ParametresBoutique {
   ga4: string;
   /** Identifiant du Pixel Meta. */
   metaPixel: string;
+  /**
+   * Identifiant du jeu de données Meta interrogé par l'API de conversions
+   * (CAPI). Distinct du Pixel : Meta permet de faire pointer la CAPI vers un
+   * jeu de données propre, séparé de celui du Pixel navigateur. Ce n'est pas
+   * un secret — c'est un identifiant, au même titre que `ga4` ou `metaPixel` —
+   * seul le jeton d'accès qui l'accompagne (`CLE_JETON_CAPI`) l'est.
+   */
+  metaCapiDatasetId: string;
 }
 
 /**
  * Tout est vide par défaut, et c'est voulu : une boutique qui n'a pas encore de
- * Pixel doit pouvoir enregistrer les trois autres réglages.
+ * Pixel doit pouvoir enregistrer les autres réglages.
  */
 export const PARAMETRES_PAR_DEFAUT: ParametresBoutique = {
   whatsapp: "",
   formulaireEvaluation: "",
   ga4: "",
   metaPixel: "",
+  metaCapiDatasetId: "",
 };
 
 /** `wa.me` n'accepte que des chiffres : une lettre produirait un lien mort. */
@@ -68,6 +79,38 @@ export function identifiantPixelValide(valeur: string): boolean {
 }
 
 /**
+ * Identifiant du jeu de données Meta (CAPI) : même forme que le Pixel — une
+ * suite de chiffres — puisque c'est aussi un identifiant d'objet Meta.
+ */
+export function identifiantDatasetMetaValide(valeur: string): boolean {
+  return valeur === "" || /^\d{8,20}$/.test(valeur);
+}
+
+/**
+ * Clé de la table `Integration` (voir `src/server/integrations.ts`) sous
+ * laquelle vit le jeton d'accès à l'API de conversions Meta (CAPI), chiffré.
+ * Nommée ici — pas seulement côté serveur — pour que l'écran d'administration
+ * et la route d'enregistrement pointent vers la même clé sans la recopier.
+ */
+export const CLE_JETON_CAPI = "meta_capi_token";
+
+/**
+ * Format du jeton d'accès à l'API de conversions Meta : un jeton système
+ * (« System User access token »), chaîne opaque sans espace. Le motif
+ * n'atteste pas que Meta acceptera ce jeton — rien ne le peut depuis un
+ * formulaire — il attrape le collage accidentel d'autre chose (un mot de
+ * passe, une URL, une clé tronquée).
+ *
+ * Contrairement aux validateurs ci-dessus, le vide n'est PAS accepté ici :
+ * une chaîne vide ne représente jamais « pas de jeton », c'est le SIGNAL,
+ * traité par l'appelant, que le champ n'a pas été touché et que le jeton déjà
+ * enregistré doit rester inchangé (voir la route d'enregistrement).
+ */
+export function jetonCapiValide(valeur: string): boolean {
+  return /^[A-Za-z0-9._-]{20,512}$/.test(valeur);
+}
+
+/**
  * Description partagée de chaque champ : son validateur et le message de
  * format qu'un échec doit afficher.
  *
@@ -96,6 +139,7 @@ export const CHAMPS_PARAMETRES: DescriptionChamp[] = [
   },
   { cle: "ga4", valide: identifiantGa4Valide, format: "G-XXXXXXXXXX" },
   { cle: "metaPixel", valide: identifiantPixelValide, format: "8 à 20 chiffres" },
+  { cle: "metaCapiDatasetId", valide: identifiantDatasetMetaValide, format: "8 à 20 chiffres" },
 ];
 
 /**
@@ -143,5 +187,6 @@ export function normaliserParametres(brut: unknown): ParametresBoutique {
     formulaireEvaluation: texte(source, "formulaireEvaluation"),
     ga4: texte(source, "ga4"),
     metaPixel: texte(source, "metaPixel"),
+    metaCapiDatasetId: texte(source, "metaCapiDatasetId"),
   };
 }

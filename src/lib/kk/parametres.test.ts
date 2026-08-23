@@ -3,6 +3,9 @@ import { describe, it } from "node:test";
 import {
   identifiantGa4Valide,
   identifiantPixelValide,
+  identifiantDatasetMetaValide,
+  jetonCapiValide,
+  CLE_JETON_CAPI,
   lienEvaluationValide,
   normaliserParametres,
   numeroWhatsappValide,
@@ -76,6 +79,47 @@ describe("identifiantPixelValide", () => {
   });
 });
 
+describe("identifiantDatasetMetaValide", () => {
+  it("accepte une suite de chiffres", () => {
+    assert.equal(identifiantDatasetMetaValide("123456789012345"), true);
+  });
+
+  it("accepte le vide", () => {
+    assert.equal(identifiantDatasetMetaValide(""), true);
+  });
+
+  it("refuse une valeur non numérique", () => {
+    assert.equal(identifiantDatasetMetaValide("dataset-1"), false);
+  });
+});
+
+describe("jetonCapiValide", () => {
+  it("accepte un jeton système plausible", () => {
+    assert.equal(jetonCapiValide("EAAG" + "x".repeat(40)), true);
+  });
+
+  it("refuse le vide — contrairement aux autres validateurs, le vide n'est pas une valeur légitime ici", () => {
+    // Le vide signale « champ non touché » à l'appelant (voir la route
+    // d'enregistrement) ; il ne doit jamais être accepté comme jeton lui-même,
+    // sans quoi un bogue de l'appelant pourrait écraser un jeton par du vide.
+    assert.equal(jetonCapiValide(""), false);
+  });
+
+  it("refuse un jeton trop court (mot de passe collé par erreur)", () => {
+    assert.equal(jetonCapiValide("trop-court"), false);
+  });
+
+  it("refuse un jeton contenant un espace", () => {
+    assert.equal(jetonCapiValide("un jeton avec espaces qui ne peut pas etre valide"), false);
+  });
+});
+
+describe("CLE_JETON_CAPI", () => {
+  it("est une clé stable — l'écran et la route doivent pointer vers le même enregistrement", () => {
+    assert.equal(CLE_JETON_CAPI, "meta_capi_token");
+  });
+});
+
 describe("normaliserParametres", () => {
   it("relit ce qui a été écrit", () => {
     const source = {
@@ -83,6 +127,7 @@ describe("normaliserParametres", () => {
       formulaireEvaluation: "https://forms.gle/abc123",
       ga4: "G-ABCDE12345",
       metaPixel: "123456789012345",
+      metaCapiDatasetId: "543210987654321",
     };
     assert.deepEqual(normaliserParametres(source), source);
   });
