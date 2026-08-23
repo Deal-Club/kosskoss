@@ -8,6 +8,7 @@ import {
   type ConfigGeniusPay,
 } from "@/server/gateways/geniuspay";
 import { getOrderByNumber, recordOrderEvent, updatePaymentStatus } from "@/server/orders";
+import { envoyerAchatCapi } from "@/server/kk/capi";
 
 /**
  * Paiement d'une commande KossKoss, via GeniusPay.
@@ -197,6 +198,31 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
       where: { id: commande.id },
       data: { status: "payee" },
     });
+
+    // CAPI Meta (critère 20) : l'ENCAISSEMENT est la conversion, pas la
+    // commande — c'est pourquoi cet appel vit ICI et nulle part ailleurs, dans
+    // le seul point de passage qui fait passer une commande en « payée » (voir
+    // l'en-tête du fichier). N'envoie rien sans consentement marketing figé à
+    // la commande, ni sans identifiant/jeton CAPI configurés — voir
+    // `src/server/kk/capi.ts`. `await`ée : une erreur y est toujours avalée,
+    // jamais laissée remonter jusqu'ici (même fichier, même garantie).
+    await envoyerAchatCapi({
+      orderNumber: commande.orderNumber,
+      email: commande.email,
+      phone: commande.phone,
+      totalCents: commande.totalCents,
+      marketingConsent: commande.marketingConsent,
+      // Même repli qu'à la page de confirmation (MesureAchat, côté
+      // navigateur) : SKU, puis identifiant produit, puis nom — la seule
+      // valeur garantie non vide sur toute ligne de commande.
+      articles: commande.items.map((item) => ({
+        reference: item.sku || item.productId || item.name,
+        nom: item.name,
+        prixCents: item.unitPriceCents,
+        quantite: item.quantity,
+      })),
+    });
+
     return "encaisse";
   }
 

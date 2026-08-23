@@ -48,7 +48,7 @@
  */
 
 import { allowsCategory, parseConsent, CONSENT_COOKIE, type ConsentCategory } from "@/lib/consent";
-import { versGa4, versPixel, type EvenementDetail, type EvenementMesure } from "@/lib/kk/mesure";
+import { versGa4, versPixel, nomEvenementMeta, type EvenementDetail } from "@/lib/kk/mesure";
 
 // ---- Le navigateur, typé sans `any` ----
 
@@ -176,19 +176,6 @@ export function initialiserMesure(identifiants: { ga4Id: string; metaPixelId: st
 // ---- Émission des quatre événements ----
 
 /** GA4 nomme ses événements e-commerce EXACTEMENT comme `EvenementMesure` : aucune table n'est nécessaire. */
-
-/** Meta, lui, a son propre vocabulaire d'événements standard. */
-const NOMS_EVENEMENTS_META: Record<EvenementMesure, string> = {
-  view_item: "ViewContent",
-  add_to_cart: "AddToCart",
-  begin_checkout: "InitiateCheckout",
-  purchase: "Purchase",
-};
-
-/** Nom Meta standard pour un type d'événement de mesure. Fonction pure, testée sans DOM. */
-export function nomEvenementMeta(type: EvenementMesure): string {
-  return NOMS_EVENEMENTS_META[type];
-}
 
 /**
  * Émet un événement vers GA4 et/ou le Pixel Meta, chacun sous condition de son

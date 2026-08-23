@@ -1,28 +1,15 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { EVENEMENTS_MESURE } from "./mesure";
-import { initialiserMesure, mesurerEvenement, nomEvenementMeta } from "./mesureNavigateur";
+import { initialiserMesure, mesurerEvenement } from "./mesureNavigateur";
 
 // Exécuté par `node --test`, sans DOM : `window` et `document` n'existent pas
 // dans cet environnement. C'est exactement le cas qu'un rendu serveur (ou tout
 // script qui importerait ce module par erreur hors navigateur) rencontrerait
 // aussi — les fonctions ci-dessous doivent donc rester silencieuses plutôt que
 // de lever `ReferenceError: window is not defined`.
-
-describe("nomEvenementMeta", () => {
-  it("traduit les quatre littéraux GA4 vers le vocabulaire Meta", () => {
-    assert.equal(nomEvenementMeta("view_item"), "ViewContent");
-    assert.equal(nomEvenementMeta("add_to_cart"), "AddToCart");
-    assert.equal(nomEvenementMeta("begin_checkout"), "InitiateCheckout");
-    assert.equal(nomEvenementMeta("purchase"), "Purchase");
-  });
-
-  it("couvre les quatre événements de mesure, sans en oublier un", () => {
-    for (const type of EVENEMENTS_MESURE) {
-      assert.equal(typeof nomEvenementMeta(type), "string");
-    }
-  });
-});
+//
+// `nomEvenementMeta` a migré vers `mesure.ts` (partagé avec la CAPI serveur,
+// voir la tâche 4) : ses tests vivent désormais dans `mesure.test.ts`.
 
 describe("initialiserMesure hors navigateur", () => {
   it("ne lève pas quand `window` n'existe pas", () => {

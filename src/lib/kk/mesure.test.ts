@@ -5,6 +5,7 @@ import {
   estEvenementMesure,
   identifiantEvenement,
   montantXaf,
+  nomEvenementMeta,
   versGa4,
   versPixel,
   type ArticleMesure,
@@ -168,6 +169,21 @@ describe("versPixel", () => {
     assert.deepEqual(pixel.content_ids, []);
     assert.deepEqual(pixel.contents, []);
     assert.equal(pixel.value, 0);
+  });
+});
+
+describe("nomEvenementMeta", () => {
+  it("traduit les quatre littéraux GA4 vers le vocabulaire Meta", () => {
+    assert.equal(nomEvenementMeta("view_item"), "ViewContent");
+    assert.equal(nomEvenementMeta("add_to_cart"), "AddToCart");
+    assert.equal(nomEvenementMeta("begin_checkout"), "InitiateCheckout");
+    assert.equal(nomEvenementMeta("purchase"), "Purchase");
+  });
+
+  it("couvre les quatre événements de mesure, sans en oublier un — partagé par le Pixel et la CAPI", () => {
+    for (const type of EVENEMENTS_MESURE) {
+      assert.equal(typeof nomEvenementMeta(type), "string");
+    }
   });
 });
 

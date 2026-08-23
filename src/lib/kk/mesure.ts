@@ -162,3 +162,23 @@ export function versPixel(evenement: EvenementDetail): EvenementPixel {
     })),
   };
 }
+
+/**
+ * Vocabulaire d'événements standard de Meta — distinct des quatre littéraux
+ * `EvenementMesure` (qui sont ceux de GA4). PARTAGÉ par le Pixel navigateur
+ * ET la CAPI serveur, pour la même raison que `versPixel` : les deux envois
+ * du même achat doivent porter EXACTEMENT le même nom d'événement, sous peine
+ * que Meta les traite comme deux événements différents et ne les déduplique
+ * plus malgré un `event_id` identique.
+ */
+const NOMS_EVENEMENTS_META: Record<EvenementMesure, string> = {
+  view_item: "ViewContent",
+  add_to_cart: "AddToCart",
+  begin_checkout: "InitiateCheckout",
+  purchase: "Purchase",
+};
+
+/** Nom Meta standard pour un type d'événement de mesure (Pixel ET CAPI). */
+export function nomEvenementMeta(type: EvenementMesure): string {
+  return NOMS_EVENEMENTS_META[type];
+}

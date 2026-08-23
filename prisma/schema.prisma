@@ -542,6 +542,16 @@ model Order {
   termsAcceptedAt          DateTime?
   withdrawalAcknowledgedAt DateTime?
 
+  // Consentement « marketing » (voir src/lib/consent.ts), lu au moment de la
+  // COMMANDE — pas relu plus tard. La CAPI (src/server/kk/capi.ts) part au
+  // moment de l'ENCAISSEMENT, potentiellement des heures après, depuis un
+  // webhook qui ne porte aucun cookie de navigateur : impossible d'y relire
+  // un consentement en direct. Cette valeur est donc figée ici à la commande,
+  // comme le moyen de paiement ou le prix des lignes — un visiteur qui retire
+  // son consentement APRÈS avoir commandé ne change pas rétroactivement ce
+  // qu'il avait accepté au moment de l'achat.
+  marketingConsent Boolean @default(false)
+
   // Le stock est décrémenté à la commande ; le drapeau évite un double
   // réapprovisionnement si la commande est annulée deux fois de suite.
   stockRestored Boolean @default(false)
