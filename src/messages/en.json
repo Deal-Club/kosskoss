@@ -1110,5 +1110,16 @@
     "nextPage": "Next page",
     "pageSrOnly": "Page ",
     "pageOf": "Page {page} of {pageCount}"
+  },
+  "erreur": {
+    "titre": "Something went wrong",
+    "texte": "Something failed on our side. You can try again, or go back to the home page.",
+    "reessayer": "Try again",
+    "accueil": "Back to home",
+    "reference": "Incident reference: {empreinte}",
+    "introuvableTitre": "This page does not exist",
+    "introuvableTexte": "The link you followed leads nowhere. The product may have moved, or may no longer be in the catalogue.",
+    "versCatalogue": "Browse the catalogue",
+    "versDiagnostic": "Take the diagnostic"
   }
 }

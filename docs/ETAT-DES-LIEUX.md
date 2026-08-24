@@ -120,6 +120,37 @@ mécanique : il suffit d'y reporter les cinq libellés manquants en face de leur
 
 ## 3. Limites connues, sans les adoucir
 
+- **Les pages introuvables répondent 200 au lieu de 404.** La boutique affiche
+  bien une page « cette page n'existe pas », traduite et à la marque, mais le
+  code HTTP qui l'accompagne dit « cette page existe ». Les moteurs de recherche
+  indexent donc des adresses mortes.
+
+  **Cause établie par mesure**, sur la construction de production :
+
+  | Adresse | Traverse le routage multilingue | Code |
+  |---|---|---|
+  | `/nope.html` | non, exclue par le filtre | **404** |
+  | `/en/page-inconnue` | oui | **200** |
+  | `/soins-visage/hydratants/inconnu` | oui | **200** |
+
+  Le routage multilingue réécrit l'adresse avant que Next ne cherche la route.
+  L'adresse est donc résolue, `notFound()` est bien appelé, la page d'erreur est
+  bien rendue — mais la réponse repart avec le code de la réécriture.
+
+  **Trois remèdes ont été essayés et écartés, chacun vérifié par mesure** :
+  une page `not-found.tsx` dans le segment de langue ; une route attrape-tout
+  appelant `notFound()` ; une page `not-found.tsx` à la racine. Les trois
+  rendent le bon contenu, aucun ne rétablit le code.
+
+  Les trois fichiers sont conservés : ils remplacent l'écran par défaut de
+  Next.js, en anglais et sans marque, par une page utile avec des issues. Seul
+  le code HTTP reste faux.
+
+  **Le correctif se situe dans le routage lui-même** (`src/proxy.ts` et la
+  configuration de next-intl), et demande de vérifier le comportement de la
+  version employée. À traiter avant toute campagne de référencement.
+
+
 - **La performance mobile est sous l'objectif du cahier des charges.** Le CDC
   vise un score supérieur à 80 ; il n'avait jamais été mesuré. Il l'est
   désormais, avec Lighthouse 12, en profil mobile, sur la construction de
