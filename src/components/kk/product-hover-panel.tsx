@@ -1,5 +1,5 @@
 import { ArrowRight, Layers } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import type { KKProductView } from "@/types/kk";
 
 /**
@@ -56,14 +56,30 @@ import type { KKProductView } from "@/types/kk";
 /** Durée et courbe communes, pour que les trois mouvements restent solidaires. */
 const GLISSE = "duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)]";
 
-export async function ProductHoverPanel({ product }: { product: KKProductView }) {
+/**
+ * ── POURQUOI `useTranslations` ET NON `getTranslations` ─────────────────────
+ *
+ * Ce panneau est rendu par `ProductCard`, qui l'est à son tour depuis des
+ * pages serveur MAIS AUSSI depuis `product-carousel.tsx`, un composant
+ * client. Importé par un fichier client, ce composant en devient un — et
+ * `getTranslations`, réservé au serveur, y lève une exception.
+ *
+ * Le défaut ne se voyait pas au rendu serveur : la page partait complète et
+ * correcte. Il frappait à L'HYDRATATION, dans le navigateur, où l'exception
+ * remontait à la frontière d'erreur et remplaçait l'accueil entier par
+ * « Une erreur est survenue ». Un contrôle par code HTTP ne pouvait pas le
+ * voir — la réponse valait 200.
+ *
+ * `useTranslations` fonctionne des DEUX côtés. C'est la seule forme correcte
+ * pour un composant qu'un arbre client peut atteindre.
+ */
+export function ProductHoverPanel({ product }: { product: KKProductView }) {
+  const t = useTranslations("product");
   const resume = product.shortDescription?.trim();
 
   // Sans description ni contenance, le panneau n'apporterait qu'un « Voir la
   // fiche » redondant avec le lien qui l'entoure : on ne l'ouvre pas.
   if (!resume && !product.hasVariants) return null;
-
-  const t = await getTranslations("product");
 
   return (
     <div
