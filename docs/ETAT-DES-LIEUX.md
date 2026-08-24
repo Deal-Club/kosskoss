@@ -142,9 +142,21 @@ mécanique : il suffit d'y reporter les cinq libellés manquants en face de leur
   pas une mesure, c'est une hypothèse**, et elle doit être vérifiée sur
   l'hébergement réel avant d'annoncer un chiffre au client.
 
-  Le levier le plus net, indépendamment de l'hébergement, est le nombre de
-  requêtes par page : les décomptes de facettes du rayon en émettent dix, une
-  par entrée de vocabulaire, là où un seul regroupement suffirait.
+  **Ce levier a été actionné.** Les décomptes de facettes du rayon émettaient
+  dix requêtes, une par entrée de vocabulaire. La colonne `tags` est désormais
+  lue une fois par famille et le comptage se fait en mémoire : deux requêtes au
+  lieu de dix, pour un résultat vérifié identique sur les trois univers et
+  toutes les clés de vocabulaire.
+
+  | Rayon `/soins-visage` | Avant | Après |
+  |---|---|---|
+  | Réponse du serveur | 2 090 ms | **570 ms** |
+  | Plus grand affichage | 9,6 s | **6,0 s** |
+  | Score mobile | 41 / 100 | **46 / 100** |
+
+  Le score reste sous l'objectif : ce qui domine désormais n'est plus la base
+  mais le JavaScript exécuté au chargement. C'est le prochain levier, et il
+  demande un travail d'une autre nature.
 
   **À refaire sur l'hébergement de production**, page d'accueil, rayon et fiche
   produit, avant toute annonce de conformité sur ce point.
