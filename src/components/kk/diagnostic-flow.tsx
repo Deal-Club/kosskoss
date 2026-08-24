@@ -27,7 +27,6 @@ import { questionVisible } from "@/lib/kk/diagnostic-conditions";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import type { KKRoutineView } from "@/types/kk";
-import { questionnaireEntame, type Reprise } from "@/lib/kk/diagnostic-reprise";
 import { Petal } from "./motifs";
 import { RoutineAddToCart } from "./routine-add";
 import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
@@ -62,8 +61,22 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  * le parcours. On y gagne la relecture — voir sa réponse avant de la valider,
  * et revenir dessus — au prix d'un clic par question.)
  *
- * Les réponses sont conservées le temps de l'onglet : un rechargement, un
- * appel téléphonique ou un retour arrière ne font plus repartir de zéro.
+ * ── LE QUESTIONNAIRE REPART TOUJOURS DE ZÉRO ────────────────────────────────
+ *
+ * Les réponses ont un temps été conservées dans `sessionStorage` : quitter la
+ * page ou l'actualiser ramenait le visiteur à la question où il s'était
+ * arrêté. **Le client a demandé le contraire** — un retour sur le diagnostic
+ * doit toujours recommencer à la question 1.
+ *
+ * Il n'y a donc plus aucune persistance côté navigateur, et c'est une absence
+ * VOULUE : ne réintroduisez pas de reprise « par confort ». Une réponse
+ * vieille de plusieurs heures ne décrit plus forcément la peau du moment, et
+ * un questionnaire à demi rempli qui ressurgit sans qu'on l'ait demandé donne
+ * un résultat qu'on croit avoir composé alors qu'on l'a hérité.
+ *
+ * Seule exception, et elle ne reprend AUCUNE étape : un client connecté qui a
+ * déjà TERMINÉ un diagnostic voit un écran lui proposant de revoir sa routine
+ * ou de refaire le questionnaire. Le choix y est explicite (phase `propose`).
  *
  * QUESTION CONDITIONNELLE (Q5 « pores » du quiz client, lot 7C) : elle ne
  * s'affiche que si la réponse à Q2 (« priorite ») vaut « Boutons /
@@ -77,9 +90,6 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  */
 type Phase = "propose" | "question" | "loading" | "result";
 
-/** Clé de reprise. `session` et non `local` : un diagnostic est daté, il ne
- *  doit pas ressurgir des semaines plus tard comme s'il était encore valable. */
-const REPRISE = "kk-diagnostic";
 
 export function DiagnosticFlow({
   questions,
@@ -151,62 +161,25 @@ export function DiagnosticFlow({
   const question = visibleQuestions[qIndex];
   const selected = question ? answers[question.id] : undefined;
 
-  // Reprise. Lue une seule fois au montage ; l'index est borné au cas où le
-  // questionnaire aurait raccourci entre-temps au back-office. Bornée sur la
-  // liste COMPLÈTE des questions ici (celle restaurée pour `answers` n'est
-  // pas encore posée à ce point de l'effet) — le clamp exact sur les
-  // questions réellement visibles est repris juste en dessous, à chaque rendu.
-  useEffect(() => {
-    try {
-      const brut = sessionStorage.getItem(REPRISE);
-      if (!brut) return;
-      const repris = JSON.parse(brut) as Reprise;
-      if (repris.answers) setAnswers(repris.answers);
-      if (typeof repris.qIndex === "number") {
-        setQIndex(Math.min(Math.max(repris.qIndex, 0), questions.length - 1));
-      }
-    } catch {
-      /* Stockage indisponible ou illisible : on repart simplement de zéro. */
-    }
-  }, [questions.length]);
-
-  // Clamp final : si la reprise (ou un changement de réponse à Q2 qui masque
-  // Q5 après coup) laisse `qIndex` au-delà des questions réellement visibles,
-  // on ramène sur la dernière plutôt que de rendre `question` undefined.
+  // Clamp : si un changement de réponse à Q2 masque Q5 après coup, `qIndex`
+  // peut se retrouver au-delà des questions réellement visibles. On ramène
+  // alors sur la dernière plutôt que de rendre `question` undefined.
   useEffect(() => {
     if (visibleQuestions.length === 0) return;
     if (qIndex > visibleQuestions.length - 1) setQIndex(visibleQuestions.length - 1);
   }, [qIndex, visibleQuestions.length]);
 
-  // Profil client : proposer de revoir la routine plutôt que de relancer le
-  // QCM. N'écrase pas une reprise d'onglet déjà en cours — un questionnaire
-  // entamé prime sur un ancien résultat, sans quoi revenir en arrière depuis
-  // la question 3 renverrait sans cesse à cet écran.
+  // Client CONNECTÉ ayant déjà TERMINÉ un diagnostic : on lui propose de
+  // revoir sa routine, ou de refaire le questionnaire si sa peau a changé.
   //
-  // C'est un PROGRÈS RÉEL qu'on cherche, pas la simple présence de la clé :
-  // l'effet d'enregistrement plus bas écrit `{"qIndex":0,"answers":{}}` dès le
-  // premier montage, une valeur parfaitement vide mais bien présente. Se fier
-  // à `getItem()` seul faisait donc dépendre la proposition de l'ordre de
-  // déclaration des effets — elle ne survivait qu'au tout premier affichage de
-  // la page, et tout retour dans le même onglet (aller voir un produit, passer
-  // par le panier) renvoyait le client à la question 1.
+  // À ne pas confondre avec la reprise en cours de questionnaire, retirée à la
+  // demande du client (voir l'en-tête) : cet écran ne restitue aucune étape,
+  // il constate un diagnostic ACHEVÉ et laisse le choix explicite. Il ne
+  // concerne que les comptes connectés, jamais un visiteur anonyme.
   useEffect(() => {
     if (!savedAnswerIds || savedAnswerIds.length === 0) return;
-    try {
-      if (questionnaireEntame(sessionStorage.getItem(REPRISE))) return;
-    } catch {
-      /* Stockage indisponible : la proposition reste affichée quand même. */
-    }
     setPhase("propose");
   }, [savedAnswerIds]);
-
-  useEffect(() => {
-    try {
-      sessionStorage.setItem(REPRISE, JSON.stringify({ qIndex, answers }));
-    } catch {
-      /* Navigation privée, quota plein : la reprise est un confort, pas un dû. */
-    }
-  }, [qIndex, answers]);
 
   // Un passage automatique programmé ne doit pas survivre au démontage.
   useEffect(() => () => {
