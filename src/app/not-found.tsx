@@ -30,6 +30,9 @@ export default function PageIntrouvableRacine() {
         color: "#1E1E1E",
       }}
     >
+      {/* Par symétrie avec la 404 de la boutique : une adresse morte n'a rien
+          à faire dans un index, quel que soit le code renvoyé. */}
+      <meta name="robots" content="noindex, follow" />
       <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "#8a7a5c" }}>404</p>
       <h1 style={{ marginTop: "0.75rem", fontSize: "1.75rem", color: "#0F3B46" }}>
         Cette page n’existe pas

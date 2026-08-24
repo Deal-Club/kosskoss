@@ -1,8 +1,8 @@
 import { defineRouting } from "next-intl/routing";
 
 // Le français reste à la racine (/), l'anglais vit sous /en :
-// la boutique s'adresse au marché français, c'est donc le français qui porte
-// les URL courtes et le référencement.
+// la boutique s'adresse au marché camerounais, dont le français est la langue
+// de référence — c'est donc lui qui porte les URL courtes et le référencement.
 export const routing = defineRouting({
   locales: ["fr", "en"],
   defaultLocale: "fr",

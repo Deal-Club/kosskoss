@@ -125,30 +125,55 @@ mécanique : il suffit d'y reporter les cinq libellés manquants en face de leur
   code HTTP qui l'accompagne dit « cette page existe ». Les moteurs de recherche
   indexent donc des adresses mortes.
 
-  **Cause établie par mesure**, sur la construction de production :
+  **Une première explication écrite ici accusait la réécriture multilingue.
+  Elle était fausse.** Une bissection sur construction de production l'a
+  réfutée, puis a isolé la vraie cause. Le détail est conservé parce qu'il
+  évite de refaire les mêmes essais.
 
-  | Adresse | Traverse le routage multilingue | Code |
+  *Étape 1 — le proxy est hors de cause.* Un branchement d'essai a fait
+  répondre le proxy de cinq façons différentes sur la même adresse inconnue :
+  passe-plat nu, passe-plat avec en-têtes, réponse next-intl complète, la même
+  sans l'en-tête `Link`, la même sans le cookie de langue. **Les cinq rendent
+  200.** La forme de la réponse du proxy ne change rien.
+
+  *Étape 2 — ce n'est ni le gabarit, ni la frontière d'erreur.* Le gabarit de
+  langue a été réduit au strict minimum, puis vidé jusqu'à `<>{children}</>`,
+  sans next-intl ni appel à la base ; `not-found.tsx` du segment de langue a
+  été retiré pour retomber sur celui de la racine. **Toujours 200.**
+
+  *Étape 3 — deux sondes identiques, résultats opposés.* Une page ne
+  contenant qu'un appel à `notFound()` a été posée à deux endroits :
+
+  | Sonde | Forme de la route | Code |
   |---|---|---|
-  | `/nope.html` | non, exclue par le filtre | **404** |
-  | `/en/page-inconnue` | oui | **200** |
-  | `/soins-visage/hydratants/inconnu` | oui | **200** |
+  | `/preview/sonde404` | segment statique | **404** |
+  | `/preview/xyz` | segment dynamique, sous un statique | **404** |
+  | `/en/sonde404` | sous le segment dynamique **racine** `[locale]` | **200** |
 
-  Le routage multilingue réécrit l'adresse avant que Next ne cherche la route.
-  L'adresse est donc résolue, `notFound()` est bien appelé, la page d'erreur est
-  bien rendue — mais la réponse repart avec le code de la réécriture.
+  **Cause réelle : `notFound()` ne sait pas fixer le code HTTP quand la route
+  vit sous le segment dynamique racine `[locale]`.** Partout ailleurs dans
+  l'application, il fonctionne. Ce segment est imposé par le routage
+  multilingue : il n'est pas déplaçable sans restructurer tout l'arbre des
+  pages en deux arbres statiques `fr/` et `en/`.
 
-  **Trois remèdes ont été essayés et écartés, chacun vérifié par mesure** :
-  une page `not-found.tsx` dans le segment de langue ; une route attrape-tout
-  appelant `notFound()` ; une page `not-found.tsx` à la racine. Les trois
-  rendent le bon contenu, aucun ne rétablit le code.
+  C'est un défaut connu de Next.js, ouvert de longue date et non corrigé :
+  [discussion 76501](https://github.com/vercel/next.js/discussions/76501),
+  [issue 64446](https://github.com/vercel/next.js/issues/64446). Le passage de
+  Next 16.3.1 à 16.3.2 a été essayé pour l'occasion : **mesuré, sans effet**
+  sur ce point (la montée de version est conservée, elle est saine par
+  ailleurs).
 
-  Les trois fichiers sont conservés : ils remplacent l'écran par défaut de
-  Next.js, en anglais et sans marque, par une page utile avec des issues. Seul
-  le code HTTP reste faux.
+  **Ce qui a été fait à la place, et qui supprime le dommage réel.** Le
+  dommage d'un « faux 404 » n'est pas le chiffre : c'est que les moteurs
+  indexent des adresses mortes. Les deux pages 404 portent désormais
+  `<meta name="robots" content="noindex, follow">`. Vérifié par mesure sur la
+  construction de production : les sept familles d'adresses mortes testées la
+  portent, les pages réelles ne la portent pas — à l'exception de
+  `/diagnostic`, qui la posait déjà volontairement.
 
-  **Le correctif se situe dans le routage lui-même** (`src/proxy.ts` et la
-  configuration de next-intl), et demande de vérifier le comportement de la
-  version employée. À traiter avant toute campagne de référencement.
+  Reste donc un code HTTP faux, sans conséquence sur l'indexation. **À
+  reprendre le jour où Next corrige le défaut amont** ; le contournement
+  pourra alors être retiré.
 
 
 - **La performance mobile est sous l'objectif du cahier des charges.** Le CDC
