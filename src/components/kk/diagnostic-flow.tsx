@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
@@ -759,6 +760,8 @@ function ResultRoutineCard({
       </h3>
       {routine.claim && <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{routine.claim}</p>}
 
+      <ApercuProduits routine={routine} tRoutine={tRoutine} />
+
       <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4">
         <RoutineAddToCart routine={routine} mode="achat" />
         <Link
@@ -770,6 +773,71 @@ function ResultRoutineCard({
         </Link>
       </div>
     </article>
+  );
+}
+
+/**
+ * Les produits de la routine, en vignettes, sur la carte de résultat.
+ *
+ * ── POURQUOI ELLES MANQUAIENT ───────────────────────────────────────────────
+ *
+ * L'écran de résultat annonçait « Notre sélection pour vous » et ne montrait
+ * que deux pavés de texte. Le visiteur venait de répondre à cinq questions :
+ * on lui demandait d'acheter une routine sans lui montrer un seul produit.
+ *
+ * Ce n'était pas une donnée manquante. Aucune des 14 routines n'a d'image
+ * propre — le client ne les a pas encore fournies — mais CHAQUE geste porte
+ * son produit, et chaque produit sa vignette. La matière était là ; la carte
+ * ne s'en servait pas.
+ *
+ * ── CE QU'ELLES MONTRENT, ET DANS QUEL ORDRE ────────────────────────────────
+ *
+ * Les gestes dans leur ordre d'application, pas un choix esthétique : la
+ * routine EST une suite ordonnée, et l'aperçu doit la refléter. Les produits
+ * sans vignette sont sautés plutôt que remplacés par un cadre gris, qui
+ * suggérerait un produit manquant là où il n'en manque aucun.
+ *
+ * Le libellé sous les vignettes réutilise `buyNote` — « Les N produits en une
+ * seule commande » — déjà traduit, et exact ici : le bouton d'achat juste en
+ * dessous les met tous au panier d'un coup.
+ */
+function ApercuProduits({
+  routine,
+  tRoutine,
+}: {
+  routine: KKRoutineView;
+  tRoutine: ReturnType<typeof useTranslations>;
+}) {
+  const vignettes = routine.steps
+    .map((geste) => geste.product)
+    .filter((p) => typeof p.image === "string" && p.image.length > 0);
+
+  if (vignettes.length === 0) return null;
+
+  return (
+    <div className="mt-4">
+      <ul className="flex flex-wrap gap-2">
+        {vignettes.map((produit) => (
+          <li
+            key={produit.id}
+            className="relative h-16 w-16 overflow-hidden rounded-xl border border-border/60 bg-white"
+          >
+            <Image
+              src={produit.image as string}
+              // Le nom du produit, pas un texte vide : ces vignettes sont la
+              // seule énumération de ce que contient la routine sur cet écran.
+              alt={produit.name}
+              fill
+              sizes="64px"
+              className="object-contain p-1.5"
+            />
+          </li>
+        ))}
+      </ul>
+      <p className="mt-2 text-xs text-muted-foreground">
+        {tRoutine("buyNote", { count: routine.steps.length })}
+      </p>
+    </div>
   );
 }
 
