@@ -24,11 +24,15 @@ Source unique de vérité : `src/config/brand.ts`.
 - **Nom** : KossKoss Select
 - **Marché** : Cameroun (`market: "CM"`)
 - **Slogan** : « La Sélection beauté qui vous choisit. »
-- **Typographie** : Cinzel pour les titres/le logo, Gilroy pour le texte
-  courant (police commerciale — substituts libres listés dans `brand.ts` tant
-  que la licence n'est pas tranchée)
+- **Typographie** : la charte livrée par le client (planche A-8) impose
+  Montserrat, Cormorant Garamond et Naishila Dancing Script. Le site tourne
+  aujourd'hui sur Manrope, Playfair Display et Cinzel — **écart délibéré**,
+  motivé et documenté dans `docs/CONFORMITE-CHARTE.md`. La piste « Gilroy »
+  mentionnée jusqu'ici n'a plus d'objet : la charte ne la demande pas.
 - **Couleurs** : Bleu Profond `#0F3B46` (primaire), Beige Sable `#F3E8DD`
-  (secondaire)
+  (secondaire), gris neutre `#D9D9D9`, doré doux `#C89B3C` (planche A-7). La
+  palette d'écran s'en écarte volontairement — relevée sur la maquette et
+  ajustée pour le contraste, voir `docs/CONFORMITE-CHARTE.md`.
 - **Réseaux** : `@kosskoss_select` (Instagram, Facebook)
 - **Dépôt** : `github.com/Deal-Club/kosskoss`
 
