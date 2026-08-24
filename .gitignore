@@ -61,3 +61,6 @@ yarn-error.log*
 
 # Variables de production préparées pour Hostinger — contient les secrets
 /hostinger-env.txt
+
+# Dossier de session Claude Code (mémoire, worktrees d'agents) — jamais versionné
+/.claude/
