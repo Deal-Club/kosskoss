@@ -5,6 +5,11 @@ import { PatternBackdrop } from "@/components/kk/pattern-backdrop";
 import { RoutineCard } from "@/components/kk/routine-card";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { getRoutines } from "@/server/kk/routines";
+import {
+  grouperParBesoin,
+  libelleBesoinRoutine,
+  ordonnerParNiveau,
+} from "@/lib/kk/besoins-routines";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import { Sparkles, ArrowRight } from "lucide-react";
@@ -53,12 +58,22 @@ export default async function RoutinesPage({ params }: { params: Params }) {
         </section>
 
         {routines.length > 0 ? (
-          <section className="mx-auto max-w-7xl px-6 py-14">
-            <div className="kk-enter-stagger grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {routines.map((routine) => (
-                <RoutineCard key={routine.id} routine={routine} />
-              ))}
-            </div>
+          /* Un groupe par besoin, et dans chaque groupe l'essentielle puis la
+             premium. C'est ainsi que le client les a conçues : deux réponses au
+             MÊME besoin, à deux niveaux d'engagement, et non quatorze routines
+             sans rapport entre elles. Une grille à plat obligeait le visiteur à
+             reconstituer les paires de tête. */
+          <section className="mx-auto max-w-7xl space-y-14 px-6 py-14">
+            {grouperParBesoin(routines).map(({ besoin, routines: duBesoin }) => (
+              <div key={besoin.tag}>
+                <h2 className="text-deep">{libelleBesoinRoutine(besoin, locale)}</h2>
+                <div className="kk-enter-stagger mt-6 grid gap-6 sm:grid-cols-2">
+                  {ordonnerParNiveau(duBesoin).map((routine) => (
+                    <RoutineCard key={routine.id} routine={routine} />
+                  ))}
+                </div>
+              </div>
+            ))}
           </section>
         ) : (
           /* Aucune routine servable : le catalogue n'est pas encore chargé, ou
