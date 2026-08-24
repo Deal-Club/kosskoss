@@ -1110,5 +1110,16 @@
     "nextPage": "Page suivante",
     "pageSrOnly": "Page ",
     "pageOf": "Page {page} sur {pageCount}"
+  },
+  "erreur": {
+    "titre": "Une erreur est survenue",
+    "texte": "Quelque chose n'a pas fonctionné de notre côté. Vous pouvez réessayer, ou revenir à l'accueil.",
+    "reessayer": "Réessayer",
+    "accueil": "Retour à l'accueil",
+    "reference": "Référence de l'incident : {empreinte}",
+    "introuvableTitre": "Cette page n'existe pas",
+    "introuvableTexte": "Le lien que vous avez suivi ne mène nulle part. Le produit a peut-être changé d'adresse, ou n'est plus au catalogue.",
+    "versCatalogue": "Voir le catalogue",
+    "versDiagnostic": "Faire le diagnostic"
   }
 }
