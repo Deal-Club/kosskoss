@@ -24,11 +24,14 @@ Source unique de vérité : `src/config/brand.ts`.
 - **Nom** : KossKoss Select
 - **Marché** : Cameroun (`market: "CM"`)
 - **Slogan** : « La Sélection beauté qui vous choisit. »
-- **Typographie** : la charte livrée par le client (planche A-8) impose
-  Montserrat, Cormorant Garamond et Naishila Dancing Script. Le site tourne
-  aujourd'hui sur Manrope, Playfair Display et Cinzel — **écart délibéré**,
-  motivé et documenté dans `docs/CONFORMITE-CHARTE.md`. La piste « Gilroy »
-  mentionnée jusqu'ici n'a plus d'objet : la charte ne la demande pas.
+- **Typographie** : **Montserrat** pour le texte et l'interface, **Cormorant
+  Garamond** pour les titres et slogans — les deux polices imposées par la
+  charte (planche A-8), gratuites sur Google Fonts. **Cinzel** ne sert plus
+  qu'au lettrage du logo composé en texte. Naishila Dancing Script, troisième
+  police de la charte, est commerciale et n'est pas chargée. La piste
+  « Gilroy » évoquée jusqu'ici n'a plus d'objet : la charte ne la demande pas.
+  Voir `docs/CONFORMITE-CHARTE.md`, notamment la compensation d'œil que la
+  bascule imposait.
 - **Couleurs** : Bleu Profond `#0F3B46` (primaire), Beige Sable `#F3E8DD`
   (secondaire), gris neutre `#D9D9D9`, doré doux `#C89B3C` (planche A-7). La
   palette d'écran s'en écarte volontairement — relevée sur la maquette et

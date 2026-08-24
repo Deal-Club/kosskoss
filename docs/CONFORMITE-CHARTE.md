@@ -33,25 +33,48 @@ apporte de neuf : la charte, l'identité de marque, les fichiers du logo et
 
 ## 2. Ce que le site applique, et pourquoi
 
-### Typographies — écart assumé
+### Typographies — CONFORME
 
-Le site utilise **Manrope** (texte), **Playfair Display** (titres) et
-**Cinzel** (logotype). Aucune ne figure dans la charte.
+Le site charge désormais **Montserrat** (texte, interface) et **Cormorant
+Garamond** (titres, slogans), comme la charte l'impose. Manrope et Playfair
+Display ont été retirées — vérifié sur la construction de production : elles
+n'apparaissent nulle part dans le CSS servi.
 
-Ce n'est pas un oubli : la question a été posée et **tranchée en faveur du
-maintien**. Le coût du changement — refonte visuelle de toutes les pages,
-reprise des interlignes et des tailles — a été jugé supérieur au gain de
-conformité à ce stade.
+**Cinzel reste**, pour le seul lettrage « KOSSKOSS » composé en texte plutôt
+que servi en image. La charte ne nomme pas de police de logotype — le logo
+est un fichier — et Cinzel rend ses petites capitales.
 
-**Ce que ça implique si l'on revient dessus** : Montserrat et Cormorant
-Garamond sont toutes deux **gratuites sur Google Fonts**, donc sans coût de
-licence ni obstacle technique. Naishila Dancing Script est en revanche une
-police commerciale : elle demanderait une licence web avant tout usage.
+**Naishila Dancing Script n'est pas chargée.** C'est une police commerciale,
+et le site ne fait aujourd'hui aucun usage décoratif qui justifierait
+d'acheter une licence. À reprendre le jour où un tel usage apparaît.
 
-À noter : `TARGET.md` annonce encore « Cinzel pour les titres, Gilroy pour le
-texte courant ». **Cette ligne est périmée** — ni l'un ni l'autre ne
-correspond à la charte, et la question de la licence Gilroy qu'elle soulevait
-n'a plus d'objet, puisque la charte ne demande pas Gilroy.
+#### La compensation d'œil, et pourquoi elle était obligatoire
+
+Mesuré sur les fichiers de police eux-mêmes :
+
+| Police | Œil (x-height / em) | Capitale / em |
+|---|---|---|
+| Playfair Display (sortante) | 0,514 | 0,708 |
+| Cormorant Garamond (charte) | **0,386** | 0,625 |
+
+À corps égal, un titre en Cormorant paraît donc **un quart plus petit**.
+Basculer sans rien faire aurait rapetissé tous les titres du site — alors que
+leur taille avait justement été réglée à la demande du client.
+
+Les tailles n'ont pas été retouchées une à une. Les titres portent
+`font-size-adjust: 0.514`, qui demande au navigateur de rendre la police à
+l'œil indiqué : la taille **perçue** de la maquette est restituée, les
+valeurs approuvées restent intactes, et un futur `h5` en hérite tout seul.
+
+#### Une contradiction de plus entre la charte et la maquette
+
+Les titres de la maquette (`mockup_site_Accueil.jpeg`) sont composés dans un
+serif à **grand œil**, bien plus proche de Playfair Display que de Cormorant
+Garamond. Autrement dit, la maquette n'a pas été dessinée avec la police que
+la charte impose. C'est le même désaccord que sur les couleurs.
+
+La charte l'emporte — c'est le document normatif. La compensation ci-dessus
+existe pour que le résultat reste fidèle à ce que la maquette montrait.
 
 ### Couleurs — écart assumé
 

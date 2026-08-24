@@ -8,19 +8,27 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Trois familles KossKoss Select :
-     - Cinzel pour le SEUL logotype. C'est une capitale romaine sans vraie
-       bas-de-casse : elle rend le « KossKoss » à petites capitales du logo
-       officiel, et elle est illisible partout ailleurs.
-     - Playfair Display pour les titres. La maquette du client compose ses
-       titres en bas-de-casse (« Des soins conçus pour sublimer ») — ce que
-       Cinzel ne sait pas faire — et joue de deux graisses dans un même titre.
-     - Manrope pour le texte courant, substitut libre de Gilroy (charte).
+  /* Trois familles KossKoss Select, conformes à la charte de marque
+     (planche A-8, docs/design-references/kks/charte/) :
+     - Montserrat pour le texte courant, l'interface et les descriptions.
+       C'est la police PRINCIPALE de la charte. Elle remplace Manrope.
+     - Cormorant Garamond pour les titres et les slogans — police SECONDAIRE
+       de la charte. Elle remplace Playfair Display. Son œil est bien plus
+       petit : voir le `font-size-adjust` posé sur les titres, plus bas.
+     - Cinzel pour le SEUL logotype, là où le lettrage est composé en texte
+       plutôt que servi en image. La charte ne nomme pas de police de
+       logotype — le logo est un fichier — et Cinzel rend le « KossKoss » à
+       petites capitales de l'original. Elle est illisible partout ailleurs.
+
+     La troisième police de la charte, Naishila Dancing Script (signature),
+     n'est PAS chargée : elle est commerciale, et rien ne justifie d'acheter
+     une licence pour un usage décoratif que le site ne fait pas encore.
+
      Les trois sont branchées dans src/app/layout.tsx. */
-  --font-sans: var(--font-manrope), "Manrope Fallback", system-ui, sans-serif;
-  --font-display: var(--font-playfair), "Playfair Display Fallback", Georgia, serif;
+  --font-sans: var(--font-montserrat), "Montserrat Fallback", system-ui, sans-serif;
+  --font-display: var(--font-cormorant), "Cormorant Garamond Fallback", Georgia, serif;
   --font-logo: var(--font-cinzel), "Cinzel Fallback", Georgia, serif;
-  --font-mono: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: var(--font-montserrat), system-ui, sans-serif;
 
   /* Couleurs de marque, disponibles en utilitaires (bg-sand, text-deep…) */
   --color-sand: var(--sand);
@@ -310,6 +318,25 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.005em;
+
+    /* ── POURQUOI LES TITRES PORTENT UN `font-size-adjust` ──────────────────
+       Mesuré sur les fichiers de police eux-mêmes : Cormorant Garamond a un
+       œil de 0,386 em, contre 0,514 em pour Playfair Display qu'elle
+       remplace. À corps égal, un titre y paraît donc UN QUART plus petit —
+       livrer la bascule sans rien faire aurait rapetissé tous les titres du
+       site, alors que leur taille avait été réglée à la demande du client.
+
+       `font-size-adjust` demande au navigateur de rendre la police à l'œil
+       indiqué. Il rétablit la taille PERÇUE de la maquette sans qu'on touche
+       une seule valeur de `font-size` : les tailles ci-dessous restent celles
+       qui avaient été approuvées, et le rapport titre/corps est préservé.
+
+       C'est aussi pourquoi cette ligne vaut mieux qu'un facteur appliqué à la
+       main sur chaque palier : un `h5` ajouté demain en hérite tout seul.
+
+       Un navigateur qui ne connaît pas la propriété l'ignore et rend les
+       titres plus menus — dégradé lisible, jamais cassé. */
+    font-size-adjust: 0.514;
     /* Les titres de la maquette sont courts et tiennent sur deux ou trois
        lignes : `balance` évite la ligne orpheline d'un seul mot. */
     text-wrap: balance;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cinzel, Manrope, Playfair_Display } from "next/font/google";
+import { Cinzel, Cormorant_Garamond, Montserrat } from "next/font/google";
 import { getLocale } from "next-intl/server";
 import "./globals.css";
 
@@ -16,21 +16,29 @@ const cinzel = Cinzel({
   display: "swap",
 });
 
-// Playfair Display porte les titres. La maquette du client les compose en
-// bas-de-casse (« Des soins conçus pour sublimer les peaux noires & métissées »)
-// et joue de deux graisses dans un même titre : deux choses que Cinzel ne sait
-// pas faire. Les graisses 400 et 500 servent ce contraste, la 600 les accents.
-const playfair = Playfair_Display({
+// Cormorant Garamond porte les titres et les slogans — c'est la police
+// secondaire imposée par la charte de marque (planche A-8). Elle remplace
+// Playfair Display, qui n'y figurait pas.
+//
+// La charte demande Regular pour les titres, Medium/Bold pour les mises en
+// avant : d'où 400, 500 et 600. Attention en la maniant — son œil est
+// nettement plus petit que celui de Playfair, un titre y paraît donc plus
+// menu à corps égal (compensation mesurée dans globals.css).
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
-  variable: "--font-playfair",
+  variable: "--font-cormorant",
   display: "swap",
 });
 
-const manrope = Manrope({
+// Montserrat porte le texte courant, l'interface et les descriptions : c'est
+// la police PRINCIPALE de la charte (planche A-8), en remplacement de Manrope.
+// Light et Regular pour le contenu, Medium pour les sous-titres — les graisses
+// 600 et 700 restent chargées pour les boutons et les étiquettes.
+const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],
   weight: ["300", "400", "500", "600", "700"],
-  variable: "--font-manrope",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -57,7 +65,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${cinzel.variable} ${playfair.variable} ${manrope.variable} h-full antialiased`}
+      className={`${cinzel.variable} ${cormorant.variable} ${montserrat.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">{children}</body>
