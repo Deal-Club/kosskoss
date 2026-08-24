@@ -120,6 +120,36 @@ mécanique : il suffit d'y reporter les cinq libellés manquants en face de leur
 
 ## 3. Limites connues, sans les adoucir
 
+- **La performance mobile est sous l'objectif du cahier des charges.** Le CDC
+  vise un score supérieur à 80 ; il n'avait jamais été mesuré. Il l'est
+  désormais, avec Lighthouse 12, en profil mobile, sur la construction de
+  production servie en local :
+
+  | Page | Score | Premier affichage | Plus grand affichage | Réponse du serveur |
+  |---|---|---|---|---|
+  | Accueil | **55 / 100** | 3,6 s | 7,7 s | 1,9 s |
+  | Rayon `/soins-visage` | **41 / 100** | 3,6 s | 9,6 s | 2,1 s |
+
+  Le décalage cumulé est nul, ce qui est bon : la page ne saute pas pendant son
+  chargement. Le poste dominant, dans les deux cas, est le **temps de réponse du
+  serveur**, à environ deux secondes.
+
+  **Ce que cette mesure vaut, et ce qu'elle ne vaut pas.** Elle a été prise sur
+  un poste de développement, contre la base PostgreSQL hébergée aux États-Unis
+  (`us-east-2`), avec un aller-retour mesuré à environ 220 millisecondes par
+  requête. Une page de rayon en émet une vingtaine. En production sur Vercel,
+  dans la même région que la base, ce poste devrait fondre — mais **ce n'est
+  pas une mesure, c'est une hypothèse**, et elle doit être vérifiée sur
+  l'hébergement réel avant d'annoncer un chiffre au client.
+
+  Le levier le plus net, indépendamment de l'hébergement, est le nombre de
+  requêtes par page : les décomptes de facettes du rayon en émettent dix, une
+  par entrée de vocabulaire, là où un seul regroupement suffirait.
+
+  **À refaire sur l'hébergement de production**, page d'accueil, rayon et fiche
+  produit, avant toute annonce de conformité sur ce point.
+
+
 - **Le coût d'achat par variante n'existe pas.** Deux contenances d'un même
   produit partagent le coût du produit parent (`Product.costCents`) : les
   marges des déclinaisons sont approximatives. Confirmé : le rapport de la
