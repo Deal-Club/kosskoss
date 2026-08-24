@@ -310,28 +310,46 @@ export async function getCatalog(opts: {
         _max: { priceCents: true },
       }),
       // Un `groupBy` ne peut pas porter sur une clé à l'intérieur du JSON
-      // `tags` : une requête par option de vocabulaire, en parallèle les unes
-      // des autres (vocabulaire déjà borné aux deux familles de facettes).
-      Promise.all(
-        clesPeau.map((cle) =>
-          prisma.product.count({ where: { ...whereFor("peau"), tags: { contains: `"${cle}"` } } }),
-        ),
-      ),
-      Promise.all(
-        clesPreoccupation.map((cle) =>
-          prisma.product.count({
-            where: { ...whereFor("preoccupation"), tags: { contains: `"${cle}"` } },
-          }),
-        ),
-      ),
+      // `tags`. La parade évidente est une requête `count` par option de
+      // vocabulaire — c'est ce que faisait cette lecture, soit dix allers-retours
+      // pour afficher un rayon, sur une base distante mesurée à 220 ms l'unité.
+      //
+      // On lit donc la colonne `tags` UNE fois par famille, et on compte en
+      // mémoire. Deux requêtes au lieu de dix, pour un résultat identique : le
+      // `contains: '"cle"'` de Prisma cherchait déjà le jeton entre guillemets,
+      // ce que l'appartenance au tableau décodé fait plus sûrement encore.
+      //
+      // La lecture ramène une seule colonne, jamais les fiches : un rayon de
+      // dix mille produits reste une réponse légère, là où dix comptages
+      // resteraient dix allers-retours quoi qu'il arrive.
+      prisma.product.findMany({ where: whereFor("peau"), select: { tags: true } }),
+      prisma.product.findMany({ where: whereFor("preoccupation"), select: { tags: true } }),
     ]);
+
+  /** Compte, parmi des listes de tags déjà lues, ceux qui portent chaque clé. */
+  function compterTags(lignes: { tags: string }[], cles: string[]): Record<string, number> {
+    const compte: Record<string, number> = Object.fromEntries(cles.map((cle) => [cle, 0]));
+    for (const ligne of lignes) {
+      let portes: unknown;
+      try {
+        portes = JSON.parse(ligne.tags || "[]");
+      } catch {
+        // Une ligne au JSON illisible ne doit pas vider tout un rayon de ses
+        // décomptes : on l'ignore, comme le faisait le `contains` avant elle.
+        continue;
+      }
+      if (!Array.isArray(portes)) continue;
+      for (const tag of portes) {
+        if (typeof tag === "string" && tag in compte) compte[tag] += 1;
+      }
+    }
+    return compte;
+  }
 
   const countByCategoryId = new Map(categoryCounts.map((c) => [c.categoryId, c._count._all]));
   const countsByBrand = Object.fromEntries(brandCounts.map((b) => [b.brand, b._count._all]));
-  const countsByPeau = Object.fromEntries(clesPeau.map((cle, i) => [cle, peauCounts[i]]));
-  const countsByPreoccupation = Object.fromEntries(
-    clesPreoccupation.map((cle, i) => [cle, preoccupationCounts[i]]),
-  );
+  const countsByPeau = compterTags(peauCounts, clesPeau);
+  const countsByPreoccupation = compterTags(preoccupationCounts, clesPreoccupation);
 
   return {
     group: { slug: group.slug, label: pickText(group.label, traduire ? group.labelEn : undefined) },
