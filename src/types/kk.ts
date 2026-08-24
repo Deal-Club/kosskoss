@@ -111,6 +111,14 @@ export type KKRoutineStepView = {
   label: string;
   /** Pourquoi ce geste dans CETTE routine. Peut être vide. */
   why: string;
+  /**
+   * Rôle du geste (master, colonne Role) — peut différer de `label` en
+   * formulation. Vide sur les 5 routines historiques, non couvertes par le
+   * master : l'affichage retombe alors sur `label`.
+   */
+  role: string;
+  /** Moment d'application (« AM/PM », « AM », « PM »…). Peut être vide. */
+  moment: string;
   product: KKProductView;
 };
 
@@ -140,4 +148,33 @@ export type KKRoutineView = {
   href: string;
   steps: KKRoutineStepView[];
   totalFcfa: number;
+  /**
+   * « eco » ou « premium » — texte brut du champ `Routine.niveau`, jamais
+   * affiché tel quel : le libellé se lit par `libelleNiveau` (module pur
+   * `src/lib/kk/routines-niveau.ts`), jamais écrit en dur.
+   */
+  niveau: string;
+  /** Identifiant du master (« TAC-ECO »…), `null` sur les 5 routines
+   *  historiques, antérieures au master. */
+  code: string | null;
+  /** Profil visé, texte libre du master. Peut être vide. */
+  profilCible: string;
+  usageMatin: string;
+  usageSoir: string;
+  /** Le mot de l'équipe sur cette routine. Peut être vide. */
+  noteKossKoss: string;
+  /**
+   * Accroche courte du master (« Meilleur rapport efficacité/prix »…), champ
+   * `Routine.badge` — texte libre, SANS RAPPORT avec `KKBadge` (qui distingue
+   * « bestseller »/« nouveau » sur les produits). Peut être vide.
+   */
+  badge: string;
+  /**
+   * Union des `Product.tags` des produits encore servables de la routine —
+   * pour la ligne de préoccupations de la fiche routine (lot 7D), au même
+   * registre que la fiche produit (`src/lib/kk/besoins.ts`, `PREOCCUPATIONS`).
+   * Aucun champ dédié n'existe côté master pour une routine : ce sont les
+   * mêmes tags que ceux posés sur chaque produit qui la compose.
+   */
+  tags: string[];
 };

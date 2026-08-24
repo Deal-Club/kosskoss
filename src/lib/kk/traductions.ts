@@ -89,6 +89,17 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
       { fr: "shortDescription", en: "shortDescriptionEn", libelle: "Description courte", format: "texte-long" },
       { fr: "description", en: "descriptionEn", libelle: "Description", format: "texte-long" },
       { fr: "bullets", en: "bulletsEn", libelle: "Caractéristiques", format: "liste" },
+      { fr: "problemeAccroche", en: "problemeAccrocheEn", libelle: "Accroche (problème)", format: "texte" },
+      { fr: "idealPour", en: "idealPourEn", libelle: "Idéal pour", format: "texte-long" },
+      { fr: "usageMatin", en: "usageMatinEn", libelle: "Usage du matin", format: "texte-long" },
+      { fr: "usageSoir", en: "usageSoirEn", libelle: "Usage du soir", format: "texte-long" },
+      { fr: "frequence", en: "frequenceEn", libelle: "Fréquence", format: "texte" },
+      { fr: "conseilKossKoss", en: "conseilKossKossEn", libelle: "Conseil KossKoss", format: "texte-long" },
+      { fr: "precautions", en: "precautionsEn", libelle: "Précautions", format: "texte-long" },
+      { fr: "actifsCles", en: "actifsClesEn", libelle: "Actifs clés", format: "texte" },
+      // statutPublication / donneesAConfirmer volontairement absents : voir
+      // les EXCLUSIONS de traductions.test.ts et le commentaire du modèle
+      // Product dans prisma/schema.prisma.
     ],
   },
   {
@@ -98,6 +109,11 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
       { fr: "name", en: "nameEn", libelle: "Nom", format: "texte" },
       { fr: "claim", en: "claimEn", libelle: "Accroche", format: "texte" },
       { fr: "description", en: "descriptionEn", libelle: "Description", format: "texte-long" },
+      { fr: "profilCible", en: "profilCibleEn", libelle: "Profil cible", format: "texte-long" },
+      { fr: "usageMatin", en: "usageMatinEn", libelle: "Usage du matin", format: "texte-long" },
+      { fr: "usageSoir", en: "usageSoirEn", libelle: "Usage du soir", format: "texte-long" },
+      { fr: "badge", en: "badgeEn", libelle: "Badge", format: "texte" },
+      { fr: "noteKossKoss", en: "noteKossKossEn", libelle: "Note KossKoss", format: "texte-long" },
     ],
   },
   {
@@ -106,6 +122,11 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
     champs: [
       { fr: "label", en: "labelEn", libelle: "Geste", format: "texte" },
       { fr: "why", en: "whyEn", libelle: "Pourquoi", format: "texte-long" },
+      { fr: "role", en: "roleEn", libelle: "Rôle du geste", format: "texte" },
+      // `moment` n'a pas de contrepartie *En : « AM/PM », « AM », « PM » sont
+      // déjà lisibles tels quels en anglais, et une formulation libre plus
+      // longue (« PM / AM si besoin ») reste un repère d'usage, pas un texte
+      // éditorial destiné à la traduction — voir traductions.test.ts.
     ],
   },
   {

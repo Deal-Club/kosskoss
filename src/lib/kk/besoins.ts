@@ -98,3 +98,19 @@ export function besoinParTag(tag: string | undefined): Besoin | undefined {
 export function libelleBesoin(besoin: Besoin, locale: string): string {
   return locale === "en" ? besoin.labelEn : besoin.label;
 }
+
+/**
+ * Libellés d'affichage pour les tags d'un produit, dans un registre donné
+ * (`PREOCCUPATIONS` ou `TYPES_DE_PEAU`).
+ *
+ * Sert la ligne de préoccupations de la fiche produit (lot 7D) et le tableau
+ * « en bref » : `Product.tags` porte des clés internes (`imperfections`,
+ * `peau_mixte`…), jamais un libellé prêt à afficher. L'ordre du registre est
+ * respecté plutôt que celui des tags en base, pour un affichage stable d'un
+ * produit à l'autre. Un tag du produit absent du registre (tag de catégorie,
+ * `homme`…) est simplement ignoré : ce n'est pas une préoccupation ni un type
+ * de peau à afficher ici.
+ */
+export function libellesPourTags(tags: string[], registre: Besoin[], locale: string): string[] {
+  return registre.filter((b) => tags.includes(b.tag)).map((b) => libelleBesoin(b, locale));
+}

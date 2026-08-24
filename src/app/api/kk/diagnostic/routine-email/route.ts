@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildRoutine } from "@/server/kk/diagnostic";
+import { computeDiagnostic } from "@/server/kk/diagnostic";
 import { sendRoutineEmail } from "@/server/kk/emails";
 import { choisirLangue } from "@/lib/kk/langue";
 import { adresseEmailValide } from "@/lib/kk/email-valide";
@@ -70,10 +70,21 @@ export async function POST(request: Request) {
 
   const langue = choisirLangue(typeof locale === "string" ? locale : undefined);
 
-  // Recalculée côté serveur, jamais acceptée depuis le navigateur : une
-  // routine envoyée par le client porterait les produits et les prix de son
-  // choix, dans un e-mail qui porte notre marque.
-  const routine = await buildRoutine(reponses, langue);
+  // Recalculé côté serveur, jamais accepté depuis le navigateur : une routine
+  // envoyée par le client porterait les produits et les prix de son choix,
+  // dans un e-mail qui porte notre marque.
+  //
+  // Le résultat porte désormais DEUX routines (Essentielle et Premium) : ce
+  // formulaire, hérité de l'ancien moteur à routine unique, envoie celle des
+  // deux qui existe en priorité — l'Essentielle, repli sur la Premium si elle
+  // seule a pu être déterminée. L'écran de résultat nomme la routine envoyée
+  // dans son propre libellé (voir DiagnosticFlow), pour que ce choix reste
+  // honnête plutôt que silencieux.
+  const resultat = await computeDiagnostic(reponses, langue);
+  const routine = resultat.essentielle ?? resultat.premium;
+  if (!routine) {
+    return NextResponse.json({ error: "Aucune routine à envoyer pour ces réponses." }, { status: 400 });
+  }
 
   const etapes = routine.steps.map((s) => ({
     label: s.label,

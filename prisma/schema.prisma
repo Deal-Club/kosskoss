@@ -110,11 +110,39 @@ model Product {
   // Tags du Diagnostic Beauté (JSON de clés : peau_grasse, hydratation…).
   // Servent au moteur de recommandation par score de correspondance.
   tags                  String   @default("[]")
+  // ---- Champs du master client (KOSSKOSS_CATALOGUE_ROUTINES_V1_2.xlsx,
+  // onglet FICHES_PRODUITS). Chacun a sa contrepartie anglaise ci-dessous et
+  // figure au registre des traductions (src/lib/kk/traductions.ts).
+  // Le rôle et la fréquence restent du texte libre à dessein : le master
+  // porte des dizaines de formulations distinctes, une énumération en
+  // rejetterait la moitié.
+  problemeAccroche      String   @default("")
+  idealPour             String   @default("")
+  usageMatin            String   @default("")
+  usageSoir             String   @default("")
+  frequence             String   @default("")
+  conseilKossKoss       String   @default("")
+  precautions           String   @default("")
+  actifsCles            String   @default("")
+  // Colonnes internes du master (Statut_Publication, Donnees_A_Confirmer) :
+  // des informations de production à l'usage de l'équipe, jamais affichées à
+  // un visiteur. Volontairement SANS contrepartie `*En` ni entrée au
+  // registre des traductions — voir traductions.ts et traductions.test.ts.
+  statutPublication     String   @default("")
+  donneesAConfirmer     String   @default("")
   // Traductions anglaises ; vides = repli sur le français
   nameEn                String   @default("")
   shortDescriptionEn    String   @default("")
   descriptionEn         String   @default("")
   bulletsEn             String   @default("[]")
+  problemeAccrocheEn    String   @default("")
+  idealPourEn           String   @default("")
+  usageMatinEn          String   @default("")
+  usageSoirEn           String   @default("")
+  frequenceEn           String   @default("")
+  conseilKossKossEn     String   @default("")
+  precautionsEn         String   @default("")
+  actifsClesEn          String   @default("")
   // Attributs exigés par Google Merchant Center pour la validation des fiches
   gtin                  String?
   mpn                   String?
@@ -320,6 +348,41 @@ model Routine {
   // décoratif : la teinte sert de repère.
   tint          String  @default("acne")
   image         String  @default("")
+  // Identifiant du master client (KOSSKOSS_CATALOGUE_ROUTINES_V1_2.xlsx,
+  // onglet ROUTINES, colonne Routine_ID), par exemple « TAC-ECO ». Sert de
+  // clé d'import idempotente : le slug peut changer si la routine est
+  // renommée, ce code-là ne bouge pas côté client.
+  //
+  // NULLABLE, à la différence de la colonne demandée par le plan (String
+  // @unique) : les 5 routines déjà en production n'ont aucun code du master,
+  // et ADD COLUMN ... TEXT NOT NULL échoue sur une table non vide sans valeur
+  // de repli — Postgres refuse la colonne tant qu'elle contiendrait des NULL.
+  // Choisir un code au hasard pour ces 5 lignes serait une décision de
+  // rapprochement de données, hors du périmètre de cette tâche (schéma
+  // seulement). NULL reste distinct pour l'unicité en PostgreSQL : plusieurs
+  // routines sans code coexistent donc sans violer `@unique`. Un futur import
+  // pourra soit rattacher ces 5 lignes à leur code réel, soit les laisser
+  // de côté et n'écrire de code que sur les routines importées du master —
+  // exactement le même choix que `Product.brandId`, nullable pour la même
+  // raison.
+  code          String? @unique
+  // « eco » ou « premium » — texte libre validé par src/lib/kk/routines-niveau.ts,
+  // pas un enum Prisma (le schéma s'interdit les enums, voir l'en-tête du
+  // fichier). Sept besoins x deux niveaux = les 14 routines du master, contre
+  // 5 routines sans niveau aujourd'hui.
+  niveau        String  @default("eco")
+  // Champs du master (onglet ROUTINES), chacun avec sa contrepartie *En
+  // déclarée au registre des traductions.
+  profilCible   String  @default("")
+  profilCibleEn String  @default("")
+  usageMatin    String  @default("")
+  usageMatinEn  String  @default("")
+  usageSoir     String  @default("")
+  usageSoirEn   String  @default("")
+  badge         String  @default("")
+  badgeEn       String  @default("")
+  noteKossKoss   String  @default("")
+  noteKossKossEn String  @default("")
   position      Int     @default(0)
   active        Boolean @default(true)
 
@@ -341,6 +404,16 @@ model RoutineStep {
   // pas de la même façon contre les taches et contre la déshydratation.
   why       String @default("")
   whyEn     String @default("")
+  // Rôle du geste dans CETTE routine (master : PRODUITS_ROUTINES, colonne
+  // Role) — texte libre à dessein : le master en porte vingt formulations
+  // distinctes (Nettoyer, Corriger, Booster l'éclat, Grooming…), une
+  // énumération en rejetterait la moitié.
+  role      String @default("")
+  roleEn    String @default("")
+  // Moment d'application (master, colonne Moment) : « AM/PM », « AM », « PM »,
+  // ou une formulation libre (« PM / AM si besoin »). Même choix que `role` :
+  // texte libre, pas de liste fermée.
+  moment    String @default("")
   position  Int    @default(0)
 
   routine Routine @relation(fields: [routineId], references: [id], onDelete: Cascade)
@@ -686,6 +759,19 @@ model DiagQuestion {
   titleEn    String  @default("")
   subtitle   String  @default("")
   subtitleEn String  @default("")
+  // Question conditionnelle (quiz client : Q5 « pores », qui ne s'affiche
+  // que si Q2 = « Boutons / Imperfections » ou « Glow / Éclat »).
+  //
+  // Une condition vide veut dire « toujours affichée » : c'est le cas de
+  // toutes les questions existantes, la migration n'a donc rien à rattraper.
+  // Visibilité évaluée par le module pur src/lib/kk/diagnostic-conditions.ts.
+  //
+  // `conditionQuestion` : clé (DiagQuestion.key) de la question dont dépend
+  // l'affichage.
+  conditionQuestion String @default("")
+  // `conditionReponses` : clés (DiagAnswer.key) qui déclenchent l'affichage,
+  // encodées en JSON — même convention que DiagAnswer.tags.
+  conditionReponses String @default("[]")
   position   Int     @default(0)
   active     Boolean @default(true)
 

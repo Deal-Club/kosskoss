@@ -118,6 +118,13 @@ describe("registre face au schéma", () => {
     Campaign: ["nameEn"],
   };
 
+  // `Product.statutPublication` et `Product.donneesAConfirmer` n'ont PAS de
+  // contrepartie `*En` en base (voir prisma/schema.prisma) : ce sont des
+  // informations de production issues du master client (Statut_Publication,
+  // Donnees_A_Confirmer), à l'usage de l'équipe, jamais affichées à un
+  // visiteur. Rien à exclure ici pour eux : l'absence même de colonne `*En`
+  // suffit à ce que ce test ne les réclame pas.
+
   /** Modèles du schéma Prisma et leurs champs `*En`, dans l'ordre du fichier. */
   function champsEnParModele(): Map<string, string[]> {
     const resultat = new Map<string, string[]>();

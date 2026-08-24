@@ -1,5 +1,5 @@
 import { after, NextResponse } from "next/server";
-import { buildRoutine } from "@/server/kk/diagnostic";
+import { computeDiagnostic } from "@/server/kk/diagnostic";
 import { getCurrentCustomer } from "@/server/customerSession";
 import { enregistrerProfil } from "@/server/kk/profil-diagnostic";
 import { choisirLangue } from "@/lib/kk/langue";
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
   // `choisirLangue` porte cette règle pour tout le site — une seconde variante
   // écrite à la main finirait par diverger de la première.
   const locale = choisirLangue(typeof body.locale === "string" ? body.locale : null);
-  const result = await buildRoutine(answers, locale);
+  const result = await computeDiagnostic(answers, locale);
 
   // Rattachement au compte, comme dans /api/checkout : lu dans le cookie
   // signé, jamais dans la charge utile. Un visiteur sans session ne déclenche

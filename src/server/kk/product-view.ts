@@ -16,6 +16,23 @@ import type { Locale } from "@/i18n/routing";
 
 const TONES: KKTone[] = ["clay", "sand", "teal", "rose"];
 
+/**
+ * Les champs `bullets`/`images`/`tags` sont des String JSON (défaut "[]").
+ * Partagé par `product.ts` (fiche produit) et `routines.ts` (ligne de
+ * préoccupations agrégée sur les produits d'une routine, lot 7D) : un seul
+ * endroit qui décide qu'une valeur illisible vaut liste vide plutôt que de
+ * faire tomber la page.
+ */
+export function parseStringArray(value: string | null): string[] {
+  if (!value) return [];
+  try {
+    const v: unknown = JSON.parse(value);
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
 /** Teinte du dégradé de secours, en rotation sur la position dans la grille. */
 export function toneAt(index: number): KKTone {
   return TONES[index % TONES.length];

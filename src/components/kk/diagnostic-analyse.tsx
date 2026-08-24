@@ -60,20 +60,19 @@ const GESTE_PAS = 450;
  */
 export const DUREE_ANALYSE = 12000;
 
-export function DiagnosticAnalyse({ gestes }: {
+export function DiagnosticAnalyse({ gestes = [] }: {
   /**
-   * Libellés des gestes actifs, dans l'ordre — lus côté serveur via
-   * `lireGestes()` (`src/server/kk/gestes.ts`), filtrés par `gestesActifs()`
-   * et traduits par `libelleGeste()` (`src/lib/kk/gestes-selection.ts`), puis
-   * transmis depuis la page jusqu'ici.
+   * Libellés d'étapes optionnels, affichés en pastilles pendant l'attente.
    *
-   * Ce ne sont plus quatre gestes fixes : ils viennent de la même sélection
-   * que `buildRoutine()` applique pour composer la routine réelle. Un geste
-   * désactivé au back-office ne doit pas être promis ici puis absent du
-   * résultat — ce que faisait le tableau figé qui vivait avant dans ce
-   * fichier.
+   * Depuis le lot 7C, le moteur ne compose plus une routine geste par geste
+   * à partir du catalogue (`buildRoutine()`, remplacé par
+   * `computeDiagnostic()` — src/server/kk/diagnostic.ts) : il choisit deux
+   * routines toutes faites. Cet écran n'a donc plus de gestes réels à annoncer
+   * ; le paramètre reste accepté (vide par défaut) plutôt que de forcer une
+   * réécriture de tous ses appelants, mais `DiagnosticFlow` ne le renseigne
+   * plus.
    */
-  gestes: string[];
+  gestes?: string[];
 }) {
   const t = useTranslations("diagnostic");
   // Les libellés viennent de next-intl ; l'instant `ms` de chacun reste une
