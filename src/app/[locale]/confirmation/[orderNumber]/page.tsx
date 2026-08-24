@@ -5,6 +5,7 @@ import { Check, MessageCircle, Clock } from "lucide-react";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { MesureAchat } from "@/components/kk/mesure-achat";
+import { LienWhatsApp } from "@/components/kk/lien-whatsapp";
 import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import { getKossOrder } from "@/server/kk/checkout";
 import { lireAccesCommande } from "@/server/kk/acces-commande";
@@ -182,16 +183,16 @@ export default async function ConfirmationPage({
             </div>
           </div>
 
-          {/* Action WhatsApp */}
-          <a
+          {/* Action WhatsApp — conversion de fin de parcours (la livraison se
+              coordonne ici), mesurée par LienWhatsApp. */}
+          <LienWhatsApp
             href={whatsappHref(order, numeroWhatsapp, tWa)}
-            target="_blank"
-            rel="noopener noreferrer"
+            location="confirmation"
             className="mt-8 flex items-center justify-center gap-2 rounded-full bg-[#25D366] px-7 py-4 text-sm font-semibold text-white transition hover:brightness-95"
           >
             <MessageCircle className="h-5 w-5" />
             {payee ? t("confirmation.whatsappButtonPaid") : t("confirmation.whatsappButtonPending")}
-          </a>
+          </LienWhatsApp>
 
           <div className="mt-6 flex items-start gap-3 rounded-2xl bg-sand/60 p-5 text-sm text-deep">
             <Clock className="mt-0.5 h-5 w-5 shrink-0" />

@@ -108,9 +108,10 @@ function chargerGa4(id: string): void {
   }
   window.gtag = gtag;
   gtag("js", new Date());
-  // `send_page_view: false` : cette pose ne mesure QUE les quatre événements
-  // e-commerce du critère 20, déclenchés explicitement par `mesurerEvenement`
-  // — pas une vue de page générique que personne n'a demandée ici.
+  // `send_page_view: false` : GA4 n'émet PAS de vue de page automatique. Elle
+  // est envoyée explicitement à chaque navigation par `MesurePageVue`
+  // (`mesurerAction("page_view", …)`), pour capter aussi les changements de
+  // route côté client de l'App Router, qui ne rechargent pas la page.
   gtag("config", id, { send_page_view: false });
 
   const script = document.createElement("script");
@@ -216,6 +217,46 @@ export function mesurerEvenement(detail: EvenementDetail): void {
     // remonter au visiteur ni interrompre le geste qui vient de la déclencher
     // (ajout au panier, passage en caisse...).
     console.error("[mesure] envoi impossible", erreur);
+  }
+}
+
+// ---- Émission générique (vue de page, diagnostic, contact…) ----
+
+/**
+ * Émet un événement GA4 « libre » (nom + paramètres arbitraires), et
+ * facultativement un événement Meta standard, sous les MÊMES gardes que
+ * `mesurerEvenement` : bibliothèque chargée + catégorie de consentement relue à
+ * l'instant. Sert aux mesures qui ne suivent pas le gabarit e-commerce
+ * (`view_item`…) : `page_view`, le tunnel du Diagnostic Beauté, le clic de
+ * contact WhatsApp.
+ *
+ * `optionsMeta.evenement` : si renseigné, un `fbq('track', …)` part aussi sous
+ * consentement « marketing » (ex. « Contact » pour le clic WhatsApp). Absent,
+ * l'événement reste GA4 uniquement — le cas de `page_view` et du diagnostic,
+ * que le Pixel n'a pas à recevoir.
+ */
+export function mesurerAction(
+  nom: string,
+  parametres: Record<string, unknown> = {},
+  optionsMeta: { evenement?: string } = {},
+): void {
+  try {
+    if (typeof window === "undefined") return;
+
+    if (ga4Charge && consentementAutorise("mesure") && typeof window.gtag === "function") {
+      window.gtag("event", nom, parametres);
+    }
+
+    if (
+      optionsMeta.evenement &&
+      pixelCharge &&
+      consentementAutorise("marketing") &&
+      typeof window.fbq === "function"
+    ) {
+      window.fbq("track", optionsMeta.evenement, parametres);
+    }
+  } catch (erreur) {
+    console.error("[mesure] action impossible", erreur);
   }
 }
 

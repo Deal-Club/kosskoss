@@ -10,6 +10,7 @@ import { SmartsuppChat } from "@/components/SmartsuppChat";
 import { CodeSnippets } from "@/components/CodeSnippets";
 import { CookieConsent } from "@/components/kk/cookie-consent";
 import { MesureAudience } from "@/components/kk/mesure-audience";
+import { MesurePageVue } from "@/components/kk/mesure-page-vue";
 import { tracageActif } from "@/server/consent";
 import { getParametres } from "@/server/kk/parametres";
 
@@ -57,6 +58,9 @@ export default async function LocaleLayout({
             même si les deux identifiants sont vides : le composant ne fait
             alors rien, `initialiserMesure` sort au premier test. */}
         <MesureAudience ga4Id={parametres.ga4} metaPixelId={parametres.metaPixel} />
+        {/* Vue de page GA4 à chaque navigation (App Router n'en émet pas seul).
+            Après MesureAudience pour que gtag soit déjà chargé au premier rendu. */}
+        <MesurePageVue />
         {/* Boutons de contact flottants : WhatsApp à gauche, chat Smartsupp à
             droite. Smartsupp ne s'affiche que si sa clé d'environnement est
             renseignée. */}

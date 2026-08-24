@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
 import { questionVisible } from "@/lib/kk/diagnostic-conditions";
+import { mesurerAction } from "@/lib/kk/mesureNavigateur";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import type { KKRoutineView } from "@/types/kk";
@@ -186,10 +187,26 @@ export function DiagnosticFlow({
     if (attenteAnalyse.current !== null) window.clearTimeout(attenteAnalyse.current);
   }, []);
 
+  // Ouverture du Diagnostic Beauté (fonctionnalité pivot) : mesurée une fois par
+  // montage pour connaître le taux d'entrée dans le tunnel.
+  const demarrageMesure = useRef(false);
+  useEffect(() => {
+    if (demarrageMesure.current) return;
+    demarrageMesure.current = true;
+    mesurerAction("diagnostic_started");
+  }, []);
+
   /** Sélection d'une réponse : elle enregistre, elle ne valide pas. */
   function choose(answerId: string) {
     setAnswers((actuelles) => ({ ...actuelles, [question.id]: answerId }));
     setError(null);
+    // Chaque réponse : `step_number` situe l'abandon, `question_key`/`answer_key`
+    // sont stables et indépendants de la langue (voir ClientQuestion).
+    mesurerAction("diagnostic_step", {
+      step_number: qIndex + 1,
+      question_key: question.key,
+      answer_key: question.answers.find((a) => a.id === answerId)?.key ?? "",
+    });
   }
 
   /**
@@ -235,6 +252,13 @@ export function DiagnosticFlow({
       setResult(data);
       setLastAnswerIds(answerIds);
       setPhase("result");
+      // Fin du tunnel : le diagnostic a produit un résultat. `has_routine` et
+      // `product_count` disent s'il a débouché sur une recommandation concrète.
+      mesurerAction("diagnostic_completed", {
+        besoin: data.besoin ?? "aucun",
+        has_routine: Boolean(data.essentielle || data.premium),
+        product_count: data.essentielle?.steps.length ?? data.premium?.steps.length ?? 0,
+      });
     } catch {
       // Un échec ne se fait pas attendre : on rend la main tout de suite.
       setError(t("analysisFailed"));

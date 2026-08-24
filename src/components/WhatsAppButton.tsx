@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { COMPANY } from "@/content/legal";
 import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
 import { WhatsAppGlyph } from "@/components/WhatsAppGlyph";
+import { LienWhatsApp } from "@/components/kk/lien-whatsapp";
 
 /**
  * Composant serveur : le numéro vient du réglage en base
@@ -23,11 +24,10 @@ export async function WhatsAppButton() {
   const prefill = encodeURIComponent(t("whatsappPrefill"));
 
   return (
-    <a
+    <LienWhatsApp
       href={`https://wa.me/${numero}?text=${prefill}`}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={t("whatsappAriaLabel")}
+      location="flottant"
+      ariaLabel={t("whatsappAriaLabel")}
       // Coin bas-DROITE, et au ras du bord.
       //
       // Il a longtemps été à gauche, pour laisser le coin droit à Smartsupp.
@@ -82,6 +82,6 @@ export async function WhatsAppButton() {
       >
         {t("whatsappWriteToUs")}
       </span>
-    </a>
+    </LienWhatsApp>
   );
 }
