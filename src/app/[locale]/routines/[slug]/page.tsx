@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronRight, Sun, Moon } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { RoutineAddToCart } from "@/components/kk/routine-add";
@@ -305,7 +305,10 @@ export default async function RoutinePage({ params }: { params: Params }) {
                 <div className="mt-10 grid gap-5 sm:grid-cols-2">
                   {routine.usageMatin && (
                     <div className="rounded-2xl border border-border/70 bg-card p-5">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                      {/* Icône au trait, jamais un emoji : même registre que
+                          les intertitres de la fiche produit. */}
+                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                        <Sun className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
                         {t("morningTitle")}
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-foreground/85">{routine.usageMatin}</p>
@@ -313,7 +316,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   )}
                   {routine.usageSoir && (
                     <div className="rounded-2xl border border-border/70 bg-card p-5">
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                        <Moon className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
                         {t("eveningTitle")}
                       </p>
                       <p className="mt-2 text-sm leading-relaxed text-foreground/85">{routine.usageSoir}</p>

@@ -30,7 +30,9 @@
     "close": "Fermer",
     "whatsappPrefill": "Bonjour, j'ai une question sur un produit KossKoss Select.",
     "whatsappAriaLabel": "Nous écrire sur WhatsApp",
-    "whatsappWriteToUs": "Écrivez-nous"
+    "whatsappWriteToUs": "Écrivez-nous",
+    "carouselPrev": "{label} — précédent",
+    "carouselNext": "{label} — suivant"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – page d'accueil",
@@ -181,16 +183,16 @@
     "hoverSeeSheet": "Voir la fiche",
     "deliveryMention": "Livraison au Cameroun, coordonnée avec vous via WhatsApp.",
     "paymentMention": "Paiement : {methods}",
-    "whyLoveTitle": "🎯 Pourquoi vous allez l'aimer",
-    "idealForTitle": "👤 Est-ce pour ma peau ?",
+    "whyLoveTitle": "Pourquoi vous allez l'aimer",
+    "idealForTitle": "Est-ce pour ma peau ?",
     "idealForLabel": "Idéal pour :",
-    "howToUseTitle": "☀️🌙 Comment l'utiliser ?",
+    "howToUseTitle": "Comment l'utiliser ?",
     "morningLabel": "Matin",
     "eveningLabel": "Soir",
     "kosskossAdviceLabel": "Conseil KossKoss :",
-    "completeRoutineTitle": "🛍️ Complétez votre routine",
+    "completeRoutineTitle": "Complétez votre routine",
     "completeRoutineCta": "Voir la routine complète",
-    "briefTitle": "🔎 En bref",
+    "briefTitle": "En bref",
     "briefNeedLabel": "Besoin",
     "briefSkinLabel": "Peau",
     "briefActionLabel": "Action +",
@@ -218,7 +220,7 @@
     "formEmail": "E-mail (facultatif)",
     "formEmailHint": "Non publié. Nous l'utilisons uniquement en cas de question sur votre avis.",
     "formTitle": "Titre (facultatif)",
-    "formTitlePlaceholder": "par ex. Bien sec, flamme régulière",
+    "formTitlePlaceholder": "par ex. Teint plus uniforme en trois semaines",
     "formBody": "Votre expérience",
     "formBodyPlaceholder": "Qu'est-ce qui vous a plu, qu'est-ce qui vous a déçu ? 10 caractères minimum.",
     "formBodyCounter": "{count} / 2000 caractères",
@@ -249,6 +251,18 @@
       "networkError": "Connexion interrompue : votre avis n’a pas été envoyé.",
       "successTitle": "Merci, votre avis a bien été reçu.",
       "successText": "Il sera publié sur cette page après vérification par notre équipe."
+    },
+    "apiErrors": {
+      "invalid_payload": "Requête invalide.",
+      "product_missing": "Le produit n'a pas pu être identifié.",
+      "invalid_name": "Merci d'indiquer un nom de 2 à 80 caractères.",
+      "invalid_rating": "Merci de choisir une note de 1 à 5 étoiles.",
+      "invalid_body": "Votre avis doit faire entre 10 et 2000 caractères.",
+      "title_too_long": "Le titre ne peut pas dépasser 120 caractères.",
+      "city_too_long": "La ville ne peut pas dépasser 80 caractères.",
+      "invalid_email": "Merci d'indiquer une adresse e-mail valide.",
+      "product_not_found": "Ce produit est introuvable.",
+      "rate_limited": "Trop d'avis ont été déposés sur ce produit en peu de temps. Merci de réessayer plus tard."
     },
     "homeNoteAria": "Note de {note} sur 5",
     "homeSectionTitle": "Ce qu’en disent celles et ceux qui ont essayé.",
@@ -525,6 +539,7 @@
     }
   },
   "commande": {
+    "metaTitle": "Finaliser la commande — KossKoss Select",
     "title": "Finaliser la commande",
     "intro": "Deux minutes, quatre champs. Payez en ligne ou à la livraison, comme il vous arrange.",
     "emptyCart": {
@@ -591,6 +606,17 @@
       "securePayment": "Paiement sécurisé",
       "termsNote": "En validant, vous acceptez nos <cgv>conditions de vente</cgv>.",
       "mobileTotal": "Total"
+    },
+    "couponErrors": {
+      "requete_invalide": "Requête invalide.",
+      "panier_vide": "Votre panier est vide.",
+      "code_absent": "Saisissez un code promo.",
+      "code_inconnu": "Ce code n'existe pas.",
+      "code_inactif": "Ce code n'est plus actif.",
+      "code_expire": "Ce code a expiré.",
+      "code_pas_encore_valide": "Ce code n'est pas encore valable.",
+      "code_epuise": "Ce code a atteint son nombre maximal d'utilisations.",
+      "montant_insuffisant": "Votre panier n'atteint pas le montant minimum de ce code."
     },
     "errors": {
       "cartEmpty": "Votre panier est vide.",
@@ -675,6 +701,27 @@
   "account": {
     "metaTitle": "Mon compte",
     "title": "Mon compte",
+    "dashboard": {
+      "metaTitle": "Mon compte — KossKoss Select",
+      "eyebrow": "Espace client",
+      "greeting": "Bonjour {name}",
+      "favorites": "Mes favoris",
+      "addresses": "Mes adresses",
+      "info": "Mes informations",
+      "redoDiagnostic": "Refaire mon diagnostic",
+      "ordersTitle": "Mes commandes",
+      "noOrders": "Vous n'avez pas encore de commande.",
+      "discoverShop": "Découvrir la boutique",
+      "orderMeta": "{date} · {count, plural, one {# article} other {# articles}}"
+    },
+    "orderDetail": {
+      "metaTitle": "Ma commande — KossKoss Select",
+      "back": "Mes commandes",
+      "placedOn": "Passée le {date}",
+      "total": "Total",
+      "delivery": "Livraison",
+      "payment": "Paiement"
+    },
     "guestNotice": "Le compte client est facultatif. Vous pouvez commander à tout moment en tant qu'invité, sans créer de compte.",
     "nav": {
       "aria": "Espace client",
@@ -893,6 +940,14 @@
     "dismiss": "Continuer mes achats",
     "close": "Fermer"
   },
+  "marques": {
+    "metaTitle": "Nos marques — KossKoss Select",
+    "metaDescription": "Les maisons distribuées par KossKoss Select : marques dermo-cosmétiques et soins reconnus, achetés par des circuits d'approvisionnement tracés.",
+    "eyebrow": "Nos marques",
+    "title": "{count, plural, one {# maison distribuée} other {# maisons distribuées}}",
+    "lead": "Nous filtrons l'offre plutôt que de l'empiler. Chaque maison entre au catalogue pour ses formules et sa tenue sur les peaux riches en mélanine — et chaque référence arrive par un circuit d'approvisionnement identifié.",
+    "empty": "Le catalogue est en cours de chargement."
+  },
   "home": {
     "slogan": "La Sélection beauté qui vous choisit.",
     "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money.",
@@ -918,6 +973,11 @@
       "title": "Votre routine idéale en 3 minutes",
       "text": "Répondez à {count} questions et recevez votre routine personnalisée.",
       "badge": "100 % personnalisé · Gratuit · Sans engagement"
+    },
+    "bestsellers": {
+      "eyebrow": "Les plus choisis",
+      "title": "Nos best-sellers",
+      "action": "Tout voir"
     },
     "brandFocus": {
       "eyebrow": "Focus marque",
@@ -1084,8 +1144,8 @@
     "railViewAll": "Voir toutes les routines",
     "promiseTitle": "La promesse",
     "journeyTitle": "Votre routine en {count} gestes",
-    "morningTitle": "Matin ☀️",
-    "eveningTitle": "Soir 🌙",
+    "morningTitle": "Matin",
+    "eveningTitle": "Soir",
     "whyRoutineTitle": "KossKoss Select — Pourquoi cette routine ?",
     "valueLabel": "Valeur des produits",
     "priceLabel": "Prix Routine KossKoss",

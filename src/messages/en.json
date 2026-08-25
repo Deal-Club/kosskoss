@@ -30,7 +30,9 @@
     "close": "Close",
     "whatsappPrefill": "Hello, I have a question about a KossKoss Select product.",
     "whatsappAriaLabel": "Message us on WhatsApp",
-    "whatsappWriteToUs": "Message us"
+    "whatsappWriteToUs": "Message us",
+    "carouselPrev": "{label} — previous",
+    "carouselNext": "{label} — next"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – home page",
@@ -181,16 +183,16 @@
     "hoverSeeSheet": "View product",
     "deliveryMention": "Delivery across Cameroon, arranged with you on WhatsApp.",
     "paymentMention": "Payment: {methods}",
-    "whyLoveTitle": "🎯 Why you'll love it",
-    "idealForTitle": "👤 Is this right for my skin?",
+    "whyLoveTitle": "Why you'll love it",
+    "idealForTitle": "Is this right for my skin?",
     "idealForLabel": "Ideal for:",
-    "howToUseTitle": "☀️🌙 How to use it",
+    "howToUseTitle": "How to use it",
     "morningLabel": "Morning",
     "eveningLabel": "Evening",
     "kosskossAdviceLabel": "KossKoss tip:",
-    "completeRoutineTitle": "🛍️ Complete your routine",
+    "completeRoutineTitle": "Complete your routine",
     "completeRoutineCta": "See the full routine",
-    "briefTitle": "🔎 At a glance",
+    "briefTitle": "At a glance",
     "briefNeedLabel": "Concern",
     "briefSkinLabel": "Skin",
     "briefActionLabel": "Action +",
@@ -218,7 +220,7 @@
     "formEmail": "Email (optional)",
     "formEmailHint": "Not published. We only use it if we have a question about your review.",
     "formTitle": "Title (optional)",
-    "formTitlePlaceholder": "e.g. Properly dry, steady flame",
+    "formTitlePlaceholder": "e.g. More even skin tone in three weeks",
     "formBody": "Your experience",
     "formBodyPlaceholder": "What did you like, what didn't work? At least 10 characters.",
     "formBodyCounter": "{count} / 2000 characters",
@@ -249,6 +251,18 @@
       "networkError": "Connection interrupted: your review was not sent.",
       "successTitle": "Thank you, your review has been received.",
       "successText": "It will be published on this page once checked by our team."
+    },
+    "apiErrors": {
+      "invalid_payload": "The request could not be read.",
+      "product_missing": "The product could not be identified.",
+      "invalid_name": "Please enter a name of 2 to 80 characters.",
+      "invalid_rating": "Please choose a rating from 1 to 5 stars.",
+      "invalid_body": "Your review must be between 10 and 2000 characters.",
+      "title_too_long": "The title cannot exceed 120 characters.",
+      "city_too_long": "The city cannot exceed 80 characters.",
+      "invalid_email": "Please enter a valid email address.",
+      "product_not_found": "This product could not be found.",
+      "rate_limited": "Too many reviews have been submitted for this product recently. Please try again later."
     },
     "homeNoteAria": "Rating of {note} out of 5",
     "homeSectionTitle": "What those who've tried it say.",
@@ -525,6 +539,7 @@
     }
   },
   "commande": {
+    "metaTitle": "Checkout — KossKoss Select",
     "title": "Complete your order",
     "intro": "Two minutes, four fields. Pay online or on delivery, whichever suits you.",
     "emptyCart": {
@@ -591,6 +606,17 @@
       "securePayment": "Secure payment",
       "termsNote": "By confirming, you accept our <cgv>terms of sale</cgv>.",
       "mobileTotal": "Total"
+    },
+    "couponErrors": {
+      "requete_invalide": "Invalid request.",
+      "panier_vide": "Your cart is empty.",
+      "code_absent": "Enter a promo code.",
+      "code_inconnu": "This code does not exist.",
+      "code_inactif": "This code is no longer active.",
+      "code_expire": "This code has expired.",
+      "code_pas_encore_valide": "This code is not valid yet.",
+      "code_epuise": "This code has reached its maximum number of uses.",
+      "montant_insuffisant": "Your cart does not reach this code's minimum amount."
     },
     "errors": {
       "cartEmpty": "Your cart is empty.",
@@ -675,6 +701,27 @@
   "account": {
     "metaTitle": "My account",
     "title": "My account",
+    "dashboard": {
+      "metaTitle": "My account — KossKoss Select",
+      "eyebrow": "Customer area",
+      "greeting": "Hello {name}",
+      "favorites": "My favourites",
+      "addresses": "My addresses",
+      "info": "My details",
+      "redoDiagnostic": "Retake my diagnostic",
+      "ordersTitle": "My orders",
+      "noOrders": "You have no orders yet.",
+      "discoverShop": "Discover the shop",
+      "orderMeta": "{date} · {count, plural, one {# item} other {# items}}"
+    },
+    "orderDetail": {
+      "metaTitle": "My order — KossKoss Select",
+      "back": "My orders",
+      "placedOn": "Placed on {date}",
+      "total": "Total",
+      "delivery": "Delivery",
+      "payment": "Payment"
+    },
     "guestNotice": "A customer account is optional. You can order as a guest at any time, without creating one.",
     "nav": {
       "aria": "Account area",
@@ -919,6 +966,11 @@
       "text": "Answer {count} questions and get your personalised routine.",
       "badge": "100% personalised · Free · No commitment"
     },
+    "bestsellers": {
+      "eyebrow": "Most chosen",
+      "title": "Our best sellers",
+      "action": "See all"
+    },
     "brandFocus": {
       "eyebrow": "Brand focus",
       "cta": "Discover the brand",
@@ -1084,8 +1136,8 @@
     "railViewAll": "View all routines",
     "promiseTitle": "The promise",
     "journeyTitle": "Your routine in {count} steps",
-    "morningTitle": "Morning ☀️",
-    "eveningTitle": "Evening 🌙",
+    "morningTitle": "Morning",
+    "eveningTitle": "Evening",
     "whyRoutineTitle": "KossKoss Select — Why this routine?",
     "valueLabel": "Value of the products",
     "priceLabel": "KossKoss Select routine price",

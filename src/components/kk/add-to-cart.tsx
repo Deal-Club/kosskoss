@@ -180,19 +180,18 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           commande de plusieurs produits — les deux publics sont réels, l'ordre
           dit lequel est le plus courant.
 
-          Le laiton le distingue du vert profond de l'ajout : deux boutons de
-          même couleur l'un sous l'autre ne se hiérarchisent que par leur
-          position, ce qui est trop peu pour l'action principale.
-
-          LAITON D'ENCRE et non laiton plein : le libellé est en blanc pur, et
-          du blanc sur le laiton vif ne tient que 3,2:1 — illisible en plein
-          soleil sur un téléphone, ce qui est la situation d'usage. Sur ce
-          laiton foncé, il tient 7,9:1. */}
+          BLEU PROFOND, la couleur primaire de la charte : l'action principale
+          porte la couleur de la marque, pas une teinte tierce. Il s'est
+          essayé en laiton d'encre pour se distinguer de l'ajout au panier —
+          une couleur hors charte qui faisait tache. La hiérarchie se joue
+          maintenant sur le poids, pas sur une couleur inventée : l'achat est
+          plein, l'ajout est au contour, tous deux dans le même bleu. Le blanc
+          sur bleu profond tient largement le contraste (≈ 11:1). */}
       <button
         type="button"
         onClick={handleBuyNow}
         disabled={outOfStock}
-        className="kk-fill kk-fill-deep group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gold-ink px-7 py-4 text-base font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
+        className="kk-fill group mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-deep px-7 py-4 text-base font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50"
       >
         <Zap className="h-4 w-4 shrink-0" />
         {outOfStock ? t("unavailable") : t("payNow")}
@@ -236,7 +235,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           onClick={handleAdd}
           disabled={outOfStock}
           aria-label={outOfStock ? t("unavailableAria") : t("addToCart")}
-          className="kk-fill group inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-deep px-6 py-3.5 text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50 sm:px-7"
+          className="kk-fill kk-fill-deep group inline-flex flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-deep bg-transparent px-6 py-3.5 text-sm font-semibold text-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2 focus-visible:ring-offset-card disabled:cursor-not-allowed disabled:opacity-50 sm:px-7"
         >
           <ShoppingBag className="h-4 w-4 shrink-0" />
           {outOfStock ? t("unavailable") : <span className="hidden sm:inline">{t("addToCart")}</span>}

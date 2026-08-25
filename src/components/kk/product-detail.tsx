@@ -1,5 +1,18 @@
 import Image from "next/image";
-import { ChevronRight, ArrowDown, Check, ArrowUp } from "lucide-react";
+import {
+  ChevronRight,
+  ArrowDown,
+  Check,
+  ArrowUp,
+  Heart,
+  ScanFace,
+  SunMoon,
+  Sun,
+  Moon,
+  Layers,
+  ClipboardList,
+  type LucideIcon,
+} from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { KKProductDetail } from "@/server/kk/product";
 import { BADGE_LABEL } from "@/lib/kk/badges";
@@ -145,9 +158,26 @@ function Accordion({ title, children, open = false }: { title: string; children:
  * En-tête d'une section pleine largeur du corps de fiche (« Pourquoi vous
  * allez l'aimer », « Est-ce pour ma peau ? »…). Reprend l'échelle de titres du
  * site (chapitre 1 du document de structure) : aucune taille posée en dur ici.
+ *
+ * L'icône est décorative (`aria-hidden`) : le titre se suffit. Elle est
+ * dessinée au trait dans une pastille sable — le registre d'accents de la
+ * charte —, jamais un emoji : les emoji changent de dessin d'un appareil à
+ * l'autre et sortent du ton de la marque.
  */
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return <h2 className="text-deep">{children}</h2>;
+function SectionTitle({ icon: Icon, children }: { icon?: LucideIcon; children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3.5">
+      {Icon && (
+        <span
+          aria-hidden="true"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sand text-deep"
+        >
+          <Icon className="h-5 w-5" strokeWidth={1.75} />
+        </span>
+      )}
+      <h2 className="text-deep">{children}</h2>
+    </div>
+  );
 }
 
 export async function ProductDetail({
@@ -307,11 +337,17 @@ export async function ProductDetail({
          n'apprenait rien sur le produit qu'on est en train de regarder — le
          même propos est tenu à sa place sur l'accueil et sur /marques. */}
 
-      {/* --- Pourquoi vous allez l'aimer --------------------------------- */}
+      {/* --- Pourquoi vous allez l'aimer -----------------------------------
+          Même gabarit que le bloc d'achat et le rail de produits (max-w-7xl) :
+          les sections du corps de fiche étaient plus étroites (max-w-4xl) que
+          ce qui les précède et les suit, et ce décrochage de largeur se voyait
+          à chaque passage de l'une à l'autre. Sur cette largeur, la liste
+          passe en deux colonnes dès `sm` : une colonne unique de lignes
+          courtes flottait dans la page. */}
       {product.bullets.length > 0 && (
-        <section className="mx-auto max-w-4xl px-6 py-10">
-          <SectionTitle>{t("whyLoveTitle")}</SectionTitle>
-          <ul className="mt-5 space-y-3">
+        <section className="mx-auto max-w-7xl px-6 py-10">
+          <SectionTitle icon={Heart}>{t("whyLoveTitle")}</SectionTitle>
+          <ul className="mt-6 grid gap-x-10 gap-y-3 sm:grid-cols-2">
             {product.bullets.map((b) => (
               <li key={b} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/85">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-deep" aria-hidden="true" />
@@ -325,9 +361,9 @@ export async function ProductDetail({
       {/* --- Est-ce pour ma peau ? ---------------------------------------- */}
       {product.idealPour && (
         <section className="border-t border-border/60 bg-sand/40">
-          <div className="mx-auto max-w-4xl px-6 py-10">
-            <SectionTitle>{t("idealForTitle")}</SectionTitle>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/85">
+          <div className="mx-auto max-w-7xl px-6 py-10">
+            <SectionTitle icon={ScanFace}>{t("idealForTitle")}</SectionTitle>
+            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-foreground/85">
               <span className="font-semibold text-deep">{t("idealForLabel")}</span> {product.idealPour}
             </p>
           </div>
@@ -338,28 +374,30 @@ export async function ProductDetail({
           Matin et soir n'apparaissent que si le master les a renseignés — un
           produit corps sans étape matin, par exemple, n'affiche que le soir. */}
       {(product.usageMatin || product.usageSoir || product.conseilKossKoss) && (
-        <section className="mx-auto max-w-4xl px-6 py-10">
-          <SectionTitle>{t("howToUseTitle")}</SectionTitle>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <section className="mx-auto max-w-7xl px-6 py-10">
+          <SectionTitle icon={SunMoon}>{t("howToUseTitle")}</SectionTitle>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {product.usageMatin && (
-              <div className="rounded-2xl border border-border/70 bg-card p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+              <div className="rounded-2xl border border-border/70 bg-card p-6">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                  <Sun className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
                   {t("morningLabel")}
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/85">{product.usageMatin}</p>
+                <p className="mt-2.5 text-sm leading-relaxed text-foreground/85">{product.usageMatin}</p>
               </div>
             )}
             {product.usageSoir && (
-              <div className="rounded-2xl border border-border/70 bg-card p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+              <div className="rounded-2xl border border-border/70 bg-card p-6">
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
+                  <Moon className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
                   {t("eveningLabel")}
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-foreground/85">{product.usageSoir}</p>
+                <p className="mt-2.5 text-sm leading-relaxed text-foreground/85">{product.usageSoir}</p>
               </div>
             )}
           </div>
           {product.conseilKossKoss && (
-            <p className="mt-5 rounded-2xl bg-sand/60 p-5 text-sm leading-relaxed text-foreground/85">
+            <p className="mt-5 rounded-2xl bg-sand/60 p-6 text-sm leading-relaxed text-foreground/85">
               <span className="font-semibold text-deep">{t("kosskossAdviceLabel")}</span>{" "}
               {product.conseilKossKoss}
             </p>
@@ -374,8 +412,8 @@ export async function ProductDetail({
           le rapport du lot 7D. */}
       {routines.length > 0 && (
         <section className="border-t border-border/60 bg-sand/40">
-          <div className="mx-auto max-w-4xl px-6 py-10">
-            <SectionTitle>{t("completeRoutineTitle")}</SectionTitle>
+          <div className="mx-auto max-w-7xl px-6 py-10">
+            <SectionTitle icon={Layers}>{t("completeRoutineTitle")}</SectionTitle>
             <div className="mt-6 space-y-6">
               {routines.map((routine) => (
                 <div key={routine.id} className="rounded-2xl border border-border/70 bg-card p-6">
@@ -425,11 +463,11 @@ export async function ProductDetail({
           n'a de valeur (produit sans tag reconnu et sans variante, par
           exemple), plutôt que de montrer un tableau vide. */}
       {briefRows.length > 0 && (
-        <section className="mx-auto max-w-4xl px-6 py-10">
-          <SectionTitle>{t("briefTitle")}</SectionTitle>
-          <dl className="mt-5 divide-y divide-border rounded-2xl border border-border/70 bg-card">
+        <section className="mx-auto max-w-7xl px-6 py-10">
+          <SectionTitle icon={ClipboardList}>{t("briefTitle")}</SectionTitle>
+          <dl className="mt-6 divide-y divide-border rounded-2xl border border-border/70 bg-card">
             {briefRows.map((row) => (
-              <div key={row.label} className="flex flex-wrap justify-between gap-x-4 gap-y-1 px-5 py-3 text-sm">
+              <div key={row.label} className="flex flex-wrap justify-between gap-x-4 gap-y-1 px-6 py-3.5 text-sm">
                 <dt className="font-semibold text-deep">{row.label}</dt>
                 <dd className="text-right text-foreground/85">{row.value}</dd>
               </div>
@@ -445,11 +483,11 @@ export async function ProductDetail({
           second `AddToCart` : dupliquer le composant client dupliquerait
           aussi ses mesures (`view_item`, `add_to_cart`), ce qui compterait la
           même visite deux fois côté GA4/Meta. */}
-      <section className="mx-auto max-w-4xl px-6 pb-10">
+      <section className="mx-auto max-w-7xl px-6 pb-10">
         <Link
           href={`${product.href}#acheter-produit`}
           aria-label={t("reminderAria", { name: product.name })}
-          className="kk-fill kk-fill-deep group flex items-center justify-between gap-4 rounded-full bg-deep px-6 py-4 text-primary-foreground"
+          className="kk-fill group flex items-center justify-between gap-4 rounded-full bg-deep px-6 py-4 text-primary-foreground"
         >
           <span className="text-sm font-semibold">{product.name}</span>
           <span className="figure flex shrink-0 items-center gap-2 text-sm font-semibold">
