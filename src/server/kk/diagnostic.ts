@@ -43,7 +43,7 @@ const CLE_Q4_ENVIRONNEMENT = "environnement";
  * une règle de décision : elle n'a donc pas sa place dans
  * diagnostic-matrice.ts, qui reste pur et sans connaissance de la base.
  */
-const BESOIN_PAR_REPONSE_PRIORITE: Record<string, Besoin> = {
+export const BESOIN_PAR_REPONSE_PRIORITE: Record<string, Besoin> = {
   taches_teint: "taches",
   boutons_imperfections: "imperfections",
   glow_eclat: "eclat",

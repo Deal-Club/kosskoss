@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronUp, ChevronDown, Trash2, Plus, Save, Loader2, Tags } from "lucide-react";
+import { ChevronUp, ChevronDown, Trash2, Plus, Save, Loader2, Tags, Network } from "lucide-react";
 import type { AdminQuestion, AdminAnswer } from "@/server/kk/diagnostic-admin";
 
 const ICON_HINT = "droplet, wind, smile, contrast, sparkles, sun, clock, shield, wallet, gem, leaf, check";
@@ -85,12 +85,20 @@ export function DiagnosticAdmin({ initial }: { initial: AdminQuestion[] }) {
           <p className="text-sm text-muted-foreground">
             Questions, réponses et pondération des tags du questionnaire.
           </p>
-          <Link
-            href="/admin/diagnostic/tags"
-            className="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-          >
-            <Tags className="h-4 w-4" /> Associer les produits aux tags
-          </Link>
+          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link
+              href="/admin/diagnostic/arbre"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            >
+              <Network className="h-4 w-4" /> Voir l&apos;arbre du diagnostic
+            </Link>
+            <Link
+              href="/admin/diagnostic/tags"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+            >
+              <Tags className="h-4 w-4" /> Associer les produits aux tags
+            </Link>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {status === "saved" && <span className="text-sm text-primary">Enregistré ✓</span>}
