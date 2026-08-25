@@ -7,6 +7,7 @@ import { getShopNavigation, getNavHighlights, getNavRoutines } from "@/server/kk
 import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
 import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
+import { LanguageSwitcher } from "./language-switcher";
 import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
 import { VisaMark, OrangeMoneyMark, MtnMoneyMark } from "@/components/PaymentIcons";
@@ -232,6 +233,7 @@ export async function SiteHeader() {
         <DesktopNav groups={groups} highlights={highlights} routines={routines} />
 
         <div className="ml-auto flex items-center justify-end gap-1">
+          <LanguageSwitcher />
           <SearchAction variant="icon" />
           <FavoritesLink />
           <Link
