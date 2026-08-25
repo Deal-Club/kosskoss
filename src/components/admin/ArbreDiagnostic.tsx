@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, AlertTriangle, ShieldCheck } from "lucide-react";
+import { ChevronRight, AlertTriangle, ShieldCheck, SlidersHorizontal, Pencil } from "lucide-react";
 import type {
   ArbreDiagnostic as ArbreData,
   ArbreBranche,
@@ -26,14 +26,15 @@ function Fleche() {
 
 function CarteRoutine({ routine }: { routine: ArbreRoutine }) {
   const s = STATUT_STYLE[routine.statut];
-  return (
-    <div className="rounded-xl border border-border bg-white p-3">
+  const contenu = (
+    <>
       <div className="mb-1.5 flex items-center gap-2">
         <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${s.point}`} aria-hidden />
         <span className="text-[0.7rem] font-bold uppercase tracking-wide text-muted-foreground">
           {routine.niveau}
         </span>
         <span className={`ml-auto text-[0.7rem] font-semibold ${s.texte}`}>{s.libelle}</span>
+        {routine.id && <Pencil className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary" />}
       </div>
       <p className="text-sm font-semibold text-foreground">
         {routine.nom ?? <span className="text-destructive">Aucune routine ({routine.code})</span>}
@@ -61,8 +62,22 @@ function CarteRoutine({ routine }: { routine: ArbreRoutine }) {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
+
+  const classe = "block rounded-xl border border-border bg-white p-3 text-left";
+  if (routine.id) {
+    return (
+      <Link
+        href={`/admin/diagnostic/routines/${routine.id}`}
+        className={`group ${classe} transition hover:border-primary hover:shadow-sm`}
+        title="Modifier cette routine"
+      >
+        {contenu}
+      </Link>
+    );
+  }
+  return <div className={classe}>{contenu}</div>;
 }
 
 function Branche({ branche }: { branche: ArbreBranche }) {
@@ -119,15 +134,16 @@ export function ArbreDiagnostic({ data }: { data: ArbreData }) {
           <h1 className="text-2xl font-black text-foreground">Arbre du diagnostic</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
             Pour chaque réponse à la question de priorité, le besoin désigné et les routines
-            proposées. Une routine ne s&apos;affiche au client que si elle a au moins 2 produits
+            proposées. <strong className="text-foreground">Cliquez une routine</strong> pour éditer
+            ses produits. Une routine ne s&apos;affiche au client que si elle a au moins 2 produits
             actifs et en stock.
           </p>
         </div>
         <Link
-          href="/admin/diagnostic"
-          className="rounded-sm border border-border bg-white px-4 py-2 text-sm font-bold text-foreground hover:border-primary"
+          href="/admin/diagnostic/questions"
+          className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-white px-4 py-2 text-sm font-bold text-foreground hover:border-primary"
         >
-          Retour au questionnaire
+          <SlidersHorizontal className="h-4 w-4" /> Modifier les questions
         </Link>
       </div>
 

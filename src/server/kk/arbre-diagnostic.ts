@@ -9,12 +9,24 @@
  */
 import { prisma } from "@/server/prisma";
 import { getQuestions } from "./diagnostic-data";
-import { BESOIN_PAR_REPONSE_PRIORITE } from "./diagnostic";
 import { MATRICE, type Besoin } from "@/lib/kk/diagnostic-matrice";
 import type { Locale } from "@/i18n/routing";
 
 /** Clé (DiagQuestion.key) de la question de priorité — celle qui décide du besoin. */
 const CLE_Q2 = "priorite";
+
+/**
+ * Réponse de Q2 (DiagAnswer.key) → Besoin. Miroir volontaire de la table du
+ * moteur (src/server/kk/diagnostic.ts) : dupliqué ici pour que la vue Arbre ne
+ * dépende pas du moteur. À garder synchronisé si l'un des deux change.
+ */
+const BESOIN_PAR_REPONSE_PRIORITE: Record<string, Besoin> = {
+  taches_teint: "taches",
+  boutons_imperfections: "imperfections",
+  glow_eclat: "eclat",
+  hydratation_confort: "hydratation",
+  anti_age: "anti_age",
+};
 
 /** Libellés lisibles des sept besoins de la matrice. */
 export const BESOIN_LABEL: Record<Besoin, string> = {
@@ -31,6 +43,8 @@ export type StatutRoutine = "complete" | "incomplete" | "vide";
 
 export type ArbreRoutine = {
   niveau: "Essentielle" | "Premium";
+  /** Identifiant de la routine en base, `null` si aucune ne porte ce code. */
+  id: string | null;
   /** Code du master (ex. « TAC-ECO »). */
   code: string;
   /** Nom de la routine, `null` si aucune routine ne porte ce code en base. */
@@ -80,7 +94,7 @@ async function chargerRoutine(
   });
 
   if (!row) {
-    return { niveau, code, nom: null, produits: [], servables: 0, statut: "vide" };
+    return { niveau, id: null, code, nom: null, produits: [], servables: 0, statut: "vide" };
   }
 
   const produits = row.steps.map((s) => ({
@@ -91,7 +105,7 @@ async function chargerRoutine(
   const statut: StatutRoutine =
     !row.active || servables === 0 ? "vide" : servables < 2 ? "incomplete" : "complete";
 
-  return { niveau, code, nom: row.name || row.slug, produits, servables, statut };
+  return { niveau, id: row.id, code, nom: row.name || row.slug, produits, servables, statut };
 }
 
 function routinesDuBesoin(besoin: Besoin): Promise<ArbreRoutine[]> {

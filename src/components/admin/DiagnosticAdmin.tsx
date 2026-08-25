@@ -87,10 +87,10 @@ export function DiagnosticAdmin({ initial }: { initial: AdminQuestion[] }) {
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link
-              href="/admin/diagnostic/arbre"
+              href="/admin/diagnostic"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
             >
-              <Network className="h-4 w-4" /> Voir l&apos;arbre du diagnostic
+              <Network className="h-4 w-4" /> Retour à l&apos;arbre du diagnostic
             </Link>
             <Link
               href="/admin/diagnostic/tags"
