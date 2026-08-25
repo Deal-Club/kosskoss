@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronRight, AlertTriangle, ShieldCheck, SlidersHorizontal, Pencil } from "lucide-react";
+import { ChevronRight, AlertTriangle, ShieldCheck, SlidersHorizontal, Pencil, ListChecks, Plus } from "lucide-react";
 import type {
   ArbreDiagnostic as ArbreData,
   ArbreBranche,
@@ -139,12 +139,26 @@ export function ArbreDiagnostic({ data }: { data: ArbreData }) {
             actifs et en stock.
           </p>
         </div>
-        <Link
-          href="/admin/diagnostic/questions"
-          className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-white px-4 py-2 text-sm font-bold text-foreground hover:border-primary"
-        >
-          <SlidersHorizontal className="h-4 w-4" /> Modifier les questions
-        </Link>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/diagnostic/questions"
+            className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-white px-4 py-2 text-sm font-bold text-foreground hover:border-primary"
+          >
+            <SlidersHorizontal className="h-4 w-4" /> Modifier les questions
+          </Link>
+          <Link
+            href="/admin/diagnostic/routines"
+            className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-white px-4 py-2 text-sm font-bold text-foreground hover:border-primary"
+          >
+            <ListChecks className="h-4 w-4" /> Toutes les routines
+          </Link>
+          <Link
+            href="/admin/diagnostic/routines/nouveau"
+            className="inline-flex items-center gap-1.5 rounded-sm bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:brightness-110"
+          >
+            <Plus className="h-4 w-4" /> Créer une routine
+          </Link>
+        </div>
       </div>
 
       {/* Légende + résumé */}
