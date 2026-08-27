@@ -29,7 +29,14 @@ export const LIBELLES_NIVEAUX: Record<NiveauRoutine, string> = {
   premium: "Premium",
 };
 
+/** Libellés anglais des mêmes niveaux, pour /en. */
+const LIBELLES_NIVEAUX_EN: Record<NiveauRoutine, string> = {
+  eco: "Essential",
+  premium: "Premium",
+};
+
 /** Libellé d'un niveau, avec un repli lisible pour une valeur inconnue en base. */
-export function libelleNiveau(valeur: string): string {
-  return estNiveau(valeur) ? LIBELLES_NIVEAUX[valeur] : valeur;
+export function libelleNiveau(valeur: string, locale: "fr" | "en" = "fr"): string {
+  if (!estNiveau(valeur)) return valeur;
+  return locale === "en" ? LIBELLES_NIVEAUX_EN[valeur] : LIBELLES_NIVEAUX[valeur];
 }

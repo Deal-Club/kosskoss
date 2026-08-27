@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CheckoutHeader, SiteFooter } from "@/components/kk/chrome";
 import { CheckoutForm } from "@/components/kk/checkout-form";
 import { paiementDisponible } from "@/server/kk/paiement";
@@ -8,10 +8,14 @@ import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
 
-export const metadata: Metadata = {
-  title: "Finaliser la commande — KossKoss Select",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "commande" });
+  return {
+    title: t("metaTitle"),
+    robots: { index: false, follow: false },
+  };
+}
 
 export default async function CheckoutPage({ params }: { params: Params }) {
   const { locale } = await params;
@@ -23,7 +27,7 @@ export default async function CheckoutPage({ params }: { params: Params }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <CheckoutHeader />
+      <CheckoutHeader back />
       <main className="flex-1">
         <CheckoutForm locale={locale} payments={payments} passerelleActive={paiementDisponible()} />
       </main>

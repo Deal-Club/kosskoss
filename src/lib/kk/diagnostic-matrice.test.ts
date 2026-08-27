@@ -203,10 +203,22 @@ describe("conseilEnvironnement — textes exacts du document du client (Q4)", ()
 });
 
 describe("MESSAGE_SECURITE", () => {
-  it("recopie mot pour mot le message du document du client", () => {
+  it("recopie mot pour mot le message du document du client (français)", () => {
     assert.equal(
-      MESSAGE_SECURITE,
+      MESSAGE_SECURITE.fr,
       "Votre peau semble réactive. Avant d'intensifier le traitement de votre préoccupation, nous vous recommandons de privilégier une routine courte qui apaise et soutient la barrière cutanée",
     );
+  });
+
+  it("porte une traduction anglaise non vide et distincte", () => {
+    assert.ok(MESSAGE_SECURITE.en.length > 0);
+    assert.notEqual(MESSAGE_SECURITE.en, MESSAGE_SECURITE.fr);
+  });
+});
+
+describe("conseils localisés", () => {
+  it("rend l'anglais quand la locale est en", () => {
+    assert.equal(conseilTypePeau("peau_grasse", "en"), "Light textures, limit overly rich products");
+    assert.ok(conseilEnvironnement("mixte", "en").includes("air conditioning"));
   });
 });

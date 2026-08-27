@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { LocalizedLink as Link } from "./localized-link";
-import { Plus, Check, Heart, ChevronRight } from "lucide-react";
+import { useRouter } from "@/i18n/navigation";
+import { Plus, Check, Heart, ChevronRight, ShoppingBag } from "lucide-react";
 import { useCart } from "@/components/cart/CartProvider";
 import { toggleFavorite, useFavorites, type FavoriteItem } from "@/lib/favorites";
 import { volVersPanier } from "@/lib/kk/fly-to-cart";
@@ -186,6 +187,66 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
         {added ? t("addedConfirmationAria", { name: product.name }) : ""}
       </span>
     </>
+  );
+}
+
+/**
+ * Bouton « Achète maintenant » en bas de la vignette, pleine largeur.
+ *
+ * Même logique d'ajout que `QuickAddButton` (ajout → envol → tiroir), mais
+ * sous forme d'un bouton explicite et large, sous le prix. Produit à
+ * contenances : mène à la fiche pour choisir. En rupture : désactivé.
+ */
+export function BoutonAcheter({ product }: { product: KKProductView }) {
+  const t = useTranslations("cart");
+  const { add } = useCart();
+  const router = useRouter();
+  const outOfStock = (product.stock ?? 0) <= 0;
+  const classe =
+    "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-offset-2";
+
+  if (!isActionable(product)) return null;
+
+  // Plusieurs contenances : on ne peut pas payer « le produit » sans que le
+  // client ait choisi laquelle — on l'envoie donc d'abord à la fiche.
+  if (product.hasVariants) {
+    return (
+      <Link
+        href={product.href as string}
+        className={`${classe} bg-deep text-primary-foreground hover:brightness-110`}
+      >
+        <ShoppingBag className="h-4 w-4" /> {t("buyNow")}
+      </Link>
+    );
+  }
+
+  /**
+   * « Achète maintenant » : la ligne entre au panier PUIS on file droit à la
+   * page de paiement (/commande), sans ouvrir le tiroir — c'est un achat direct,
+   * pas un « ajouter et continuer ». Le panier reste la source de vérité du
+   * tunnel, mais le visiteur ne le voit pas s'ouvrir.
+   */
+  function handleAchat() {
+    add(toCartLine(product), 1);
+    const idCatalogue = identifiantProduitCatalogue(product.slug ?? "", product.id);
+    mesurerEvenement({
+      type: "add_to_cart",
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: product.priceFcfa, quantite: 1 }],
+      totalCents: product.priceFcfa,
+    });
+    router.push("/commande");
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleAchat}
+      disabled={outOfStock}
+      className={`${classe} bg-deep text-primary-foreground enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:bg-deep/30`}
+    >
+      <ShoppingBag className="h-4 w-4" /> {outOfStock ? t("soldOut") : t("buyNow")}
+    </button>
   );
 }
 

@@ -6,10 +6,10 @@ import { ArrowRight, ChevronRight, Sun, Moon } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
 import { RoutineAddToCart } from "@/components/kk/routine-add";
-import { tintClass } from "@/components/kk/routine-card";
+import { tintClass, tintCssVar } from "@/components/kk/routine-card";
 import { BottleMotif } from "@/components/kk/motifs";
+import { RoutineIllustration } from "@/components/kk/routine-illustration";
 import { getRoutine, getRoutines } from "@/server/kk/routines";
-import { PREOCCUPATIONS, libellesPourTags } from "@/lib/kk/besoins";
 import { libelleNiveau } from "@/lib/kk/routines-niveau";
 import { formatFcfa } from "@/lib/kk/format";
 import { alternatesFor } from "@/lib/hreflang";
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   }
 
   return {
-    title: `${routine.name} — ${BRAND.name}`,
+    title: `${routine.name} · ${BRAND.name}`,
     description: routine.claim || routine.description.slice(0, 155),
     alternates: alternatesFor(`/routines/${routine.slug}`, locale),
   };
@@ -58,15 +58,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
   // Niveau en toutes lettres — jamais écrit en dur, toujours lu par ce module
   // pur (`src/lib/kk/routines-niveau.ts`) : c'est lui qui sait que le « Eco »
   // du master s'affiche « Essentielle ».
-  const niveauLabel = libelleNiveau(routine.niveau);
-
-  // Ligne de préoccupations du modèle client (« Boutons • Brillance • Marques
-  // post-imperfections ») : même registre et même fonction que la fiche
-  // produit (lot 7D, tâche 1) — `routine.tags` est l'union des tags des
-  // produits encore servables de la routine, posée côté serveur
-  // (`src/server/kk/routines.ts`). Peut être vide : aucune routine ne
-  // l'invente alors.
-  const preoccupationLabels = libellesPourTags(routine.tags, PREOCCUPATIONS, locale);
+  const niveauLabel = libelleNiveau(routine.niveau, locale);
 
   // Parcours numéroté du modèle (« 01 NETTOYER → 02 TRAITER → 03 PROTÉGER ») :
   // le rôle du geste prime sur son étiquette générique — voir la note sur
@@ -115,8 +107,51 @@ export default async function RoutinePage({ params }: { params: Params }) {
             et l'ajout au panier vivent dans le récapitulatif collant, qui suit
             la lecture au lieu d'attendre en haut ; la description est reprise
             en tête de la composition, là où on la lit vraiment. */}
-        <section className={`${tintClass(routine.tint)}`}>
-          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+        <section className={`relative overflow-hidden ${tintClass(routine.tint)}`}>
+          {/* La nature morte de la routine, EN FOND DE BANDEAU — mobile
+              seulement (`sm:hidden`). C'est là qu'elle posait problème : sous
+              `sm` le bandeau empile texte puis illustration, et l'illustration
+              tombait seule en dessous, sans rien pour la relier au texte. Ici
+              elle est calée en arrière-plan sous tout le bandeau, avec le texte
+              par-dessus — elle devient le décor du texte plutôt qu'un bloc à
+              part. Le voile dégradé qui l'accompagne la fond dans la teinte
+              plutôt que de la poser comme une pièce rapportée.
+
+              À partir de `sm`, la mise en page CÔTE À CÔTE reprend telle
+              qu'elle était — c'est elle qui fonctionnait sur grand écran, le
+              retour ne portait que sur le mobile.
+
+              Ce traitement de fond ne vaut que pour la scène dessinée : une
+              vraie photo de coffret (`Routine.image`) n'a pas vocation à être
+              recadrée en plein cadre ni voilée d'un dégradé — elle reprend sur
+              mobile la même présentation contenue que sur desktop, juste en
+              dessous du texte au lieu d'à côté. */}
+          {!routine.image && (
+            <>
+              {/* `opacity-55` : la scène ne doit jamais rivaliser avec le
+                  texte, seulement suggérer un décor. Un titre sur deux lignes
+                  (« Teint Net Essential ») descend sur toute la hauteur du
+                  bandeau — le voile ci-dessous doit donc rester net sur TOUTE
+                  la zone de texte, pas seulement sa première ligne. */}
+              <div className="pointer-events-none absolute inset-0 opacity-55 sm:hidden" aria-hidden="true">
+                <RoutineIllustration tint={routine.tint} fit="cover" className="h-full w-full" />
+              </div>
+              {/* Le voile ne s'ouvre plus qu'en bordure droite du cadre — la
+                  seule zone que le texte n'atteint jamais, quelle que soit sa
+                  longueur — au lieu d'un dégradé diagonal réglé sur un titre
+                  précis, qui se rouvrait dès qu'un autre titre passait sur
+                  deux lignes. */}
+              <div
+                className="pointer-events-none absolute inset-0 sm:hidden"
+                style={{
+                  background: `linear-gradient(100deg, ${tintCssVar(routine.tint)} 0%, ${tintCssVar(routine.tint)} 68%, color-mix(in oklab, ${tintCssVar(routine.tint)} 60%, transparent) 84%, transparent 100%)`,
+                }}
+                aria-hidden="true"
+              />
+            </>
+          )}
+
+          <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
             <div className="max-w-2xl">
               {/* Niveau en toutes lettres (jamais « Eco » écrit en dur — voir
                   `niveauLabel` ci-dessus) et nombre de gestes : les deux
@@ -128,15 +163,6 @@ export default async function RoutinePage({ params }: { params: Params }) {
               </p>
               <h1 className="mt-2 text-deep">{routine.name}</h1>
 
-              {/* Accroche courte du master (« Meilleur rapport
-                  efficacité/prix »…) — absente sur certaines routines : la
-                  ligne ne s'affiche alors simplement pas. */}
-              {routine.badge && (
-                <p className="mt-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-gold-ink">
-                  {routine.badge}
-                </p>
-              )}
-
               {/* Profil visé, texte libre du master (« Peaux mixtes à
                   grasses, boutons, brillance… ») : c'est LUI qui porte le
                   type de peau du modèle client — jamais recomposé à partir
@@ -145,40 +171,47 @@ export default async function RoutinePage({ params }: { params: Params }) {
               {routine.profilCible && (
                 <p className="mt-2 text-sm leading-relaxed text-deep/80">{routine.profilCible}</p>
               )}
-
-              {/* Ligne de préoccupations, agrégée sur les produits de la
-                  routine — même registre que la fiche produit. */}
-              {preoccupationLabels.length > 0 && (
-                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-deep/60">
-                  {preoccupationLabels.join(" • ")}
-                </p>
-              )}
             </div>
 
-            {/* Les produits de la routine, en ligne. Réduits de moitié : dans un
-                bandeau fin, ils signent la routine d'un coup d'œil, ils n'ont
-                plus à la mettre en scène — les mêmes visuels sont repris en
-                grand dans la composition. */}
-            <div className="flex shrink-0 items-end gap-1.5" aria-hidden="true">
-              {routine.steps.map((step, i) => (
-                <div
-                  key={step.id}
-                  className="relative h-20 w-14 shrink-0 sm:h-24 sm:w-16"
-                  style={{ marginBottom: i % 2 === 1 ? "0.6rem" : 0 }}
-                >
-                  {step.product.image ? (
-                    <Image
-                      src={step.product.image}
-                      alt=""
-                      fill
-                      sizes="64px"
-                      className="object-contain object-bottom"
-                    />
-                  ) : (
-                    <BottleMotif className="absolute inset-0 m-auto h-full w-auto text-deep/25" />
-                  )}
-                </div>
-              ))}
+            {/* Vraie photo de coffret, sur mobile : présentation contenue, en
+                flux sous le texte — le fond voilé ci-dessus ne s'applique
+                qu'à la scène dessinée. Rare tant que le client n'a pas fourni
+                ses visuels ; voir `Routine.image`. */}
+            {routine.image && (
+              <div className="relative h-44 w-full shrink-0 sm:hidden" aria-hidden="true">
+                <Image
+                  src={routine.image}
+                  alt=""
+                  fill
+                  sizes="100vw"
+                  className="object-contain object-bottom"
+                />
+              </div>
+            )}
+
+            {/* Version desktop, inchangée : posée à droite, `fit="contain"`
+                pour montrer la scène entière, `-mb-7` pour l'asseoir sur le
+                bord du bandeau. Cachée sous `sm`, où c'est le fond ci-dessus
+                qui porte l'illustration. */}
+            <div
+              className="relative hidden -mb-7 h-52 w-[480px] shrink-0 self-end sm:block"
+              aria-hidden="true"
+            >
+              {routine.image ? (
+                <Image
+                  src={routine.image}
+                  alt=""
+                  fill
+                  sizes="480px"
+                  className="object-contain object-bottom"
+                />
+              ) : (
+                <RoutineIllustration
+                  tint={routine.tint}
+                  fit="contain"
+                  className="absolute inset-0 h-full w-full"
+                />
+              )}
             </div>
           </div>
         </section>
@@ -214,10 +247,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
               </p>
               <p className="mt-2 text-sm font-semibold uppercase tracking-[0.1em] text-deep">{parcours}</p>
 
-              <p className="eyebrow mt-8">{t("detailEyebrow")}</p>
-              <h2 className="mt-2 text-deep">{t("detailTitle")}</h2>
               {routine.description && (
-                <p className="mt-4 max-w-2xl leading-relaxed text-foreground/85">
+                <p className="mt-8 max-w-2xl leading-relaxed text-foreground/85">
                   {routine.description}
                 </p>
               )}
@@ -243,7 +274,19 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   key={step.id}
                   className="flex gap-4 rounded-2xl border border-border/70 bg-card p-4"
                 >
-                  <div className={`relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:block ${tintClass(routine.tint)}`}>
+                  {/* Fond de vignette NEUTRE (`bg-sand`), pas la teinte de la
+                      routine : le packshot est déjà photographié sur blanc, et
+                      un carré teinté derrière une photo à fond blanc se lisait
+                      comme deux blancs qui se disputent — la couleur de la
+                      routine ternissait le produit au lieu de le mettre en
+                      valeur. La teinte n'habille que le motif de secours
+                      (`BottleMotif`), un dessin sans fond propre, pour lequel
+                      elle reste le repère qu'elle est partout ailleurs. */}
+                  <div
+                    className={`relative hidden h-20 w-20 shrink-0 overflow-hidden rounded-xl sm:block ${
+                      p.image ? "bg-sand" : tintClass(routine.tint)
+                    }`}
+                  >
                     {p.image ? (
                       <Image src={p.image} alt={p.name} fill sizes="80px" className="object-contain p-1.5" />
                     ) : (
@@ -252,9 +295,14 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    {/* Numéro, geste et marque sur une seule ligne : trois
-                        informations courtes qui tenaient sur trois lignes. */}
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    {/* Quatre lignes, chacune sa propre information — retour
+                        client : rôle et marque se disputaient la première
+                        ligne, resserrés au point de se lire comme une seule
+                        mention. Ici chacun respire, et le produit gagne une
+                        quatrième ligne qu'il n'avait pas : ses deux premiers
+                        « bienfaits » (master client, colonne Bullets), la
+                        preuve concrète qui manquait à côté du seul nom. */}
+                    <div className="flex items-center gap-1.5">
                       <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-deep text-[0.65rem] font-semibold text-primary-foreground">
                         {i + 1}
                       </span>
@@ -266,19 +314,31 @@ export default async function RoutinePage({ params }: { params: Params }) {
                       <span className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-deep">
                         {step.role || step.label}
                       </span>
-                      <span aria-hidden="true" className="text-muted-foreground/40">
-                        ·
-                      </span>
-                      <span className="text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                        {p.brand}
-                      </span>
                     </div>
 
-                    <h3 className="mt-1.5 font-display text-[1.15rem] leading-snug">
-                      <Link href={p.href ?? "#"} className="text-deep transition hover:text-deep/70">
-                        {p.name}
-                      </Link>
+                    <p className="mt-1 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                      {p.brand}
+                    </p>
+
+                    {/* Nom du produit en texte, sans lien : la routine se vend
+                        et s'achète comme un tout (voir la note sur le prix
+                        plus bas), le clic ne doit donc pas ouvrir la fiche
+                        produit et faire quitter la page — c'est là que se
+                        prend la décision d'achat. */}
+                    <h3 className="mt-1 font-display text-[1.15rem] leading-snug text-deep">
+                      {p.name}
                     </h3>
+
+                    {/* Deux premiers bienfaits, mêmes textes que la section
+                        « Pourquoi on l'aime » de la fiche produit — voir
+                        `KKProductView.bullets`. Absents sur les produits que
+                        le master n'a pas encore renseignés : la ligne ne
+                        s'affiche alors simplement pas, plutôt qu'un vide. */}
+                    {p.bullets && p.bullets.length > 0 && (
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/85">
+                        {p.bullets.slice(0, 2).join(" · ")}
+                      </p>
+                    )}
 
                     {step.why && (
                       <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{step.why}</p>
@@ -416,11 +476,18 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     <span className="uppercase tracking-wide">{t("valueLabel")}</span>
                     <span className="figure">{formatFcfa(routine.totalFcfa)}</span>
                   </div>
-                  <div className="mt-1.5 flex items-baseline justify-between gap-3">
-                    <span className="text-sm font-semibold tracking-wide text-primary-foreground/70 uppercase">
+                  <div className="mt-1.5">
+                    {/* Libellé et prix EMPILÉS, pas côte à côte : à côté d'un
+                        prix en 2xl, ce libellé plus long que « Valeur des
+                        produits » n'a jamais tenu sur une ligne sans déborder
+                        du bloc — que ce soit en passant lui-même à la ligne,
+                        ou en repoussant le prix hors du cadre une fois
+                        contraint à `nowrap`. Empilé, aucun des deux ne peut
+                        plus déborder, quelle que soit la largeur d'écran. */}
+                    <span className="block text-xs font-semibold tracking-wide text-primary-foreground/70 uppercase">
                       {t("priceLabel")}
                     </span>
-                    <span className="figure text-2xl font-semibold text-primary-foreground">
+                    <span className="figure block text-2xl font-semibold text-primary-foreground">
                       {formatFcfa(routine.totalFcfa)}
                     </span>
                   </div>
@@ -440,10 +507,14 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     className="mt-5 w-full px-6 py-3.5"
                   />
 
-                  {/* Ce que fait le bouton, dit avant le clic : sur une routine,
-                      un intitulé seul laisse croire à un article unique. */}
-                  <p className="mt-3 text-center text-xs text-primary-foreground/55">
-                    {t("buyNote", { count: routine.steps.length })}
+                  {/* Accroche courte du master (« Meilleur rapport
+                      efficacité/prix »…), remontée ici depuis l'en-tête — retour
+                      client : c'est au moment de payer qu'elle pèse, pas en tête
+                      de page. Repli sur la note d'achat générique (« Les N
+                      produits en une seule commande ») pour les routines que le
+                      master n'a pas dotées d'une accroche. */}
+                  <p className="mt-3 text-center text-xs font-semibold uppercase tracking-[0.1em] text-gold-soft">
+                    {routine.badge || t("buyNote", { count: routine.steps.length })}
                   </p>
                 </div>
               </div>
@@ -463,7 +534,15 @@ export default async function RoutinePage({ params }: { params: Params }) {
                       href={r.href}
                       className="kk-lift group flex h-full items-center gap-4 rounded-2xl border border-border/70 bg-card p-4"
                     >
-                      <span className={`h-14 w-14 shrink-0 rounded-xl ${tintClass(r.tint)}`} />
+                      <span
+                        className={`relative h-14 w-14 shrink-0 overflow-hidden rounded-xl ${tintClass(r.tint)}`}
+                      >
+                        {r.image ? (
+                          <Image src={r.image} alt="" fill sizes="56px" className="object-cover" />
+                        ) : (
+                          <RoutineIllustration tint={r.tint} fit="cover" className="h-full w-full" />
+                        )}
+                      </span>
                       <span className="min-w-0 flex-1">
                         <span className="block font-display text-[1.05rem] leading-snug text-deep">
                           {r.name}

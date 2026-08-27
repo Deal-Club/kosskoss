@@ -1,7 +1,7 @@
 import type { KKBadge, KKProductView, KKTone } from "@/types/kk";
 import { normaliserBadge } from "@/lib/kk/badges";
 import { packshot } from "@/lib/kk/packshot";
-import { pickText, needsTranslation } from "@/server/localizedContent";
+import { pickText, pickList, needsTranslation } from "@/server/localizedContent";
 import type { Locale } from "@/i18n/routing";
 
 /**
@@ -80,6 +80,9 @@ export interface ProductViewRow {
   category: { slug: string; group: { slug: string } };
   /** Absent si la requête n'a pas inclus les variations : on suppose alors aucune. */
   variants?: { id: string }[];
+  /** JSON de chaînes (défaut "[]") — voir `parseStringArray`. */
+  bullets?: string;
+  bulletsEn?: string;
 }
 
 /**
@@ -96,6 +99,10 @@ export function toProductView(row: ProductViewRow, locale: Locale, index = 0): K
   const traduire = needsTranslation(locale);
   const name = pickText(row.name, traduire ? row.nameEn : undefined);
   const shortDescription = pickText(row.shortDescription ?? "", traduire ? row.shortDescriptionEn : undefined);
+  const bullets = pickList(
+    parseStringArray(row.bullets ?? null),
+    traduire ? parseStringArray(row.bulletsEn ?? null) : undefined,
+  );
 
   return {
     id: row.id,
@@ -117,5 +124,6 @@ export function toProductView(row: ProductViewRow, locale: Locale, index = 0): K
     href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
     stock: row.stock,
     hasVariants: (row.variants?.length ?? 0) > 0,
+    bullets: bullets.length > 0 ? bullets : undefined,
   };
 }

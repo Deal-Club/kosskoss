@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Package, Sparkles, ChevronRight, Heart, MapPin, ShieldCheck } from "lucide-react";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { LocalizedLink as Link } from "@/components/kk/localized-link";
@@ -11,22 +11,29 @@ import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
 
-export const metadata: Metadata = {
-  title: "Mon compte — KossKoss Select",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "account.dashboard" });
+  return {
+    title: t("metaTitle"),
+    robots: { index: false, follow: false },
+  };
+}
 
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(
-    new Date(iso),
-  );
+function formatDate(iso: string, locale: Locale): string {
+  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "fr-FR", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(iso));
 }
 
 export default async function AccountPage({ params }: { params: Params }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "account.dashboard" });
   const customer = await requireCustomer(locale, "/compte");
-  const orders = await getAccountOrders(customer.id);
+  const orders = await getAccountOrders(customer.id, locale);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -36,8 +43,8 @@ export default async function AccountPage({ params }: { params: Params }) {
         <section className="mx-auto max-w-4xl px-6 py-12">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="eyebrow">Espace client</p>
-              <h1 className="mt-2 text-deep">Bonjour {customer.firstName}</h1>
+              <p className="eyebrow">{t("eyebrow")}</p>
+              <h1 className="mt-2 text-deep">{t("greeting", { name: customer.firstName })}</h1>
             </div>
             <AccountLogout />
           </div>
@@ -48,10 +55,10 @@ export default async function AccountPage({ params }: { params: Params }) {
               depuis l'en-tête. */}
           <div className="mt-6 flex flex-wrap gap-3">
             {[
-              { href: "/favoris", label: "Mes favoris", icon: Heart },
-              { href: "/compte/adresses", label: "Mes adresses", icon: MapPin },
-              { href: "/compte/informations", label: "Mes informations", icon: ShieldCheck },
-              { href: "/diagnostic", label: "Refaire mon diagnostic", icon: Sparkles },
+              { href: "/favoris", label: t("favorites"), icon: Heart },
+              { href: "/compte/adresses", label: t("addresses"), icon: MapPin },
+              { href: "/compte/informations", label: t("info"), icon: ShieldCheck },
+              { href: "/diagnostic", label: t("redoDiagnostic"), icon: Sparkles },
             ].map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
@@ -64,14 +71,14 @@ export default async function AccountPage({ params }: { params: Params }) {
           </div>
 
           <h2 className="mt-10 flex items-center gap-2 text-lg text-deep">
-            <Package className="h-5 w-5" /> Mes commandes
+            <Package className="h-5 w-5" /> {t("ordersTitle")}
           </h2>
 
           {orders.length === 0 ? (
             <div className="mt-4 rounded-2xl border border-dashed border-border p-10 text-center">
-              <p className="text-muted-foreground">Vous n&rsquo;avez pas encore de commande.</p>
+              <p className="text-muted-foreground">{t("noOrders")}</p>
               <Link href="/soins-visage" className="mt-3 inline-block text-sm font-semibold text-deep underline underline-offset-4">
-                Découvrir la boutique
+                {t("discoverShop")}
               </Link>
             </div>
           ) : (
@@ -85,7 +92,7 @@ export default async function AccountPage({ params }: { params: Params }) {
                     <div className="flex-1">
                       <p className="font-medium text-deep">{o.orderNumber}</p>
                       <p className="text-sm text-muted-foreground">
-                        {formatDate(o.createdAt)} · {o.itemCount} article{o.itemCount > 1 ? "s" : ""}
+                        {t("orderMeta", { date: formatDate(o.createdAt, locale), count: o.itemCount })}
                       </p>
                     </div>
                     <span className="hidden rounded-full bg-sand px-3 py-1 text-xs font-medium text-deep sm:inline">

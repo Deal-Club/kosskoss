@@ -5,7 +5,7 @@ import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
 import { LocalizedLink as Link } from "./localized-link";
-import { FavoriteHeart, QuickAddButton } from "./product-actions";
+import { FavoriteHeart, QuickAddButton, BoutonAcheter } from "./product-actions";
 import { ProductHoverPanel } from "./product-hover-panel";
 
 // Libellés partagés avec la fiche produit et le back-office : voir
@@ -119,6 +119,10 @@ export function ProductCard({ product }: { product: KKProductView }) {
           )}
         </div>
       </Link>
+
+      {/* « Achète maintenant » : hors du lien vers la fiche, pour ajouter au
+          panier sans quitter la grille. */}
+      <BoutonAcheter product={product} />
     </article>
   );
 }

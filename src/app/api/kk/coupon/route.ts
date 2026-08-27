@@ -56,19 +56,27 @@ async function sousTotalReel(lignes: LigneRecue[]): Promise<number> {
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
-  if (!body) return NextResponse.json({ ok: false, message: "Requête invalide." }, { status: 400 });
+  if (!body)
+    return NextResponse.json(
+      { ok: false, message: "Requête invalide.", error: "requete_invalide" },
+      { status: 400 },
+    );
 
   const lignes = Array.isArray(body.items) ? (body.items as LigneRecue[]) : [];
   const subtotalCents = await sousTotalReel(lignes);
 
   if (subtotalCents <= 0) {
-    return NextResponse.json({ ok: false, message: "Votre panier est vide." }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: "Votre panier est vide.", error: "panier_vide" },
+      { status: 400 },
+    );
   }
 
   const resultat = await validerCoupon(body.code, subtotalCents);
   if (!resultat.ok) {
     // 200 et non 4xx : un code refusé est une réponse normale du formulaire,
-    // pas une erreur de la requête. Le tunnel affiche `message` tel quel.
+    // pas une erreur de la requête. Le tunnel traduit `error` dans la langue
+    // de la page (commande.couponErrors) ; `message` n'est qu'un repli.
     return NextResponse.json({ ok: false, message: resultat.message, error: resultat.error });
   }
 

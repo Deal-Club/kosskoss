@@ -2,9 +2,16 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { LocalizedLink as Link } from "./localized-link";
 import { ArrowRight } from "lucide-react";
-import { BottleMotif } from "./motifs";
+import { RoutineIllustration } from "./routine-illustration";
 import { RoutineAddToCart } from "./routine-add";
+import { formatFcfa } from "@/lib/kk/format";
 import type { KKRoutineView } from "@/types/kk";
+
+/** Tronque un texte à `max` mots (ajoute « … » si coupé). */
+function tronquerMots(texte: string, max: number): string {
+  const mots = texte.trim().split(/\s+/).filter(Boolean);
+  return mots.length <= max ? texte.trim() : mots.slice(0, max).join(" ") + "…";
+}
 
 /**
  * Teintes de routine.
@@ -28,6 +35,18 @@ const TINTS: Record<string, string> = {
 
 export function tintClass(tint: string): string {
   return TINTS[tint] ?? TINTS.acne;
+}
+
+/** Jetons connus, pour retomber sur `acne` comme `tintClass`. */
+const TINT_KEYS = new Set(Object.keys(TINTS));
+
+/**
+ * La couleur de la teinte, comme valeur CSS brute plutôt que classe Tailwind —
+ * pour un dégradé en style inline (`background: linear-gradient(…, var(...))`),
+ * où une classe `bg-tint-*` ne peut pas s'employer.
+ */
+export function tintCssVar(tint: string): string {
+  return `var(--tint-${TINT_KEYS.has(tint) ? tint : "acne"})`;
 }
 
 /**
@@ -60,20 +79,18 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
           className="kk-zoom object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
         />
       ) : (
-        // En attendant les visuels de coffret fournis par le client.
-        //
-        // La carte affichait ici le packshot du premier produit de la routine.
-        // C'était trompeur : un flacon isolé se lit comme LE produit vendu,
-        // alors qu'une routine est un ensemble de trois à cinq gestes. Le
-        // visiteur croyait acheter ce qu'il voyait.
-        //
-        // Le motif sur l'aplat teinté ne prétend rien : il tient la place,
-        // porte la couleur de la routine, et s'efface dès qu'une vraie image
-        // de coffret est renseignée sur `Routine.image`.
-        // Le motif suit le même mouvement que le visuel éditorial : sans lui,
-        // les routines sans image seraient les seules cartes inertes de la
-        // rangée, et l'effet paraîtrait cassé une carte sur deux.
-        <BottleMotif className="kk-zoom h-[78%] w-auto text-deep/25 transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]" />
+        // Nature morte vectorielle propre à la routine (retour client) : elle
+        // montre un ENSEMBLE de contenants — une routine est une suite de
+        // gestes, pas un produit — et se décline par la couleur d'une carte à
+        // l'autre. Elle s'efface dès qu'une vraie image de coffret est
+        // renseignée sur `Routine.image`.
+        // Elle suit le même mouvement que le visuel éditorial : sans lui, les
+        // routines sans image seraient les seules cartes inertes de la rangée,
+        // et l'effet paraîtrait cassé une carte sur deux.
+        <RoutineIllustration
+          tint={routine.tint}
+          className="kk-zoom absolute inset-0 h-full w-full transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+        />
       )}
     </div>
   );
@@ -117,8 +134,16 @@ export async function RoutineCard({ routine }: { routine: KKRoutineView }) {
         </h3>
 
         {routine.claim && (
-          <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{routine.claim}</p>
+          <p className="mt-1.5 text-sm leading-snug text-muted-foreground">
+            {tronquerMots(routine.claim, 15)}
+          </p>
         )}
+
+        {/* Prix d'entrée, remis à la demande du client : « à partir de », car
+            le total dépend des produits réellement servables de la routine. */}
+        <p className="figure mt-2 text-sm font-semibold text-deep">
+          {t("priceFrom", { value: formatFcfa(routine.totalFcfa) })}
+        </p>
 
         {/* LA SUITE DES GESTES ET LE PRIX D'ENTRÉE ONT ÉTÉ RETIRÉS DE LA CARTE.
             Ils y tenaient deux lignes — « Nettoyer · Traiter · Hydrater », puis

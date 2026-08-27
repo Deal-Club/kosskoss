@@ -29,7 +29,7 @@ const COPY = {
     intro:
       "Comment lire une liste d'ingrédients, bâtir une routine qui tient dans le temps, choisir un soin adapté à sa peau et à son climat. Nos guides, écrits par l'équipe KossKoss Select.",
     recent: "Derniers articles",
-    metaTitle: `Le Journal — ${BRAND.name}`,
+    metaTitle: `Le Journal · ${BRAND.name}`,
     metaDescription:
       "Conseils beauté, guides d'achat et routines expliquées par l'équipe KossKoss Select.",
   },
@@ -39,7 +39,7 @@ const COPY = {
     intro:
       "How to read an ingredient list, build a routine that lasts, and choose care suited to your skin and climate. Guides written by the KossKoss Select team.",
     recent: "Latest articles",
-    metaTitle: `The Journal — ${BRAND.name}`,
+    metaTitle: `The Journal · ${BRAND.name}`,
     metaDescription:
       "Beauty advice, buying guides and routines explained by the KossKoss Select team.",
   },

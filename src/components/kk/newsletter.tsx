@@ -35,12 +35,12 @@ function FacebookIcon({ className }: { className?: string }) {
  */
 const RESEAUX = [
   {
-    nom: `Instagram — @${CONTACT.social.instagram}`,
+    nom: `Instagram, @${CONTACT.social.instagram}`,
     href: `https://instagram.com/${CONTACT.social.instagram}`,
     Icone: InstagramIcon,
   },
   {
-    nom: `Facebook — ${CONTACT.social.facebook}`,
+    nom: `Facebook, ${CONTACT.social.facebook}`,
     href: `https://facebook.com/${CONTACT.social.facebook}`,
     Icone: FacebookIcon,
   },

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: ProductParams }): P
   const detail = await getProductDetail(group, category, product, locale);
   if (!detail) return {};
   return {
-    title: `${detail.brand} ${detail.name} — ${BRAND.name}`,
+    title: `${detail.brand} ${detail.name} · ${BRAND.name}`,
     description: detail.shortDescription || detail.bullets.join(" · "),
     alternates: alternatesFor(`/${group}/${category}/${product}`, locale),
   };

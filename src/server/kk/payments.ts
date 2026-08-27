@@ -67,13 +67,24 @@ export const getEnabledPaymentMethods = cache(async (locale: Locale): Promise<Pa
  * Libellé à archiver sur la commande, ou `null` si la clé n'est pas (ou plus)
  * un moyen de paiement activé. Le libellé est figé sur la commande : le
  * renommer plus tard au back-office ne doit pas réécrire l'historique.
+ *
+ * Il est figé DANS LA LANGUE DE L'ACHETEUR — même règle que les lignes de
+ * commande (voir server/kk/checkout.ts) : c'est ce qui a été présenté au
+ * client à la caisse qui fait foi, pas la version française du back-office.
  */
-export async function resolvePaymentMethod(key: unknown): Promise<{ key: string; label: string } | null> {
+export async function resolvePaymentMethod(
+  key: unknown,
+  locale: Locale = "fr",
+): Promise<{ key: string; label: string } | null> {
   if (typeof key !== "string" || key.length === 0) return null;
 
   const row = await prisma.paymentMethod.findFirst({
     where: { key, enabled: true },
-    select: { key: true, label: true },
+    select: { key: true, label: true, labelEn: true },
   });
-  return row ?? null;
+  if (!row) return null;
+  return {
+    key: row.key,
+    label: pickText(row.label, locale === "en" ? row.labelEn : undefined),
+  };
 }

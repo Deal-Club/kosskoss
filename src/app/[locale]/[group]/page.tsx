@@ -33,10 +33,10 @@ export async function generateMetadata({
   // Sans ça, Google voit deux adresses au contenu différent sous un
   // même titre et une même canonique : il replie la seconde sur la
   // première et n'explore jamais les produits qu'elle seule montre.
-  const suffixe = view.page > 1 ? ` — Page ${view.page}` : "";
+  const suffixe = view.page > 1 ? ` · Page ${view.page}` : "";
   const requete = view.page > 1 ? `?page=${view.page}` : "";
   return {
-    title: `${view.group.label}${suffixe} — ${BRAND.name}`,
+    title: `${view.group.label}${suffixe} · ${BRAND.name}`,
     description: t("metaDescription", { labelLower: view.group.label.toLowerCase() }),
     alternates: alternatesFor(`/${group}`, locale, requete),
   };

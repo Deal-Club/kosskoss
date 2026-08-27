@@ -1,7 +1,7 @@
 import { LocalizedLink as Link } from "./localized-link";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { KKProductView } from "@/types/kk";
 import { ProductCard } from "./product-card";
 import { ProductCarousel } from "./product-carousel";
@@ -121,40 +121,23 @@ export function Hero() {
               {t("hero.subtitle")}
             </p>
 
-            {/* Deux portes, dans l'ordre d'engagement décroissant.
-                « Trouvez votre routine » passe en tête et prend le laiton plein :
-                c'est la promesse du chapô — « des routines déjà composées, pour
-                ne pas avoir à choisir seul » —, donc la suite naturelle du
-                titre. Le diagnostic reste offert juste à côté, en contour, pour
-                qui veut d'abord être conseillé. Un hero ne doit porter qu'une
-                seule action dominante : deux boutons d'égale force ne
-                partageraient pas les clics, ils les feraient hésiter. */}
+            {/* Une seule action dominante dans le hero : le Diagnostic Beauté.
+                Un hero ne doit porter qu'un seul bouton fort — deux d'égale
+                force partageraient les clics et feraient hésiter. Il prend donc
+                le laiton plein, et se remplit de vert profond au survol
+                (`kk-fill-deep` ; l'effet inverse serait illisible sur ce fond
+                déjà sombre). Le texte ne prend pas l'ombre du hero : posé sur un
+                aplat laiton, il n'en a pas besoin. */}
             <div
               className="kk-rise mt-8 flex flex-wrap items-center gap-4"
               style={{ "--d": "160ms" } as React.CSSProperties}
             >
-              {/* Bouton d'action en laiton plein. Il se remplit de vert profond
-                  au survol (`kk-fill-deep`) — l'effet inverse serait illisible
-                  sur un fond déjà sombre.
-                  Le texte du bouton ne prend pas l'ombre du hero : posé sur un
-                  aplat laiton, il n'en a pas besoin et elle l'empâterait. */}
-              <Link
-                href="/routines"
-                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep [text-shadow:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
-              >
-                {t("hero.ctaRoutine")}
-                <Sparkles className="h-4 w-4 shrink-0" />
-              </Link>
-              {/* Contour clair à 55 %, au-dessus des 3:1 qu'un contrôle doit
-                  tenir sur son fond pour qu'on voie où l'on clique. Il se
-                  remplit d'un blanc très dilué au survol plutôt que de changer
-                  de couleur : sur une photo, un aplat franc trancherait. */}
               <Link
                 href="/diagnostic"
-                className="group inline-flex items-center gap-2 rounded-full border border-primary-foreground/55 px-7 py-3.5 text-sm font-semibold text-primary-foreground backdrop-blur-[2px] transition hover:border-primary-foreground hover:bg-primary-foreground/10"
+                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep [text-shadow:none] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground focus-visible:ring-offset-2 focus-visible:ring-offset-deep"
               >
                 {t("diagnosticCta")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>

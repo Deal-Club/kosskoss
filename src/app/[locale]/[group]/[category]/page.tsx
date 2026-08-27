@@ -31,10 +31,10 @@ export async function generateMetadata({
 
   // Voir la note de la page univers : chaque page de rayon se désigne
   // elle-même comme canonique, sinon elle n'est jamais explorée.
-  const suffixe = view.page > 1 ? ` — Page ${view.page}` : "";
+  const suffixe = view.page > 1 ? ` · Page ${view.page}` : "";
   const requete = view.page > 1 ? `?page=${view.page}` : "";
   return {
-    title: `${view.category.label}${suffixe} — ${BRAND.name}`,
+    title: `${view.category.label}${suffixe} · ${BRAND.name}`,
     description: t("metaDescription", {
       label: view.category.label,
       labelLower: view.category.label.toLowerCase(),

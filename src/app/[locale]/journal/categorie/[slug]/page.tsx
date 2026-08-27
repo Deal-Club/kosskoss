@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: CategoryParams }): 
   if (!category) return {};
 
   return {
-    title: category.metaTitle || `${category.label} — ${locale === "en" ? "Journal" : "Le Journal"} ${BRAND.name}`,
+    title: category.metaTitle || `${category.label} · ${locale === "en" ? "Journal" : "Le Journal"} ${BRAND.name}`,
     description: category.metaDescription || category.description || undefined,
     alternates: alternatesFor(`/journal/categorie/${category.slug}`, locale),
     // Une rubrique vide n'a rien à faire dans l'index : c'est une page sans

@@ -33,10 +33,10 @@ export async function generateMetadata({
   // Voir la note des pages de rayon : chaque page au-delà de la première se
   // désigne elle-même comme canonique, sinon Google la replie sur la page 1
   // et n'explore jamais les produits qu'elle seule contient.
-  const suffixe = marque.page > 1 ? ` — Page ${marque.page}` : "";
+  const suffixe = marque.page > 1 ? ` · Page ${marque.page}` : "";
   const requete = marque.page > 1 ? `?page=${marque.page}` : "";
   return {
-    title: `${marque.name}${suffixe} — ${BRAND.name}`,
+    title: `${marque.name}${suffixe} · ${BRAND.name}`,
     description: marque.description
       ? marque.description.slice(0, 155)
       : t("metaFallbackDescription", { name: marque.name, brand: BRAND.name }),

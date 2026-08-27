@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: AuthorParams }): Pr
   if (!author) return {};
 
   return {
-    title: author.role ? `${author.name} — ${author.role}` : author.name,
+    title: author.role ? `${author.name} · ${author.role}` : author.name,
     description: author.bio || undefined,
     alternates: alternatesFor(`/journal/auteur/${author.slug}`, locale),
     // Une page auteur sans article publié n'apporte rien à l'index.

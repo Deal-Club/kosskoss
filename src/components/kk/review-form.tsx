@@ -71,9 +71,17 @@ export function ReviewForm({ productId }: { productId: string }) {
         }),
       });
 
-      const donnees = (await reponse.json().catch(() => null)) as { error?: string } | null;
+      const donnees = (await reponse.json().catch(() => null)) as
+        | { error?: string; code?: string }
+        | null;
       if (!reponse.ok) {
-        setErreur(donnees?.error ?? t("quick.submitFailed"));
+        // Le code d'erreur est traduit dans la langue de la page ; le texte
+        // `error` du serveur est en français et ne sert que de repli.
+        setErreur(
+          donnees?.code && t.has(`apiErrors.${donnees.code}`)
+            ? t(`apiErrors.${donnees.code}`)
+            : (donnees?.error ?? t("quick.submitFailed")),
+        );
         return;
       }
       setEnvoye(true);

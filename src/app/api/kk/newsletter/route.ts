@@ -16,25 +16,42 @@ import { adresseEmailValide } from "@/lib/kk/email-valide";
 
 const SOURCES = new Set(["accueil", "pied-de-page", "commande", "diagnostic"]);
 
+// Les messages d'erreur sont affichés tels quels par le formulaire : ils
+// doivent donc parler la langue de la page, connue par le champ `locale` du
+// corps de la requête.
+const MESSAGES = {
+  fr: {
+    illisible: "Requête illisible.",
+    emailInvalide: "Adresse e-mail invalide.",
+    indisponible: "Inscription impossible pour le moment.",
+  },
+  en: {
+    illisible: "The request could not be read.",
+    emailInvalide: "Invalid email address.",
+    indisponible: "Sign-up is unavailable right now.",
+  },
+} as const;
+
 export async function POST(request: Request) {
   let corps: unknown;
   try {
     corps = await request.json();
   } catch {
-    return NextResponse.json({ error: "Requête illisible." }, { status: 400 });
+    return NextResponse.json({ error: MESSAGES.fr.illisible }, { status: 400 });
   }
 
   const { email, locale, source } = (corps ?? {}) as Record<string, unknown>;
 
-  const adresse = typeof email === "string" ? email.trim().toLowerCase() : "";
-  if (!adresseEmailValide(adresse)) {
-    return NextResponse.json({ error: "Adresse e-mail invalide." }, { status: 400 });
-  }
-
-  // Les deux champs suivants viennent du navigateur : on ne retient que des
+  // Les champs suivants viennent du navigateur : on ne retient que des
   // valeurs connues, sinon ils deviendraient un champ de texte libre en base.
   const langue = locale === "en" ? "en" : "fr";
+  const messages = MESSAGES[langue];
   const origine = typeof source === "string" && SOURCES.has(source) ? source : "accueil";
+
+  const adresse = typeof email === "string" ? email.trim().toLowerCase() : "";
+  if (!adresseEmailValide(adresse)) {
+    return NextResponse.json({ error: messages.emailInvalide }, { status: 400 });
+  }
 
   try {
     await prisma.newsletterSubscriber.upsert({
@@ -45,7 +62,7 @@ export async function POST(request: Request) {
       create: { email: adresse, locale: langue, source: origine },
     });
   } catch {
-    return NextResponse.json({ error: "Inscription impossible pour le moment." }, { status: 500 });
+    return NextResponse.json({ error: messages.indisponible }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true });

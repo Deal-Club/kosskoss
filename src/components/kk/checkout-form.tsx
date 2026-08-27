@@ -26,6 +26,7 @@ import { useCart } from "@/components/cart/CartProvider";
 import { formatFcfa } from "@/lib/kk/format";
 import { cartSubtotalFcfa } from "@/lib/kk/cart-totals";
 import { normaliserTelephone } from "@/lib/kk/telephone";
+import { VILLES_LIVRAISON, estVilleLivraison, fraisLivraisonFcfa } from "@/lib/kk/livraison";
 import { mesurerEvenement } from "@/lib/kk/mesureNavigateur";
 import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 import type { PaymentMethodView } from "@/server/kk/payments";
@@ -51,7 +52,7 @@ const CLES_ERREUR: Record<string, string> = {
 };
 
 /** Champs de livraison, dans l'ordre où ils sont posés au client. */
-type FieldName = "fullName" | "email" | "phone" | "location";
+type FieldName = "fullName" | "email" | "phone" | "location" | "city" | "cityOther";
 
 /** Type de la fonction de traduction, pour la passer en paramètre à `validate`. */
 type Traduire = ReturnType<typeof useTranslations>;
@@ -84,8 +85,17 @@ const CLES_HORS_LIGNE = ["paiement-livraison", "paiement-a-la-livraison"];
  * Fonction déclarée hors composant : `useTranslations` est un hook et ne
  * peut pas être appelé ici. La fonction de traduction est donc reçue en
  * paramètre plutôt qu'obtenue directement.
+ *
+ * `city`/`cityOther` n'y passent jamais : leur validation dépend l'une de
+ * l'autre (voir `erreurs` dans le composant), ce qu'une fonction à un seul
+ * champ ne peut pas exprimer. Le type de `field` l'exclut donc explicitement,
+ * plutôt que de laisser un `case` mort ici.
  */
-function validate(field: FieldName, value: string, t: Traduire): string | null {
+function validate(
+  field: Exclude<FieldName, "city" | "cityOther">,
+  value: string,
+  t: Traduire,
+): string | null {
   const v = value.trim();
   switch (field) {
     case "fullName":
@@ -132,6 +142,8 @@ export function CheckoutForm({
     email: "",
     phone: "",
     location: "",
+    city: "",
+    cityOther: "",
   });
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [followOrder, setFollowOrder] = useState(true);
@@ -272,12 +284,26 @@ export function CheckoutForm({
       email: validate("email", values.email, t),
       phone: validate("phone", values.phone, t),
       location: validate("location", values.location, t),
+      // Hors de `validate()` : ces deux erreurs dépendent l'une de l'autre
+      // (« Autre » n'exige un nom de ville que s'il est choisi), ce que la
+      // signature à un seul champ de `validate()` ne porte pas.
+      city: estVilleLivraison(values.city) ? null : t("validation.city"),
+      cityOther:
+        values.city === "autre" && values.cityOther.trim().length < 2
+          ? t("validation.cityOther")
+          : null,
     }),
     [values, t],
   );
   const formulaireComplet = Object.values(erreurs).every((e) => e === null);
   const remise = coupon?.discountCents ?? 0;
-  const total = Math.max(0, subtotal - remise);
+  // Frais de livraison : connu dès qu'une ville valide est choisie, à zéro
+  // avant — pas d'estimation affichée avant que le client ait renseigné de
+  // quoi la calculer. Recalculé à l'identique côté serveur à la commande
+  // (voir le commentaire d'en-tête de `src/lib/kk/livraison.ts`) : ce qui
+  // s'affiche ici n'est jamais ce qui fait foi.
+  const livraison = estVilleLivraison(values.city) ? fraisLivraisonFcfa(values.city) : 0;
+  const total = Math.max(0, subtotal - remise) + livraison;
 
   if (ready && lines.length === 0) {
     return (
@@ -318,13 +344,19 @@ export function CheckoutForm({
       });
       const data = (await res.json()) as
         | { ok: true; code: string; label: string; discountCents: number }
-        | { ok: false; message: string };
+        | { ok: false; message: string; error?: string };
       if (data.ok) {
         setCoupon({ code: data.code, label: data.label, discountCents: data.discountCents });
         setMessageCoupon(null);
       } else {
         setCoupon(null);
-        setMessageCoupon(data.message);
+        // Le motif du refus est traduit ici, dans la langue de la page : le
+        // `message` du serveur est en français et ne sert que de repli.
+        setMessageCoupon(
+          data.error && t.has(`couponErrors.${data.error}`)
+            ? t(`couponErrors.${data.error}`)
+            : data.message,
+        );
       }
     } catch {
       setMessageCoupon(t("errors.couponCheckFailed"));
@@ -348,7 +380,7 @@ export function CheckoutForm({
     // lui, n'est jamais désactivé : un bouton grisé sans explication est la
     // façon la plus sûre de perdre une commande.
     if (!formulaireComplet) {
-      setTouched({ fullName: true, email: true, phone: true, location: true });
+      setTouched({ fullName: true, email: true, phone: true, location: true, city: true, cityOther: true });
       const premier = (Object.keys(erreurs) as FieldName[]).find((f) => erreurs[f]);
       if (premier) {
         const champ = document.getElementById(`champ-${premier}`);
@@ -379,6 +411,8 @@ export function CheckoutForm({
           email: values.email,
           phone: values.phone,
           location: values.location,
+          city: values.city,
+          cityOther: values.city === "autre" ? values.cityOther : undefined,
           followOrder,
           paymentMethod,
           locale,
@@ -474,6 +508,73 @@ export function CheckoutForm({
                 onChange={(v) => setField("email", v)}
                 onBlur={() => setTouched((tch) => ({ ...tch, email: true }))}
               />
+              {/* Ville de livraison : détermine le frais de livraison
+                  (src/lib/kk/livraison.ts), ajouté au total plus bas. « Autre »
+                  ouvre une saisie libre — toutes les villes du Cameroun ne
+                  tiennent pas dans une liste de deux. */}
+              <div>
+                <label htmlFor="champ-city" className="block text-sm font-medium text-foreground">
+                  {t("step1.cityLabel")}
+                </label>
+                <div className="relative mt-1.5">
+                  <Truck
+                    className={`pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 ${
+                      touched.city && erreurs.city
+                        ? "text-destructive"
+                        : erreurs.city === null
+                          ? "text-trust"
+                          : "text-muted-foreground"
+                    }`}
+                  />
+                  <select
+                    id="champ-city"
+                    name="city"
+                    required
+                    value={values.city}
+                    aria-invalid={touched.city && erreurs.city ? true : undefined}
+                    onChange={(e) => setField("city", e.target.value)}
+                    onBlur={() => setTouched((tch) => ({ ...tch, city: true }))}
+                    className={`w-full rounded-xl border bg-background py-3 pl-10 pr-10 text-sm text-foreground outline-none transition focus:ring-2 ${
+                      touched.city && erreurs.city
+                        ? "border-destructive focus:border-destructive focus:ring-destructive/20"
+                        : erreurs.city === null
+                          ? "border-trust-line focus:border-trust focus:ring-trust/20"
+                          : "border-input focus:border-deep focus:ring-deep/15"
+                    }`}
+                  >
+                    <option value="" disabled>
+                      {t("step1.cityPlaceholder")}
+                    </option>
+                    {VILLES_LIVRAISON.map((ville) => (
+                      <option key={ville} value={ville}>
+                        {t(`step1.cityOption.${ville}`)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {touched.city && erreurs.city ? (
+                  <p role="alert" className="mt-1.5 text-xs text-destructive">
+                    {erreurs.city}
+                  </p>
+                ) : (
+                  <p className="mt-1.5 text-xs text-muted-foreground">{t("step1.cityHelp")}</p>
+                )}
+              </div>
+
+              {values.city === "autre" && (
+                <Champ
+                  name="cityOther"
+                  label={t("step1.cityOtherLabel")}
+                  icon={MapPin}
+                  value={values.cityOther}
+                  error={touched.cityOther ? erreurs.cityOther : null}
+                  valide={erreurs.cityOther === null && values.cityOther.length > 0}
+                  placeholder={t("step1.cityOtherPlaceholder")}
+                  onChange={(v) => setField("cityOther", v)}
+                  onBlur={() => setTouched((tch) => ({ ...tch, cityOther: true }))}
+                />
+              )}
+
               <Champ
                 name="location"
                 label={t("step1.locationLabel")}
@@ -757,18 +858,28 @@ export function CheckoutForm({
             </div>
 
             <div className="border-t border-border px-5 py-5 sm:px-6">
-              {coupon && (
-                <div className="mb-3 space-y-1.5 text-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">{t("summary.subtotal")}</span>
-                    <span className="figure text-muted-foreground">{formatFcfa(subtotal)}</span>
-                  </div>
+              {/* Sous-total et livraison, toujours détaillés : depuis que la
+                  livraison a un prix propre (choisi par la ville), le total
+                  seul ne dit plus de quoi il est fait. La remise ne s'ajoute
+                  que si un code est appliqué. */}
+              <div className="mb-3 space-y-1.5 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">{t("summary.subtotal")}</span>
+                  <span className="figure text-muted-foreground">{formatFcfa(subtotal)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">{t("summary.shipping")}</span>
+                  <span className="figure text-muted-foreground">
+                    {estVilleLivraison(values.city) ? formatFcfa(livraison) : t("summary.shippingPending")}
+                  </span>
+                </div>
+                {coupon && (
                   <div className="flex items-center justify-between font-medium text-trust">
                     <span>{t("summary.youSave")}</span>
                     <span className="figure">−{formatFcfa(remise)}</span>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
 
               <div className="flex items-baseline justify-between gap-3">
                 <span className="font-semibold text-deep">{t("summary.totalToPay")}</span>

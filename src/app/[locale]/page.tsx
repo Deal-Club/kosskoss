@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: { params: HomeParams }): Prom
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home" });
   return {
-    title: `${BRAND.name} — ${t("slogan")}`,
+    title: `${BRAND.name} · ${t("slogan")}`,
     description: t("metaDescription"),
     alternates: alternatesFor("/", locale),
   };
@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: { params: HomeParams }): Prom
 export default async function Home({ params }: { params: HomeParams }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: "home" });
 
   // `getShopNavigation` et `getBrandShowcase` ne sont plus appelés ici : la
   // carte des catégories et la section « Nos maisons » ont été retirées de
@@ -156,9 +157,9 @@ export default async function Home({ params }: { params: HomeParams }) {
           <div className="grid grid-cols-[minmax(0,1fr)]">
             {bestsellers.length > 0 && (
               <ProductRail
-                eyebrow="Les plus choisis"
-                title="Nos best-sellers"
-                action="Tout voir"
+                eyebrow={t("bestsellers.eyebrow")}
+                title={t("bestsellers.title")}
+                action={t("bestsellers.action")}
                 products={bestsellers}
                 bare
                 carousel

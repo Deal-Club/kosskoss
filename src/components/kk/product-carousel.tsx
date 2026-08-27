@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { KKProductView } from "@/types/kk";
 import { ProductCard } from "./product-card";
@@ -46,6 +47,7 @@ export function ProductCarousel({
   /** Décrit la liste aux lecteurs d'écran et nomme les flèches. */
   label: string;
 }) {
+  const t = useTranslations("common");
   const piste = useRef<HTMLDivElement>(null);
   const enPause = useRef(false);
   const [flechesUtiles, setFlechesUtiles] = useState(false);
@@ -180,8 +182,8 @@ export function ProductCarousel({
 
       {flechesUtiles && (
         <>
-          <Fleche sens="gauche" label={`${label} — précédent`} onClick={() => avancer(-1)} />
-          <Fleche sens="droite" label={`${label} — suivant`} onClick={() => avancer(1)} />
+          <Fleche sens="gauche" label={t("carouselPrev", { label })} onClick={() => avancer(-1)} />
+          <Fleche sens="droite" label={t("carouselNext", { label })} onClick={() => avancer(1)} />
         </>
       )}
     </div>

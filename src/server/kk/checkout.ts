@@ -9,6 +9,13 @@ import { normaliserTelephone } from "@/lib/kk/telephone";
 import { choisirLangue } from "@/lib/kk/langue";
 import { pickText, needsTranslation } from "@/server/localizedContent";
 import { serverAllows } from "@/server/consent";
+import { estVilleLivraison, fraisLivraisonFcfa, type VilleLivraison } from "@/lib/kk/livraison";
+
+/** Nom affichable d'une ville de livraison — jamais le nom anglais pour une commande francophone, ni l'inverse. */
+const LIBELLE_VILLE: Record<Exclude<VilleLivraison, "autre">, Record<"fr" | "en", string>> = {
+  douala: { fr: "Douala", en: "Douala" },
+  yaounde: { fr: "Yaoundé", en: "Yaoundé" },
+};
 
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
@@ -25,6 +32,10 @@ export type CheckoutInput = {
   email: string;
   phone: string;
   location: string;
+  /** Clé de `VILLES_LIVRAISON` (src/lib/kk/livraison.ts) — pas un nom libre. */
+  city: string;
+  /** Nom de ville saisi, uniquement quand `city === "autre"`. */
+  cityOther?: string;
   followOrder: boolean;
   paymentMethod: KKPaymentMethod;
   locale: string;
@@ -43,13 +54,25 @@ function isValidEmail(email: string): boolean {
 /**
  * Crée une commande KossKoss. Le prix, le stock et le total sont TOUJOURS
  * recalculés côté serveur à partir de la base — jamais fiés au navigateur.
- * Montants en FCFA entiers, sans frais de livraison (coordonnée via WhatsApp).
+ * Montants en FCFA entiers. Le frais de livraison (src/lib/kk/livraison.ts)
+ * est recalculé ICI à partir de la seule `city` reçue, jamais reçu comme
+ * montant : c'est lui qui, ajouté au sous-total, forme `totalCents` — le
+ * montant réellement transmis à la passerelle de paiement.
  */
 export async function createKossOrder(input: CheckoutInput): Promise<CheckoutResult> {
   if (!Array.isArray(input.items) || input.items.length === 0) {
     return { ok: false, error: "panier_vide" };
   }
   if (!input.fullName?.trim() || !isValidEmail(input.email ?? "") || !input.location?.trim()) {
+    return { ok: false, error: "champs_invalides" };
+  }
+  if (!estVilleLivraison(input.city)) {
+    return { ok: false, error: "champs_invalides" };
+  }
+  // « Autre » exige un nom de ville saisi ; Douala/Yaoundé n'en ont pas besoin
+  // et ignorent silencieusement une valeur envoyée quand même.
+  const villeAutre = input.city === "autre" ? input.cityOther?.trim() : "";
+  if (input.city === "autre" && !villeAutre) {
     return { ok: false, error: "champs_invalides" };
   }
   // Le numéro stocké est TOUJOURS en +237XXXXXXXXX, quelle que soit la saisie :
@@ -61,13 +84,6 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   if (!telephone) {
     return { ok: false, error: "telephone_invalide" };
   }
-  // Le moyen de paiement est revalidé contre la base : une clé désactivée
-  // depuis le back-office, ou fabriquée par le navigateur, est refusée ici.
-  const payment = await resolvePaymentMethod(input.paymentMethod);
-  if (!payment) {
-    return { ok: false, error: "paiement_invalide" };
-  }
-
   // Langue de l'acheteur, résolue ICI — AVANT de construire les lignes de
   // commande, pas seize lignes plus bas comme précédemment.
   //
@@ -85,6 +101,15 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   // qui n'a pas de sens pour un document historique.
   const langue = choisirLangue(input.locale);
   const traduireLignes = needsTranslation(langue);
+
+  // Le moyen de paiement est revalidé contre la base : une clé désactivée
+  // depuis le back-office, ou fabriquée par le navigateur, est refusée ici.
+  // Résolu APRÈS la langue : le libellé figé sur la commande est celui montré
+  // à l'acheteur dans sa langue, même règle que les lignes ci-dessous.
+  const payment = await resolvePaymentMethod(input.paymentMethod, langue);
+  if (!payment) {
+    return { ok: false, error: "paiement_invalide" };
+  }
 
   const ids = [...new Set(input.items.map((i) => i.productId))];
   const products = await prisma.product.findMany({
@@ -170,7 +195,16 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       discountCents = resultat.coupon.discountCents;
     }
   }
-  const total = Math.max(0, subtotal - discountCents);
+  // Frais de livraison — voir le commentaire d'en-tête de la fonction.
+  const shippingCents = fraisLivraisonFcfa(input.city);
+  const total = Math.max(0, subtotal - discountCents) + shippingCents;
+
+  // Nom affichable de la ville, dans la langue de la commande (même principe
+  // que `name`/`variantLabel` plus haut) : Douala/Yaoundé viennent de
+  // `LIBELLE_VILLE`, « Autre » reprend tel quel ce que le client a saisi — un
+  // nom de ville ne se traduit pas.
+  const villeAffichee =
+    input.city === "autre" ? (villeAutre ?? "") : LIBELLE_VILLE[input.city as "douala" | "yaounde"][langue];
 
   // `langue` est déjà résolue plus haut (avant la construction des lignes) ;
   // elle sert aussi au compte client et aux e-mails transactionnels ci-dessous
@@ -242,21 +276,27 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         billingLastName: lastName,
         billingStreet: input.location.trim(),
         billingPostalCode: "",
-        billingCity: input.location.trim(),
+        // La ville structurée (Douala / Yaoundé / saisie libre), pas le champ
+        // « repère de quartier » : `billingCity` était détourné pour porter
+        // les deux avant que la ville ait son propre champ.
+        billingCity: villeAffichee,
         billingCountry: "CM",
         paymentMethodKey: payment.key,
         // Libellé figé sur la commande : le renommer au back-office ne doit pas
         // réécrire ce qui a été présenté au client le jour de l'achat.
         paymentMethodLabel: payment.label,
         shippingMethodKey: "whatsapp",
-        shippingMethodLabel: "Livraison coordonnée via WhatsApp",
+        shippingMethodLabel:
+          langue === "en"
+            ? `Delivery to ${villeAffichee} — appointment arranged via WhatsApp`
+            : `Livraison à ${villeAffichee} — rendez-vous coordonné via WhatsApp`,
         // Statuts KossKoss (voir docs/13). La commande naît TOUJOURS en attente
         // de paiement : c'est le webhook signé de la passerelle, et lui seul,
         // qui la fera basculer en « payée » (voir server/kk/paiement.ts).
         status: "en_attente_paiement",
         paymentStatus: "en_attente",
         subtotalCents: subtotal,
-        shippingCents: 0,
+        shippingCents,
         taxCents: 0,
         totalCents: total,
         couponCode,

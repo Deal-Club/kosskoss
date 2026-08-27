@@ -43,7 +43,7 @@ const CLE_Q4_ENVIRONNEMENT = "environnement";
  * une règle de décision : elle n'a donc pas sa place dans
  * diagnostic-matrice.ts, qui reste pur et sans connaissance de la base.
  */
-export const BESOIN_PAR_REPONSE_PRIORITE: Record<string, Besoin> = {
+const BESOIN_PAR_REPONSE_PRIORITE: Record<string, Besoin> = {
   taches_teint: "taches",
   boutons_imperfections: "imperfections",
   glow_eclat: "eclat",
@@ -145,10 +145,10 @@ export async function computeDiagnostic(
     reactiviteLabel: q3?.label ?? "",
     besoin: resultat.besoin,
     motif: resultat.motif,
-    messageSecurite: resultat.motif === "securite" ? MESSAGE_SECURITE : null,
+    messageSecurite: resultat.motif === "securite" ? MESSAGE_SECURITE[locale] : null,
     essentielle,
     premium,
-    conseilTypePeau: conseilTypePeau(q1?.key),
-    conseilEnvironnement: conseilEnvironnement(q4?.key),
+    conseilTypePeau: conseilTypePeau(q1?.key, locale),
+    conseilEnvironnement: conseilEnvironnement(q4?.key, locale),
   };
 }

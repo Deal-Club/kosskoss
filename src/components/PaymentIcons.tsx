@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { useLocale } from "next-intl";
 
 // Logos des moyens de paiement acceptés.
 //
@@ -93,14 +94,17 @@ export function MtnMoneyMark() {
   );
 }
 
-/** Paiement à la livraison — pas une marque mais un geste : des billets. */
+/** Paiement à la livraison — pas une marque mais un geste : des billets.
+ *  Seule vignette dont le texte est une phrase et non un nom de marque : elle
+ *  suit donc la langue de la page. */
 export function CashMark() {
+  const en = useLocale() === "en";
   return (
-    <Card label="Paiement à la livraison">
+    <Card label={en ? "Cash on delivery" : "Paiement à la livraison"}>
       <rect x="10" y="8.5" width="28" height="13" rx="2" fill="none" stroke="#0f7b45" strokeWidth="1.6" />
       <circle cx="24" cy="15" r="3.4" fill="none" stroke="#0f7b45" strokeWidth="1.6" />
       <text x="24" y="29" textAnchor="middle" fontFamily="Helvetica, Arial, sans-serif" fontSize="5.6" fontWeight="700" fill="#0f7b45">
-        À LA LIVRAISON
+        {en ? "ON DELIVERY" : "À LA LIVRAISON"}
       </text>
     </Card>
   );
@@ -236,8 +240,9 @@ export function PaypalMark() {
 }
 
 export function SepaMark() {
+  const en = useLocale() === "en";
   return (
-    <Card label="Prélèvement SEPA">
+    <Card label={en ? "SEPA direct debit" : "Prélèvement SEPA"}>
       <Wordmark fill="#10298E" fontSize={10} y={15} letterSpacing={0.5}>
         SEPA
       </Wordmark>
@@ -251,15 +256,16 @@ export function SepaMark() {
         letterSpacing="0.2"
         fill="#6b7280"
       >
-        PRÉLÈVEMENT
+        {en ? "DIRECT DEBIT" : "PRÉLÈVEMENT"}
       </text>
     </Card>
   );
 }
 
 export function SofortMark() {
+  const en = useLocale() === "en";
   return (
-    <Card label="Virement instantané">
+    <Card label={en ? "Instant bank transfer" : "Virement instantané"}>
       <Wordmark fill="#EF809F" fontSize={10} letterSpacing={-0.2}>
         SOFORT
       </Wordmark>
@@ -268,8 +274,9 @@ export function SofortMark() {
 }
 
 export function InvoiceMark() {
+  const en = useLocale() === "en";
   return (
-    <Card label="Paiement sur facture">
+    <Card label={en ? "Pay by invoice" : "Paiement sur facture"}>
       {/* Feuille de facture : quelques lignes et le montant en euros */}
       <rect
         x="16"

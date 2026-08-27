@@ -432,7 +432,7 @@ export async function ProductDetail({
                                 : "text-foreground/85"
                             }
                           >
-                            {step.product.brand} — {step.product.name}
+                            {step.product.brand} · {step.product.name}
                           </span>
                         </div>
                         {i < routine.steps.length - 1 && (

@@ -476,14 +476,25 @@ export function DiagnosticFlow({
               exact du document du client, recopié mot pour mot par
               diagnostic-matrice.ts (MESSAGE_SECURITE) — jamais reformulé ici.
               Elle explique pourquoi la routine ci-dessous n'est pas celle de
-              la préoccupation déclarée plus haut. */}
+              la préoccupation déclarée plus haut.
+
+              Rendue plus visible qu'un simple conseil : fond et filet pleine
+              teinte plutôt que pastel, texte en encre laiton plutôt qu'en vert
+              profond neutre — c'est une mise en garde, elle doit se voir avant
+              d'être lue. Elle reste dans la famille laiton de la charte, pas
+              un rouge d'alerte hors palette : ce n'est pas une erreur, c'est
+              une recommandation de prudence. `role="status"` + le SEUL cas où
+              `result.messageSecurite` est renseigné (la bascule de sécurité de
+              Q3, réservée aux peaux déclarées réactives — voir
+              diagnostic-matrice.ts) garde l'affichage conditionnel : ce
+              message n'apparaît jamais pour une peau non réactive. */}
           {result.messageSecurite && (
             <div
               role="status"
-              className="mt-6 flex items-start gap-3 rounded-2xl border border-gold/40 bg-sand/70 p-4"
+              className="mt-6 flex items-start gap-3 rounded-2xl border-2 border-gold bg-gold/12 p-4"
             >
-              <Shield className="mt-0.5 h-5 w-5 shrink-0 text-deep" aria-hidden="true" />
-              <p className="text-sm leading-relaxed text-deep">{result.messageSecurite}</p>
+              <Shield className="mt-0.5 h-5 w-5 shrink-0 text-gold-ink" aria-hidden="true" />
+              <p className="text-sm leading-relaxed font-medium text-gold-ink">{result.messageSecurite}</p>
             </div>
           )}
 
@@ -874,8 +885,17 @@ function MinimalShell({ children }: { children: React.ReactNode }) {
           visiblement sous le titre. `backdrop-blur` adoucit le passage des
           visuels produits sous la barre. */}
       <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-background/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/80">
-        <Link href="/" className="wordmark text-sm text-deep">
-          KossKoss <span className="text-[0.6rem] tracking-[0.36em] text-deep">SELECT</span>
+        {/* Le vrai logo (même fichier que l'en-tête boutique), pas une
+            imitation en texte : la police et l'espacement d'un `wordmark` CSS
+            ne reproduisent jamais exactement le tracé du logotype. */}
+        <Link href="/" className="inline-flex items-center">
+          <Image
+            src="/images/logo-full.png"
+            alt="KossKoss Select"
+            width={1070}
+            height={306}
+            className="h-8 w-auto"
+          />
         </Link>
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition hover:text-deep">
           {t("exitDiagnostic")} <X className="h-4 w-4" />

@@ -1,6 +1,6 @@
 import { LocalizedLink as Link } from "./localized-link";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { RaisonDetreView } from "@/server/kk/raison-detre";
 
 /**
@@ -43,7 +43,6 @@ type Obstacle = {
 
 export function RaisonDetre({ data }: { data: RaisonDetreView }) {
   const t = useTranslations("home");
-  const tHeader = useTranslations("header");
   const obstacles: Obstacle[] = [
     {
       probleme: t("raisonDetre.obstacles.catalog.probleme"),
@@ -83,20 +82,14 @@ export function RaisonDetre({ data }: { data: RaisonDetreView }) {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href="/diagnostic"
-                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep"
-              >
-                <Sparkles className="h-4 w-4" />
-                {tHeader("diagnosticCta")}
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              {/* Un seul bouton dans cette section : « Qui sommes-nous ». Le
+                  bouton diagnostic a été retiré à la demande du client. */}
               <Link
                 href="/a-propos"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-white underline-offset-4 hover:underline"
+                className="kk-fill kk-fill-deep group inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3.5 text-sm font-semibold text-deep"
               >
                 {t("raisonDetre.whoWeAre")}
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             </div>
           </div>

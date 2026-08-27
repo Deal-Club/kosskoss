@@ -7,6 +7,7 @@ import { getShopNavigation, getNavHighlights, getNavRoutines } from "@/server/kk
 import { getActiveAnnouncements, getAnnouncementConfig } from "@/server/announcements";
 import { AnnouncementBar as AnnouncementBarView } from "./announcement-bar";
 import { CartButton } from "./cart-button";
+import { CheckoutBackLink } from "./checkout-back-link";
 import { LanguageSwitcher } from "./language-switcher";
 import { FavoritesLink } from "./favorites-nav";
 import { DesktopNav, MobileMenu, SearchAction } from "./header-actions";
@@ -233,7 +234,10 @@ export async function SiteHeader() {
         <DesktopNav groups={groups} highlights={highlights} routines={routines} />
 
         <div className="ml-auto flex items-center justify-end gap-1">
-          <LanguageSwitcher />
+          {/* Repliée dans le menu mobile (voir MobileMenu) en dessous de `lg` :
+              serrée entre recherche, favoris et panier sur un petit écran, elle
+              était le premier élément à manquer de place. */}
+          <LanguageSwitcher className="hidden lg:flex" />
           <SearchAction variant="icon" />
           <FavoritesLink />
           <Link
@@ -258,22 +262,36 @@ export async function SiteHeader() {
  * seule preuve de sûreté visible au moment où le client hésite. Elle devient
  * une pastille verte, présente à toutes les tailles : sur mobile le mot
  * « Sécurisé » suffit, la mention complète revient dès qu'il y a la place.
+ *
+ * `back` distingue les deux pages qui la portent. Sur /commande, le lien doit
+ * ramener à la page d'où le visiteur vient (panier, ou fiche produit pour un
+ * achat direct) — un simple retour, pas une sortie du tunnel vers l'accueil ;
+ * voir `CheckoutBackLink`. Sur la confirmation, la commande est passée : «
+ * Continuer mes achats » garde son sens propre et reste un lien fixe vers
+ * l'accueil.
  */
-export async function CheckoutHeader() {
+export async function CheckoutHeader({ back = false }: { back?: boolean } = {}) {
   const tCart = await getTranslations("cart");
   const tFooter = await getTranslations("footer");
   const tHeader = await getTranslations("header");
+  const linkClassName = "inline-flex w-fit items-center gap-1.5 text-sm text-deep transition hover:opacity-80";
+  const label = (
+    <>
+      <ChevronLeft className="h-4 w-4" />
+      <span className="hidden sm:inline">{tCart("continueShopping")}</span>
+      <span className="sr-only sm:hidden">{tCart("continueShopping")}</span>
+    </>
+  );
   return (
     <header className="sticky top-0 z-30 border-b border-border/60 bg-background/95 backdrop-blur-md">
       <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-3 px-4 py-3.5 sm:px-6">
-        <Link
-          href="/"
-          className="inline-flex w-fit items-center gap-1.5 text-sm text-deep transition hover:opacity-80"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline">{tCart("continueShopping")}</span>
-          <span className="sr-only sm:hidden">{tCart("continueShopping")}</span>
-        </Link>
+        {back ? (
+          <CheckoutBackLink label={label} fallbackHref="/panier" className={linkClassName} />
+        ) : (
+          <Link href="/" className={linkClassName}>
+            {label}
+          </Link>
+        )}
         <div className="justify-self-center">
           <Wordmark />
         </div>
@@ -404,7 +422,7 @@ export async function SiteFooter() {
                 href={`https://instagram.com/${CONTACT.social.instagram}`}
                 target="_blank"
                 rel="noopener noreferrer me"
-                aria-label={`Instagram — @${CONTACT.social.instagram}`}
+                aria-label={`Instagram, @${CONTACT.social.instagram}`}
                 className="transition hover:text-gold-soft"
               >
                 <InstagramIcon className="h-5 w-5" />
@@ -413,7 +431,7 @@ export async function SiteFooter() {
                 href={`https://facebook.com/${CONTACT.social.facebook}`}
                 target="_blank"
                 rel="noopener noreferrer me"
-                aria-label={`Facebook — ${CONTACT.social.facebook}`}
+                aria-label={`Facebook, ${CONTACT.social.facebook}`}
                 className="transition hover:text-gold-soft"
               >
                 <FacebookIcon className="h-5 w-5" />

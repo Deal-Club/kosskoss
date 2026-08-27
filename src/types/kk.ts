@@ -79,6 +79,13 @@ export type KKProductView = {
    * reviendrait à facturer un montant qu'il n'a pas vu.
    */
   hasVariants?: boolean;
+  /**
+   * Les « pourquoi on l'aime » du produit (master client, colonne Bullets) —
+   * mêmes textes que la section homonyme de la fiche produit. Absent/vide si
+   * le produit n'en porte aucun ; à l'appelant de décider combien il en montre
+   * (la carte de geste d'une routine n'en reprend que les deux premiers).
+   */
+  bullets?: string[];
 };
 
 /**

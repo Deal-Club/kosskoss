@@ -156,12 +156,25 @@ export function recommander(reponses: ReponsesDiagnostic): Recommandation {
  *  (src/lib/kk/besoins.ts, famille « peau »). */
 export type ReponseQ1 = "peau_grasse" | "peau_mixte" | "peau_seche" | "peau_normale";
 
-/** Docx, tableau « Q1 / Profil / Ajustement du conseil ». */
-const CONSEILS_TYPE_PEAU: Record<ReponseQ1, string> = {
-  peau_grasse: "Textures légères, limiter les produits trop riches",
-  peau_mixte: "Équilibrer sébum + hydratation",
-  peau_seche: "Renforcer confort et hydratation",
-  peau_normale: "Routine équilibrée, pas de correction particulière",
+/** Docx, tableau « Q1 / Profil / Ajustement du conseil ». Le français est le
+ *  texte exact du document ; l'anglais est notre traduction pour /en. */
+const CONSEILS_TYPE_PEAU: Record<ReponseQ1, { fr: string; en: string }> = {
+  peau_grasse: {
+    fr: "Textures légères, limiter les produits trop riches",
+    en: "Light textures, limit overly rich products",
+  },
+  peau_mixte: {
+    fr: "Équilibrer sébum + hydratation",
+    en: "Balance sebum + hydration",
+  },
+  peau_seche: {
+    fr: "Renforcer confort et hydratation",
+    en: "Reinforce comfort and hydration",
+  },
+  peau_normale: {
+    fr: "Routine équilibrée, pas de correction particulière",
+    en: "Balanced routine, no particular correction needed",
+  },
 };
 
 /**
@@ -169,9 +182,9 @@ const CONSEILS_TYPE_PEAU: Record<ReponseQ1, string> = {
  * du client. Une réponse absente ou inconnue rend une chaîne vide plutôt
  * qu'un texte inventé.
  */
-export function conseilTypePeau(reponseQ1: string | undefined): string {
+export function conseilTypePeau(reponseQ1: string | undefined, locale: "fr" | "en" = "fr"): string {
   if (reponseQ1 !== undefined && Object.prototype.hasOwnProperty.call(CONSEILS_TYPE_PEAU, reponseQ1)) {
-    return CONSEILS_TYPE_PEAU[reponseQ1 as ReponseQ1];
+    return CONSEILS_TYPE_PEAU[reponseQ1 as ReponseQ1][locale];
   }
   return "";
 }
@@ -183,13 +196,19 @@ export type ReponseQ4 = "climatisation" | "chaleur_humidite" | "mixte";
  *  donnée » — les trois textes complets, hors le libellé « Conseil
  *  KossKoss : » qui est l'habillage constant de l'écran (même convention que
  *  `Product.conseilKossKoss`, voir src/lib/kk/traductions.ts). */
-const CONSEILS_ENVIRONNEMENT: Record<ReponseQ4, string> = {
-  climatisation:
-    "la climatisation peut accentuer la déshydratation et les tiraillements. Ne négligez pas l'hydratation, même avec une peau mixte ou grasse.",
-  chaleur_humidite:
-    "sous climat chaud et humide, privilégiez des textures légères et conservez votre protection solaire chaque matin.",
-  mixte:
-    "votre peau alterne chaleur extérieure et climatisation. L'objectif est de maintenir l'hydratation sans surcharger la peau.",
+const CONSEILS_ENVIRONNEMENT: Record<ReponseQ4, { fr: string; en: string }> = {
+  climatisation: {
+    fr: "la climatisation peut accentuer la déshydratation et les tiraillements. Ne négligez pas l'hydratation, même avec une peau mixte ou grasse.",
+    en: "air conditioning can worsen dehydration and tightness. Don't neglect hydration, even with combination or oily skin.",
+  },
+  chaleur_humidite: {
+    fr: "sous climat chaud et humide, privilégiez des textures légères et conservez votre protection solaire chaque matin.",
+    en: "in a hot and humid climate, favour light textures and keep your sun protection on every morning.",
+  },
+  mixte: {
+    fr: "votre peau alterne chaleur extérieure et climatisation. L'objectif est de maintenir l'hydratation sans surcharger la peau.",
+    en: "your skin alternates between outdoor heat and air conditioning. The goal is to maintain hydration without overloading the skin.",
+  },
 };
 
 /**
@@ -197,9 +216,9 @@ const CONSEILS_ENVIRONNEMENT: Record<ReponseQ4, string> = {
  * Une réponse absente ou inconnue rend une chaîne vide plutôt qu'un texte
  * inventé.
  */
-export function conseilEnvironnement(reponseQ4: string | undefined): string {
+export function conseilEnvironnement(reponseQ4: string | undefined, locale: "fr" | "en" = "fr"): string {
   if (reponseQ4 !== undefined && Object.prototype.hasOwnProperty.call(CONSEILS_ENVIRONNEMENT, reponseQ4)) {
-    return CONSEILS_ENVIRONNEMENT[reponseQ4 as ReponseQ4];
+    return CONSEILS_ENVIRONNEMENT[reponseQ4 as ReponseQ4][locale];
   }
   return "";
 }
@@ -210,5 +229,7 @@ export function conseilEnvironnement(reponseQ4: string | undefined): string {
  * Exporté pour que l'écran (tâche 3) ne le recopie jamais : une seule source
  * de vérité pour ce texte, comme pour le reste de la matrice.
  */
-export const MESSAGE_SECURITE =
-  "Votre peau semble réactive. Avant d'intensifier le traitement de votre préoccupation, nous vous recommandons de privilégier une routine courte qui apaise et soutient la barrière cutanée";
+export const MESSAGE_SECURITE: Record<"fr" | "en", string> = {
+  fr: "Votre peau semble réactive. Avant d'intensifier le traitement de votre préoccupation, nous vous recommandons de privilégier une routine courte qui apaise et soutient la barrière cutanée",
+  en: "Your skin appears reactive. Before intensifying the treatment of your concern, we recommend favouring a short routine that soothes and supports the skin barrier",
+};

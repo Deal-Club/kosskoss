@@ -72,10 +72,17 @@ vedettes.
 
 ## Livraison et contact
 
-- **Livraison au Cameroun**, coordonnée **manuellement par WhatsApp** : le
-  tunnel d'achat (`src/server/kk/checkout.ts`) ne calcule aucun frais de
-  livraison et ne modélise ni zone ni code postal — la commande capture un
-  champ de localisation libre (`location`), et la suite se règle par message.
+- **Livraison au Cameroun.** Le tunnel d'achat capture une **ville**
+  structurée (Douala, Yaoundé, ou une saisie libre pour les autres) — voir
+  `src/lib/kk/livraison.ts`, seule source de vérité des frais par ville — et
+  un champ de localisation libre (`location`, quartier/repère). Le frais de
+  livraison qui en découle **est facturé** : il s'ajoute au sous-total dans
+  `totalCents` (`src/server/kk/checkout.ts`), le montant réellement transmis à
+  la passerelle de paiement. Les montants par ville sont des **valeurs par
+  défaut posées en dur pour le moment**, en attendant de devenir
+  administrables depuis le back-office comme les moyens de paiement. Le
+  **rendez-vous de remise**, lui, reste coordonné **manuellement par
+  WhatsApp** après la commande.
 - Le numéro de téléphone du client est normalisé au plan de numérotation
   camerounais (indicatif `+237`, voir `src/lib/kk/telephone.ts`).
 - Le **numéro WhatsApp de la boutique** (bouton pré-rempli sur la page de

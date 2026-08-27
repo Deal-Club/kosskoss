@@ -179,7 +179,7 @@ function Block({
           </blockquote>
           {block.attribution ? (
             <figcaption className="mt-2 text-sm text-muted-foreground">
-              — {block.attribution}
+              · {block.attribution}
             </figcaption>
           ) : null}
         </figure>

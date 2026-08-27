@@ -176,6 +176,24 @@
   --tint-age: #ece5e9; /* mauve */
   --tint-hydratation: #e6ecea; /* eau */
 
+  /* Déclinaisons des teintes pour les illustrations de routine
+     (routine-illustration.tsx) : une nuance moyenne — décor, aplats — et une
+     profonde — contenants — par teinte. Même famille chromatique que le fond
+     pastel au-dessus, saturation contenue et clartés alignées d'une routine à
+     l'autre : c'est ce qui fait que les cinq scènes se lisent comme une seule
+     série déclinée, et non comme cinq images sans rapport. Le laiton (--gold)
+     reste l'accent commun qui les relie. */
+  --tint-acne-mid: #b6bca8;
+  --tint-acne-deep: #5d6c52;
+  --tint-taches-mid: #d5bd92;
+  --tint-taches-deep: #80663a;
+  --tint-eclat-mid: #e4b18c;
+  --tint-eclat-deep: #a5633c;
+  --tint-age-mid: #c4a2b8;
+  --tint-age-deep: #6e4d63;
+  --tint-hydratation-mid: #9fc0bc;
+  --tint-hydratation-deep: #3e6a66;
+
   /* Fond de page blanc. Le crème (`--cream`) reste dans la palette mais n'est
      plus le fond général : il ne sert plus que d'aplat fonctionnel — vignettes
      produit, puces, cartes posées sur le vert profond — là où il faut un blanc

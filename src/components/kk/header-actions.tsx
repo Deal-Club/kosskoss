@@ -23,7 +23,8 @@ import { formatFcfa } from "@/lib/kk/format";
 import { useScrollLock } from "@/lib/kk/use-scroll-lock";
 import type { NavGroup, NavHighlight, NavRoutine } from "@/server/kk/navigation";
 import { tintClass } from "./routine-card";
-import { BottleMotif } from "./motifs";
+import { RoutineIllustration } from "./routine-illustration";
+import { LanguageSwitcher } from "./language-switcher";
 
 /**
  * Les deux commandes interactives de l'en-tête : la recherche et le menu
@@ -256,6 +257,16 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
               >
                 <X className="h-5 w-5" />
               </button>
+            </div>
+
+            {/* Bascule de langue — repliée ici depuis l'en-tête, où elle
+                disputait la place aux icônes de recherche, favoris et panier
+                sur les petits écrans. Sa propre ligne, sous le bandeau du
+                panneau : c'est un réglage global, pas une entrée du plan de
+                navigation, elle ne se mêle donc pas aux rayons ci-dessous. */}
+            <div className="flex items-center justify-between border-b border-border px-5 py-3">
+              <span className="text-sm text-deep">{tCommon("language")}</span>
+              <LanguageSwitcher />
             </div>
 
             <div className="flex-1 px-5 py-5">
@@ -626,7 +637,11 @@ function RoutinesMenu({
                             className="object-cover transition-transform duration-500 group-hover/routine:scale-105"
                           />
                         ) : (
-                          <BottleMotif className="h-[70%] w-auto text-deep/30 transition-transform duration-500 group-hover/routine:scale-105" />
+                          <RoutineIllustration
+                            tint={routine.tint}
+                            fit="cover"
+                            className="h-full w-full transition-transform duration-500 group-hover/routine:scale-105"
+                          />
                         )}
                       </span>
 

@@ -32,6 +32,8 @@ export async function POST(request: Request) {
     email: String(body.email ?? ""),
     phone: String(body.phone ?? ""),
     location: String(body.location ?? ""),
+    city: String(body.city ?? ""),
+    cityOther: typeof body.cityOther === "string" ? body.cityOther : undefined,
     followOrder: Boolean(body.followOrder),
     paymentMethod: body.paymentMethod as KKPaymentMethod,
     locale: String(body.locale ?? "fr"),

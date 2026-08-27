@@ -36,7 +36,7 @@ const RETURN_ADDRESS = `${COMPANY.name}, service retours, ${COMPANY.street}, ${C
 
 /** Avertissement placé en tête de chaque page juridique. */
 const DISCLAIMER =
-  "Avertissement : contenu juridique provisoire pour la boutique en ligne KossKoss Select (marché Cameroun). L'identité de la société, l'adresse, l'immatriculation (RCCM), le capital et le NIU affichés sont des DONNÉES DE DÉMONSTRATION et ne désignent aucune société réelle. Elles doivent être remplacées par les mentions du registre camerounais, puis l'ensemble relu par un juriste, avant toute mise en ligne — c'est à cette condition seulement que ce texte est utilisable.";
+  "Avertissement : contenu juridique provisoire pour la boutique en ligne KossKoss Select (marché Cameroun). L'identité de la société, l'adresse, l'immatriculation (RCCM), le capital et le NIU affichés sont des DONNÉES DE DÉMONSTRATION et ne désignent aucune société réelle. Elles doivent être remplacées par les mentions du registre camerounais, puis l'ensemble relu par un juriste, avant toute mise en ligne : c'est à cette condition seulement que ce texte est utilisable.";
 
 /** Assemble le chapeau : avertissement puis texte d'introduction. */
 function intro(lead: string): string {
@@ -101,7 +101,7 @@ export const frLegalPages: LegalPageMap = {
       },
       {
         heading: "Propriété intellectuelle",
-        body: "Les contenus de ce site — textes, photographies, illustrations, éléments graphiques, structure et code — sont protégés au titre de la propriété intellectuelle. Toute reproduction, représentation, adaptation ou exploitation, totale ou partielle, sans autorisation écrite préalable est interdite, à l'exception des usages expressément autorisés par la loi. Les marques et logos des fabricants demeurent la propriété de leurs titulaires respectifs.",
+        body: "Les contenus de ce site (textes, photographies, illustrations, éléments graphiques, structure et code) sont protégés au titre de la propriété intellectuelle. Toute reproduction, représentation, adaptation ou exploitation, totale ou partielle, sans autorisation écrite préalable est interdite, à l'exception des usages expressément autorisés par la loi. Les marques et logos des fabricants demeurent la propriété de leurs titulaires respectifs.",
       },
     ],
   },
@@ -286,7 +286,7 @@ export const frLegalPages: LegalPageMap = {
       },
       {
         heading: "Comment exercer ce droit",
-        body: `Pour exercer votre droit, notifiez-nous votre décision au moyen d'une déclaration claire — e-mail, téléphone ou message WhatsApp — en indiquant votre numéro de commande.\n\nAdressez votre notification à :\n\n${COMPANY.name}\n${COMPANY.street}\n${COMPANY.city}\n${COMPANY.country}\nE-mail : ${COMPANY.email}\nTéléphone / WhatsApp : ${COMPANY.phone}`,
+        body: `Pour exercer votre droit, notifiez-nous votre décision au moyen d'une déclaration claire (e-mail, téléphone ou message WhatsApp) en indiquant votre numéro de commande.\n\nAdressez votre notification à :\n\n${COMPANY.name}\n${COMPANY.street}\n${COMPANY.city}\n${COMPANY.country}\nE-mail : ${COMPANY.email}\nTéléphone / WhatsApp : ${COMPANY.phone}`,
       },
       {
         heading: "Renvoi des articles",
@@ -324,7 +324,7 @@ export const frLegalPages: LegalPageMap = {
       },
       {
         heading: "Organisation de la remise",
-        body: `Après la commande, nous vous contactons — le plus souvent par WhatsApp au ${COMPANY.phone} — pour convenir du lieu et du moment de remise du colis. Gardez votre téléphone joignable : c'est ainsi que la livraison se coordonne le plus simplement.`,
+        body: `Après la commande, nous vous contactons (le plus souvent par WhatsApp au ${COMPANY.phone}) pour convenir du lieu et du moment de remise du colis. Gardez votre téléphone joignable : c'est ainsi que la livraison se coordonne le plus simplement.`,
       },
       {
         heading: "Réception de la commande",
@@ -352,8 +352,8 @@ export const frLegalPages: LegalPageMap = {
         heading: "Moyens acceptés",
         body: "Les moyens de paiement disponibles sont affichés à l'étape « Paiement » du tunnel de commande. Selon la configuration en vigueur, il peut s'agir de :",
         list: [
-          "Mobile Money — Orange Money",
-          "Mobile Money — MTN Mobile Money",
+          "Mobile Money : Orange Money",
+          "Mobile Money : MTN Mobile Money",
           "Carte bancaire (Visa, Mastercard)",
           "Paiement à la livraison, selon la zone et à signaler lors de la commande",
         ],
@@ -445,7 +445,7 @@ export const frLegalPages: LegalPageMap = {
       },
       {
         heading: "Comment se passe la livraison concrètement ?",
-        body: "Après votre commande, nous vous contactons — le plus souvent par WhatsApp — pour convenir du lieu et du moment de remise. Gardez votre téléphone joignable : c'est le moyen le plus simple de coordonner la livraison.",
+        body: "Après votre commande, nous vous contactons (le plus souvent par WhatsApp) pour convenir du lieu et du moment de remise. Gardez votre téléphone joignable : c'est le moyen le plus simple de coordonner la livraison.",
       },
       {
         heading: "Puis-je retourner un produit ?",

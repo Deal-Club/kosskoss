@@ -17,7 +17,20 @@
  */
 
 import type { LegalPageMap } from "./types";
-import { COMPANY } from "./fr";
+import { COMPANY as COMPANY_FR } from "./fr";
+
+/**
+ * Valeurs d'affichage anglaises des quelques champs dont l'orthographe
+ * française fuyait dans les pages traduites (« Cameroun », « La gérance »,
+ * « États-Unis »). Tout le reste — adresse, numéros, e-mail — est neutre et
+ * vient tel quel de src/content/legal/company.ts, la source unique.
+ */
+const COMPANY = {
+  ...COMPANY_FR,
+  country: "Cameroon",
+  managingDirector: "The management",
+  host: COMPANY_FR.host.replace("États-Unis", "United States"),
+} as const;
 
 /** Date of the last editorial revision of the English corpus. */
 const UPDATED_AT = "2026-08-06";
@@ -27,7 +40,7 @@ const RETURN_ADDRESS = `${COMPANY.name}, returns department, ${COMPANY.street}, 
 
 /** Notice placed at the top of every legal page. */
 const DISCLAIMER =
-  "Notice: provisional legal content for the KossKoss Select online shop (Cameroon market). The company identity, address, registration (RCCM), share capital and NIU shown here are DEMONSTRATION DATA and refer to no real company. They must be replaced with the entries from the Cameroonian register, and the whole text then reviewed by a lawyer, before any public launch — only on that condition is it fit for use. This English version is a translation for information; the French text is the binding one.";
+  "Notice: provisional legal content for the KossKoss Select online shop (Cameroon market). The company identity, address, registration (RCCM), share capital and NIU shown here are DEMONSTRATION DATA and refer to no real company. They must be replaced with the entries from the Cameroonian register, and the whole text then reviewed by a lawyer, before any public launch: only on that condition is it fit for use. This English version is a translation for information; the French text is the binding one.";
 
 /** Builds the lead paragraph: notice followed by the introduction. */
 function intro(lead: string): string {
@@ -92,7 +105,7 @@ export const enLegalPages: LegalPageMap = {
       },
       {
         heading: "Intellectual property",
-        body: "The content of this site — text, photographs, illustrations, graphic elements, structure and code — is protected under intellectual property law. Any reproduction, representation, adaptation or exploitation, in whole or in part, without prior written authorisation is prohibited, save for uses expressly permitted by law. Manufacturers' trade marks and logos remain the property of their respective owners.",
+        body: "The content of this site (text, photographs, illustrations, graphic elements, structure and code) is protected under intellectual property law. Any reproduction, representation, adaptation or exploitation, in whole or in part, without prior written authorisation is prohibited, save for uses expressly permitted by law. Manufacturers' trade marks and logos remain the property of their respective owners.",
       },
     ],
   },
@@ -277,7 +290,7 @@ export const enLegalPages: LegalPageMap = {
       },
       {
         heading: "How to exercise this right",
-        body: `To exercise your right, notify us of your decision by a clear statement — email, phone or WhatsApp message — quoting your order number.\n\nSend your notification to:\n\n${COMPANY.name}\n${COMPANY.street}\n${COMPANY.city}\n${COMPANY.country}\nEmail: ${COMPANY.email}\nPhone / WhatsApp: ${COMPANY.phone}`,
+        body: `To exercise your right, notify us of your decision by a clear statement (email, phone or WhatsApp message) quoting your order number.\n\nSend your notification to:\n\n${COMPANY.name}\n${COMPANY.street}\n${COMPANY.city}\n${COMPANY.country}\nEmail: ${COMPANY.email}\nPhone / WhatsApp: ${COMPANY.phone}`,
       },
       {
         heading: "Sending the items back",
@@ -315,7 +328,7 @@ export const enLegalPages: LegalPageMap = {
       },
       {
         heading: "Arranging handover",
-        body: `After the order, we contact you — usually by WhatsApp at ${COMPANY.phone} — to agree the place and time to hand over the parcel. Keep your phone reachable: that is the simplest way to coordinate delivery.`,
+        body: `After the order, we contact you (usually by WhatsApp at ${COMPANY.phone}) to agree the place and time to hand over the parcel. Keep your phone reachable: that is the simplest way to coordinate delivery.`,
       },
       {
         heading: "Receiving the order",
@@ -343,8 +356,8 @@ export const enLegalPages: LegalPageMap = {
         heading: "Methods accepted",
         body: "The available payment methods are shown at the “Payment” step of checkout. Depending on the current configuration, they may include:",
         list: [
-          "Mobile Money — Orange Money",
-          "Mobile Money — MTN Mobile Money",
+          "Mobile Money: Orange Money",
+          "Mobile Money: MTN Mobile Money",
           "Bank card (Visa, Mastercard)",
           "Cash on delivery, depending on the area and to be stated when ordering",
         ],
@@ -436,7 +449,7 @@ export const enLegalPages: LegalPageMap = {
       },
       {
         heading: "How does delivery work in practice?",
-        body: "After your order, we contact you — usually by WhatsApp — to agree the place and time of handover. Keep your phone reachable: it is the simplest way to coordinate delivery.",
+        body: "After your order, we contact you (usually by WhatsApp) to agree the place and time of handover. Keep your phone reachable: it is the simplest way to coordinate delivery.",
       },
       {
         heading: "Can I return a product?",

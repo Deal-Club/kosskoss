@@ -31,8 +31,8 @@
     "whatsappPrefill": "Bonjour, j'ai une question sur un produit KossKoss Select.",
     "whatsappAriaLabel": "Nous écrire sur WhatsApp",
     "whatsappWriteToUs": "Écrivez-nous",
-    "carouselPrev": "{label} — précédent",
-    "carouselNext": "{label} — suivant"
+    "carouselPrev": "{label}, précédent",
+    "carouselNext": "{label}, suivant"
   },
   "header": {
     "homeAriaLabel": "KossKoss Select – page d'accueil",
@@ -162,7 +162,7 @@
     "vatNoteFreeShipping": "Livraison standard offerte",
     "galleryLabel": "Autres vues du produit",
     "galleryView": "Afficher la vue {index} sur {total}",
-    "galleryAdditionalViewAlt": "{name} — vue {number}",
+    "galleryAdditionalViewAlt": "{name}, vue {number}",
     "chooseVolume": "Choisissez un volume",
     "fromPrice": "à partir de",
     "sectionDescription": "Description",
@@ -177,7 +177,7 @@
     "increaseQuantityShort": "Augmenter la quantité",
     "contentLabel": "Contenance",
     "totalLabel": "Total :",
-    "addedToCart": "Ajouté au panier —",
+    "addedToCart": "Ajouté au panier ·",
     "viewCartLink": "voir le panier",
     "hoverMultipleVariants": "Plusieurs contenances",
     "hoverSeeSheet": "Voir la fiche",
@@ -206,10 +206,10 @@
     "count": "{count, plural, one {# avis} other {# avis}}",
     "starsLabel": "{star} étoiles",
     "starsAria": "{rating} étoiles sur 5",
-    "listAria": "Avis clients, {count, plural, one {# avis} other {# avis}} — faites défiler pour les parcourir",
-    "scrollHint": "{count, plural, one {# avis} other {Les # avis}} — faites défiler dans le cadre",
+    "listAria": "Avis clients, {count, plural, one {# avis} other {# avis}}. Faites défiler pour les parcourir",
+    "scrollHint": "{count, plural, one {# avis} other {Les # avis}}. Faites défiler dans le cadre",
     "emptyTitle": "Ce produit n'a pas encore reçu d'avis client.",
-    "emptyHint": "Partagez votre expérience et rédigez le premier avis — il aidera les autres à choisir.",
+    "emptyHint": "Partagez votre expérience et rédigez le premier avis : il aidera les autres à choisir.",
     "editorial": "Appréciation de la rédaction : {rating} sur 5",
     "writeTitle": "Rédiger un avis",
     "formRatingLabel": "Votre note",
@@ -324,6 +324,7 @@
     "buyNow": "Acheter maintenant",
     "added": "Ajouté",
     "soldOut": "Épuisé",
+    "buyNow": "Achète maintenant",
     "increase": "Augmenter la quantité de 1",
     "decrease": "Diminuer la quantité de 1",
     "quantityLabel": "Quantité",
@@ -384,7 +385,7 @@
     "shippingCalculatedNextStep": "Calculée à l’étape suivante",
     "totalEstimated": "Total estimé",
     "securePaymentNote": "Paiement Mobile Money sécurisé",
-    "outOfStockAria": "{name} — épuisé",
+    "outOfStockAria": "{name}, épuisé",
     "addedConfirmationAria": "{name} ajouté au panier"
   },
   "checkout": {
@@ -539,7 +540,7 @@
     }
   },
   "commande": {
-    "metaTitle": "Finaliser la commande — KossKoss Select",
+    "metaTitle": "Finaliser la commande · KossKoss Select",
     "title": "Finaliser la commande",
     "intro": "Deux minutes, quatre champs. Payez en ligne ou à la livraison, comme il vous arrange.",
     "emptyCart": {
@@ -562,8 +563,18 @@
       "emailLabel": "E-mail",
       "emailPlaceholder": "exemple@email.com",
       "emailHelp": "Pour recevoir le récapitulatif de votre commande.",
+      "cityLabel": "Ville de livraison",
+      "cityPlaceholder": "Choisissez votre ville",
+      "cityHelp": "Détermine le frais de livraison, ajouté au total.",
+      "cityOption": {
+        "douala": "Douala",
+        "yaounde": "Yaoundé",
+        "autre": "Autre ville"
+      },
+      "cityOtherLabel": "Quelle ville ?",
+      "cityOtherPlaceholder": "Nom de la ville",
       "locationLabel": "Lieu de livraison",
-      "locationPlaceholder": "Quartier, ville, repère…",
+      "locationPlaceholder": "Quartier, rue, repère…",
       "locationHelp": "Un repère connu du quartier accélère la livraison.",
       "followOrder": "Je veux suivre ma commande",
       "followOrderTooltip": "En cochant, un espace personnel est créé avec l'e-mail saisi ; vous recevrez vos identifiants par e-mail pour suivre l'avancement.",
@@ -598,9 +609,11 @@
       "couponRemove": "Retirer",
       "couponAdd": "J'ai un code promo",
       "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "shippingPending": "Selon la ville",
       "youSave": "Vous économisez",
       "totalToPay": "Total à payer",
-      "deliveryNote": "Livraison coordonnée via WhatsApp après commande.",
+      "deliveryNote": "Le rendez-vous de remise est coordonné avec vous via WhatsApp après la commande.",
       "submit": "Valider ma commande",
       "submitting": "Enregistrement…",
       "securePayment": "Paiement sécurisé",
@@ -636,7 +649,9 @@
       "fullName": "Indiquez votre nom et votre prénom.",
       "email": "Vérifiez votre adresse e-mail.",
       "phone": "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56",
-      "location": "Quartier et ville, au minimum."
+      "location": "Un repère de quartier, au minimum.",
+      "city": "Choisissez votre ville de livraison.",
+      "cityOther": "Indiquez le nom de votre ville."
     },
     "confirmation": {
       "thankYouTitle": "Merci pour votre commande !",
@@ -647,10 +662,10 @@
       "total": "Total",
       "whatsappButtonPaid": "Organiser la livraison via WhatsApp",
       "whatsappButtonPending": "Confirmer ma commande via WhatsApp",
-      "infoPaid": "Votre paiement est bien reçu — vous n'avez plus rien à régler. La livraison est coordonnée avec vous via WhatsApp.",
+      "infoPaid": "Votre paiement est bien reçu, vous n'avez plus rien à régler. La livraison est coordonnée avec vous via WhatsApp.",
       "infoPending": "Le paiement Mobile Money (Orange Money / MTN) sera finalisé lors de la confirmation. La livraison est ensuite coordonnée avec vous via WhatsApp.",
       "accountCreatedTitle": "Espace client créé.",
-      "accountCreatedText": "Vous êtes connecté —",
+      "accountCreatedText": "Vous êtes connecté ·",
       "accountCreatedLink": "accéder à mes commandes",
       "accountExistsTitle": "Un compte existe déjà pour cet e-mail.",
       "accountExistsLink": "Connectez-vous",
@@ -666,13 +681,13 @@
         "deliveryLocationLine": "Lieu de livraison : {location}",
         "confirmDeliveryLine": "Merci de me confirmer l'acheminement."
       },
-      "metaTitle": "Commande confirmée — {brand}"
+      "metaTitle": "Commande confirmée · {brand}"
     }
   },
   "wishlist": {
     "title": "Favoris",
     "metaTitle": "Mes favoris | KossKoss Select",
-    "intro": "Les articles mis en favori restent enregistrés dans ce navigateur — sans compte et sans connexion.",
+    "intro": "Les articles mis en favori restent enregistrés dans ce navigateur, sans compte et sans connexion.",
     "add": "Ajouter aux favoris",
     "remove": "Retirer des favoris",
     "loading": "Chargement des favoris …",
@@ -702,7 +717,7 @@
     "metaTitle": "Mon compte",
     "title": "Mon compte",
     "dashboard": {
-      "metaTitle": "Mon compte — KossKoss Select",
+      "metaTitle": "Mon compte · KossKoss Select",
       "eyebrow": "Espace client",
       "greeting": "Bonjour {name}",
       "favorites": "Mes favoris",
@@ -715,7 +730,7 @@
       "orderMeta": "{date} · {count, plural, one {# article} other {# articles}}"
     },
     "orderDetail": {
-      "metaTitle": "Ma commande — KossKoss Select",
+      "metaTitle": "Ma commande · KossKoss Select",
       "back": "Mes commandes",
       "placedOn": "Passée le {date}",
       "total": "Total",
@@ -931,7 +946,7 @@
     "breadcrumb": "Résultats de recherche",
     "titre": "Résultats pour « {query} »",
     "resultats": "{count, plural, =0 {Aucun résultat} one {# résultat} other {# résultats}}",
-    "vide": "Saisissez un terme pour lancer une recherche — une essence, une longueur ou une marque."
+    "vide": "Saisissez un terme pour lancer une recherche : une essence, une longueur ou une marque."
   },
   "exitIntent": {
     "title": "Avant de partir…",
@@ -941,17 +956,17 @@
     "close": "Fermer"
   },
   "marques": {
-    "metaTitle": "Nos marques — KossKoss Select",
+    "metaTitle": "Nos marques · KossKoss Select",
     "metaDescription": "Les maisons distribuées par KossKoss Select : marques dermo-cosmétiques et soins reconnus, achetés par des circuits d'approvisionnement tracés.",
     "eyebrow": "Nos marques",
     "title": "{count, plural, one {# maison distribuée} other {# maisons distribuées}}",
-    "lead": "Nous filtrons l'offre plutôt que de l'empiler. Chaque maison entre au catalogue pour ses formules et sa tenue sur les peaux riches en mélanine — et chaque référence arrive par un circuit d'approvisionnement identifié.",
+    "lead": "Nous filtrons l'offre plutôt que de l'empiler. Chaque maison entre au catalogue pour ses formules et sa tenue sur les peaux riches en mélanine, et chaque référence arrive par un circuit d'approvisionnement identifié.",
     "empty": "Le catalogue est en cours de chargement."
   },
   "home": {
     "slogan": "La Sélection beauté qui vous choisit.",
     "metaDescription": "Concept-store cosmétique multimarque au Cameroun. Des routines prêtes à l'emploi par préoccupation, un diagnostic beauté en cinq questions, paiement Mobile Money.",
-    "diagnosticCta": "Commencer le diagnostic",
+    "diagnosticCta": "Faites votre diagnostic beauté",
     "hero": {
       "imageAlt": "Femme à la peau riche en mélanine tenant un flacon de sérum",
       "title": "Des soins conçus pour sublimer les peaux noires & métissées",
@@ -976,7 +991,7 @@
     },
     "bestsellers": {
       "eyebrow": "Les plus choisis",
-      "title": "Nos best-sellers",
+      "title": "Nos produits de beauté",
       "action": "Tout voir"
     },
     "brandFocus": {
@@ -1009,7 +1024,7 @@
       "satisfactionText": "14 jours pour changer d'avis",
       "mobileMoneyTitle": "Mobile Money",
       "mobileMoneyText": "Orange Money & MTN",
-      "whatsappPrompt": "Une question avant d’acheter ? <link>Écrivez-nous sur WhatsApp</link> — on répond dans la journée."
+      "whatsappPrompt": "Une question avant d’acheter ? <link>Écrivez-nous sur WhatsApp</link>, on répond dans la journée."
     },
     "diagnosticReminder": {
       "title": "Vous ne savez pas par où commencer ?",
@@ -1041,17 +1056,17 @@
     },
     "gammeSection": {
       "eyebrow": "Marque à l’honneur",
-      "routinesCta": "Nos routines avec {brand}",
+      "routinesCta": "Nos routines {brand}",
       "productsCta": "Voir les produits {brand}",
       "fallbackBrand": "cette maison"
     }
   },
   "diagnostic": {
-    "metaTitle": "Diagnostic Beauté — KossKoss Select",
+    "metaTitle": "Diagnostic Beauté · KossKoss Select",
     "metaDescription": "Répondez à quelques questions sur votre peau et recevez une routine de soins personnalisée, à ajouter au panier.",
     "proposeEyebrow": "Bon retour",
     "proposeTitle": "Vous avez déjà fait votre diagnostic",
-    "proposeText": "Revoyez la routine construite à partir de vos réponses — recalculée sur les produits disponibles aujourd’hui — ou refaites le questionnaire si votre peau a changé.",
+    "proposeText": "Revoyez la routine construite à partir de vos réponses, recalculée sur les produits disponibles aujourd’hui, ou refaites le questionnaire si votre peau a changé.",
     "reviewRoutine": "Revoir ma routine",
     "retakeQuiz": "Refaire le questionnaire",
     "analysisFailed": "L'analyse a échoué. Choisissez à nouveau votre réponse.",
@@ -1103,7 +1118,7 @@
   "newsletter": {
     "title": "Rejoignez la communauté",
     "text": "Nos conseils de soin, nos nouveautés et nos offres réservées. Pas plus d’un message par semaine.",
-    "confirmedMessage": "C’est noté — à très vite dans votre boîte de réception.",
+    "confirmedMessage": "C’est noté, à très vite dans votre boîte de réception.",
     "emailLabel": "Votre adresse e-mail",
     "submit": "S’inscrire",
     "errorGeneric": "Inscription impossible pour le moment.",
@@ -1121,12 +1136,12 @@
     "buyNote": "Les {count} produits en une seule commande.",
     "othersEyebrow": "Autres besoins",
     "othersTitle": "Nos autres routines",
-    "metaNotFoundTitle": "Routine introuvable — {brand}",
-    "listMetaTitle": "Routines prêtes à l'emploi — {brand}",
+    "metaNotFoundTitle": "Routine introuvable · {brand}",
+    "listMetaTitle": "Routines prêtes à l'emploi · {brand}",
     "listMetaDescription": "Des routines complètes par préoccupation : acné, taches et hyperpigmentation, éclat, anti-âge, hydratation. Trois gestes dans le bon ordre, un seul ajout au panier.",
     "pageEyebrow": "Besoin par besoin",
     "pageTitle": "Nos routines prêtes à l’emploi",
-    "pageIntro": "Nous ne vendons pas des produits isolés mais des suites de gestes. Choisissez la préoccupation qui est la vôtre : la routine est déjà composée, dans l’ordre qui la fait fonctionner.",
+    "pageIntro": "Choisissez votre préoccupation : la routine est déjà composée, dans le bon ordre.",
     "diagnosticCtaLabel": "Faire mon diagnostic",
     "emptyTitle": "Nos routines arrivent",
     "emptyText": "En attendant, le diagnostic compose une routine adaptée à votre peau en cinq questions.",
@@ -1135,8 +1150,9 @@
     "addedToast": "Routine ajoutée",
     "addButtonLabel": "Ajouter la routine",
     "buyButtonLabel": "Acheter maintenant",
-    "buyAria": "Acheter la {name} — {count} produits",
-    "addAria": "Ajouter la {name} au panier — {count} produits",
+    "buyAria": "Acheter la {name}, {count} produits",
+    "addAria": "Ajouter la {name} au panier, {count} produits",
+    "priceFrom": "À partir de {value}",
     "detailLink": "Détail",
     "railEyebrow": "Achat rapide",
     "railTitle": "Nos routines prêtes à l’emploi",
@@ -1146,11 +1162,11 @@
     "journeyTitle": "Votre routine en {count} gestes",
     "morningTitle": "Matin",
     "eveningTitle": "Soir",
-    "whyRoutineTitle": "KossKoss Select — Pourquoi cette routine ?",
+    "whyRoutineTitle": "KossKoss Select · Pourquoi cette routine ?",
     "valueLabel": "Valeur des produits",
     "priceLabel": "Prix Routine KossKoss",
     "historicTitle": "Autres routines",
-    "historicIntro": "Composées avant notre nouvelle organisation par besoin et par niveau — toujours disponibles à l’achat.",
+    "historicIntro": "Composées avant notre nouvelle organisation par besoin et par niveau, toujours disponibles à l’achat.",
     "byNeedTitle": "Par besoin",
     "levelBadgeAria": "Niveau {level}"
   },
@@ -1160,7 +1176,7 @@
     "sectionTitle": "Le rayon {name}",
     "countRange": "Produits {first}–{last} sur {total}",
     "paginationAriaLabel": "Pagination des produits de la marque",
-    "metaNotFoundTitle": "Marque introuvable — {brand}",
+    "metaNotFoundTitle": "Marque introuvable · {brand}",
     "metaFallbackDescription": "Les produits {name} chez {brand}."
   },
   "pagination": {

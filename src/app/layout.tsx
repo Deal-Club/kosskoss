@@ -43,7 +43,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "KossKoss Select — La sélection beauté qui vous choisit",
+  title: "KossKoss Select · La sélection beauté qui vous choisit",
   description:
     "Concept-store cosmétique multimarque au Cameroun. Des soins sélectionnés avec exigence, un diagnostic beauté personnalisé, paiement Mobile Money.",
 };

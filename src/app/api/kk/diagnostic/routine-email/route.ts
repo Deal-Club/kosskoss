@@ -28,19 +28,43 @@ import { customerRoutineEmailRate } from "@/server/customerRate";
  */
 const REPONSES_MAX = 20;
 
+// Les messages d'erreur sont affichés tels quels par l'écran de résultat : ils
+// parlent donc la langue de la page, connue par le champ `locale` du corps.
+const MESSAGES = {
+  fr: {
+    illisible: "Requête illisible.",
+    emailInvalide: "Adresse e-mail invalide.",
+    tropTentatives: "Trop de tentatives. Merci de patienter un instant avant de réessayer.",
+    reponsesManquantes: "Réponses manquantes.",
+    tropReponses: "Trop de réponses.",
+    aucuneRoutine: "Aucune routine à envoyer pour ces réponses.",
+  },
+  en: {
+    illisible: "The request could not be read.",
+    emailInvalide: "Invalid email address.",
+    tropTentatives: "Too many attempts. Please wait a moment before trying again.",
+    reponsesManquantes: "Missing answers.",
+    tropReponses: "Too many answers.",
+    aucuneRoutine: "No routine to send for these answers.",
+  },
+} as const;
+
 export async function POST(request: Request) {
   let corps: unknown;
   try {
     corps = await request.json();
   } catch {
-    return NextResponse.json({ error: "Requête illisible." }, { status: 400 });
+    return NextResponse.json({ error: MESSAGES.fr.illisible }, { status: 400 });
   }
 
   const { email, answers, locale } = (corps ?? {}) as Record<string, unknown>;
 
+  const langue = choisirLangue(typeof locale === "string" ? locale : undefined);
+  const messages = MESSAGES[langue];
+
   const adresse = typeof email === "string" ? email.trim().toLowerCase() : "";
   if (!adresseEmailValide(adresse)) {
-    return NextResponse.json({ error: "Adresse e-mail invalide." }, { status: 400 });
+    return NextResponse.json({ error: messages.emailInvalide }, { status: 400 });
   }
 
   // Le blocage porte sur l'adresse dans tous les cas, qu'elle corresponde ou
@@ -50,7 +74,7 @@ export async function POST(request: Request) {
   if (!rate.allowed) {
     return NextResponse.json(
       {
-        error: "Trop de tentatives. Merci de patienter un instant avant de réessayer.",
+        error: messages.tropTentatives,
         retryAfterSeconds: rate.retryAfterSeconds,
       },
       { status: 429 },
@@ -62,13 +86,11 @@ export async function POST(request: Request) {
     ? answers.filter((x): x is string => typeof x === "string")
     : [];
   if (reponses.length === 0) {
-    return NextResponse.json({ error: "Réponses manquantes." }, { status: 400 });
+    return NextResponse.json({ error: messages.reponsesManquantes }, { status: 400 });
   }
   if (reponses.length > REPONSES_MAX) {
-    return NextResponse.json({ error: "Trop de réponses." }, { status: 400 });
+    return NextResponse.json({ error: messages.tropReponses }, { status: 400 });
   }
-
-  const langue = choisirLangue(typeof locale === "string" ? locale : undefined);
 
   // Recalculé côté serveur, jamais accepté depuis le navigateur : une routine
   // envoyée par le client porterait les produits et les prix de son choix,
@@ -83,7 +105,7 @@ export async function POST(request: Request) {
   const resultat = await computeDiagnostic(reponses, langue);
   const routine = resultat.essentielle ?? resultat.premium;
   if (!routine) {
-    return NextResponse.json({ error: "Aucune routine à envoyer pour ces réponses." }, { status: 400 });
+    return NextResponse.json({ error: messages.aucuneRoutine }, { status: 400 });
   }
 
   const etapes = routine.steps.map((s) => ({

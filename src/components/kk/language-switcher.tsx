@@ -17,7 +17,7 @@ import { routing } from "@/i18n/routing";
  * courante est mise en avant, ce qui lève l'ambiguïté « ce libellé est-il la
  * langue actuelle ou la cible ? ».
  */
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ className = "" }: { className?: string }) {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -26,7 +26,7 @@ export function LanguageSwitcher() {
     <div
       role="group"
       aria-label={locale === "fr" ? "Choix de la langue" : "Language"}
-      className="flex items-center rounded-full border border-border/70 p-0.5 text-[0.7rem] font-semibold"
+      className={`flex items-center rounded-full border border-border/70 p-0.5 text-[0.7rem] font-semibold ${className}`}
     >
       {routing.locales.map((cible) => {
         const actif = cible === locale;

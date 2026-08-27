@@ -48,9 +48,11 @@ function readString(value: unknown): string {
 }
 
 export async function POST(request: Request) {
+  // `error` reste en français (repli) ; `code` est traduit par le formulaire
+  // dans la langue de la page (clés reviews.apiErrors des dictionnaires).
   const payload = (await request.json().catch(() => null)) as Record<string, unknown> | null;
   if (!payload || typeof payload !== "object") {
-    return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
+    return NextResponse.json({ error: "Requête invalide.", code: "invalid_payload" }, { status: 400 });
   }
 
   const productId = readString(payload.productId);
@@ -62,53 +64,59 @@ export async function POST(request: Request) {
   const rating = typeof payload.rating === "number" ? payload.rating : Number.NaN;
 
   if (!productId) {
-    return NextResponse.json({ error: "Le produit n'a pas pu être identifié." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Le produit n'a pas pu être identifié.", code: "product_missing" },
+      { status: 400 },
+    );
   }
 
   if (authorName.length < 2 || authorName.length > 80) {
     return NextResponse.json(
-      { error: "Merci d'indiquer un nom de 2 à 80 caractères." },
+      { error: "Merci d'indiquer un nom de 2 à 80 caractères.", code: "invalid_name" },
       { status: 400 },
     );
   }
 
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return NextResponse.json(
-      { error: "Merci de choisir une note de 1 à 5 étoiles." },
+      { error: "Merci de choisir une note de 1 à 5 étoiles.", code: "invalid_rating" },
       { status: 400 },
     );
   }
 
   if (body.length < 10 || body.length > 2000) {
     return NextResponse.json(
-      { error: "Votre avis doit faire entre 10 et 2000 caractères." },
+      { error: "Votre avis doit faire entre 10 et 2000 caractères.", code: "invalid_body" },
       { status: 400 },
     );
   }
 
   if (title.length > 120) {
     return NextResponse.json(
-      { error: "Le titre ne peut pas dépasser 120 caractères." },
+      { error: "Le titre ne peut pas dépasser 120 caractères.", code: "title_too_long" },
       { status: 400 },
     );
   }
 
   if (city.length > 80) {
     return NextResponse.json(
-      { error: "La ville ne peut pas dépasser 80 caractères." },
+      { error: "La ville ne peut pas dépasser 80 caractères.", code: "city_too_long" },
       { status: 400 },
     );
   }
 
   if (authorEmail && !EMAIL_PATTERN.test(authorEmail)) {
     return NextResponse.json(
-      { error: "Merci d'indiquer une adresse e-mail valide." },
+      { error: "Merci d'indiquer une adresse e-mail valide.", code: "invalid_email" },
       { status: 400 },
     );
   }
 
   if (!(await productExists(productId))) {
-    return NextResponse.json({ error: "Ce produit est introuvable." }, { status: 404 });
+    return NextResponse.json(
+      { error: "Ce produit est introuvable.", code: "product_not_found" },
+      { status: 404 },
+    );
   }
 
   const rate = checkReviewRate(productId);
@@ -117,6 +125,7 @@ export async function POST(request: Request) {
       {
         error:
           "Trop d'avis ont été déposés sur ce produit en peu de temps. Merci de réessayer plus tard.",
+        code: "rate_limited",
       },
       { status: 429, headers: { "Retry-After": String(rate.retryAfterSeconds) } },
     );
