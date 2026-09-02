@@ -243,6 +243,12 @@ for (const r of assort) {
     tags: [...tagSet],
     image: imagePaths[r["SKU"].trim()] || "",
     matchedDescription: Boolean(desc),
+    // Contenance (« 210 ml »…), colonne "Format" de description_produit.csv.
+    // Exclu pour les coffrets ("Set") : ce ne sont pas des volumes. Devient la
+    // seule variation du produit dans prisma/seed-kk.ts — le catalogue client
+    // ne porte qu'une contenance par référence, jamais plusieurs volumes d'un
+    // même produit.
+    format: format && format.toLowerCase() !== "set" ? format : "",
   });
 }
 

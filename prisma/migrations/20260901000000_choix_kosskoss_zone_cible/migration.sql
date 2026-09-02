@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "Product" ADD COLUMN     "cible" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "cibleEn" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "pourquoiKossKoss" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "pourquoiKossKossEn" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "zone" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "zoneEn" TEXT NOT NULL DEFAULT '';

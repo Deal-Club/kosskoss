@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { WishlistButton } from "@/components/wishlist/WishlistButton";
 import { formatRating } from "@/lib/formatRating";
 import { BADGE_LABEL, normaliserBadge } from "@/lib/kk/badges";
+import { formatProductTitle } from "@/lib/kk/format";
 import type { Product } from "@/types/home";
 
 // Composant partagé : il est rendu côté serveur (grilles de la page d'accueil)
@@ -65,8 +66,10 @@ export function ProductCard({ product }: { product: Product }) {
       <p className="eyebrow truncate text-[0.58rem] text-muted-foreground">
         {product.brand}
       </p>
+      {/* Contenance intégrée AU TITRE (« ... - 50 ml »), même donnée que la
+          ligne Format de la fiche produit — voir `formatProductTitle`. */}
       <p className="mt-1 mb-1 line-clamp-2 font-heading text-sm leading-snug font-bold text-foreground transition-colors group-hover:text-primary">
-        {product.name}
+        {formatProductTitle(product.name, product.variants?.[0]?.label)}
       </p>
       {typeof product.rating === "number" && (
         <p className="messwert mb-2 flex items-center gap-1 text-xs font-semibold text-foreground">

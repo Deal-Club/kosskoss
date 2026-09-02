@@ -97,6 +97,9 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
       { fr: "conseilKossKoss", en: "conseilKossKossEn", libelle: "Conseil KossKoss", format: "texte-long" },
       { fr: "precautions", en: "precautionsEn", libelle: "Précautions", format: "texte-long" },
       { fr: "actifsCles", en: "actifsClesEn", libelle: "Actifs clés", format: "texte" },
+      { fr: "pourquoiKossKoss", en: "pourquoiKossKossEn", libelle: "Le Choix KossKoss Select", format: "texte-long" },
+      { fr: "zone", en: "zoneEn", libelle: "Zone d'application", format: "texte" },
+      { fr: "cible", en: "cibleEn", libelle: "Cible", format: "texte" },
       // statutPublication / donneesAConfirmer volontairement absents : voir
       // les EXCLUSIONS de traductions.test.ts et le commentaire du modèle
       // Product dans prisma/schema.prisma.

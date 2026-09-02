@@ -142,8 +142,14 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         </p>
       )}
 
-      {/* Sélecteur de variante (contenance) */}
-      {product.variants.length > 0 && (
+      {/* Sélecteur de variante (contenance) — seulement s'il y a un VRAI choix
+          à faire. `> 1` et non `> 0` : sur les 71 produits actuels, aucun ne
+          porte plus d'une contenance active (voir la contenance déjà lisible
+          dans le titre — `formatProductTitle`), donc le sélecteur ne servait
+          qu'à répéter cette même information sous forme de bouton non
+          cliquable-utilement. Le jour où un produit porte deux volumes, il
+          réapparaît de lui-même — rien à changer ici. */}
+      {product.variants.length > 1 && (
         <fieldset className="mt-5">
           <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             {t("contentLabel")}
@@ -276,5 +282,71 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         )}
       </p>
     </div>
+  );
+}
+
+/**
+ * Rappel bas de fiche : achat direct, pas un simple ancrage vers le bloc
+ * d'achat plus haut. Retour client — remonter l'utilisateur pour qu'il
+ * reclique « Payer maintenant » retardait un achat déjà décidé.
+ *
+ * Achète la VARIANTE DE RÉFÉRENCE (`product.variants[0]`, qté 1) — même
+ * présélection que celle d'`AddToCart` au premier rendu (voir `variantId`
+ * plus haut) : si le client a changé de contenance dans le bloc d'achat,
+ * cette instance-ci ne le sait pas, elle repart de la même valeur par défaut.
+ * Ce n'est PAS un second `AddToCart` monté sur la page : `view_item` ne se
+ * mesure qu'à l'ouverture de la fiche (voir le `useEffect` plus haut), et un
+ * second montage l'aurait renvoyé une deuxième fois. Ce bouton ne mesure
+ * `add_to_cart` qu'à son propre clic — aucun doublon possible.
+ */
+export function BuyNowReminder({ product }: { product: KKProductDetail }) {
+  const t = useTranslations("product");
+  const { add } = useCart();
+  const router = useRouter();
+  const pathname = usePathname();
+  const referenceVariant = product.variants[0];
+  const priceFcfa = referenceVariant?.priceFcfa ?? product.priceFcfa;
+  const outOfStock = product.stock <= 0;
+
+  function handleClick() {
+    add(
+      {
+        productId: product.id,
+        variantId: referenceVariant?.id,
+        variantLabel: referenceVariant?.label,
+        slug: product.slug,
+        brand: product.brand,
+        name: product.name,
+        image: product.image ?? "",
+        path: product.href,
+        priceCents: priceFcfa,
+        stock: product.stock,
+      },
+      1,
+    );
+    const idCatalogue = identifiantProduitCatalogue(product.slug, product.id);
+    mesurerEvenement({
+      type: "add_to_cart",
+      reference: idCatalogue,
+      articles: [{ reference: idCatalogue, nom: product.name, prixCents: priceFcfa, quantite: 1 }],
+      totalCents: priceFcfa,
+    });
+    router.push(withLocale(pathname, "/commande"));
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={outOfStock}
+      aria-label={t("reminderAria", { name: product.name })}
+      className="kk-fill group flex w-full items-center justify-between gap-4 rounded-full bg-deep px-6 py-4 text-primary-foreground disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <span className="text-sm font-semibold">{product.name}</span>
+      <span className="figure flex shrink-0 items-center gap-2 text-sm font-semibold">
+        {outOfStock ? t("unavailable") : formatFcfa(priceFcfa)}
+        <Zap className="h-4 w-4 shrink-0" aria-hidden="true" />
+      </span>
+    </button>
   );
 }

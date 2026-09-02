@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useLocale } from "next-intl";
-import { formatFcfa } from "@/lib/kk/format";
+import { formatFcfa, formatProductTitle } from "@/lib/kk/format";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import type { KKProductView } from "@/types/kk";
 import { BottleMotif } from "./motifs";
@@ -105,8 +105,11 @@ export function ProductCard({ product }: { product: KKProductView }) {
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           {product.brand}
         </p>
+        {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande client
+            explicite — plus une ligne à part, voir `formatProductTitle`.
+            Absente uniquement si le produit ne porte aucune variante active. */}
         <h3 className="mt-1 font-sans text-[0.95rem] font-medium leading-snug text-foreground group-hover:text-deep">
-          {product.name}
+          {formatProductTitle(product.name, product.sizeLabel)}
         </h3>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="figure text-[0.95rem] font-semibold text-deep">

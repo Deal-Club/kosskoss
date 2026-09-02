@@ -80,6 +80,14 @@ export type KKProductView = {
    */
   hasVariants?: boolean;
   /**
+   * Contenance de la variante de référence (« 50 ml »…), copiée telle quelle
+   * depuis `ProductVariant.label` — même valeur que la ligne « Format » de la
+   * fiche produit (`referenceVariant` dans `product-detail.tsx`). Absente si
+   * le produit ne porte aucune variante active : il n'y a alors simplement
+   * pas de contenance à afficher.
+   */
+  sizeLabel?: string;
+  /**
    * Les « pourquoi on l'aime » du produit (master client, colonne Bullets) —
    * mêmes textes que la section homonyme de la fiche produit. Absent/vide si
    * le produit n'en porte aucun ; à l'appelant de décider combien il en montre

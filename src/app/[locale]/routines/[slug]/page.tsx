@@ -11,7 +11,8 @@ import { BottleMotif } from "@/components/kk/motifs";
 import { RoutineIllustration } from "@/components/kk/routine-illustration";
 import { getRoutine, getRoutines } from "@/server/kk/routines";
 import { libelleNiveau } from "@/lib/kk/routines-niveau";
-import { formatFcfa } from "@/lib/kk/format";
+import { BESOINS_ROUTINES, libelleBesoinRoutine } from "@/lib/kk/besoins-routines";
+import { formatFcfa, formatProductTitle } from "@/lib/kk/format";
 import { alternatesFor } from "@/lib/hreflang";
 import { BRAND } from "@/config/brand";
 import type { Locale } from "@/i18n/routing";
@@ -59,6 +60,16 @@ export default async function RoutinePage({ params }: { params: Params }) {
   // pur (`src/lib/kk/routines-niveau.ts`) : c'est lui qui sait que le « Eco »
   // du master s'affiche « Essentielle ».
   const niveauLabel = libelleNiveau(routine.niveau, locale);
+
+  // Étiquette de besoin (« Boutons »…) — modèle client, un des trois repères
+  // d'en-tête (niveau, nombre de gestes, besoin) — voir CONSIGNES de
+  // MODELE_Fiche Routine_V2.docx : « Boutons ← Besoin ← B4 ». Servait déjà à
+  // grouper /routines (`grouperParBesoin`), jamais montrée sur la fiche
+  // elle-même. Repli sur le tag brut si le registre ne le connaît pas
+  // (`besoinTag` d'un huitième besoin que le master aurait ajouté) : voir la
+  // même règle dans `grouperParBesoin`.
+  const besoin = BESOINS_ROUTINES.find((b) => b.tag === routine.besoinTag);
+  const besoinLabel = besoin ? libelleBesoinRoutine(besoin, locale) : routine.besoinTag;
 
   // Parcours numéroté du modèle (« 01 NETTOYER → 02 TRAITER → 03 PROTÉGER ») :
   // le rôle du geste prime sur son étiquette générique — voir la note sur
@@ -170,6 +181,12 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   le champ ne fait pas explicitement. */}
               {routine.profilCible && (
                 <p className="mt-2 text-sm leading-relaxed text-deep/80">{routine.profilCible}</p>
+              )}
+
+              {besoinLabel && (
+                <span className="mt-3 inline-block rounded-full bg-card px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-deep">
+                  {besoinLabel}
+                </span>
               )}
             </div>
 
@@ -325,8 +342,10 @@ export default async function RoutinePage({ params }: { params: Params }) {
                         plus bas), le clic ne doit donc pas ouvrir la fiche
                         produit et faire quitter la page — c'est là que se
                         prend la décision d'achat. */}
+                    {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande
+                        client — voir `formatProductTitle`. */}
                     <h3 className="mt-1 font-display text-[1.15rem] leading-snug text-deep">
-                      {p.name}
+                      {formatProductTitle(p.name, p.sizeLabel)}
                     </h3>
 
                     {/* Deux premiers bienfaits, mêmes textes que la section
@@ -456,7 +475,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                       <li key={step.id} className="flex justify-between gap-3 py-3 text-sm">
                         <span className="text-primary-foreground/90">
                           <span className="figure text-primary-foreground/55">{i + 1}. </span>
-                          {step.product.name}
+                          {formatProductTitle(step.product.name, step.product.sizeLabel)}
                         </span>
                         <span className="figure shrink-0 text-primary-foreground/80">
                           {formatFcfa(step.product.priceFcfa)}

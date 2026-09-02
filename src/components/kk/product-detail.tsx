@@ -3,7 +3,6 @@ import {
   ChevronRight,
   ArrowDown,
   Check,
-  ArrowUp,
   Heart,
   ScanFace,
   SunMoon,
@@ -11,20 +10,25 @@ import {
   Moon,
   Layers,
   ClipboardList,
+  ShieldCheck,
+  Award,
+  Info,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { KKProductDetail } from "@/server/kk/product";
 import { BADGE_LABEL } from "@/lib/kk/badges";
 import { PREOCCUPATIONS, TYPES_DE_PEAU, libellesPourTags } from "@/lib/kk/besoins";
-import { formatFcfa } from "@/lib/kk/format";
+import { formatFcfa, formatProductTitle } from "@/lib/kk/format";
 import { getRoutinesForProduct } from "@/server/kk/routines";
 import { getEnabledPaymentMethods } from "@/server/kk/payments";
 import type { KKProductView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 import { BottleMotif, Petal } from "./motifs";
 import { LocalizedLink as Link } from "./localized-link";
-import { AddToCart } from "./add-to-cart";
+import { AddToCart, BuyNowReminder } from "./add-to-cart";
+import { tintClass } from "./routine-card";
 import { ProductRail } from "./home";
 import { ProductReviews } from "./product-reviews";
 import { ProductZoom } from "./product-zoom";
@@ -142,14 +146,57 @@ function Gallery({
   );
 }
 
-function Accordion({ title, children, open = false }: { title: string; children: React.ReactNode; open?: boolean }) {
+/**
+ * Ligne d'une grappe d'information — « Est-ce pour ma peau ? », « Comment
+ * l'utiliser ? », « Le Choix KossKoss Select ? », « En bref » regroupées sous
+ * UN SEUL panneau plutôt qu'en quatre bandes plein écran empilées.
+ *
+ * ── POURQUOI CE REGROUPEMENT ─────────────────────────────────────────────
+ * Quatre bandes successives, chacune son titre-pastille et sa largeur
+ * max-w-7xl, se lisaient comme quatre répétitions du même gabarit — un
+ * défilement long où rien ne distinguait « ce qu'il faut savoir » de la
+ * suite. Rassemblées dans un seul cadre à accordéon, elles deviennent UNE
+ * réponse structurée à « qu'est-ce que j'ai besoin de savoir ? », que le
+ * visiteur ouvre ligne par ligne au lieu de tout faire défiler. La première
+ * ligne renseignée s'ouvre par défaut (`open`) : la grappe n'apparaît jamais
+ * entièrement fermée.
+ *
+ * Reste HORS de cette grappe : « Pourquoi vous allez l'aimer » (l'accroche,
+ * elle doit rester visible sans clic) et « Complétez votre routine » (des
+ * cartes produit, pas du texte — un autre registre visuel).
+ */
+function DetailRow({
+  icon: Icon,
+  title,
+  open = false,
+  children,
+}: {
+  icon: LucideIcon;
+  title: string;
+  open?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <details open={open} className="group border-b border-border py-4">
-      <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-deep">
-        {title}
-        <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" />
+    <details
+      open={open}
+      className="group px-6 py-4 transition-colors first:rounded-t-2xl last:rounded-b-2xl open:bg-sand/50"
+    >
+      {/* Trois signaux d'état ouvert, pas un seul : le fond de ligne
+          (`open:bg-sand/50` ci-dessus), la pastille d'icône qui passe au vert
+          profond plein — même bascule que les boutons de variante actifs
+          (`add-to-cart.tsx`) —, et le chevron qui prend la même teinte. Un
+          survol au clavier/tactile qui manquerait le fond (contraste faible
+          en plein soleil, p. ex.) retrouve l'état par l'icône ou la rotation. */}
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-deep marker:content-none">
+        <span className="flex items-center gap-2.5">
+          <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-sand text-deep transition-colors group-open:bg-deep group-open:text-primary-foreground">
+            <Icon className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+          </span>
+          {title}
+        </span>
+        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90 group-open:text-deep" />
       </summary>
-      <div className="pt-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
+      <div className="mt-3 pl-[2.375rem] text-sm leading-relaxed text-foreground/85">{children}</div>
     </details>
   );
 }
@@ -214,14 +261,122 @@ export async function ProductDetail({
   // l'identique. Un produit sans variante n'a simplement pas de ligne Format :
   // aucune valeur n'existe pour lui en base, en inventer une serait mentir.
   const referenceVariant = product.variants[0];
+  // « Utilisation » résume Matin/Soir en une valeur — mêmes libellés que la
+  // section « Comment l'utiliser ? » juste au-dessus (`morningLabel` /
+  // `eveningLabel`), jamais une troisième formulation inventée ici.
+  const usageSummary = [product.usageMatin && t("morningLabel"), product.usageSoir && t("eveningLabel")]
+    .filter((v): v is string => Boolean(v))
+    .join(t("briefUsageJoiner"));
   const briefRows: { label: string; value: string }[] = [
     besoinLabels.length > 0 && { label: t("briefNeedLabel"), value: besoinLabels.join(" / ") },
     peauLabels.length > 0 && { label: t("briefSkinLabel"), value: peauLabels.join(" / ") },
+    product.zone && { label: t("briefZoneLabel"), value: product.zone },
     product.actifsCles && { label: t("briefActionLabel"), value: product.actifsCles },
-    product.frequence && { label: t("briefUsageLabel"), value: product.frequence },
+    usageSummary && { label: t("briefUsageLabel"), value: usageSummary },
+    product.frequence && { label: t("briefFrequenceLabel"), value: product.frequence },
+    product.cible && { label: t("briefTargetLabel"), value: product.cible },
     referenceVariant && { label: t("briefFormatLabel"), value: referenceVariant.label },
+    { label: t("briefRefLabel"), value: product.sku },
+    product.gtin && { label: t("briefEanLabel"), value: product.gtin },
     { label: t("briefPriceLabel"), value: formatFcfa(referenceVariant?.priceFcfa ?? product.priceFcfa) },
   ].filter((row): row is { label: string; value: string } => Boolean(row));
+
+  // Grappe « En savoir plus » — voir le commentaire de `DetailRow` : quatre
+  // sections plein écran (« Est-ce pour ma peau ? », « Comment l'utiliser ? »,
+  // « Le Choix KossKoss Select ? », « En bref ») rassemblées sous un seul
+  // panneau à accordéon, plutôt que quatre bandes empilées qui se lisaient
+  // comme une répétition du même gabarit. Un tableau, pas quatre `&&` en
+  // JSX : c'est lui qui décide laquelle s'ouvre par défaut (`i === 0`) et si
+  // le panneau existe du tout — un produit sans aucun des quatre champs
+  // (encore non enrichi par le master) n'affiche pas de panneau vide.
+  type DetailRowSpec = { key: string; icon: LucideIcon; title: string; content: React.ReactNode };
+  const detailRows = [
+    product.idealPour && {
+      key: "ideal",
+      icon: ScanFace,
+      title: t("idealForTitle"),
+      content: (
+        <>
+          <span className="font-semibold text-deep">{t("idealForLabel")}</span> {product.idealPour}
+        </>
+      ),
+    },
+    (product.usageMatin || product.usageSoir || product.conseilKossKoss || product.precautions) && {
+      key: "usage",
+      icon: SunMoon,
+      title: t("howToUseTitle"),
+      content: (
+        <>
+          {(product.usageMatin || product.usageSoir) && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {product.usageMatin && (
+                <p>
+                  <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-deep">
+                    <Sun className="h-3.5 w-3.5 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
+                    {t("morningLabel")}
+                  </span>
+                  <span className="mt-1 block">{product.usageMatin}</span>
+                </p>
+              )}
+              {product.usageSoir && (
+                <p>
+                  <span className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-deep">
+                    <Moon className="h-3.5 w-3.5 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
+                    {t("eveningLabel")}
+                  </span>
+                  <span className="mt-1 block">{product.usageSoir}</span>
+                </p>
+              )}
+            </div>
+          )}
+          {product.conseilKossKoss && (
+            <p className={`rounded-xl bg-sand/60 p-4 ${product.usageMatin || product.usageSoir ? "mt-4" : ""}`}>
+              <span className="font-semibold text-deep">{t("kosskossAdviceLabel")}</span> {product.conseilKossKoss}
+            </p>
+          )}
+          {/* Précautions — modèle client. Le champ existe en base depuis le
+              lot 7A mais n'était encore ni sélectionné ni affiché : donnée
+              dormante, pas nouvelle. */}
+          {product.precautions && (
+            <p className="mt-3 text-muted-foreground">
+              <span className="font-semibold text-deep">{t("precautionsLabel")}</span> {product.precautions}
+            </p>
+          )}
+        </>
+      ),
+    },
+    // « Le Choix KossKoss Select ? » — pourquoi L'ÉQUIPE l'a choisi, distinct
+    // d'« Est-ce pour ma peau ? » (à qui il s'adresse). `product.pourquoiKossKoss`
+    // — voir la note du champ dans prisma/schema.prisma. Vide tant que le
+    // master ne l'a pas renseigné.
+    product.pourquoiKossKoss && {
+      key: "chosen",
+      icon: Award,
+      title: t("chosenTitle"),
+      content: <>{product.pourquoiKossKoss}</>,
+    },
+    // « En bref » — même contenu que `briefRows`, en tableau serré : reprend
+    // ici ce qui est dit en prose dans les lignes précédentes (besoin, peau,
+    // zone, actifs, usage, fréquence, cible, format, référence, EAN, prix),
+    // jamais redemandé au client. `-mx`/`-mt` neutralisent le padding de
+    // `DetailRow` : le tableau va bord à bord avec le panneau qui le contient,
+    // comme il allait bord à bord avec sa propre carte avant le regroupement.
+    briefRows.length > 0 && {
+      key: "brief",
+      icon: ClipboardList,
+      title: t("briefTitle"),
+      content: (
+        <dl className="-mx-[1.65rem] -mb-4 -mt-3 divide-y divide-border">
+          {briefRows.map((row) => (
+            <div key={row.label} className="flex flex-wrap justify-between gap-x-4 gap-y-1 px-6 py-3 text-sm">
+              <dt className="font-semibold text-deep">{row.label}</dt>
+              <dd className="text-right text-foreground/85">{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ),
+    },
+  ].filter(Boolean) as DetailRowSpec[];
 
   return (
     <>
@@ -268,17 +423,35 @@ export async function ProductDetail({
                   Il redescend à 1,6 rem sur mobile et retrouve progressivement
                   sa taille : le nom reste la tête de série de la fiche, il
                   cesse d'en être le contenu principal. */}
+              {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande
+                  client — voir `formatProductTitle`. Même variante de
+                  référence que la ligne Format du tableau « en bref »
+                  ci-dessous et que la présélection du bloc d'achat. */}
               <h1 className="mt-2 text-[1.6rem] leading-tight text-deep sm:text-[1.9rem] lg:text-[2.15rem]">
-                {product.name}
+                {formatProductTitle(product.name, referenceVariant?.label)}
               </h1>
 
               {/* Ligne de préoccupations — modèle client : « Boutons •
-                  Brillance • Marques post-boutons ». Puise dans les mêmes tags
-                  que le tableau « en bref » plus bas (voir `besoinLabels`) :
+                  Excès de sébum • Peaux mixtes à grasses » (besoin ET type de
+                  peau sur la même ligne). Puise dans les mêmes tags que le
+                  tableau « en bref » plus bas (`besoinLabels`/`peauLabels`) :
                   aucune donnée n'est demandée deux fois au master. */}
-              {besoinLabels.length > 0 && (
+              {(besoinLabels.length > 0 || peauLabels.length > 0) && (
                 <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-gold-ink">
-                  {besoinLabels.join(" • ")}
+                  {[...besoinLabels, ...peauLabels].join(" • ")}
+                </p>
+              )}
+
+              {/* Puce de traçabilité — modèle client : n'affirme « EAN
+                  traçable » que lorsqu'un EAN validé existe réellement (voir
+                  `isValidGtin`, src/server/kk/master.ts) ; l'annoncer sans
+                  donnée serait une allégation trompeuse (Code de la
+                  consommation, comme pour la note moyenne — voir
+                  `KKReviewsSummary` dans src/types/kk.ts). */}
+              {product.gtin && (
+                <p className="mt-2 flex items-center gap-1.5 text-[0.72rem] font-medium text-muted-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-deep" aria-hidden="true" />
+                  {t("authenticityBadge")}
                 </p>
               )}
 
@@ -316,11 +489,11 @@ export async function ProductDetail({
                 )}
               </p>
 
-              <div className="mt-8">
-                <Accordion title={t("sectionDescription")} open>
-                  {product.description || product.shortDescription}
-                </Accordion>
-              </div>
+              {/* La description longue est descendue tout en bas de la fiche
+                  (dernier bloc, après avis et produits associés) — retour
+                  client : elle encombrait le bloc d'achat, qui doit rester
+                  court (prix, CTA, livraison) plutôt que porter le premier
+                  pavé de texte de la page. */}
 
               <p className="mt-5 text-xs text-muted-foreground">
                 {t("sku")} {product.sku} · {product.stock > 0 ? t("inStockShort") : t("unavailable")}
@@ -336,6 +509,20 @@ export async function ProductDetail({
          séparait la fiche de ses produits associés par un écran de texte qui
          n'apprenait rien sur le produit qu'on est en train de regarder — le
          même propos est tenu à sa place sur l'accueil et sur /marques. */}
+
+      {/* --- Description ------------------------------------------------------
+          Juste avant « Pourquoi vous allez l'aimer » — retour client : elle
+          encombrait le bloc d'achat en haut de page, qui doit rester court
+          (prix, CTA, livraison), mais reste la première chose lue une fois
+          qu'on passe au corps de la fiche, avant les bénéfices. */}
+      {(product.description || product.shortDescription) && (
+        <section className="mx-auto max-w-7xl px-6 py-10">
+          <SectionTitle icon={FileText}>{t("sectionDescription")}</SectionTitle>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-foreground/85">
+            {product.description || product.shortDescription}
+          </p>
+        </section>
+      )}
 
       {/* --- Pourquoi vous allez l'aimer -----------------------------------
           Même gabarit que le bloc d'achat et le rail de produits (max-w-7xl) :
@@ -358,50 +545,26 @@ export async function ProductDetail({
         </section>
       )}
 
-      {/* --- Est-ce pour ma peau ? ---------------------------------------- */}
-      {product.idealPour && (
+      {/* --- En savoir plus ---------------------------------------------------
+          « Est-ce pour ma peau ? », « Comment l'utiliser ? », « Le Choix
+          KossKoss Select ? » et « En bref » : quatre bandes plein écran
+          rassemblées en UN SEUL panneau à accordéon — voir `DetailRow` et le
+          tableau `detailRows` plus haut pour le raisonnement complet. Placé
+          juste après « Pourquoi vous allez l'aimer » (l'accroche, qui reste
+          seule visible sans clic) et avant « Complétez votre routine » (des
+          cartes produit, un autre registre visuel que ce panneau de texte). */}
+      {detailRows.length > 0 && (
         <section className="border-t border-border/60 bg-sand/40">
           <div className="mx-auto max-w-7xl px-6 py-10">
-            <SectionTitle icon={ScanFace}>{t("idealForTitle")}</SectionTitle>
-            <p className="mt-4 max-w-3xl text-sm leading-relaxed text-foreground/85">
-              <span className="font-semibold text-deep">{t("idealForLabel")}</span> {product.idealPour}
-            </p>
+            <SectionTitle icon={Info}>{t("moreInfoTitle")}</SectionTitle>
+            <div className="mt-6 divide-y divide-border rounded-2xl border border-border/70 bg-card">
+              {detailRows.map((row, i) => (
+                <DetailRow key={row.key} icon={row.icon} title={row.title} open={i === 0}>
+                  {row.content}
+                </DetailRow>
+              ))}
+            </div>
           </div>
-        </section>
-      )}
-
-      {/* --- Comment l'utiliser ? ------------------------------------------
-          Matin et soir n'apparaissent que si le master les a renseignés — un
-          produit corps sans étape matin, par exemple, n'affiche que le soir. */}
-      {(product.usageMatin || product.usageSoir || product.conseilKossKoss) && (
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <SectionTitle icon={SunMoon}>{t("howToUseTitle")}</SectionTitle>
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {product.usageMatin && (
-              <div className="rounded-2xl border border-border/70 bg-card p-6">
-                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
-                  <Sun className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
-                  {t("morningLabel")}
-                </p>
-                <p className="mt-2.5 text-sm leading-relaxed text-foreground/85">{product.usageMatin}</p>
-              </div>
-            )}
-            {product.usageSoir && (
-              <div className="rounded-2xl border border-border/70 bg-card p-6">
-                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-deep">
-                  <Moon className="h-4 w-4 shrink-0 text-gold-ink" strokeWidth={1.75} aria-hidden="true" />
-                  {t("eveningLabel")}
-                </p>
-                <p className="mt-2.5 text-sm leading-relaxed text-foreground/85">{product.usageSoir}</p>
-              </div>
-            )}
-          </div>
-          {product.conseilKossKoss && (
-            <p className="mt-5 rounded-2xl bg-sand/60 p-6 text-sm leading-relaxed text-foreground/85">
-              <span className="font-semibold text-deep">{t("kosskossAdviceLabel")}</span>{" "}
-              {product.conseilKossKoss}
-            </p>
-          )}
         </section>
       )}
 
@@ -409,14 +572,32 @@ export async function ProductDetail({
           Un produit peut appartenir à plusieurs routines (par exemple un
           nettoyant repris en version Éco et en version Premium) : elles sont
           TOUTES montrées, plutôt qu'une seule choisie arbitrairement — voir
-          le rapport du lot 7D. */}
+          le rapport du lot 7D.
+
+          Fond CLAIR : la section précédente (« En savoir plus ») est déjà sur
+          sable — deux bandes sable consécutives fusionnent en un seul aplat
+          sans coupure visible, le filet du haut ne suffit pas à les
+          distinguer. L'alternance clair/sable reprend ici. */}
       {routines.length > 0 && (
-        <section className="border-t border-border/60 bg-sand/40">
+        <section className="border-t border-border/60">
           <div className="mx-auto max-w-7xl px-6 py-10">
             <SectionTitle icon={Layers}>{t("completeRoutineTitle")}</SectionTitle>
-            <div className="mt-6 space-y-6">
+            {/* Grille à deux colonnes dès `sm` : un produit dans deux
+                routines (version Éco + Premium, par exemple) les montre côte
+                à côte plutôt qu'empilées. `items-start` — sans lui, la grille
+                étire la carte la plus courte à la hauteur de l'autre. */}
+            <div className="mt-6 grid items-start gap-6 sm:grid-cols-2">
+              {/* Teinte de la routine (`routine.tint`), pas `bg-card` neutre :
+                  c'est le même repère de couleur qui identifie chaque routine
+                  sur l'accueil et sur sa propre page (voir `tintClass`,
+                  routine-card.tsx). Deux routines côte à côte ici se
+                  distinguent donc au coup d'œil, sans couleur inventée pour
+                  l'occasion. */}
               {routines.map((routine) => (
-                <div key={routine.id} className="rounded-2xl border border-border/70 bg-card p-6">
+                <div
+                  key={routine.id}
+                  className={`rounded-2xl border border-border/70 p-6 ${tintClass(routine.tint)}`}
+                >
                   <h3 className="text-deep">{routine.name}</h3>
                   <ol className="mt-4 space-y-1.5">
                     {routine.steps.map((step, i) => (
@@ -455,46 +636,25 @@ export async function ProductDetail({
         </section>
       )}
 
-      {/* --- En bref --------------------------------------------------------
-          Besoin / peau / action / utilisation / format / prix : six valeurs
-          qui existent déjà ailleurs sur la fiche (tags, actifs clés,
-          fréquence, variante, prix) — reprises ici en tableau, jamais
-          redemandées au client. La section entière disparaît si aucune ligne
-          n'a de valeur (produit sans tag reconnu et sans variante, par
-          exemple), plutôt que de montrer un tableau vide. */}
-      {briefRows.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <SectionTitle icon={ClipboardList}>{t("briefTitle")}</SectionTitle>
-          <dl className="mt-6 divide-y divide-border rounded-2xl border border-border/70 bg-card">
-            {briefRows.map((row) => (
-              <div key={row.label} className="flex flex-wrap justify-between gap-x-4 gap-y-1 px-6 py-3.5 text-sm">
-                <dt className="font-semibold text-deep">{row.label}</dt>
-                <dd className="text-right text-foreground/85">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-        </section>
-      )}
+      {/* --- Relance Diagnostic Beauté + rappel du bouton d'achat -----------
+          Modèle client : « Vous hésitez sur le soin adapté à votre peau ? »
+          suivi de [Faire le quiz beauté] et [Ajouter au panier] côte à côte.
+          Le rappel juste en dessous ACHÈTE DIRECTEMENT (retour client : un
+          simple ancrage vers le bloc d'achat plus haut retardait un achat
+          déjà décidé) — voir `BuyNowReminder`, dont le commentaire explique
+          pourquoi ce n'est pas un second `AddToCart` monté sur la page (donc
+          aucun doublon de mesure `view_item`/`add_to_cart`). */}
+      <section className="mx-auto max-w-7xl px-6 pb-4 text-center">
+        <p className="text-sm text-muted-foreground">
+          {t("quizPrompt")}{" "}
+          <Link href="/diagnostic" className="font-semibold text-deep kk-underline">
+            {t("quizCta")}
+          </Link>
+        </p>
+      </section>
 
-      {/* --- Rappel du bouton d'achat ---------------------------------------
-          Après plusieurs sections de lecture, le prix et le bouton d'achat
-          sont loin au-dessus — surtout sur mobile, où le bloc d'achat n'est
-          pas collant (voir la grille plus haut). Un renvoi ancré plutôt qu'un
-          second `AddToCart` : dupliquer le composant client dupliquerait
-          aussi ses mesures (`view_item`, `add_to_cart`), ce qui compterait la
-          même visite deux fois côté GA4/Meta. */}
       <section className="mx-auto max-w-7xl px-6 pb-10">
-        <Link
-          href={`${product.href}#acheter-produit`}
-          aria-label={t("reminderAria", { name: product.name })}
-          className="kk-fill group flex items-center justify-between gap-4 rounded-full bg-deep px-6 py-4 text-primary-foreground"
-        >
-          <span className="text-sm font-semibold">{product.name}</span>
-          <span className="figure flex shrink-0 items-center gap-2 text-sm font-semibold">
-            {formatFcfa(product.priceFcfa)}
-            <ArrowUp className="h-4 w-4 transition-transform group-hover:-translate-y-0.5" aria-hidden="true" />
-          </span>
-        </Link>
+        <BuyNowReminder product={product} />
       </section>
 
       {/* Les avis AVANT les produits associés : ils portent sur le produit
@@ -509,6 +669,7 @@ export async function ProductDetail({
           products={related}
         />
       )}
+
     </>
   );
 }

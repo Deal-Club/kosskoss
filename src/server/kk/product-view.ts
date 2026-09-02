@@ -51,12 +51,19 @@ export function toBadge(value: string | null): KKBadge {
 
 /**
  * Sélection Prisma minimale pour bâtir une vue produit.
- * `variants` n'est lu que pour savoir s'il en existe au moins une active : la
- * vignette n'affiche pas les contenances, elle renvoie vers la fiche.
+ * `variants` sert à la fois à savoir s'il en existe au moins une active, et à
+ * lire le libellé de la première (triée par `position`) : c'est la « variante
+ * de référence » déjà utilisée par la fiche produit (`referenceVariant` dans
+ * `product-detail.tsx`) pour sa ligne Format — la vignette affiche désormais
+ * la même contenance, au lieu de renvoyer muette vers la fiche.
  */
 export const PRODUCT_VIEW_INCLUDE = {
   category: { include: { group: true } },
-  variants: { where: { active: true }, select: { id: true } },
+  variants: {
+    where: { active: true },
+    orderBy: { position: "asc" },
+    select: { id: true, label: true },
+  },
 } as const;
 
 /** Ligne de base attendue : le minimum qu'une requête doit avoir sélectionné. */
@@ -78,8 +85,12 @@ export interface ProductViewRow {
   /** Traduction anglaise du résumé ; même repli que `nameEn`. */
   shortDescriptionEn?: string;
   category: { slug: string; group: { slug: string } };
-  /** Absent si la requête n'a pas inclus les variations : on suppose alors aucune. */
-  variants?: { id: string }[];
+  /**
+   * Absent si la requête n'a pas inclus les variations : on suppose alors
+   * aucune. Triées par `position` quand la requête le précise (voir
+   * `PRODUCT_VIEW_INCLUDE`) : la première est la variante de référence.
+   */
+  variants?: { id: string; label?: string }[];
   /** JSON de chaînes (défaut "[]") — voir `parseStringArray`. */
   bullets?: string;
   bulletsEn?: string;
@@ -124,6 +135,7 @@ export function toProductView(row: ProductViewRow, locale: Locale, index = 0): K
     href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
     stock: row.stock,
     hasVariants: (row.variants?.length ?? 0) > 0,
+    sizeLabel: row.variants?.[0]?.label?.trim() || undefined,
     bullets: bullets.length > 0 ? bullets : undefined,
   };
 }

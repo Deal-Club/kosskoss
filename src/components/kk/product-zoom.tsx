@@ -73,7 +73,16 @@ export function ProductZoom({
         alt={alt}
         fill
         sizes="(max-width:1024px) 100vw, 45vw"
-        className="object-contain p-2 transition-transform duration-300 ease-out motion-reduce:transform-none motion-reduce:transition-none"
+        // Retour client : le grossissement au premier survol arrivait trop
+        // vite, presque un sursaut. `duration-300 ease-out` d'origine passe à
+        // 550 ms sur la même courbe que le reste de la fiche
+        // (`cubic-bezier(0.16,1,0.3,1)`, voir product-card.tsx) : le zoom
+        // s'installe, il ne saute plus. Le SUIVI du pointeur, lui, reste
+        // instantané (`--zoom-x`/`--zoom-y` posés hors React, jamais
+        // transitionnés) — ralentir la loupe pendant qu'on la déplace pour
+        // lire une étiquette la rendrait justement saccadée, voir le
+        // commentaire d'en-tête du fichier.
+        className="object-contain p-2 transition-transform duration-[550ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transform-none motion-reduce:transition-none"
         style={{
           transformOrigin: "var(--zoom-x, 50%) var(--zoom-y, 50%)",
           transform: survole ? `scale(${FACTEUR})` : "scale(1)",

@@ -47,6 +47,17 @@ export type KKProductDetail = {
   conseilKossKoss: string;
   /** Actifs clés, texte libre (« Propolis 60 % ; Niacinamide 2 % »). */
   actifsCles: string;
+  /** Précautions d'usage, tableau « Comment l'utiliser ? ». */
+  precautions: string;
+  /** « Le Choix KossKoss Select ? » — bloc dédié, distinct d'`idealPour`. */
+  pourquoiKossKoss: string;
+  /** Zone d'application (« Visage »…), ligne du tableau « en bref ». */
+  zone: string;
+  /** Cible (« Femme et Homme »…), ligne du tableau « en bref ». */
+  cible: string;
+  /** EAN/UPC, pour la puce de traçabilité et la ligne « en bref » du même nom.
+   *  `null` tant qu'aucune référence n'a été validée (voir `isValidGtin`). */
+  gtin: string | null;
 };
 
 /** Fiche produit complète, résolue par univers/catégorie/slug. `null` si absente. */
@@ -85,6 +96,10 @@ export async function getProductDetail(
   const frequence = pickText(p.frequence, traduire ? p.frequenceEn : undefined);
   const conseilKossKoss = pickText(p.conseilKossKoss, traduire ? p.conseilKossKossEn : undefined);
   const actifsCles = pickText(p.actifsCles, traduire ? p.actifsClesEn : undefined);
+  const precautions = pickText(p.precautions, traduire ? p.precautionsEn : undefined);
+  const pourquoiKossKoss = pickText(p.pourquoiKossKoss, traduire ? p.pourquoiKossKossEn : undefined);
+  const zone = pickText(p.zone, traduire ? p.zoneEn : undefined);
+  const cible = pickText(p.cible, traduire ? p.cibleEn : undefined);
 
   return {
     id: p.id,
@@ -125,6 +140,11 @@ export async function getProductDetail(
     frequence,
     conseilKossKoss,
     actifsCles,
+    precautions,
+    pourquoiKossKoss,
+    zone,
+    cible,
+    gtin: p.gtin,
   };
 }
 

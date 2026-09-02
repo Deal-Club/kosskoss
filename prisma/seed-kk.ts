@@ -32,6 +32,10 @@ type CatalogProduct = {
   bullets: string[];
   tags: string[];
   image?: string;
+  /** Contenance (« 210 ml »…), colonne Format de description_produit.csv.
+   *  Vide pour les coffrets ("Set") et pour les rares produits sans
+   *  correspondance de description — voir build-kk-catalog.mjs. */
+  format?: string;
 };
 type Catalog = { groups: CatalogGroup[]; categories: CatalogCategory[]; products: CatalogProduct[] };
 
@@ -106,7 +110,7 @@ async function main() {
       image: p.image ?? "",
       active: true,
     };
-    await prisma.product.upsert({
+    const product = await prisma.product.upsert({
       where: { slug: p.slug },
       update: data,
       create: {
@@ -116,6 +120,22 @@ async function main() {
         stock: 30,
       },
     });
+
+    // Contenance du catalogue client comme unique variation du produit : la
+    // vignette et la fiche l'affichent au titre (« ... - 50 ml »), voir
+    // `formatProductTitle`. `productVariant.deleteMany({})` plus haut a déjà
+    // vidé la table pour ce reseed complet — `create` et non `upsert` suffit.
+    if (p.format) {
+      await prisma.productVariant.create({
+        data: {
+          productId: product.id,
+          label: p.format,
+          priceCents: p.priceFcfa,
+          position: 0,
+          active: true,
+        },
+      });
+    }
   }
 
   await seedDiagnostic();

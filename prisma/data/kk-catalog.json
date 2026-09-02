@@ -90,7 +90,8 @@
         "solaire"
       ],
       "image": "/images/products/BOJ-GIN-CLE-210.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "210 ml"
     },
     {
       "slug": "beauty-of-joseon-lotion-tonique-eclat-lait-de-riz",
@@ -116,7 +117,8 @@
         "apaisant"
       ],
       "image": "/images/products/BOJ-GLO-MIL-150.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "150 ml"
     },
     {
       "slug": "beauty-of-joseon-serum-eclat-propolis-niacinamide",
@@ -143,7 +145,8 @@
         "apaisant"
       ],
       "image": "/images/products/BOJ-GLO-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "beauty-of-joseon-baume-demaquillant-eclat",
@@ -169,7 +172,8 @@
         "solaire"
       ],
       "image": "/images/products/BOJ-RAD-BAL-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "beauty-of-joseon-serum-riz-alpha-arbutine",
@@ -193,7 +197,8 @@
         "taches"
       ],
       "image": "/images/products/BOJ-INT-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "beauty-of-joseon-nettoyant-prune-verte",
@@ -217,7 +222,8 @@
         "apaisant"
       ],
       "image": "/images/products/BOJ-PRU-CLE-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "beauty-of-joseon-creme-solaire-riz-probiotiques",
@@ -242,7 +248,8 @@
         "apaisant"
       ],
       "image": "/images/products/BOJ-SUN-PRO-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "beauty-of-joseon-serum-apaisant-the-vert-panthenol",
@@ -267,7 +274,8 @@
         "apaisant"
       ],
       "image": "/images/products/BOJ-APA-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "beauty-of-joseon-gel-hydratant-haricot-rouge",
@@ -293,7 +301,8 @@
         "anti_age"
       ],
       "image": "/images/products/BOJ-RED-GEL-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "anua-mousse-nettoyante-heartleaf",
@@ -319,7 +328,8 @@
         "apaisant"
       ],
       "image": "/images/products/ANU-HEA-MOU-150.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "150 ml"
     },
     {
       "slug": "anua-lotion-tonique-heartleaf-77",
@@ -344,7 +354,8 @@
         "apaisant"
       ],
       "image": "/images/products/ANU-HEA-TON-150.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "150 ml"
     },
     {
       "slug": "anua-serum-niacinamide-10-txa-4",
@@ -369,7 +380,8 @@
         "solaire"
       ],
       "image": "/images/products/ANU-NIA-TXA-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "anua-serum-peche-70-niacinamide",
@@ -392,7 +404,8 @@
         "eclat"
       ],
       "image": "/images/products/ANU-PEC-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "axis-y-serum-eclat-correcteur-de-taches",
@@ -419,7 +432,8 @@
         "imperfections"
       ],
       "image": "/images/products/AXS-ECL-SER-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "axis-y-lotion-tonique-eclat-correctrice",
@@ -444,7 +458,8 @@
         "apaisant"
       ],
       "image": "/images/products/AXS-ECL-TON-125.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "125 ml"
     },
     {
       "slug": "axis-y-spot-the-difference",
@@ -471,7 +486,8 @@
         "apaisant"
       ],
       "image": "/images/products/AXS-SPO-DIF-15.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "15 ml"
     },
     {
       "slug": "axis-y-sunday-morning-mousse-nettoyante",
@@ -495,7 +511,8 @@
         "hydratation"
       ],
       "image": "/images/products/AXS-SUN-MOU-120.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "120 ml"
     },
     {
       "slug": "nubiance-act-5-creme-anti-imperfections",
@@ -521,7 +538,8 @@
         "matifiant"
       ],
       "image": "/images/products/NUB-ACT-CRM-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "nubiance-cleanactyl-gel-nettoyant",
@@ -548,7 +566,8 @@
         "matifiant"
       ],
       "image": "/images/products/NUB-CLE-GEL-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "nubiance-hrb-3-soin-jour-anti-taches",
@@ -573,7 +592,8 @@
         "solaire"
       ],
       "image": "/images/products/NUB-HRB-JOU-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "nubiance-hrb-3-serum-eclat-aux-aha",
@@ -599,7 +619,8 @@
         "solaire"
       ],
       "image": "/images/products/NUB-HRB-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "nubiance-hrb-3-creme-eclat-anti-taches",
@@ -624,7 +645,8 @@
         "hydratation"
       ],
       "image": "/images/products/NUB-HRB-CRM-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "nubiance-serum-hydratation-intense",
@@ -649,7 +671,8 @@
         "apaisant"
       ],
       "image": "/images/products/NUB-HYD-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "nubiance-micelliance-eau-micellaire",
@@ -672,7 +695,8 @@
         "apaisant"
       ],
       "image": "/images/products/NUB-MIC-EAU-500.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "500 ml"
     },
     {
       "slug": "nubiance-baume-corps-hydratant",
@@ -697,7 +721,8 @@
         "apaisant"
       ],
       "image": "/images/products/NUB-BAU-COR-450.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "450 ml"
     },
     {
       "slug": "nubiance-lait-corps-unifiant-hydratant",
@@ -722,7 +747,8 @@
         "hydratation"
       ],
       "image": "/images/products/NUB-LAI-COR-500.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "500 ml"
     },
     {
       "slug": "clinique-lotion-clarifiante-2",
@@ -747,7 +773,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-CLA-LO2-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clinique-dramatically-different-gel",
@@ -773,7 +800,8 @@
         "apaisant"
       ],
       "image": "/images/products/CLI-DRA-GEL-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "clinique-dramatically-different-gel-125ml",
@@ -800,7 +828,8 @@
         "premium"
       ],
       "image": "/images/products/CLI-DRA-GEL-125.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "125 ml"
     },
     {
       "slug": "clinique-gommage-exfoliant",
@@ -823,7 +852,8 @@
         "matifiant"
       ],
       "image": "",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clinique-savon-visage-liquide-doux",
@@ -846,7 +876,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-LIQ-SOA-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clinique-moisture-surge-100h",
@@ -869,7 +900,8 @@
         "anti_age"
       ],
       "image": "/images/products/CLI-MOI-SUR-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "clinique-masque-hydratant-nuit",
@@ -893,7 +925,8 @@
         "hydratation"
       ],
       "image": "/images/products/CLI-MOI-MSK-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clinique-smart-clinical-repair-serum",
@@ -917,7 +950,8 @@
         "premium"
       ],
       "image": "/images/products/CLI-SMA-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "clinique-sun-smart-visage-spf40",
@@ -939,7 +973,8 @@
         "solaire"
       ],
       "image": "/images/products/CLI-SUN-SPF-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "clinique-take-the-day-off-yeux-levres",
@@ -961,7 +996,8 @@
         "nettoyage"
       ],
       "image": "/images/products/CLI-TAK-OFF-125.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "125 ml"
     },
     {
       "slug": "clinique-anti-blemish-lotion-clarifiante",
@@ -986,7 +1022,8 @@
         "eclat"
       ],
       "image": "/images/products/CLI-ABS-LOT-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clinique-anti-blemish-mousse-nettoyante",
@@ -1011,7 +1048,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-ABS-MOU-125.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "125 ml"
     },
     {
       "slug": "clinique-all-about-clean-savon-tonique",
@@ -1036,7 +1074,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-AAC-SOA-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clinique-deodorant-roll-on",
@@ -1059,7 +1098,8 @@
         "apaisant"
       ],
       "image": "/images/products/CLI-MEN-DEO-75.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "75 ml"
     },
     {
       "slug": "clinique-lotion-hydratante",
@@ -1083,7 +1123,8 @@
         "apaisant"
       ],
       "image": "/images/products/CLI-MEN-LOT-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clinique-nettoyant-visage-anti-brillance",
@@ -1108,7 +1149,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-MEN-WAS-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clinique-creme-regulatrice-de-sebum",
@@ -1133,7 +1175,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLI-MEN-MOI-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clinique-creme-hydratante-anti-age",
@@ -1158,7 +1201,8 @@
         "premium"
       ],
       "image": "/images/products/CLI-MEN-AGE-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clarins-doux-nettoyant-gommant-express",
@@ -1181,7 +1225,8 @@
         "eclat"
       ],
       "image": "/images/products/CLA-DOU-GOM-125.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "125 ml"
     },
     {
       "slug": "clarins-huile-tonic-corps",
@@ -1206,7 +1251,8 @@
         "premium"
       ],
       "image": "/images/products/CLA-HUI-TON-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "clarins-lait-corps-hydratant-velours",
@@ -1229,7 +1275,8 @@
         "hydratation"
       ],
       "image": "/images/products/CLA-COR-VEL-400.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "400 ml"
     },
     {
       "slug": "clarins-lait-demaquillant-velours",
@@ -1255,7 +1302,8 @@
         "apaisant"
       ],
       "image": "/images/products/CLA-LAI-DEM-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clarins-lotion-tonique-purifiante",
@@ -1280,7 +1328,8 @@
         "matifiant"
       ],
       "image": "/images/products/CLA-LOT-PUR-200.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "200 ml"
     },
     {
       "slug": "clarins-my-clarins-creme-mains",
@@ -1304,7 +1353,8 @@
         "budget_eco"
       ],
       "image": "/images/products/CLA-MYC-HAN-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "biotherm-aquasource-creme-hydratante",
@@ -1328,7 +1378,8 @@
         "eclat"
       ],
       "image": "/images/products/BIO-AQU-CRM-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "biotherm-blue-retinol-serum-nuit",
@@ -1355,7 +1406,8 @@
         "premium"
       ],
       "image": "/images/products/BIO-BLU-RET-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "biotherm-aquapower-72h",
@@ -1379,7 +1431,8 @@
         "apaisant"
       ],
       "image": "/images/products/BIO-HOM-AQU-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "collistar-crio-taping-anticellulite",
@@ -1400,7 +1453,8 @@
         "corps"
       ],
       "image": "/images/products/COL-CRI-TAP.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": ""
     },
     {
       "slug": "collistar-lait-corps-hydratation-intense",
@@ -1423,7 +1477,8 @@
         "hydratation"
       ],
       "image": "/images/products/COL-COR-MOI-400.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "400 ml"
     },
     {
       "slug": "collistar-huile-douche-raffermissante",
@@ -1445,7 +1500,8 @@
         "hygiene"
       ],
       "image": "/images/products/COL-MAX-RAS-400.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "400 ml"
     },
     {
       "slug": "collistar-creme-visage-anti-age",
@@ -1470,7 +1526,8 @@
         "anti_age"
       ],
       "image": "/images/products/COL-MEN-AGE-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "collistar-creme-hydratante-24-h",
@@ -1493,7 +1550,8 @@
         "homme"
       ],
       "image": "/images/products/COL-HOM-MOI-80.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "collistar-vetiver-forte-gel-douche",
@@ -1516,7 +1574,8 @@
         "homme"
       ],
       "image": "/images/products/COL-VET-SHA-250.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "250 ml"
     },
     {
       "slug": "dr-jart-ceramidin-creme-barriere",
@@ -1542,7 +1601,8 @@
         "premium"
       ],
       "image": "/images/products/DRJ-CER-CRM-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "dr-jart-ceramidin-lotion-barriere",
@@ -1566,7 +1626,8 @@
         "apaisant"
       ],
       "image": "/images/products/DRJ-CER-LOT-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "dr-jart-cicapair-creme-correctrice",
@@ -1592,7 +1653,8 @@
         "solaire"
       ],
       "image": "/images/products/DRJ-CIC-COR-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "dr-jart-pore-remedy-serum-pha",
@@ -1618,7 +1680,8 @@
         "apaisant"
       ],
       "image": "/images/products/DRJ-POR-SER-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "dr-jart-vital-hydra-solution-masque",
@@ -1643,7 +1706,8 @@
         "apaisant"
       ],
       "image": "/images/products/DRJ-VIT-MSK-75.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "75 ml"
     },
     {
       "slug": "drunk-elephant-b-goldi-gouttes-lumineuses",
@@ -1669,7 +1733,8 @@
         "premium"
       ],
       "image": "/images/products/DE-BGO-DRO-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "drunk-elephant-beste-n-9-gel-nettoyant",
@@ -1692,7 +1757,8 @@
         "matifiant"
       ],
       "image": "/images/products/DE-BES-CLE-60.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "60 ml"
     },
     {
       "slug": "drunk-elephant-bora-barrier-creme-riche",
@@ -1717,7 +1783,8 @@
         "premium"
       ],
       "image": "/images/products/DE-BOR-BAR-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "drunk-elephant-lala-retro-creme-fouettee",
@@ -1743,7 +1810,8 @@
         "premium"
       ],
       "image": "/images/products/DE-LAL-RET-50.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "50 ml"
     },
     {
       "slug": "drunk-elephant-virgin-marula-huile-de-luxe",
@@ -1770,7 +1838,8 @@
         "premium"
       ],
       "image": "/images/products/DE-VIR-OIL-30.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "30 ml"
     },
     {
       "slug": "lancaster-sun-beauty-lait-corps-spf50",
@@ -1792,7 +1861,8 @@
         "solaire"
       ],
       "image": "/images/products/LAN-SUN-MIL-100.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "100 ml"
     },
     {
       "slug": "sol-de-janeiro-brazilian-bum-bum-cream",
@@ -1817,7 +1887,8 @@
         "anti_age"
       ],
       "image": "/images/products/SDJ-BUM-BUM-75.jpg",
-      "matchedDescription": true
+      "matchedDescription": true,
+      "format": "75 ml"
     }
   ]
 }

@@ -64,3 +64,10 @@ yarn-error.log*
 
 # Dossier de session Claude Code (mémoire, worktrees d'agents) — jamais versionné
 /.claude/
+
+# Graphe de code local (graphify), regenerable via `graphify extract . --code-only`.
+graphify-out/
+
+# Sortie du serveur dev redirigée manuellement (Windows), jamais un artefact voulu.
+.dev-stdout.log
+.dev-stderr.log

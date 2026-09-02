@@ -124,6 +124,15 @@ model Product {
   conseilKossKoss       String   @default("")
   precautions           String   @default("")
   actifsCles            String   @default("")
+  // Ajoutés pour aligner la fiche produit sur MODELE FICHE PRODUIT_V2 (docs/) :
+  // « Le Choix KossKoss Select ? » (bloc dédié, distinct d'Idéal_Pour), Zone
+  // d'application et Cible — trois colonnes du classeur FICHES_PRODUITS
+  // encore sans contrepartie en base. Vides tant que le master ne les a pas
+  // renseignées ; la section/ligne correspondante se masque alors, comme le
+  // reste des champs du master.
+  pourquoiKossKoss      String   @default("")
+  zone                  String   @default("")
+  cible                 String   @default("")
   // Colonnes internes du master (Statut_Publication, Donnees_A_Confirmer) :
   // des informations de production à l'usage de l'équipe, jamais affichées à
   // un visiteur. Volontairement SANS contrepartie `*En` ni entrée au
@@ -143,6 +152,9 @@ model Product {
   conseilKossKossEn     String   @default("")
   precautionsEn         String   @default("")
   actifsClesEn          String   @default("")
+  pourquoiKossKossEn    String   @default("")
+  zoneEn                String   @default("")
+  cibleEn               String   @default("")
   // Attributs exigés par Google Merchant Center pour la validation des fiches
   gtin                  String?
   mpn                   String?
