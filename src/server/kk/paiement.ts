@@ -1,18 +1,12 @@
 import { prisma } from "@/server/prisma";
-import {
-  creerPaiement,
-  DEVISE_PRESTATAIRE,
-  estEchoue,
-  estEncaisse,
-  lireConfig,
-  type ConfigGeniusPay,
-} from "@/server/gateways/geniuspay";
+import * as geniuspay from "@/server/gateways/geniuspay";
+import * as cinetpay from "@/server/gateways/cinetpay";
 import { getOrderByNumber, recordOrderEvent, updatePaymentStatus } from "@/server/orders";
 import { envoyerAchatCapi } from "@/server/kk/capi";
 import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
 
 /**
- * Paiement d'une commande KossKoss, via GeniusPay.
+ * Paiement d'une commande KossKoss, via CinetPay ou GeniusPay.
  *
  * Ce module tient les deux moitiés du cycle : ouvrir une tentative de paiement,
  * et conclure quand le prestataire nous rappelle.
@@ -21,17 +15,39 @@ import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
  *
  * Une commande ne passe JAMAIS en « payée » depuis le retour navigateur du
  * client. Ce retour prouve seulement qu'un onglet s'est rouvert — pas qu'un
- * franc a été encaissé. Seuls le webhook signé et, en secours, une relecture
- * directe chez le prestataire font autorité. C'est écrit noir sur blanc dans le
- * cahier des charges (docs/13 §5.2) et c'est la faute la plus coûteuse qu'un
- * tunnel de paiement puisse commettre.
+ * franc a été encaissé. Seuls le webhook signé (ou, pour CinetPay, une
+ * relecture serveur-à-serveur systématique — voir gateways/cinetpay.ts) font
+ * autorité. C'est écrit noir sur blanc dans le cahier des charges (docs/13
+ * §5.2) et c'est la faute la plus coûteuse qu'un tunnel de paiement puisse
+ * commettre.
+ *
+ * ── CINETPAY SEUL, GENIUSPAY DÉBRANCHÉ SUR DEMANDE CLIENT ───────────────────
+ *
+ * CinetPay est recommandé par le cahier des charges et couvre XAF + Cameroun
+ * (voir docs/ETAT-DES-LIEUX.md §4). `gateways/geniuspay.ts` reste dans le
+ * dépôt (code éprouvé, pourrait redevenir un repli un jour) mais
+ * `fournisseurActif` ne le regarde plus : demande explicite du client, un
+ * paiement de test avait redirigé vers GeniusPay pendant que CinetPay était
+ * encore bloqué par la liste blanche IP côté CinetPay — un repli silencieux
+ * vers un second prestataire configuré est justement le genre de surprise
+ * qu'on ne veut pas sur un tunnel de paiement. Tant que CinetPay échoue
+ * (IP non autorisée, jeton refusé…), le tunnel retombe sur la confirmation
+ * manuelle par WhatsApp — jamais sur GeniusPay à l'insu de quiconque.
+ * `PaymentTransaction.provider` garde le nom du prestataire par lequel
+ * chaque tentative est réellement passée.
  */
 
-export const PROVIDER = "geniuspay";
+type Provider = { nom: "cinetpay"; config: cinetpay.ConfigCinetPay };
+
+/** Prestataire actif — CinetPay uniquement, voir la note ci-dessus. */
+function fournisseurActif(): Provider | null {
+  const cp = cinetpay.lireConfig();
+  return cp ? { nom: "cinetpay", config: cp } : null;
+}
 
 /** La passerelle est-elle configurée ? Sinon le tunnel reste en manuel. */
 export function paiementDisponible(): boolean {
-  return lireConfig() !== null;
+  return fournisseurActif() !== null;
 }
 
 /**
@@ -75,53 +91,70 @@ export async function ouvrirPaiement(
   orderNumber: string,
   urlBase: string,
 ): Promise<OuvertureResultat | null> {
-  const config = lireConfig();
-  if (!config) return null;
+  const fournisseur = fournisseurActif();
+  if (!fournisseur) return null;
 
   const commande = await getOrderByNumber(orderNumber);
   if (!commande) return null;
 
   // Le français vit à la racine, l'anglais sous /en (localePrefix « as-needed »).
   const prefixe = commande.locale === "en" ? "/en" : "";
+  const urlSucces = `${urlBase}${prefixe}/confirmation/${commande.orderNumber}`;
+  const urlEchec = `${urlBase}${prefixe}/commande?paiement=echec`;
+  const client = {
+    // Le nom vit sur l'adresse de facturation : la commande n'en porte pas en
+    // propre.
+    nom: `${commande.billing.firstName} ${commande.billing.lastName}`.trim(),
+    email: commande.email,
+    telephone: commande.phone,
+  };
 
-  const paiement = await creerPaiement(config, {
-    // `totalCents` porte des FCFA entiers dans cette boutique — le nom vient de
-    // mlcbois et ment (voir docs/13 §5.1). Aucune division.
+  // `transaction_id` CinetPay DOIT être unique par tentative — contrairement
+  // à GeniusPay, qui délivre sa propre référence opaque, c'est nous qui la
+  // choisissons ici. Le numéro de commande sert de base ; une reprise après
+  // échec (nouvel appel pour la même commande) ajoute un suffixe `R<n>`,
+  // jamais un caractère qui pourrait apparaître dans un vrai numéro de
+  // commande (`KK-AAAA-NNNNNN`, uniquement chiffres après le second tiret) —
+  // c'est ce qui permet de retrouver la commande sans ambiguïté depuis le
+  // webhook (voir `commandeDepuisReferenceCinetpay`).
+  //
+  // ── AUCUN JETON DANS L'URL CONFIÉE AU PRESTATAIRE ───────────────────────
+  //
+  // La page de confirmation demande une preuve d'accès, sans quoi n'importe
+  // qui lirait la commande de n'importe qui à partir de son seul numéro.
+  // Cette preuve a d'abord été mise ici, en `?t=<accessToken>` — et c'était
+  // une faute : le prestataire ENREGISTRE cette URL chez lui, elle apparaît
+  // dans ses réponses d'API et dans ses journaux, puis elle se dépose dans
+  // l'historique du navigateur et dans l'en-tête `Referer` des requêtes
+  // suivantes. Un jeton de consultation n'a rien à faire dans tout cela.
+  //
+  // Le jeton voyage désormais dans un cookie `httpOnly` posé au moment de la
+  // commande (voir la route /api/kk/checkout). Le retour de paiement est une
+  // navigation de premier niveau : un cookie `SameSite=Lax` est donc bien
+  // transmis, et le prestataire ne voit qu'une adresse nue.
+  //
+  // Le préfixe de langue suit la commande : un acheteur venu de /en doit
+  // revenir sur /en, pas basculer en français au retour du paiement.
+  const tentatives = await prisma.paymentTransaction.count({
+    where: { orderId: commande.id, provider: "cinetpay" },
+  });
+  const transactionId = tentatives === 0 ? commande.orderNumber : `${commande.orderNumber}R${tentatives + 1}`;
+
+  const resultat = await cinetpay.creerPaiement(fournisseur.config, {
     montant: commande.totalCents,
     description: `Commande ${commande.orderNumber}`,
-    orderNumber: commande.orderNumber,
-    client: {
-      // Le nom vit sur l'adresse de facturation : la commande n'en porte pas
-      // en propre.
-      nom: `${commande.billing.firstName} ${commande.billing.lastName}`.trim(),
-      email: commande.email,
-      telephone: commande.phone,
-    },
-    // ── AUCUN JETON DANS L'URL CONFIÉE AU PRESTATAIRE ───────────────────────
-    //
-    // La page de confirmation demande une preuve d'accès, sans quoi n'importe
-    // qui lirait la commande de n'importe qui à partir de son seul numéro.
-    // Cette preuve a d'abord été mise ici, en `?t=<accessToken>` — et c'était
-    // une faute : le prestataire ENREGISTRE cette URL chez lui, elle apparaît
-    // dans ses réponses d'API et dans ses journaux, puis elle se dépose dans
-    // l'historique du navigateur et dans l'en-tête `Referer` des requêtes
-    // suivantes. Un jeton de consultation n'a rien à faire dans tout cela.
-    //
-    // Le jeton voyage désormais dans un cookie `httpOnly` posé au moment de la
-    // commande (voir la route /api/kk/checkout). Le retour de paiement est une
-    // navigation de premier niveau : un cookie `SameSite=Lax` est donc bien
-    // transmis, et le prestataire ne voit qu'une adresse nue.
-    //
-    // Le préfixe de langue suit la commande : un acheteur venu de /en doit
-    // revenir sur /en, pas basculer en français au retour du paiement.
-    urlSucces: `${urlBase}${prefixe}/confirmation/${commande.orderNumber}`,
-    urlEchec: `${urlBase}${prefixe}/commande?paiement=echec`,
+    orderNumber: transactionId,
+    client,
+    urlSucces,
+    urlEchec,
+    urlNotification: `${urlBase}/api/payments/webhook/cinetpay`,
   });
+  const paiement = { ...resultat, frais: 0, net: resultat.montant };
 
   await prisma.paymentTransaction.create({
     data: {
       orderId: commande.id,
-      provider: PROVIDER,
+      provider: fournisseur.nom,
       reference: paiement.reference,
       amount: paiement.montant,
       currency: paiement.devise,
@@ -137,25 +170,52 @@ export async function ouvrirPaiement(
   await recordOrderEvent(
     commande.id,
     "paiement",
-    `Paiement ouvert chez ${PROVIDER} (${paiement.environnement}) — référence ${paiement.reference}`,
+    `Paiement ouvert chez ${fournisseur.nom} (${paiement.environnement}) — référence ${paiement.reference}`,
   );
 
   return { urlPaiement: paiement.urlPaiement, reference: paiement.reference };
 }
 
+/**
+ * Numéro de commande depuis une référence CinetPay — l'inverse du suffixe
+ * `R<n>` posé à l'ouverture. Une référence sans suffixe EST déjà le numéro de
+ * commande (première tentative).
+ */
+export function commandeDepuisReferenceCinetpay(transactionId: string): string {
+  return transactionId.replace(/R\d+$/, "");
+}
+
 // ---- Conclusion depuis un webhook ----
 
 export interface EvenementPaiement {
+  /** Lequel des deux prestataires a émis l'événement — détermine le
+   *  vocabulaire de statut lu par `estEncaisse`/`estEchoue` ("completed" chez
+   *  GeniusPay, "ACCEPTED" chez CinetPay, entre autres divergences. */
+  provider: "cinetpay" | "geniuspay";
   /** Référence de transaction chez le prestataire. */
   reference: string;
-  /** Statut brut : completed, failed, cancelled… */
+  /** Statut brut : completed, failed, cancelled… (GeniusPay) ou
+   *  ACCEPTED/REFUSED… (CinetPay). */
   statut: string;
   /** Montant annoncé par le prestataire, pour recoupement. */
   montant: number;
-  /** Numéro de commande, transmis dans `metadata.order_id`. */
+  /** Numéro de commande, transmis dans `metadata.order_id` (GeniusPay) ou
+   *  retrouvé via `commandeDepuisReferenceCinetpay` (CinetPay). */
   orderNumber: string;
   /** Corps brut, archivé. */
   brut: string;
+}
+
+function estEncaisse(evenement: Pick<EvenementPaiement, "provider" | "statut">): boolean {
+  return evenement.provider === "cinetpay"
+    ? cinetpay.estEncaisse(evenement.statut)
+    : geniuspay.estEncaisse(evenement.statut);
+}
+
+function estEchoue(evenement: Pick<EvenementPaiement, "provider" | "statut">): boolean {
+  return evenement.provider === "cinetpay"
+    ? cinetpay.estEchoue(evenement.statut)
+    : geniuspay.estEchoue(evenement.statut);
 }
 
 export type Issue = "encaisse" | "echoue" | "ignore" | "commande_introuvable" | "montant_incoherent";
@@ -173,13 +233,31 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
   const commande = evenement.orderNumber ? await getOrderByNumber(evenement.orderNumber) : undefined;
   if (!commande) return "commande_introuvable";
 
+  // ── Idempotence propre à CinetPay ─────────────────────────────────────────
+  // GeniusPay est protégé en amont par le verrou sur `WebhookEvent.deliveryId`
+  // (voir la route de webhook correspondante). CinetPay n'offre aucun
+  // identifiant de livraison stable — sa documentation dit explicitement que
+  // `notify_url` peut être appelée PLUSIEURS FOIS pour le même paiement — donc
+  // le verrou se pose ici : si cette transaction est DÉJÀ dans l'état encaissé
+  // qu'annonce l'événement, les effets de bord (mail, statut, CAPI) ne sont
+  // pas rejoués une deuxième fois.
+  if (estEncaisse(evenement)) {
+    const existante = await prisma.paymentTransaction.findUnique({
+      where: { reference: evenement.reference },
+      select: { status: true },
+    });
+    if (existante && estEncaisse({ provider: evenement.provider, statut: existante.status })) {
+      return "encaisse";
+    }
+  }
+
   // ── Recoupement du montant ────────────────────────────────────────────────
   // La signature garantit que le message vient bien du prestataire, pas que le
   // montant corresponde à la commande. Un écart signale une erreur de
   // configuration ou une manipulation : on refuse d'encaisser et on laisse la
   // commande en attente, à vérifier à la main. Mieux vaut un règlement à
   // contrôler qu'une commande expédiée pour un dixième de son prix.
-  if (estEncaisse(evenement.statut) && evenement.montant !== commande.totalCents) {
+  if (estEncaisse(evenement) && evenement.montant !== commande.totalCents) {
     await recordOrderEvent(
       commande.id,
       "paiement",
@@ -190,11 +268,11 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
 
   await majTransaction(commande.id, evenement);
 
-  if (estEncaisse(evenement.statut)) {
+  if (estEncaisse(evenement)) {
     // `updatePaymentStatus` porte le statut de PAIEMENT ; le statut de
     // COMMANDE suit séparément, car une commande payée n'est pas encore
     // préparée.
-    await updatePaymentStatus(commande.id, "payee", PROVIDER, `Référence ${evenement.reference}`);
+    await updatePaymentStatus(commande.id, "payee", evenement.provider, `Référence ${evenement.reference}`);
     await prisma.order.update({
       where: { id: commande.id },
       data: { status: "payee" },
@@ -229,8 +307,8 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
     return "encaisse";
   }
 
-  if (estEchoue(evenement.statut)) {
-    await updatePaymentStatus(commande.id, "echouee", PROVIDER, `Référence ${evenement.reference}`);
+  if (estEchoue(evenement)) {
+    await updatePaymentStatus(commande.id, "echouee", evenement.provider, `Référence ${evenement.reference}`);
     return "echoue";
   }
 
@@ -248,7 +326,8 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
  * serait le pire des deux mondes — l'argent est parti, nous n'en savons rien.
  */
 async function majTransaction(orderId: string, evenement: EvenementPaiement): Promise<void> {
-  const conclu = estEncaisse(evenement.statut);
+  const conclu = estEncaisse(evenement);
+  const devise = evenement.provider === "cinetpay" ? cinetpay.DEVISE_PRESTATAIRE : geniuspay.DEVISE_PRESTATAIRE;
 
   await prisma.paymentTransaction.upsert({
     where: { reference: evenement.reference },
@@ -259,18 +338,13 @@ async function majTransaction(orderId: string, evenement: EvenementPaiement): Pr
     },
     create: {
       orderId,
-      provider: PROVIDER,
+      provider: evenement.provider,
       reference: evenement.reference,
       amount: evenement.montant,
-      currency: DEVISE_PRESTATAIRE,
+      currency: devise,
       status: evenement.statut,
       rawResponse: evenement.brut,
       completedAt: conclu ? new Date() : null,
     },
   });
-}
-
-/** Rend la configuration, pour les appelants qui doivent relire une référence. */
-export function config(): ConfigGeniusPay | null {
-  return lireConfig();
 }

@@ -184,16 +184,21 @@ champ de secret laissé vide au moment d'enregistrer ne l'efface pas** : il
 laisse la valeur déjà enregistrée inchangée. Pour retirer un secret, il n'y a
 qu'un moyen : le réécrire, ou passer par la suppression de l'intégration.
 
-**Un second piège, propre à l'écran Intégrations** : trois lignes y figurent
-pour **CinetPay** (clé API, identifiant de site, clé secrète) — le
-prestataire recommandé par le cahier des charges. **Les renseigner n'active
-rien** : aucun code du dépôt ne relit ces trois clés. Le paiement en ligne
-réellement branché passe par un prestataire différent (**GeniusPay**),
-configuré uniquement par variables d'environnement (`GENIUSPAY_API_KEY` et
-consorts, voir `docs/HANDOVER.md`), sans écran dédié dans ce back-office. Tant
-que ce doublon n'est pas retiré ou rendu fonctionnel, un commerçant qui
-remplit les champs CinetPay croira le paiement Mobile Money activé — il ne se
-passera rien. Détail dans `docs/ETAT-DES-LIEUX.md`.
+**Un second piège, propre à l'écran Intégrations, TOUJOURS d'actualité** :
+trois lignes y figurent pour **CinetPay** (clé API, identifiant de site, clé
+secrète). **Les renseigner n'active toujours rien** : aucun code du dépôt ne
+relit ces trois-là. Un adaptateur CinetPay existe désormais bel et bien
+(`src/server/gateways/cinetpay.ts`), mais pour une **génération différente**
+de leur API — celle du tableau de bord réellement ouvert pour ce compte
+(« API Key » + « Mot de passe API », pas de site_id ni de secret_key). Ce
+couple-là se configure uniquement par variables d'environnement
+(`CINETPAY_API_KEY` / `CINETPAY_API_PASSWORD`, voir `docs/HANDOVER.md`),
+sans écran dédié dans ce back-office — même limitation que GeniusPay, qui
+reste le repli si CinetPay n'est pas configuré. Tant que les trois lignes
+orphelines de l'écran Intégrations ne sont pas retirées, un commerçant qui
+les remplit croira le paiement Mobile Money activé — il ne se passera rien,
+et il n'aura pas touché aux deux variables qui comptent réellement. Détail
+dans `docs/ETAT-DES-LIEUX.md`.
 
 ## 7. Commandes et facturation
 

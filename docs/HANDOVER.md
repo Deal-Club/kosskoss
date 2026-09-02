@@ -132,7 +132,9 @@ sans ce contrôle.
 | `NEXT_PUBLIC_SMARTSUPP_KEY` | Widget de chat flottant (facultatif) | non |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Repli du numéro WhatsApp tant que le réglage back-office (**Paramètres**) est vide | non |
 | `MAINTENANCE_MODE` | `0` = boutique ouverte (défaut), `1` = page d'attente pour tout le monde sauf `/admin` — lue **au démarrage**, un changement impose un redémarrage | non |
-| `GENIUSPAY_API_KEY` / `GENIUSPAY_API_SECRET` / `GENIUSPAY_WEBHOOK_SECRET` | Passerelle de paiement GeniusPay (Mobile Money + carte). Sans elles, le tunnel reste en confirmation manuelle par WhatsApp | **oui** |
+| `CINETPAY_API_KEY` / `CINETPAY_API_PASSWORD` | Passerelle de paiement CinetPay (Mobile Money + carte), **prioritaire dès qu'elle est configurée** — voir `fournisseurActif()`, `src/server/kk/paiement.ts`. « API Key » / « Mot de passe API » du tableau de bord CinetPay (API OAuth v1, pas de site_id ni de secret_key — voir l'en-tête de `src/server/gateways/cinetpay.ts`). Nécessite l'IP du serveur en liste blanche côté tableau de bord CinetPay (API & sécurité), sans quoi toute requête échoue en `NOT_ALLOWED` | **oui** |
+| `CINETPAY_BASE_URL` | Base de l'API CinetPay (`https://api.cinetpay.net` = sandbox, par défaut) | non |
+| `GENIUSPAY_API_KEY` / `GENIUSPAY_API_SECRET` / `GENIUSPAY_WEBHOOK_SECRET` | Passerelle de paiement GeniusPay (Mobile Money + carte) — **repli** si CinetPay n'est pas configuré. Sans l'une ni l'autre, le tunnel reste en confirmation manuelle par WhatsApp | non (si CinetPay est configuré) |
 | `GENIUSPAY_BASE_URL` | Base de l'API GeniusPay (forcée en `https://` par défaut) | non |
 
 Deux variables supplémentaires, hors `.env.example` car réservées au réglage

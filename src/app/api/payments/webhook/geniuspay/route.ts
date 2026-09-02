@@ -5,7 +5,9 @@ import {
   lireConfig,
   verifierSignature,
 } from "@/server/gateways/geniuspay";
-import { appliquerEvenement, PROVIDER } from "@/server/kk/paiement";
+import { appliquerEvenement } from "@/server/kk/paiement";
+
+const PROVIDER = "geniuspay" as const;
 
 /**
  * Notifications de paiement GeniusPay.
@@ -128,6 +130,7 @@ export async function POST(request: Request) {
 
   try {
     const issue = await appliquerEvenement({
+      provider: PROVIDER,
       reference,
       statut: String(donnees.status ?? ""),
       montant: Math.round(Number(donnees.amount ?? 0)),
