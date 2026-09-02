@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: { params: ProductParams })
   const [related, reviews] = await Promise.all([
     getRelatedProducts(detail.category.slug, detail.id, locale, 4),
     // Seuls les avis modérés sortent d'ici — voir getProductReviews.
-    getProductReviews(detail.id),
+    getProductReviews(detail.id, locale),
   ]);
 
   return (

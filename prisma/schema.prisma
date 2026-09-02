@@ -468,6 +468,12 @@ model Review {
   rating        Int
   title         String    @default("")
   body          String
+  // Traduction anglaise, écrite à l'approbation (ou en rattrapage sur les avis
+  // déjà approuvés) — jamais saisie par le client, qui n'écrit qu'en français.
+  // Vide = repli sur `title`/`body`, même règle que le reste du catalogue
+  // (voir `pickText`, src/server/localizedContent.ts).
+  titleEn       String    @default("")
+  bodyEn        String    @default("")
   // pending | approved | rejected — en texte, pour rester portable
   status        String    @default("pending")
   moderatorNote String?

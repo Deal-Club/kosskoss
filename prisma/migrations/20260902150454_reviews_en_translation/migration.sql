@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Review" ADD COLUMN     "bodyEn" TEXT NOT NULL DEFAULT '',
+ADD COLUMN     "titleEn" TEXT NOT NULL DEFAULT '';

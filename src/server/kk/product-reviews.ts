@@ -1,4 +1,6 @@
 import { prisma } from "@/server/prisma";
+import { pickText, needsTranslation } from "@/server/localizedContent";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * Avis PUBLIÉS d'un produit, tels que la fiche les montre.
@@ -41,8 +43,10 @@ export interface KKProductReviews {
 
 export async function getProductReviews(
   productId: string,
+  locale: Locale,
   limit = 20,
 ): Promise<KKProductReviews> {
+  const traduire = needsTranslation(locale);
   const rows = await prisma.review.findMany({
     where: { productId, status: "approved" },
     orderBy: { createdAt: "desc" },
@@ -53,7 +57,9 @@ export async function getProductReviews(
       city: true,
       rating: true,
       title: true,
+      titleEn: true,
       body: true,
+      bodyEn: true,
       createdAt: true,
     },
   });
@@ -85,8 +91,12 @@ export async function getProductReviews(
       authorName: r.authorName,
       city: r.city ?? undefined,
       rating: r.rating,
-      title: r.title,
-      body: r.body,
+      // Traduction anglaise si elle existe (voir `Review.titleEn`/`bodyEn`) ;
+      // même repli que le reste du catalogue (`pickText`) — jamais un champ
+      // vide sur la boutique anglaise. Le client n'écrit qu'en français : la
+      // traduction est ajoutée à l'approbation, jamais saisie par l'auteur.
+      title: pickText(r.title, traduire ? r.titleEn : undefined),
+      body: pickText(r.body, traduire ? r.bodyEn : undefined),
       createdAt: r.createdAt.toISOString(),
     })),
     count: total,

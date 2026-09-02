@@ -60,14 +60,14 @@ export default async function Home({ params }: { params: HomeParams }) {
     // Trois, et pas un de plus : la section les montre sur UNE SEULE rangée.
     // À six, la grille repassait à la ligne et la section doublait de hauteur
     // pour dire la même chose.
-    getHomeTestimonials(3),
+    getHomeTestimonials(3, locale),
     getReviewsSummary(),
     // Les réponses viennent de la page /faq : une seule source, deux affichages.
     getHomeFaq(locale, 8),
     getRoutines(locale, 5),
     // La maison mise en avant dans « Notre gamme ». Renvoie `null` si elle n'a
     // plus aucune référence servable : le bloc se masque alors tout seul.
-    getBrandFocus(),
+    getBrandFocus(locale),
     // Chiffres du catalogue et routine d'exemple pour « Notre raison d'être ».
     // Comptés en base : « 71 références » ne peut pas se désaligner du jour où
     // l'on en retire dix.

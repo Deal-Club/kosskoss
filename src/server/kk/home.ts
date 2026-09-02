@@ -1,5 +1,6 @@
 import { prisma } from "@/server/prisma";
 import { PRODUCT_VIEW_INCLUDE, toProductView } from "./product-view";
+import { pickText, needsTranslation } from "@/server/localizedContent";
 import type { KKProductView, KKReviewsSummary, KKTestimonialView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 
@@ -68,7 +69,8 @@ export async function getHomeProducts(limit: number, locale: Locale): Promise<KK
  * masque alors d'elle-même, comme les rails produits. Aucun texte de repli
  * n'est inventé.
  */
-export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[]> {
+export async function getHomeTestimonials(limit = 3, locale: Locale = "fr"): Promise<KKTestimonialView[]> {
+  const traduire = needsTranslation(locale);
   // On lit plus large que la limite : le filtre sur la longueur du corps
   // s'applique APRÈS la requête, et sans marge une série d'avis courts
   // renverrait une liste vide alors que la base en contient d'utilisables.
@@ -88,20 +90,25 @@ export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[
     },
   });
 
+  // Texte dans la langue de la page — voir `Review.titleEn`/`bodyEn` et la
+  // même règle de repli (`pickText`) que le reste du catalogue. Le filtre de
+  // longueur porte sur ce texte-là, pas sur le français sous-jacent : un avis
+  // dont la traduction serait plus courte doit être jugé sur ce qu'il montre
+  // réellement à l'écran.
   return rows
-    .filter((r) => r.body.trim().length >= 40)
-    .slice(0, limit)
     .map((r) => ({
       id: r.id,
-      quote: r.body.trim(),
+      quote: pickText(r.body, traduire ? r.bodyEn : undefined).trim(),
       author: r.authorName,
       city: r.city ?? undefined,
       rating: r.rating,
       productName: `${r.product.brand} ${r.product.name}`,
-      title: r.title.trim() || undefined,
+      title: pickText(r.title, traduire ? r.titleEn : undefined).trim() || undefined,
       href: `/${r.product.category.group.slug}/${r.product.category.slug}/${r.product.slug}`,
       publishedAt: r.createdAt.toISOString(),
-    }));
+    }))
+    .filter((r) => r.quote.length >= 40)
+    .slice(0, limit);
 }
 
 /**
