@@ -91,11 +91,26 @@ export async function ouvrirPaiement(
   orderNumber: string,
   urlBase: string,
 ): Promise<OuvertureResultat | null> {
+  // Les deux sorties qui suivent rendent `null` sans lever : la commande est
+  // déjà enregistrée, et l'appelant doit pouvoir répondre au client quoi qu'il
+  // arrive. Mais un `return null` muet sur un tunnel de paiement est
+  // indiagnosticable — vu de l'extérieur, une passerelle non configurée et une
+  // commande introuvable donnent la même page de confirmation sans lien de
+  // paiement, et les journaux ne portent rien du tout. Ces deux traces disent
+  // laquelle des deux s'est produite.
   const fournisseur = fournisseurActif();
-  if (!fournisseur) return null;
+  if (!fournisseur) {
+    console.error(
+      `[paiement] ${orderNumber} : aucun prestataire configuré (CINETPAY_API_KEY / CINETPAY_API_PASSWORD absentes de l'environnement d'exécution).`,
+    );
+    return null;
+  }
 
   const commande = await getOrderByNumber(orderNumber);
-  if (!commande) return null;
+  if (!commande) {
+    console.error(`[paiement] ${orderNumber} : commande introuvable en base au moment d'ouvrir le paiement.`);
+    return null;
+  }
 
   // Le français vit à la racine, l'anglais sous /en (localePrefix « as-needed »).
   const prefixe = commande.locale === "en" ? "/en" : "";
