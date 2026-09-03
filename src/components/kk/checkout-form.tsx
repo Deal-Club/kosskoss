@@ -305,7 +305,18 @@ export function CheckoutForm({
   const livraison = estVilleLivraison(values.city) ? fraisLivraisonFcfa(values.city) : 0;
   const total = Math.max(0, subtotal - remise) + livraison;
 
-  if (ready && lines.length === 0) {
+  // `!submitting` EST INDISPENSABLE, ce n'est pas une précaution décorative.
+  // La commande validée, `handleSubmit` vide le panier AVANT de rendre la main
+  // au navigateur pour la redirection vers le prestataire. React, lui, re-rend
+  // dès que l'état du panier change : sans cette condition, le client voyait
+  // l'écran « votre panier est vide » s'afficher une fraction de seconde entre
+  // son clic et la page de paiement — au pire moment du tunnel, celui où il
+  // confie son argent.
+  //
+  // `submitting` n'est volontairement jamais relâché sur le chemin de la
+  // redirection (voir `handleSubmit`), il couvre donc toute la fenêtre entre le
+  // vidage du panier et le départ effectif vers la page du prestataire.
+  if (ready && lines.length === 0 && !submitting) {
     return (
       <div className="mx-auto max-w-3xl px-6 py-24 text-center">
         <BottleMotif className="mx-auto h-20 text-deep/30" />

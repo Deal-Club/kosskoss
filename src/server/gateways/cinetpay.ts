@@ -41,7 +41,41 @@
  * jeton Bearer. C'est ce que fait `lirePaiement`, et c'est lui seul que le
  * webhook (`src/app/api/payments/webhook/cinetpay/route.ts`) consulte pour
  * conclure — jamais le corps de la requête entrante.
+ *
+ * ── POURQUOI ON FORCE L'IPv4 ────────────────────────────────────────────────
+ *
+ * `api.cinetpay.net` est servi par Cloudflare et publie une adresse IPv6
+ * (`2a06:98c1:3121::5`) EN PLUS de ses adresses IPv4. Leur pile IPv6 est
+ * cassée : toute requête qui l'emprunte est rejetée en 422 avec
+ * `{"code":2011,"status":"NOT_ALLOWED","description":"This Ip is not
+ * withlisted"}`, quel que soit le contenu de la liste blanche du compte
+ * marchand — y compris liste VIDE, que leur tableau de bord annonce pourtant
+ * comme « accessible depuis n'importe quelle IP ». Le même appel, forcé en
+ * IPv4, répond 200. Vérifié le 03/09/2026 depuis deux réseaux (Starlink et
+ * Vercel), `curl -6` contre `curl -4`.
+ *
+ * Or Node applique « Happy Eyeballs » (RFC 8305) : il ouvre les connexions
+ * v4 et v6 en parallèle et garde la première établie. Le résultat est donc
+ * ALÉATOIRE d'un appel à l'autre — même machine, même seconde. C'est ce qui
+ * a fait passer des paiements et échouer les suivants sans qu'aucune
+ * configuration ne change, et ce qui rendait le diagnostic trompeur : le
+ * message d'erreur désigne une liste blanche qui n'est pour rien dans
+ * l'affaire.
+ *
+ * Les deux réglages ci-dessous suppriment l'aléa : l'ordre de résolution
+ * place l'IPv4 d'abord, et la désactivation de la sélection automatique de
+ * famille empêche la course de rétablir l'IPv6. Ils sont globaux au
+ * processus — c'est assumé : aucun service tiers de ce dépôt ne requiert
+ * l'IPv6, et Node fonctionnait ainsi par défaut jusqu'à sa version 17.
+ *
+ * À RETIRER le jour où CinetPay corrige son point d'entrée IPv6.
  */
+
+import dns from "node:dns";
+import net from "node:net";
+
+dns.setDefaultResultOrder("ipv4first");
+net.setDefaultAutoSelectFamily(false);
 
 const BASE_URL_PAR_DEFAUT = "https://api.cinetpay.net";
 
