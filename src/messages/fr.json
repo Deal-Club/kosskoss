@@ -646,7 +646,7 @@
     "errors": {
       "cartEmpty": "Votre panier est vide.",
       "invalidFields": "Merci de vérifier les champs du formulaire.",
-      "invalidPhone": "Numéro de téléphone invalide : neuf chiffres, commençant par 6 (mobile) ou 2 (fixe).",
+      "invalidPhone": "Numéro de téléphone invalide. Au Cameroun : neuf chiffres. Depuis un autre pays : ajoutez l'indicatif.",
       "invalidPayment": "Sélectionnez un moyen de paiement.",
       "productUnavailable": "Un produit de votre panier n'est plus disponible.",
       "variantUnavailable": "Une variante sélectionnée n'est plus disponible.",
@@ -660,7 +660,7 @@
     "validation": {
       "fullName": "Indiquez votre nom et votre prénom.",
       "email": "Vérifiez votre adresse e-mail.",
-      "phone": "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56",
+      "phone": "Au Cameroun : 6 77 12 34 56. Depuis un autre pays, avec l'indicatif : +229 61 04 04 61",
       "location": "Un repère de quartier, au minimum.",
       "city": "Choisissez votre ville de livraison.",
       "cityOther": "Indiquez le nom de votre ville."

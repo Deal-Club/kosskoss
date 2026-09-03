@@ -2,7 +2,12 @@ import { randomBytes } from "node:crypto";
 import { prisma } from "@/server/prisma";
 import { hashPassword } from "@/lib/password";
 import { openCustomerSession } from "@/server/customerSession";
-import { sendOrderConfirmationEmail, sendAccountAccessEmail } from "@/server/kk/emails";
+import {
+  sendOrderConfirmationEmail,
+  sendAccountAccessEmail,
+  sendSellerOrderNotification,
+} from "@/server/kk/emails";
+import { sellerRecipients } from "@/server/destinatairesVendeur";
 import { resolvePaymentMethod } from "@/server/kk/payments";
 import { consommerCoupon, validerCoupon } from "@/server/coupons";
 import { normaliserTelephone } from "@/lib/kk/telephone";
@@ -345,6 +350,21 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   if (account === "created" && tempPassword) {
     await sendAccountAccessEmail(emailNorm, firstName, tempPassword, langue);
   }
+
+  // Le vendeur est prévenu, lui aussi. Sans cet envoi, une commande n'existait
+  // que dans le back-office : il fallait penser à l'ouvrir pour la découvrir.
+  // La fonction avale ses erreurs et ne part que si le SMTP est configuré.
+  await sendSellerOrderNotification(await sellerRecipients(), {
+    orderNumber,
+    fullName: input.fullName.trim(),
+    email: input.email.trim(),
+    telephone,
+    ville: villeAffichee,
+    location: input.location.trim(),
+    items: orderItems,
+    totalFcfa: total,
+    moyenPaiement: payment.label,
+  });
 
   return { ok: true, orderNumber, accessToken, account };
 }

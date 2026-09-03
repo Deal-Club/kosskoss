@@ -645,7 +645,7 @@
     "errors": {
       "cartEmpty": "Your cart is empty.",
       "invalidFields": "Please check the form fields.",
-      "invalidPhone": "Invalid phone number: nine digits, starting with 6 (mobile) or 2 (landline).",
+      "invalidPhone": "Invalid phone number. In Cameroon: nine digits. From another country: include the dialling code.",
       "invalidPayment": "Select a payment method.",
       "productUnavailable": "A product in your cart is no longer available.",
       "variantUnavailable": "A selected variant is no longer available.",
@@ -659,7 +659,7 @@
     "validation": {
       "fullName": "Enter your first and last name.",
       "email": "Check your email address.",
-      "phone": "Nine digits, starting with 6 (mobile) or 2 (landline). E.g. 6 77 12 34 56",
+      "phone": "In Cameroon: 6 77 12 34 56. From another country, with the dialling code: +229 61 04 04 61",
       "location": "A neighbourhood landmark, at minimum.",
       "city": "Choose your delivery city.",
       "cityOther": "Enter the name of your city."

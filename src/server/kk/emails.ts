@@ -46,6 +46,108 @@ type OrderEmailInput = {
   langue: Langue;
 };
 
+export interface SellerOrderEmailInput {
+  orderNumber: string;
+  fullName: string;
+  email: string;
+  /** Déjà normalisé en E.164 — voir lib/kk/telephone.ts. */
+  telephone: string;
+  ville: string;
+  /** Quartier, repère : la saisie libre du tunnel. */
+  location: string;
+  items: { brand: string; name: string; variantLabel: string; quantity: number; lineTotalCents: number }[];
+  totalFcfa: number;
+  moyenPaiement: string;
+}
+
+/**
+ * Signale au vendeur qu'une commande vient d'entrer.
+ *
+ * Toujours en français, quelle que soit la langue du client : le destinataire
+ * est la boutique, pas l'acheteur.
+ *
+ * Best-effort, comme tous les envois de ce fichier — l'appelant doit pouvoir
+ * répondre « commande enregistrée » même si le serveur SMTP est tombé. Un
+ * échec ici ne doit jamais coûter une vente déjà encaissée et déjà décomptée
+ * du stock.
+ *
+ * Envoyé à la CRÉATION de la commande, pas à l'encaissement : sur un marché où
+ * l'essentiel passe par Mobile Money et où le rendez-vous de livraison se cale
+ * à la main sur WhatsApp, la boutique a besoin de savoir qu'un panier est parti
+ * au paiement — y compris, et surtout, quand il n'aboutit pas.
+ */
+export async function sendSellerOrderNotification(
+  destinataires: string[],
+  input: SellerOrderEmailInput,
+): Promise<void> {
+  if (!isMailConfigured() || destinataires.length === 0) return;
+
+  const lignes = input.items
+    .map(
+      (i) =>
+        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(i.brand)} ${esc(i.name)}${
+          i.variantLabel ? ` · ${esc(i.variantLabel)}` : ""
+        } × ${esc(i.quantity)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${esc(
+          formatFcfa(i.lineTotalCents),
+        )}</td></tr>`,
+    )
+    .join("");
+
+  // `tel:` et `mailto:` : le vendeur ouvre la fiche depuis son téléphone, il
+  // doit pouvoir appeler ou écrire d'un geste plutôt que recopier.
+  const inner = `
+    <p style="margin:0 0 16px">Nouvelle commande <strong style="color:${DEEP}">${esc(input.orderNumber)}</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:14px">${lignes}
+      <tr><td style="padding:12px 0;font-weight:bold">Total</td><td style="padding:12px 0;text-align:right;font-weight:bold">${esc(
+        formatFcfa(input.totalFcfa),
+      )}</td></tr>
+    </table>
+    <div style="background:${SAND};border-radius:12px;padding:16px;margin-top:20px;font-size:14px;line-height:1.7">
+      <strong>${esc(input.fullName)}</strong><br>
+      <a href="tel:${esc(input.telephone)}" style="color:${DEEP}">${esc(input.telephone)}</a><br>
+      <a href="mailto:${esc(input.email)}" style="color:${DEEP}">${esc(input.email)}</a><br>
+      ${esc(input.ville)} — ${esc(input.location)}<br>
+      Paiement : ${esc(input.moyenPaiement)}
+    </div>`;
+
+  const text = [
+    `Nouvelle commande ${input.orderNumber}`,
+    "",
+    ...input.items.map(
+      (i) =>
+        `${i.brand} ${i.name}${i.variantLabel ? ` · ${i.variantLabel}` : ""} × ${i.quantity} — ${formatFcfa(
+          i.lineTotalCents,
+        )}`,
+    ),
+    `Total : ${formatFcfa(input.totalFcfa)}`,
+    "",
+    input.fullName,
+    input.telephone,
+    input.email,
+    `${input.ville} — ${input.location}`,
+    `Paiement : ${input.moyenPaiement}`,
+  ].join("\n");
+
+  // Un envoi par destinataire, et chacun isolé : une adresse morte dans la
+  // liste ne doit pas emporter les autres. Ils ne sont pas mis en copie les uns
+  // des autres — ce sont des boîtes internes, mais rien n'oblige à les
+  // exposer entre elles.
+  await Promise.all(
+    destinataires.map(async (to) => {
+      try {
+        await sendMail({
+          to,
+          subject: `Commande ${input.orderNumber} — ${formatFcfa(input.totalFcfa)}`,
+          html: shell("Nouvelle commande", inner),
+          text,
+        });
+      } catch (error) {
+        console.error(`[commande] Notification vendeur impossible (${to}) :`, error);
+      }
+    }),
+  );
+}
+
 /** Confirmation de commande (best-effort : ne bloque jamais la commande). */
 export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promise<void> {
   if (!isMailConfigured()) return;
