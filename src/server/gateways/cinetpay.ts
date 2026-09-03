@@ -44,36 +44,104 @@
  *
  * ── LE REFUS « This Ip is not withlisted » (code 2011) ──────────────────────
  *
- * Le compte sandbox ouvert le 02/09/2026 rejette une partie des appels en 422
- * avec ce message, ALORS QUE sa liste blanche est vide — état que leur tableau
- * de bord annonce pourtant comme « accessible depuis n'importe quelle IP ».
- * Le refus vient de leur application, pas de Cloudflare : le quota de
- * limitation de débit est intact (`x-ratelimit-remaining: 27` sur 30) au
- * moment du rejet.
+ * DEUX conditions doivent être réunies pour qu'un appel aboutisse, et c'est
+ * leur conjonction qui a rendu le diagnostic si pénible : chacune prise seule
+ * semblait tantôt vraie tantôt fausse.
  *
- * Deux pistes ont été suivies et ÉCARTÉES, faute de tenir devant les faits :
+ *  1. L'adresse IPv4 appelante doit être inscrite dans la liste blanche du
+ *     compte (tableau de bord CinetPay → API & sécurité). Une liste VIDE
+ *     refuse tout, alors que leur panneau annonce « accessible depuis
+ *     n'importe quelle IP » — le texte ment, vérifié le 03/09/2026.
  *
- *  - « leur point d'entrée IPv6 est cassé ». Une comparaison `curl -4` contre
- *    `curl -6` avait montré 200 contre 422 — mais l'adresse v4 testée était
- *    alors la seule inscrite en liste blanche, ce qui explique le même écart
- *    sans rien devoir à l'IPv6. Liste vidée, les deux familles échouent
- *    identiquement.
- *  - « il suffit d'inscrire l'IP appelante ». Cela a fonctionné le temps que
- *    l'adresse testée reste inchangée, puis a cessé dès qu'elle a tourné.
+ *  2. La connexion doit effectivement PARTIR en IPv4. `api.cinetpay.net`
+ *     publie aussi une adresse IPv6, et Node applique « Happy Eyeballs »
+ *     (RFC 8305) : il ouvre les deux familles en parallèle et garde la
+ *     première établie. Quand l'IPv6 gagne, l'adresse source est une tout
+ *     autre adresse — absente de la liste blanche, donc refusée. Le tirage
+ *     étant aléatoire, le même appel réussissait et échouait tour à tour sur
+ *     la même machine, à la même seconde.
  *
- * Ce qui reste établi : le refus ne dépend ni de la famille d'adresses, ni du
- * contenu de la liste blanche telle que le tableau de bord la montre, et
- * frappe aussi bien un poste de développement qu'une fonction Vercel. La
- * cause est donc à chercher du côté du compte lui-même — dossier non vérifié,
- * ou filtre appliqué en amont du panneau libre-service. C'est une question
- * ouverte auprès de leur support, pas un défaut de ce fichier.
+ * Mesuré, liste blanche contenant l'IPv4 du poste :
+ *   `curl -4` → 200 · `curl -6` → 422 · `curl` sans option → 422 (v6 choisie).
  *
- * NE PAS « corriger » ce point ici sans preuve : deux tentatives ont déjà été
- * écrites puis retirées, et la seconde remplaçait `fetch` par du HTTP monté à
- * la main sur un chemin de paiement.
+ * D'où `appelCinetPay` ci-dessous, qui pose `family: 4` sur CHAQUE requête.
+ * Les réglages globaux de Node (`dns.setDefaultResultOrder("ipv4first")`,
+ * `net.setDefaultAutoSelectFamily(false)`) ont été essayés d'abord et
+ * ÉCARTÉS : suffisants en développement, ils restaient sans effet sur Vercel,
+ * où `fetch` passe par undici et son propre pool de connexions. Un chemin de
+ * paiement n'a de toute façon pas à dépendre d'un réglage de processus que
+ * n'importe quel module peut écraser, ni du `fetch` que Next.js et Vercel
+ * enveloppent chacun de leur côté.
+ *
+ * ── CE QUE CELA IMPLIQUE POUR LA MISE EN LIGNE ──────────────────────────────
+ *
+ * La condition 1 est INTENABLE sur Vercel : les fonctions n'ont pas d'adresse
+ * de sortie fixe. Tant que le filtre IP reste actif sur le compte, la
+ * production ne peut pas encaisser — il faut soit obtenir de CinetPay qu'ils
+ * le désactivent, soit faire transiter ces appels par un relais à adresse
+ * fixe, lui seul inscrit en liste blanche. Ce fichier n'y peut rien : le
+ * forçage IPv4 ne règle que la condition 2.
  */
 
+import https from "node:https";
+
 const BASE_URL_PAR_DEFAUT = "https://api.cinetpay.net";
+
+/** Réponse brute d'un appel CinetPay : ce dont les trois appelants ont besoin. */
+interface ReponseHttp {
+  status: number;
+  ok: boolean;
+  texte: string;
+}
+
+/**
+ * Appel HTTPS vers CinetPay, forcé en IPv4 — voir la condition 2 de l'en-tête.
+ *
+ * `fetch` ne sait pas choisir sa famille d'adresses ; `https.request` l'accepte
+ * par requête, sans réglage global ni dépendance ajoutée.
+ *
+ * `Content-Length` est posé explicitement : sans lui Node bascule en
+ * `Transfer-Encoding: chunked`, que toutes les passerelles n'acceptent pas.
+ */
+function appelCinetPay(
+  url: string,
+  options: { method: string; headers: Record<string, string>; corps?: string; delaiMs: number },
+): Promise<ReponseHttp> {
+  const cible = new URL(url);
+  const corps = options.corps;
+
+  return new Promise<ReponseHttp>((resolve, reject) => {
+    const requete = https.request(
+      {
+        hostname: cible.hostname,
+        port: cible.port || 443,
+        path: `${cible.pathname}${cible.search}`,
+        method: options.method,
+        headers: corps
+          ? { ...options.headers, "Content-Length": Buffer.byteLength(corps) }
+          : options.headers,
+        family: 4,
+        timeout: options.delaiMs,
+      },
+      (reponse) => {
+        const morceaux: Buffer[] = [];
+        reponse.on("data", (morceau: Buffer) => morceaux.push(morceau));
+        reponse.on("end", () => {
+          const status = reponse.statusCode ?? 0;
+          resolve({ status, ok: status >= 200 && status < 300, texte: Buffer.concat(morceaux).toString("utf8") });
+        });
+      },
+    );
+
+    requete.on("error", reject);
+    // `timeout` ne coupe pas la requête de lui-même : sans ce `destroy`, une
+    // passerelle muette laisserait la promesse pendante indéfiniment.
+    requete.on("timeout", () => requete.destroy(new Error("CinetPay : délai d'attente dépassé")));
+
+    if (corps) requete.write(corps);
+    requete.end();
+  });
+}
 
 /** Devise transmise au prestataire — XAF est accepté nativement. */
 export const DEVISE_PRESTATAIRE = "XAF";
@@ -132,14 +200,14 @@ async function jetonValide(config: ConfigCinetPay): Promise<string> {
     return jetonCache.token;
   }
 
-  const reponse = await fetch(`${config.baseUrl}/v1/oauth/login`, {
+  const reponse = await appelCinetPay(`${config.baseUrl}/v1/oauth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ api_key: config.apiKey, api_password: config.apiPassword }),
-    signal: AbortSignal.timeout(15_000),
+    corps: JSON.stringify({ api_key: config.apiKey, api_password: config.apiPassword }),
+    delaiMs: 15_000,
   });
 
-  const texte = await reponse.text();
+  const texte = reponse.texte;
   if (!reponse.ok) {
     throw new Error(`CinetPay a refusé la connexion (${reponse.status}) : ${texte.slice(0, 300)}`);
   }
@@ -201,14 +269,14 @@ export async function creerPaiement(
   const jeton = await jetonValide(config);
   const [prenom, ...resteDuNom] = demande.client.nom.split(" ");
 
-  const reponse = await fetch(`${config.baseUrl}/v1/payment`, {
+  const reponse = await appelCinetPay(`${config.baseUrl}/v1/payment`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${jeton}`,
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({
+    corps: JSON.stringify({
       currency: DEVISE_PRESTATAIRE,
       merchant_transaction_id: demande.orderNumber,
       amount: demande.montant,
@@ -228,10 +296,10 @@ export async function creerPaiement(
     }),
     // Sans délai maximal, une passerelle muette bloquerait la validation de
     // commande jusqu'au timeout de la plateforme.
-    signal: AbortSignal.timeout(20_000),
+    delaiMs: 20_000,
   });
 
-  const texte = await reponse.text();
+  const texte = reponse.texte;
   if (!reponse.ok) {
     throw new Error(`CinetPay a refusé la demande (${reponse.status}) : ${texte.slice(0, 300)}`);
   }
@@ -274,20 +342,21 @@ export async function lirePaiement(
 ): Promise<{ statut: string; brut: string } | null> {
   const jeton = await jetonValide(config);
 
-  const reponse = await fetch(
+  const reponse = await appelCinetPay(
     `${config.baseUrl}/v1/payment/${encodeURIComponent(merchantTransactionId)}`,
     {
+      method: "GET",
       headers: { Authorization: `Bearer ${jeton}`, Accept: "application/json" },
       // Sous les 10 s que CinetPay laisse pour répondre à une notification
       // (voir l'en-tête de la route de webhook) : cet appel s'y insère,
       // il doit donc laisser de la marge plutôt que la consommer seul.
-      signal: AbortSignal.timeout(7_000),
+      delaiMs: 7_000,
     },
   );
 
   if (!reponse.ok) return null;
 
-  const texte = await reponse.text();
+  const texte = reponse.texte;
   try {
     const corps = JSON.parse(texte) as { status?: unknown };
     return { statut: String(corps.status ?? ""), brut: texte.slice(0, 4000) };
