@@ -3,20 +3,25 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 import { requireCapaciteApi } from "@/lib/adminApi";
 import { slugify } from "@/lib/slugify";
-import { isCloudinaryConfigured, uploadImage } from "@/server/cloudinary";
+import { isS3Configured, uploadImage } from "@/server/storage";
 
 // Deux destinations possibles, décidées à chaque envoi :
 //
-//   1. Cloudinary, dès que les trois identifiants sont disponibles (variables
-//      d'environnement ou clés saisies dans le back-office). C'est le mode
-//      normal : l'URL renvoyée est servie par le CDN et survit aux déploiements.
-//   2. public/uploads/, uniquement en développement tant que Cloudinary n'est
-//      pas configuré. En production, l'envoi est refusé avec un message clair :
+//   1. MinIO (S3-compatible), dès que les identifiants sont disponibles
+//      (S3_ENDPOINT/S3_ACCESS_KEY/S3_SECRET_KEY/S3_BUCKET). C'est le mode
+//      normal : l'URL renvoyée pointe sur le bucket auto-hébergé, public en
+//      lecture, et survit aux déploiements.
+//   2. public/uploads/, uniquement en développement tant que S3 n'est pas
+//      configuré. En production, l'envoi est refusé avec un message clair :
 //      un dossier local disparaît au prochain déploiement, il ne faut pas y
 //      stocker le catalogue.
 //
-// L'envoi passe toujours par le serveur : l'API secret Cloudinary n'atteint
-// jamais le navigateur, et aucun upload non signé n'est possible depuis le client.
+// L'envoi passe toujours par le serveur : la clé secrète S3 n'atteint jamais
+// le navigateur, et aucun upload non signé n'est possible depuis le client.
+//
+// Remplace l'ancien stockage Cloudinary (src/server/cloudinary.ts, laissé en
+// place mais plus appelé depuis cette route) — même interface de réponse
+// (`path`/`url`/`storage`), pour ne rien casser côté formulaire produit.
 
 export const runtime = "nodejs";
 
@@ -124,29 +129,30 @@ export async function POST(request: Request) {
 
   const fileName = `${timestamp()}-${safeBaseName(file.name)}.${detected.extension}`;
 
-  // --- Destination 1 : Cloudinary -------------------------------------------
-  if (isCloudinaryConfigured()) {
+  // --- Destination 1 : MinIO (S3-compatible) --------------------------------
+  if (isS3Configured()) {
     try {
-      const uploaded = await uploadImage(Buffer.from(bytes), { filename: fileName });
+      const uploaded = await uploadImage(Buffer.from(bytes), {
+        filename: fileName,
+        contentType: detected.mime,
+      });
       return NextResponse.json(
         {
           // « path » reste renseigné pour ne rien casser côté formulaire :
           // le champ image du produit contient désormais l'URL complète.
           path: uploaded.url,
           url: uploaded.url,
-          storage: "cloudinary" as const,
-          publicId: uploaded.publicId,
-          width: uploaded.width,
-          height: uploaded.height,
+          storage: "s3" as const,
+          key: uploaded.key,
           mime: detected.mime,
           size: file.size,
         },
         { status: 201 },
       );
     } catch (error) {
-      console.error("Échec de l'envoi vers Cloudinary :", error);
+      console.error("Échec de l'envoi vers MinIO :", error);
       return NextResponse.json(
-        { error: "L'envoi vers Cloudinary a échoué. Merci de vérifier les clés API." },
+        { error: "L'envoi vers le stockage MinIO a échoué. Merci de vérifier les clés S3." },
         { status: 502 },
       );
     }
@@ -157,7 +163,7 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         error:
-          "Le stockage des images n'est pas configuré : définissez CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET dans l'environnement du serveur. En production, l'enregistrement local est désactivé car les fichiers disparaîtraient au prochain déploiement.",
+          "Le stockage des images n'est pas configuré : définissez S3_ENDPOINT, S3_ACCESS_KEY, S3_SECRET_KEY et S3_BUCKET dans l'environnement du serveur. En production, l'enregistrement local est désactivé car les fichiers disparaîtraient au prochain déploiement.",
       },
       { status: 503 },
     );

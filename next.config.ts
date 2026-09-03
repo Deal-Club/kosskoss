@@ -32,13 +32,19 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Les visuels produits sont hébergés chez Cloudinary ; le chemin reste
-    // restreint à un dossier du compte pour éviter de servir n'importe quoi.
+    // Cloudinary : ancien stockage, laissé autorisé le temps que les URL déjà
+    // en base finissent de tourner. MinIO (kosskoss-minio…) est le stockage
+    // courant — voir src/server/storage.ts.
     remotePatterns: [
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "kosskoss-minio.lsw7kl.easypanel.host",
+        pathname: "/kosskoss/**",
       },
     ],
   },
