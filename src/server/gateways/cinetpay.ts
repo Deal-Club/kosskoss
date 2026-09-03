@@ -42,40 +42,36 @@
  * webhook (`src/app/api/payments/webhook/cinetpay/route.ts`) consulte pour
  * conclure — jamais le corps de la requête entrante.
  *
- * ── POURQUOI ON FORCE L'IPv4 ────────────────────────────────────────────────
+ * ── LE REFUS « This Ip is not withlisted » (code 2011) ──────────────────────
  *
- * `api.cinetpay.net` est servi par Cloudflare et publie une adresse IPv6
- * (`2a06:98c1:3121::5`) EN PLUS de ses adresses IPv4. Leur pile IPv6 est
- * cassée : toute requête qui l'emprunte est rejetée en 422 avec
- * `{"code":2011,"status":"NOT_ALLOWED","description":"This Ip is not
- * withlisted"}`, quel que soit le contenu de la liste blanche du compte
- * marchand — y compris liste VIDE, que leur tableau de bord annonce pourtant
- * comme « accessible depuis n'importe quelle IP ». Le même appel, forcé en
- * IPv4, répond 200. Vérifié le 03/09/2026 depuis deux réseaux (Starlink et
- * Vercel), `curl -6` contre `curl -4`.
+ * Le compte sandbox ouvert le 02/09/2026 rejette une partie des appels en 422
+ * avec ce message, ALORS QUE sa liste blanche est vide — état que leur tableau
+ * de bord annonce pourtant comme « accessible depuis n'importe quelle IP ».
+ * Le refus vient de leur application, pas de Cloudflare : le quota de
+ * limitation de débit est intact (`x-ratelimit-remaining: 27` sur 30) au
+ * moment du rejet.
  *
- * Or Node applique « Happy Eyeballs » (RFC 8305) : il ouvre les connexions
- * v4 et v6 en parallèle et garde la première établie. Le résultat est donc
- * ALÉATOIRE d'un appel à l'autre — même machine, même seconde. C'est ce qui
- * a fait passer des paiements et échouer les suivants sans qu'aucune
- * configuration ne change, et ce qui rendait le diagnostic trompeur : le
- * message d'erreur désigne une liste blanche qui n'est pour rien dans
- * l'affaire.
+ * Deux pistes ont été suivies et ÉCARTÉES, faute de tenir devant les faits :
  *
- * Les deux réglages ci-dessous suppriment l'aléa : l'ordre de résolution
- * place l'IPv4 d'abord, et la désactivation de la sélection automatique de
- * famille empêche la course de rétablir l'IPv6. Ils sont globaux au
- * processus — c'est assumé : aucun service tiers de ce dépôt ne requiert
- * l'IPv6, et Node fonctionnait ainsi par défaut jusqu'à sa version 17.
+ *  - « leur point d'entrée IPv6 est cassé ». Une comparaison `curl -4` contre
+ *    `curl -6` avait montré 200 contre 422 — mais l'adresse v4 testée était
+ *    alors la seule inscrite en liste blanche, ce qui explique le même écart
+ *    sans rien devoir à l'IPv6. Liste vidée, les deux familles échouent
+ *    identiquement.
+ *  - « il suffit d'inscrire l'IP appelante ». Cela a fonctionné le temps que
+ *    l'adresse testée reste inchangée, puis a cessé dès qu'elle a tourné.
  *
- * À RETIRER le jour où CinetPay corrige son point d'entrée IPv6.
+ * Ce qui reste établi : le refus ne dépend ni de la famille d'adresses, ni du
+ * contenu de la liste blanche telle que le tableau de bord la montre, et
+ * frappe aussi bien un poste de développement qu'une fonction Vercel. La
+ * cause est donc à chercher du côté du compte lui-même — dossier non vérifié,
+ * ou filtre appliqué en amont du panneau libre-service. C'est une question
+ * ouverte auprès de leur support, pas un défaut de ce fichier.
+ *
+ * NE PAS « corriger » ce point ici sans preuve : deux tentatives ont déjà été
+ * écrites puis retirées, et la seconde remplaçait `fetch` par du HTTP monté à
+ * la main sur un chemin de paiement.
  */
-
-import dns from "node:dns";
-import net from "node:net";
-
-dns.setDefaultResultOrder("ipv4first");
-net.setDefaultAutoSelectFamily(false);
 
 const BASE_URL_PAR_DEFAUT = "https://api.cinetpay.net";
 
