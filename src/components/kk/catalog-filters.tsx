@@ -86,11 +86,12 @@ const SORT_KEYS: { key: CatalogSort; labelKey: "sortRelevance" | "sortNewest" | 
  * Une case à cocher pour une option de facette (marque, type de peau,
  * préoccupation), avec son décompte.
  *
- * Une option à zéro se DÉSACTIVE plutôt que de disparaître : une case qui
- * s'évapore fait douter de ce qu'on a coché. Une option déjà cochée reste
- * toujours cliquable pour pouvoir la décocher, même si son décompte marginal
- * — qui ignore volontairement toute sa famille, voir `getCatalog` — tombe à
- * zéro : sans quoi décocher une case redevenue « à zéro » serait impossible.
+ * Une option à zéro DISPARAÎT (TK-05) : elle se contentait d'être grisée, et
+ * sur les petits rayons la colonne alignait plus de « (0) » que d'options
+ * réelles — un mur de choix impossibles. EXCEPTION : une option déjà cochée
+ * reste toujours affichée et cliquable pour pouvoir la décocher, même si son
+ * décompte marginal — qui ignore volontairement toute sa famille, voir
+ * `getCatalog` — tombe à zéro : sans quoi la retirer serait impossible.
  */
 function FacetOptionRow({
   label,
@@ -113,15 +114,7 @@ function FacetOptionRow({
     </span>
   );
 
-  if (!active && count === 0) {
-    return (
-      <span aria-disabled="true" className="flex cursor-not-allowed items-center gap-2.5 text-sm text-muted-foreground/50">
-        {box}
-        <span className="flex-1">{label}</span>
-        <span>({count})</span>
-      </span>
-    );
-  }
+  if (!active && count === 0) return null;
 
   return (
     <Link href={href} className="flex items-center gap-2.5 text-sm text-foreground transition hover:text-deep">
@@ -163,8 +156,25 @@ export function FiltersPanel({
    */
   idPrefix: string;
 }) {
-  const peauOptions = vocabulaire.filter((o) => o.family === FAMILLE_PEAU);
-  const preoccupationOptions = vocabulaire.filter((o) => o.family === FAMILLE_PREOCCUPATION);
+  // Options à zéro écartées AVANT le rendu (TK-05) — et non masquées une à
+  // une dans FacetOptionRow : un `<li>` vide garderait sa part de `space-y`
+  // et la liste s'aérerait de trous. Une option cochée reste toujours servie,
+  // décompte nul ou pas (voir FacetOptionRow).
+  const visible = (options: OptionFacette[], counts: Record<string, number>, cochees: string[]) =>
+    options.filter((o) => cochees.includes(o.key) || (counts[o.key] ?? 0) > 0);
+  const peauOptions = visible(
+    vocabulaire.filter((o) => o.family === FAMILLE_PEAU),
+    view.countsByPeau,
+    state.peau,
+  );
+  const preoccupationOptions = visible(
+    vocabulaire.filter((o) => o.family === FAMILLE_PREOCCUPATION),
+    view.countsByPreoccupation,
+    state.preoccupation,
+  );
+  const brandsVisibles = view.brands.filter(
+    (b) => state.brands.includes(b) || (view.countsByBrand[b] ?? 0) > 0,
+  );
   // Le français vit à la racine, l'anglais sous /en (voir src/i18n/routing.ts) :
   // le formulaire de prix soumet en GET natif, hors contexte next-intl, il
   // doit donc préfixer lui-même sa destination.
@@ -203,7 +213,7 @@ export function FiltersPanel({
               <li key={c.slug}>
                 {/* Le nombre de produits par catégorie a été retiré du filtre.
                     Sur un catalogue de cette taille, il chiffrait surtout ce
-                    qui manque — « Solaires 3 » se lit comme un rayon vide — et
+                    qui manque - « Solaires 3 » se lit comme un rayon vide - et
                     ajoutait une colonne de chiffres à droite d'une liste qu'on
                     parcourt à gauche. Une catégorie sans produit est de toute
                     façon écartée en amont, jamais affichée. */}
@@ -220,13 +230,13 @@ export function FiltersPanel({
       </div>
 
       {/* Marque */}
-      {view.brands.length > 0 && (
+      {brandsVisibles.length > 0 && (
         <div>
           <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {t("brandLabel")}
           </h3>
           <ul className="mt-3 space-y-1.5">
-            {view.brands.map((b) => {
+            {brandsVisibles.map((b) => {
               const active = state.brands.includes(b);
               const href = withParams(basePath, { ...state, brands: toggled(state.brands, b) });
               return (
@@ -284,7 +294,7 @@ export function FiltersPanel({
         </div>
       )}
 
-      {/* Prix — borne, ne trie pas : le tri par prix reste un bloc séparé. */}
+      {/* Prix - borne, ne trie pas : le tri par prix reste un bloc séparé. */}
       <div>
         <h3 className="text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
           {t("priceLabel")}

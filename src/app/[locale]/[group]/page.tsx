@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar, SiteHeader, SiteFooter } from "@/components/kk/chrome";
 import { CatalogView } from "@/components/kk/catalog";
+import { RoutineCard } from "@/components/kk/routine-card";
 import { getCatalog, getCatalogMeta } from "@/server/kk/catalog";
+import { getRoutinesByBesoin } from "@/server/kk/routines";
 import { lireVocabulaire } from "@/server/kk/vocabulaire-tags";
 import { parseBrands, parseFacettes, parsePage, parsePrix, parseSort } from "@/lib/kk/catalog-params";
 import { alternatesFor } from "@/lib/hreflang";
@@ -66,18 +68,43 @@ export default async function GroupPage({
   const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin }, vocabulaire);
   const prix = parsePrix({ prixMin: sp.prixMin, prixMax: sp.prixMax });
   const page = parsePage(sp.page);
-  const view = await getCatalog({
-    group,
-    brands,
-    peau: selection.peau,
-    preoccupation: selection.preoccupation,
-    prixMin: prix.min,
-    prixMax: prix.max,
-    sort,
-    page,
-    locale,
-  });
+  // Les routines dédiées à l'univers, quand son slug est aussi un besoin de
+  // routine (`Routine.besoinTag`) : « homme » aujourd'hui, et tout univers
+  // futur qui porterait une gamme dédiée. Ailleurs, la liste revient vide et
+  // le bloc ne se rend pas. Lancée en parallèle du catalogue.
+  const [view, routinesUnivers] = await Promise.all([
+    getCatalog({
+      group,
+      brands,
+      peau: selection.peau,
+      preoccupation: selection.preoccupation,
+      prixMin: prix.min,
+      prixMax: prix.max,
+      sort,
+      page,
+      locale,
+    }),
+    getRoutinesByBesoin(group, locale),
+  ]);
   if (!view) notFound();
+
+  const t = await getTranslations({ locale, namespace: "catalog" });
+  const spotlight =
+    routinesUnivers.length > 0 ? (
+      <section className="mx-auto max-w-7xl px-6 pt-10">
+        <div className="rounded-[1.75rem] bg-sand/60 p-7 sm:p-9">
+          <p className="eyebrow">{t("routinesSpotlightEyebrow")}</p>
+          <h2 className="mt-2 text-deep">
+            {t("routinesSpotlightTitle", { label: view.group.label })}
+          </h2>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+            {routinesUnivers.map((routine) => (
+              <RoutineCard key={routine.id} routine={routine} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ) : undefined;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -93,6 +120,7 @@ export default async function GroupPage({
           sort={sort}
           vocabulaire={vocabulaire}
           locale={locale}
+          spotlight={spotlight}
         />
       </main>
       <SiteFooter />

@@ -41,6 +41,7 @@ export async function CatalogView({
   sort,
   vocabulaire,
   locale,
+  spotlight,
 }: {
   view: CatalogViewData;
   groupSlug: string;
@@ -51,10 +52,19 @@ export async function CatalogView({
   sort: CatalogSort;
   vocabulaire: OptionFacette[];
   locale: Locale;
+  /** Bloc de mise en avant propre au rayon (routines de l'univers Homme…),
+   *  rendu entre le bandeau de tête et la grille. Absent : rien ne change. */
+  spotlight?: React.ReactNode;
 }) {
   const t = await getTranslations("catalog");
   const basePath = currentCategory ? `/${groupSlug}/${currentCategory}` : `/${groupSlug}`;
   const title = view.category?.label ?? view.group.label;
+
+  // Texte d'en-tête : la version propre au rayon quand elle existe
+  // (`heroLead_<slug>`), le texte générique sinon. Avant TK-05, tous les
+  // rayons — Homme compris — récitaient mot pour mot le même paragraphe.
+  const leadKey = `heroLead_${groupSlug}`;
+  const lead = t.has(leadKey) ? t(leadKey) : t("heroLead");
 
   const state: CatalogFilterState = {
     brands,
@@ -106,20 +116,22 @@ export async function CatalogView({
     <>
       {/* Bandeau de tête sur le vert profond de la charte : le contraste donne
           du poids au titre de rayon. Le motif de marque y est posé comme sur
-          tous les bandeaux sombres hors accueil — celui-ci est le plus répété
+          tous les bandeaux sombres hors accueil - celui-ci est le plus répété
           du site, il se voit sur chaque rayon, d'où le voile qui l'assourdit. */}
       <section className="relative overflow-hidden bg-deep text-primary-foreground">
         <PatternBackdrop align="center" />
         <div className="relative mx-auto max-w-7xl px-6 py-14 text-center">
           <p className="eyebrow eyebrow-on-dark">{view.group.label}</p>
           <h1 className="mt-3">{title}</h1>
-          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground">{t("heroLead")}</p>
+          <p className="lead mx-auto mt-4 max-w-2xl text-primary-foreground">{lead}</p>
         </div>
       </section>
 
+      {spotlight}
+
       <div className="mx-auto max-w-7xl gap-10 px-6 py-10 lg:flex">
         {/* Filtres mobile : un panneau qu'on ouvre, pas deux écrans de cases
-            avant le premier produit — un rayon ne se parcourt pas ainsi au
+            avant le premier produit - un rayon ne se parcourt pas ainsi au
             téléphone. */}
         <details className="mb-6 rounded-2xl border border-border/70 bg-card p-4 lg:hidden">
           <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-semibold text-deep">
@@ -132,7 +144,7 @@ export async function CatalogView({
 
             La colonne défile pour son propre compte : collée à 6rem du haut
             (top-24), elle dépassait le bas de l'écran dès que la liste des
-            marques s'allongeait, et le bas restait inatteignable — la page,
+            marques s'allongeait, et le bas restait inatteignable - la page,
             elle, était déjà en butée. D'où max-h = 100vh moins les 6rem de
             décalage et 1rem de respiration.
 
@@ -152,8 +164,8 @@ export async function CatalogView({
         {/* Grille */}
         <div className="flex-1">
           <div className="mb-6 space-y-3">
-            {/* Résumé des filtres actifs — chacun retirable individuellement,
-                plus un « tout effacer » — visible que le rayon rende des
+            {/* Résumé des filtres actifs - chacun retirable individuellement,
+                plus un « tout effacer » - visible que le rayon rende des
                 produits ou non. */}
             <ActiveFilters state={state} vocabulaire={vocabulaire} basePath={basePath} t={t} />
             <p className="text-sm text-muted-foreground">

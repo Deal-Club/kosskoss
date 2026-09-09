@@ -124,13 +124,7 @@ export async function getCatalogMeta(opts: {
     category = { slug: match.slug, label: pickText(match.label, traduire ? match.labelEn : undefined) };
   }
 
-  const scope: Prisma.ProductWhereInput = {
-    active: true,
-    category: {
-      group: { slug: opts.group },
-      ...(opts.category ? { slug: opts.category } : {}),
-    },
-  };
+  const scope = scopeFor(opts.group, opts.category);
 
   const total = await prisma.product.count({ where: scope });
   const pageCount = Math.max(1, Math.ceil(total / CATALOG_PAGE_SIZE));
@@ -141,6 +135,52 @@ export async function getCatalogMeta(opts: {
     category,
     page,
     pageCount,
+  };
+}
+
+/**
+ * Univers qui AGRÈGENT au-delà de leurs propres catégories (TK-05).
+ *
+ * « Homme » est un segment de clientèle, pas un rayonnage : un nettoyant
+ * anti-brillance rangé dans soins-visage/nettoyants et étiqueté `homme` doit
+ * apparaître sur /homme sans quitter sa catégorie d'origine. L'univers
+ * agrège donc trois sources, en OR :
+ *   — ses propres catégories (comportement de tout univers) ;
+ *   — les produits portant son étiquette dans `Product.tags` (c'est là que
+ *     vit la donnée aujourd'hui : 9 produits au moment de TK-05) ;
+ *   — les produits dont le champ libre `Product.cible` contient un des
+ *     termes (« Homme », « Unisexe », insensible à la casse) — vide sur tout
+ *     le catalogue actuel, mais c'est le champ que le back-office remplira.
+ *
+ * L'agrégation ne joue QUE sur la page d'univers : une catégorie ouverte
+ * (/homme/homme) reste strictement ce qu'elle contient — chaque catégorie
+ * garde son rangement.
+ */
+const AGREGATION_UNIVERS: Record<string, { tag: string; cibles: string[] }> = {
+  homme: { tag: "homme", cibles: ["homme", "unisexe"] },
+};
+
+/** Portée d'un rayon : l'univers (agrégé s'il y a lieu), ou une catégorie stricte. */
+function scopeFor(groupSlug: string, categorySlug?: string): Prisma.ProductWhereInput {
+  const agregation = categorySlug ? undefined : AGREGATION_UNIVERS[groupSlug];
+  if (!agregation) {
+    return {
+      active: true,
+      category: {
+        group: { slug: groupSlug },
+        ...(categorySlug ? { slug: categorySlug } : {}),
+      },
+    };
+  }
+  return {
+    active: true,
+    OR: [
+      { category: { group: { slug: groupSlug } } },
+      { tags: { contains: `"${agregation.tag}"` } },
+      ...agregation.cibles.map((c) => ({
+        cible: { contains: c, mode: "insensitive" as const },
+      })),
+    ],
   };
 }
 
@@ -205,14 +245,9 @@ export async function getCatalog(opts: {
     category = { slug: match.slug, label: pickText(match.label, traduire ? match.labelEn : undefined) };
   }
 
-  // Portée : univers, éventuellement restreinte à une catégorie.
-  const scope: Prisma.ProductWhereInput = {
-    active: true,
-    category: {
-      group: { slug: opts.group },
-      ...(opts.category ? { slug: opts.category } : {}),
-    },
-  };
+  // Portée : univers (agrégé s'il y a lieu — voir AGREGATION_UNIVERS),
+  // éventuellement restreinte à une catégorie, alors toujours stricte.
+  const scope = scopeFor(opts.group, opts.category);
 
   const prixWhere: Prisma.ProductWhereInput | undefined =
     opts.prixMin !== undefined || opts.prixMax !== undefined
