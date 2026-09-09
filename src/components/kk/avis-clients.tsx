@@ -122,9 +122,9 @@ function CarteAvis({
           Sans plafond, une carte bavarde étirait toute la rangée et laissait
           ses voisines à moitié vides. Le plafond était à six lignes ; c'est la
           citation qui fixait la hauteur de la section, et trois lignes suffisent
-          à donner le ton — l'avis entier se lit sur la page du produit. */}
+          à donner le ton - l'avis entier se lit sur la page du produit. */}
       {/* L'écart sous la citation est une MARGE et non un padding. Sur un bloc
-          coupé par `line-clamp` — un `-webkit-box` tronqué —, le padding
+          coupé par `line-clamp` - un `-webkit-box` tronqué -, le padding
           intérieur agrandit la fenêtre de clipping : la quatrième ligne
           réapparaissait, tranchée en deux, sous les trois lignes autorisées. */}
       <blockquote
@@ -136,7 +136,7 @@ function CarteAvis({
       {/* `mt-auto` : les cartes d'une même rangée prennent la hauteur de la
           plus haute, et un avis court laissait alors un vide PENDANT sous le
           lien produit. L'auteur et le lien sont maintenant plaqués en bas de
-          carte — l'écart résiduel s'ouvre entre la citation et le trait de
+          carte - l'écart résiduel s'ouvre entre la citation et le trait de
           séparation, où il se lit comme de la respiration et non comme un
           oubli. */}
       <footer className="mt-auto flex items-center gap-3 border-t border-border pt-4">
@@ -232,23 +232,25 @@ export async function AvisClients({
             </h2>
           </div>
 
-          {/* La moyenne reste le plus gros caractère du bloc — c'est le chiffre
-              qu'on vient chercher — mais en 36 px au lieu de 60. `figure`
+          {/* La moyenne reste le plus gros caractère du bloc - c'est le chiffre
+              qu'on vient chercher - mais en 36 px au lieu de 60. `figure`
               aligne les chiffres sur une chasse fixe (voir globals.css). */}
           <div className="flex items-center gap-3">
             <p className="figure font-display text-4xl leading-none text-deep">{moyenne}</p>
             <div>
               <Etoiles note={resume.average} taille="h-4 w-4" label={noteAria(resume.average)} />
+              {/* Ligne qualitative plutôt que le volume brut : au lancement, un
+                  compteur d'avis se retourne contre la section (TK-01). Le
+                  nombre exact reste sur /avis, où l'histogramme le porte. */}
               <p className="mt-1 text-xs text-muted-foreground">
-                <span className="figure">{resume.total}</span>{" "}
-                {t("publishedSuffix", { count: resume.total })}
+                {t("homeQualitative")}
               </p>
             </div>
           </div>
         </div>
 
         {/* ──────────────────────────── LES VOIX ──────────────────────── */}
-        {/* Rail à défilement sous `xl`, grille de trois au-delà — une seule
+        {/* Rail à défilement sous `xl`, grille de trois au-delà - une seule
             rangée dans les deux cas. Les marges négatives rendent les cartes
             affleurantes au bord de l'écran : une carte coupée par la gouttière
             se lit comme mal placée, coupée par le bord elle se lit comme un

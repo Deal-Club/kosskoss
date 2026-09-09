@@ -77,9 +77,12 @@ export function ProductHoverPanel({ product }: { product: KKProductView }) {
   const t = useTranslations("product");
   const resume = product.shortDescription?.trim();
 
-  // Sans description ni contenance, le panneau n'apporterait qu'un « Voir la
-  // fiche » redondant avec le lien qui l'entoure : on ne l'ouvre pas.
-  if (!resume && !product.hasVariants) return null;
+  // Sans description ni pluralité de contenances, le panneau n'apporterait
+  // qu'un « Voir la fiche » redondant avec le lien qui l'entoure : on ne
+  // l'ouvre pas. `multipleVariants` et non `hasVariants` : une variante
+  // unique n'est pas une information — 70 des 71 produits du catalogue en
+  // portaient l'étiquette à tort.
+  if (!resume && !product.multipleVariants) return null;
 
   return (
     <div
@@ -116,7 +119,7 @@ export function ProductHoverPanel({ product }: { product: KKProductView }) {
           </p>
         ) : null}
 
-        {product.hasVariants ? (
+        {product.multipleVariants ? (
           <p
             className={[
               // Laiton clair : le seul ton d'accent lisible sur le vert profond

@@ -18,7 +18,11 @@ export function ProductCard({ product }: { product: KKProductView }) {
   const hasImage = typeof product.image === "string" && product.image.length > 0;
 
   return (
-    <article className="group flex flex-col">
+    /* `h-full` : dans un rail ou une grille, la carte prend la hauteur de sa
+       cellule ; c'est ce qui permet au prix et au bouton d'achat, plaqués en
+       bas par `mt-auto`, de s'aligner sur une même ligne quelle que soit la
+       longueur du titre. */
+    <article className="group flex h-full flex-col">
       {/* Le cadre se soulève au survol ; la photo, elle, zoome légèrement dans
           son cadre (voir `group-hover:scale-105` plus bas). Deux mouvements de
           faible amplitude qui se répondent, plutôt qu'un seul geste ample : sur
@@ -28,7 +32,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
             Les quatre dégradés colorés qui tournaient ici (sable, rose, bleu,
             argile) étaient attribués selon la POSITION dans la grille et non
             selon le produit : la même crème changeait de couleur d'une page à
-            l'autre. Décoratif et arbitraire — et surtout en concurrence avec
+            l'autre. Décoratif et arbitraire - et surtout en concurrence avec
             les teintes de routine, qui, elles, veulent dire quelque chose. */}
         <Link
           href={href}
@@ -38,8 +42,8 @@ export function ProductCard({ product }: { product: KKProductView }) {
              cadre étant en 4/5 pour une source carrée, l'image ne peut pas le
              remplir (`cover` rognerait bouchons et bas d'étiquette, voir plus
              bas) : aligner le fond sur celui des visuels est donc la seule
-             sortie. Elle n'est pas parfaite — le blanc des fichiers varie de
-             245 à 254 selon les prises de vue — mais l'écart devient invisible
+             sortie. Elle n'est pas parfaite - le blanc des fichiers varie de
+             245 à 254 selon les prises de vue - mais l'écart devient invisible
              là où il sautait aux yeux. */
           className="relative flex aspect-[4/5] items-center justify-center bg-card p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep focus-visible:ring-inset"
           aria-label={product.name}
@@ -64,7 +68,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
           )}
 
           {/* LA PASTILLE.
-              « Nouveauté » était en `bg-cream` sur un cadre `bg-card` — deux
+              « Nouveauté » était en `bg-cream` sur un cadre `bg-card` - deux
               blancs à quelques points d'écart : le badge existait dans le DOM
               et ne se voyait sur aucun écran. Il passe au laiton plein, la
               couleur d'accent de la marque, avec le vert profond pour texte.
@@ -88,7 +92,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
 
           {/* La bande d'information, dans le lien : le survol de n'importe
               quelle partie du cadre l'ouvre, et un clic dessus mène à la fiche
-              — ce qu'annonce « Voir la fiche ». */}
+              - ce qu'annonce « Voir la fiche ». */}
           <ProductHoverPanel product={product} />
         </Link>
 
@@ -106,12 +110,16 @@ export function ProductCard({ product }: { product: KKProductView }) {
           {product.brand}
         </p>
         {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande client
-            explicite — plus une ligne à part, voir `formatProductTitle`.
+            explicite - plus une ligne à part, voir `formatProductTitle`.
             Absente uniquement si le produit ne porte aucune variante active. */}
-        <h3 className="mt-1 font-sans text-[0.95rem] font-medium leading-snug text-foreground group-hover:text-deep">
+        {/* `min-h` de deux lignes : la plupart des titres en font une ou deux ;
+            réserver la deuxième évite que le prix ne « saute » d'une carte à
+            l'autre. Au-delà de deux lignes, c'est le `mt-auto` du prix qui
+            garantit l'alignement des boutons. */}
+        <h3 className="mt-1 min-h-[2.75em] font-sans text-[0.95rem] font-medium leading-snug text-foreground group-hover:text-deep">
           {formatProductTitle(product.name, product.sizeLabel)}
         </h3>
-        <div className="mt-2 flex items-baseline gap-2">
+        <div className="mt-auto flex items-baseline gap-2 pt-2">
           <span className="figure text-[0.95rem] font-semibold text-deep">
             {formatFcfa(product.priceFcfa)}
           </span>
@@ -123,7 +131,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
         </div>
       </Link>
 
-      {/* « Achète maintenant » : hors du lien vers la fiche, pour ajouter au
+      {/* « Acheter » : hors du lien vers la fiche, pour ajouter au
           panier sans quitter la grille. */}
       <BoutonAcheter product={product} />
     </article>

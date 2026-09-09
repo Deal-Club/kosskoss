@@ -521,7 +521,7 @@ export function CheckoutForm({
               />
               {/* Ville de livraison : détermine le frais de livraison
                   (src/lib/kk/livraison.ts), ajouté au total plus bas. « Autre »
-                  ouvre une saisie libre — toutes les villes du Cameroun ne
+                  ouvre une saisie libre - toutes les villes du Cameroun ne
                   tiennent pas dans une liste de deux. */}
               <div>
                 <label htmlFor="champ-city" className="block text-sm font-medium text-foreground">
@@ -629,7 +629,7 @@ export function CheckoutForm({
 
             {/* Affichage seul, sans sélection.
                 Le choix du moyen de paiement se fait dans la passerelle, après
-                la validation de la commande — le proposer ici reviendrait à le
+                la validation de la commande - le proposer ici reviendrait à le
                 demander deux fois, et à laisser croire qu'il est arrêté alors
                 que la passerelle peut le refuser.
                 `ul` et non une rangée de boutons : rien n'est cliquable, donc
@@ -639,15 +639,15 @@ export function CheckoutForm({
             </p>
             {/* Vrais boutons radio, masqués derrière les cartes : on hérite
                 du clavier, de la navigation aux flèches entre options et de
-                l'annonce « 2 sur 4 » aux lecteurs d'écran — tout ce qu'une
+                l'annonce « 2 sur 4 » aux lecteurs d'écran - tout ce qu'une
                 rangée de <div> cliquables obligerait à reconstruire, moins bien.
 
                 L'état « bientôt disponible » est écrit sur la carte et non
                 gardé pour le dernier clic : le client choisit en connaissance
                 de cause au lieu d'être arrêté au bout du parcours. */}
             {/* Deux choix, pas quatre.
-                Orange Money, MTN et la carte mènent tous au même endroit — la
-                passerelle — qui redemandera de toute façon lequel utiliser.
+                Orange Money, MTN et la carte mènent tous au même endroit - la
+                passerelle - qui redemandera de toute façon lequel utiliser.
                 Les distinguer ici faisait choisir deux fois, et donnait quatre
                 options dont trois indisponibles : une liste où l'on ne peut
                 rien prendre décourage avant de servir.
@@ -730,7 +730,7 @@ export function CheckoutForm({
             </div>
           </section>
 
-          {/* Réassurance — trois faits, pas trois promesses.
+          {/* Réassurance - trois faits, pas trois promesses.
               Chacun décrit ce que la boutique fait réellement ; rien n'y est
               annoncé qui ne soit tenu par le tunnel lui-même. */}
           <ul className="grid gap-3 sm:grid-cols-3">
@@ -767,7 +767,7 @@ export function CheckoutForm({
             </div>
 
             {/* Les vignettes, et pas seulement des lignes de texte : au moment
-                de valider, le client doit reconnaître ce qu'il achète — c'est
+                de valider, le client doit reconnaître ce qu'il achète - c'est
                 cette reconnaissance qui lève le dernier doute. */}
             <ul className="max-h-[19rem] space-y-3.5 overflow-y-auto px-5 py-5 sm:px-6">
               {lines.map((l) => (
@@ -801,7 +801,7 @@ export function CheckoutForm({
             {/* Code promo. Replié par défaut et placé juste au-dessus du total :
                 c'est là que le client regarde ce qu'il va payer, donc là qu'il
                 pense à son code. Un champ ouvert en permanence fait l'effet
-                inverse — il envoie chercher ailleurs un code qu'on n'a pas. */}
+                inverse - il envoie chercher ailleurs un code qu'on n'a pas. */}
             <div className="border-t border-border px-5 py-4 sm:px-6">
               {coupon ? (
                 <div className="kk-rise flex items-center justify-between gap-3 rounded-xl border border-trust-line bg-trust-soft px-3.5 py-3">
@@ -823,7 +823,7 @@ export function CheckoutForm({
               ) : champPromoOuvert ? (
                 <>
                   {/* `div` et non `form` : ce bloc vit dans le formulaire de
-                      commande, et un formulaire imbriqué est invalide en HTML —
+                      commande, et un formulaire imbriqué est invalide en HTML -
                       le navigateur le déplacerait, cassant la soumission. */}
                   <div className="flex items-center gap-2">
                     <label htmlFor="code-promo" className="sr-only">
@@ -928,7 +928,7 @@ export function CheckoutForm({
 
               {/* La preuve de sûreté, à l'endroit exact de l'hésitation : sous
                   le bouton, en vert, assez grande pour être lue. Elle valait
-                  une ligne grise de 12 px — autant dire rien. */}
+                  une ligne grise de 12 px - autant dire rien. */}
               <p className="mt-4 flex items-center justify-center gap-2 rounded-xl border border-trust-line bg-trust-soft px-4 py-3 text-sm font-semibold text-trust">
                 <ShieldCheck className="h-5 w-5 shrink-0" aria-hidden /> {t("summary.securePayment")}
               </p>
@@ -946,12 +946,17 @@ export function CheckoutForm({
         </aside>
       </div>
 
-      {/* Barre d'action basse — mobile seulement.
+      {/* Barre d'action basse - mobile seulement.
           Sur téléphone, le résumé et son bouton passent sous les deux sections
           du formulaire : le client remplit ses champs et ne voit plus rien à
           valider. Cette barre garde le montant et l'action à portée de pouce
           tant que le vrai bouton n'est pas à l'écran. */}
       <div
+        // L'attribut ne se pose que barre VISIBLE : quand elle glisse hors
+        // champ (le vrai bouton est à l'écran), les pastilles flottantes
+        // reprennent leur place au ras du bord (règles « barres basses » de
+        // globals.css).
+        data-barre-basse={boutonVisible ? undefined : "commande"}
         className={`fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur-md transition-transform duration-300 lg:hidden ${
           boutonVisible ? "translate-y-full" : "translate-y-0"
         }`}

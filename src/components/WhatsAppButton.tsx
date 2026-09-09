@@ -44,7 +44,10 @@ export async function WhatsAppButton() {
       // Le retrait intègre la zone sûre de l'écran, sans quoi il se coince
       // derrière la barre gestuelle iOS.
       className={[
-        "group fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-5 z-40",
+        // `pastille-whatsapp` : cible des règles « barres basses » de
+        // globals.css — la pastille se masque sous le bandeau cookies et
+        // remonte au-dessus de la barre de total du tunnel (TK-01).
+        "pastille-whatsapp group fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-5 z-40",
         "flex h-14 items-center rounded-full bg-[#25D366] text-white",
         // Anneau blanc translucide : le bouton se pose souvent sur une
         // photographie de peau, dont les tons chauds affaiblissent le contour
@@ -65,7 +68,7 @@ export async function WhatsAppButton() {
       </span>
 
       {/* Libellé qui se déplie au survol et au focus clavier.
-          Une pastille ronde ne dit pas ce qu'elle fait — surtout à côté d'un
+          Une pastille ronde ne dit pas ce qu'elle fait - surtout à côté d'un
           second bouton de discussion. Le libellé le dit, sans occuper la place
           en permanence.
           Masqué sous `sm` : sur téléphone, la largeur manque et le logo

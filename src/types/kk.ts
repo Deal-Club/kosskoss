@@ -73,12 +73,20 @@ export type KKProductView = {
    */
   stock?: number;
   /**
-   * Vrai si le produit se décline en plusieurs contenances. L'ajout rapide
-   * depuis une vignette renvoie alors vers la fiche : le prix affiché sur la
-   * carte est le prix de base, choisir une variante à la place du client
-   * reviendrait à facturer un montant qu'il n'a pas vu.
+   * Vrai si le produit porte AU MOINS UNE variante active. L'ajout rapide
+   * depuis une vignette renvoie alors vers la fiche : la ligne de panier
+   * exige une variante, et choisir à la place du client reviendrait à
+   * facturer un montant qu'il n'a pas vu. C'est un drapeau de MÉCANIQUE
+   * panier — pas « plusieurs contenances », voir `multipleVariants`.
    */
   hasVariants?: boolean;
+  /**
+   * Vrai seulement si le produit se décline en PLUSIEURS contenances actives.
+   * Seul lui autorise l'étiquette « Plusieurs contenances » du panneau de
+   * survol : avec `hasVariants`, elle s'affichait sur les 70 produits du
+   * catalogue à contenance unique — fausse partout (TK, mention retirée).
+   */
+  multipleVariants?: boolean;
   /**
    * Contenance de la variante de référence (« 50 ml »…), copiée telle quelle
    * depuis `ProductVariant.label` — même valeur que la ligne « Format » de la

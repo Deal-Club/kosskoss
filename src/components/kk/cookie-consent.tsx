@@ -289,6 +289,12 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
 
   return (
     <div
+      // Tant que le bandeau est monté, les pastilles flottantes du coin droit
+      // se masquent sur mobile (règles « barres basses » de globals.css) : sur
+      // un petit écran, la carte court sur presque toute la largeur et passait
+      // au-dessus d'elles. Le composant se démonte à la fermeture, l'attribut
+      // part avec lui et les pastilles reviennent.
+      data-barre-basse="cookies"
       className={cn(
         // Coin bas gauche : le coin droit est pris par le bouton WhatsApp, et
         // une carte étroite laisse la page lisible derrière elle.
@@ -316,7 +322,7 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
             LE MONOGRAMME PLUTÔT QUE LE LETTRAGE COMPLET. Le logotype officiel
             est au format 1070 × 306 : ramené à la hauteur admissible ici, il
             ferait 60 px de large et « SELECT » y deviendrait illisible. Le
-            monogramme, lui, est dessiné pour tenir dans un carré — c'est
+            monogramme, lui, est dessiné pour tenir dans un carré - c'est
             précisément son usage.
             `title=""` : le nom de la maison est déjà annoncé par le `aria-label`
             du dialogue, l'annoncer deux fois n'apprend rien à qui écoute. */}

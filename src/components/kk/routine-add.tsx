@@ -115,10 +115,11 @@ export function RoutineAddToCart({
           : t("addAria", { name: routine.name, count: routine.steps.length })
       }
       // `whitespace-nowrap` : dans une carte de routine, le bouton n'a que
-      // ~15 rem de large et « Acheter maintenant » se coupait en deux lignes,
-      // ce qui doublait sa hauteur et désalignait les cinq cartes de la rangée.
-      // La gouttière descend de 5 à 4 pour lui rendre la place que le retour à
-      // la ligne lui prenait.
+      // ~15 rem de large et l'ancien libellé « Acheter maintenant » se coupait
+      // en deux lignes, ce qui doublait sa hauteur et désalignait les cinq
+      // cartes de la rangée. Le libellé est depuis raccourci en « Acheter »
+      // (TK-01), mais la ceinture reste : l'anglais ou un libellé futur ne
+      // doivent pas pouvoir recasser l'alignement.
       className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${base} ${className}`}
     >
       {achatDirect ? (

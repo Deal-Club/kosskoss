@@ -135,6 +135,7 @@ export function toProductView(row: ProductViewRow, locale: Locale, index = 0): K
     href: `/${row.category.group.slug}/${row.category.slug}/${row.slug}`,
     stock: row.stock,
     hasVariants: (row.variants?.length ?? 0) > 0,
+    multipleVariants: (row.variants?.length ?? 0) > 1,
     sizeLabel: row.variants?.[0]?.label?.trim() || undefined,
     bullets: bullets.length > 0 ? bullets : undefined,
   };

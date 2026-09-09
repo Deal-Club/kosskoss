@@ -191,7 +191,7 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
 }
 
 /**
- * Bouton « Achète maintenant » en bas de la vignette, pleine largeur.
+ * Bouton « Acheter » en bas de la vignette, pleine largeur.
  *
  * Même logique d'ajout que `QuickAddButton` (ajout → envol → tiroir), mais
  * sous forme d'un bouton explicite et large, sous le prix. Produit à
@@ -221,7 +221,7 @@ export function BoutonAcheter({ product }: { product: KKProductView }) {
   }
 
   /**
-   * « Achète maintenant » : la ligne entre au panier PUIS on file droit à la
+   * « Acheter » : la ligne entre au panier PUIS on file droit à la
    * page de paiement (/commande), sans ouvrir le tiroir — c'est un achat direct,
    * pas un « ajouter et continuer ». Le panier reste la source de vérité du
    * tunnel, mais le visiteur ne le voit pas s'ouvrir.

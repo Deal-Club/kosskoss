@@ -1391,3 +1391,35 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* -------------------------------------- Pastilles et barres basses (TK-01) --
+
+   Sur mobile, les pastilles flottantes du coin bas-droite (WhatsApp au ras du
+   bord, lanceur Smartsupp empilé au-dessus) partagent le bas d'écran avec des
+   éléments fixes de premier plan. Chacun de ces éléments se déclare par
+   `data-barre-basse="…"` et les pastilles s'écartent d'elles-mêmes :
+
+     — « cookies » : le bandeau de consentement occupe presque toute la
+       largeur (z-70, au-dessus des pastilles) et il est temporaire — les deux
+       pastilles se masquent tant qu'il est monté dans le DOM ;
+     — « commande » : la barre de total du tunnel est permanente et WhatsApp
+       reste utile au moment de payer — les pastilles remontent au lieu de
+       disparaître. Le 5,5 rem couvre la hauteur de la barre ; le 10 rem du
+       lanceur Smartsupp conserve la pile (5,5 + 3,5 de bouton + 1 de
+       gouttière, voir `SmartsuppLauncher`).
+
+   1023 px = juste sous le palier `lg`, celui où la barre de commande
+   disparaît (`lg:hidden`). Toute future barre fixe pose l'attribut et entre
+   dans le rang sans toucher aux pastilles. */
+@media (max-width: 1023px) {
+  body:has([data-barre-basse="cookies"]) .pastille-whatsapp,
+  body:has([data-barre-basse="cookies"]) .pastille-smartsupp {
+    display: none;
+  }
+  body:has([data-barre-basse="commande"]) .pastille-whatsapp {
+    bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+  }
+  body:has([data-barre-basse="commande"]) .pastille-smartsupp {
+    bottom: calc(env(safe-area-inset-bottom) + 10rem);
+  }
+}

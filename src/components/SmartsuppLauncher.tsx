@@ -110,7 +110,9 @@ export function SmartsuppLauncher({
       // 5,75 rem = 1,25 rem de retrait + 3,5 rem de hauteur du bouton WhatsApp
       // + 1 rem de gouttière. Les trois valeurs vont par paire avec celles de
       // `WhatsAppButton` : si l'une bouge, celle-ci suit.
-      className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:scale-100 disabled:opacity-70"
+      // `pastille-smartsupp` : suit les mêmes règles « barres basses » que la
+      // pastille WhatsApp (globals.css) pour garder la pile intacte.
+      className="pastille-smartsupp fixed bottom-[calc(env(safe-area-inset-bottom)+5.75rem)] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:scale-100 disabled:opacity-70"
     >
       {etat === "chargement" ? (
         <span
