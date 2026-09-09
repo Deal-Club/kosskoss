@@ -15,7 +15,7 @@ const MIN_PASSWORD_LENGTH = 10;
  *
  * `allowSuperadmin` n'est vrai que pour un superadmin connecté : pour tous les
  * autres, le rôle n'apparaît pas dans la liste déroulante. Le filtre n'est
- * qu'un confort d'affichage — l'API refuse de toute façon le rôle à qui n'y a
+ * qu'un confort d'affichage - l'API refuse de toute façon le rôle à qui n'y a
  * pas droit.
  */
 export function UserForm({ allowSuperadmin = false }: { allowSuperadmin?: boolean }) {
@@ -145,7 +145,7 @@ interface UserRowActionsProps {
 }
 
 /**
- * Changer l'adresse ou le mot de passe, activer/désactiver et supprimer — pour
+ * Changer l'adresse ou le mot de passe, activer/désactiver et supprimer - pour
  * chaque ligne du tableau.
  */
 export function UserRowActions({ user, isSelf }: UserRowActionsProps) {

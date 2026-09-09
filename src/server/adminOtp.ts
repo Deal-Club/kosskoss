@@ -97,7 +97,7 @@ function isUniqueViolation(error: unknown): boolean {
  * Crée un challenge, envoie le code, invalide le précédent du même compte.
  *
  * La réservation est atomique, et c'est tout l'enjeu : deux requêtes qui
- * arrivent en même temps — un double-clic sur « Continuer » suffit — lisaient
+ * arrivent en même temps - un double-clic sur « Continuer » suffit - lisaient
  * autrefois l'état avant que l'une ait écrit, ne se voyaient donc pas, et
  * expédiaient deux codes. Ici c'est la base qui arbitre :
  *   - `create` échoue en P2002 si une ligne existe déjà (index unique sur
@@ -133,7 +133,7 @@ export async function issueLoginChallenge(user: AdminUserRecord): Promise<Issued
     if (!isUniqueViolation(error)) throw error;
 
     // Une ligne existe déjà. On ne la renouvelle que si le dernier code est
-    // hors délai, périmé ou consommé — sinon on rend le challenge en cours
+    // hors délai, périmé ou consommé - sinon on rend le challenge en cours
     // sans rien renvoyer. Le renvoi volontaire passe par la route dédiée.
     const { count } = await prisma.adminLoginChallenge.updateMany({
       where: {

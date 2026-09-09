@@ -69,7 +69,7 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   }
 
   // Rattachement facultatif à la table Brand. `null` (ou une chaîne vide)
-  // efface le rattachement — c'est le cas d'une saisie libre qui ne
+  // efface le rattachement - c'est le cas d'une saisie libre qui ne
   // correspond à aucune marque existante ; le prochain import la reliera.
   if (has("brandId")) {
     values.brandId = asTrimmedString(body.brandId) || null;
@@ -103,7 +103,7 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   // ZÉRO EST ACCEPTÉ, contrairement aux prix. Un échantillon reçu gratuitement
   // a bien un coût de zéro : c'est une information, pas une absence. Le refuser
   // obligerait à vider le champ, donc à écrire « pas encore renseigné » là où
-  // l'on sait — et ferait s'effondrer la distinction que toute cette colonne
+  // l'on sait - et ferait s'effondrer la distinction que toute cette colonne
   // nullable existe pour tenir.
   //
   // Le contrôle porte donc sur la SAISIE et non sur sa conversion : `toCents`
@@ -122,12 +122,12 @@ export function parseProductInput(raw: unknown, mode: "create" | "update"): Prod
   //
   // Le champ acceptait n'importe quelle chaîne. La boutique, elle, n'affiche
   // que deux valeurs exactes (`bestseller`, `nouveau`) : tout le reste était
-  // enregistré sans erreur puis ignoré silencieusement à l'affichage — un
+  // enregistré sans erreur puis ignoré silencieusement à l'affichage - un
   // « Nouveau » avec sa majuscule ne sortait jamais, et rien ne le signalait.
   //
   // `normaliserBadge` reconnaît les variantes de casse et d'accent, ce qui
   // sert surtout l'import CSV rempli au tableur, et renvoie `null` pour tout
-  // le reste. Une saisie non reconnue vaut donc « pas de badge » — et non une
+  // le reste. Une saisie non reconnue vaut donc « pas de badge » - et non une
   // erreur de formulaire : le formulaire n'offre plus que trois choix, et un
   // import de cent lignes ne doit pas échouer sur une colonne décorative.
   if (has("badge")) {

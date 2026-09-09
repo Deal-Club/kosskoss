@@ -62,7 +62,7 @@ const login = createLimiter(5, 15 * 60 * 1000);
 
 /**
  * Mot de passe oublié : trois demandes par adresse et par heure.
- * Le compteur s'incrémente que l'adresse existe ou non — sinon le simple fait
+ * Le compteur s'incrémente que l'adresse existe ou non - sinon le simple fait
  * d'être bloqué révélerait l'existence du compte.
  */
 const reset = createLimiter(3, 60 * 60 * 1000);
@@ -72,7 +72,7 @@ const signup = createLimiter(5, 60 * 60 * 1000);
 
 /**
  * Routine du diagnostic par e-mail : cinq envois par adresse et par heure.
- * Cette route n'exige pas de compte — n'importe qui peut la cibler pour
+ * Cette route n'exige pas de compte - n'importe qui peut la cibler pour
  * mailbomber une adresse tierce sous la réputation d'envoi de la boutique,
  * partagée avec les confirmations de commande et les factures. Même borne
  * que l'inscription, pour la même raison.

@@ -1,4 +1,4 @@
-# Lot 1 — Facturation, téléphone camerounais, facettes catalogue
+# Lot 1 - Facturation, téléphone camerounais, facettes catalogue
 
 *Conception validée le 20 août 2026. Couvre les critères d'acceptation 01, 02, 03 et 04
 de l'annexe 3.*
@@ -11,7 +11,7 @@ conformes et les quatre autres tiennent en trois chantiers.
 
 ## Ce que l'audit a réellement trouvé
 
-Trois constats ont été corrigés en cours de conception, tous dans le même sens — le
+Trois constats ont été corrigés en cours de conception, tous dans le même sens - le
 manque était surestimé :
 
 - La case **« Je veux suivre ma commande »** et sa bulle d'aide **existent** et
@@ -32,7 +32,7 @@ Reste donc : la facture, le format du téléphone, les deux facettes.
 
 **Deux e-mails distincts.** L'accusé de réception part à la commande, sans facture. La
 facture part à l'encaissement, dans un e-mail « paiement reçu ». Aucune facture n'est
-jamais émise pour une commande impayée — ce qui serait le cas si on la joignait à
+jamais émise pour une commande impayée - ce qui serait le cas si on la joignait à
 l'accusé de réception, puisque le client peut abandonner sur la page de paiement.
 
 **Une entité `Invoice` avec sa propre séquence.** Si la facture n'est émise qu'au
@@ -48,8 +48,8 @@ l'initiateur :
 
 | Appelant | Cas couvert |
 |---|---|
-| `kk/paiement.ts:195` | webhook GeniusPay — paiement en ligne |
-| `api/admin/orders/[id]/route.ts:70` | back-office — **paiement à la livraison** |
+| `kk/paiement.ts:195` | webhook GeniusPay - paiement en ligne |
+| `api/admin/orders/[id]/route.ts:70` | back-office - **paiement à la livraison** |
 | `api/payments/webhook/[provider]/route.ts:104` | ancien webhook, conservé |
 
 Le paiement à la livraison ne déclenche jamais de webhook : sans ce point d'accroche
@@ -92,7 +92,7 @@ commande archive déjà les libellés produits, le prix unitaire et le moyen de 
 que le client les a validés (voir le commentaire du modèle `Order`). Le PDF est donc
 reconstructible. La limite assumée : si un administrateur corrige l'adresse de livraison
 après coup, un PDF réémis différera de celui qui a été envoyé. Si le comptable l'exige, on
-ajoutera un instantané JSON — c'est une migration additive, sans reprise de données.
+ajoutera un instantané JSON - c'est une migration additive, sans reprise de données.
 
 ### Numérotation
 
@@ -127,7 +127,7 @@ Envoi **best-effort**, comme les e-mails existants : une panne SMTP ne doit pas 
 échouer un webhook, ce qui provoquerait une relance chez le prestataire et une facture
 émise deux fois. La facture est en base, donc réémettable depuis le back-office.
 
-L'accusé de réception actuel garde son texte — sauf la phrase « Le paiement Mobile Money
+L'accusé de réception actuel garde son texte - sauf la phrase « Le paiement Mobile Money
 et la livraison sont ensuite coordonnés avec vous via WhatsApp », devenue fausse depuis
 que le paiement en ligne fonctionne.
 
@@ -138,7 +138,7 @@ que le paiement en ligne fonctionne.
 La validation actuelle exige « au moins huit chiffres » (`checkout-form.tsx:79-82`). Le
 choix était assumé et commenté ; le critère 02 demande le format camerounais.
 
-**Normalisation** dans un module partagé et testable — `src/lib/kk/telephone.ts` — appelé
+**Normalisation** dans un module partagé et testable - `src/lib/kk/telephone.ts` - appelé
 à deux endroits : le formulaire (`checkout-form.tsx`, pour le retour immédiat au visiteur)
 et `createKossOrder` (`server/kk/checkout.ts`, avant écriture). La validation client seule
 ne protège de rien : la route `/api/kk/checkout` accepte n'importe quel corps JSON.
@@ -152,7 +152,7 @@ stocké soit toujours en `+237XXXXXXXXX`, quelle que soit la saisie.
 4. Stockage en `+237XXXXXXXXX`.
 
 Le fixe est accepté : le numéro sert le contact de livraison, et rien n'oblige le client à
-donner le téléphone qui portera le paiement — celui-ci est saisi chez le prestataire, pas
+donner le téléphone qui portera le paiement - celui-ci est saisi chez le prestataire, pas
 chez nous.
 
 Message d'erreur nommant le format attendu, pas un « numéro invalide » qui laisse le
@@ -187,7 +187,7 @@ Les libellés FR et EN règlent d'emblée le critère 10 pour ces facettes, au l
 
 ### Conséquences
 
-- Un écran d'admin pour tenir le vocabulaire — même patron que les autres écrans de
+- Un écran d'admin pour tenir le vocabulaire - même patron que les autres écrans de
   taxonomie du back-office.
 - Deux groupes de cases dans `CategoryFilters.tsx`, à côté de marque et prix.
 - Le filtrage se fait **côté client**, là où marque, prix, note et disponibilité se font
@@ -214,11 +214,11 @@ Le projet compte 370 tests au vert ; ils doivent le rester.
 
 ## Hors périmètre
 
-- **Avoirs** — prévus au CDC (§ D23), traités au lot 3. Le modèle `Invoice` leur laisse la
+- **Avoirs** - prévus au CDC (§ D23), traités au lot 3. Le modèle `Invoice` leur laisse la
   place.
-- **Réémission depuis le back-office** — la facture est en base et reconstructible ;
+- **Réémission depuis le back-office** - la facture est en base et reconstructible ;
   l'écran viendra avec le lot 3.
-- **Instantané de commande sur la facture** — voir la limite assumée plus haut.
+- **Instantané de commande sur la facture** - voir la limite assumée plus haut.
 
 ## Point ouvert, à trancher hors de ce lot
 

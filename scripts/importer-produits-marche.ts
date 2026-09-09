@@ -5,7 +5,7 @@
  * (palettes), monsieur-buche.fr (bûches compressées),
  * combustiblesheil.com (granulés) et ecoflammebois.com (poêles). Seules les
  * données
- * factuelles en sont reprises — dénomination du produit, longueur de bûche,
+ * factuelles en sont reprises - dénomination du produit, longueur de bûche,
  * conditionnement, prix. Les textes sont rédigés ici : recopier la prose d'un
  * concurrent exposerait au grief de contrefaçon et ferait surtout du contenu
  * dupliqué, que les moteurs de recherche déclassent.
@@ -70,7 +70,7 @@ function reference(slug: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// Bois en vrac — relevé sur leboisquivouschauffe.pro
+// Bois en vrac - relevé sur leboisquivouschauffe.pro
 //
 // Vendu au stère, essence mixte de feuillus. Le prix baisse avec la longueur :
 // plus la bûche est courte, plus il y a de coupes, donc de main-d'œuvre.
@@ -86,8 +86,8 @@ function vrac(options: {
   return {
     slug: `mkt-vrac-melange-${cm}cm-stere`,
     brand: "MLC Bois",
-    name: `Bûches mélange feuillus ${cm} cm — Vrac, au stère`,
-    nameEn: `Mixed hardwood logs ${cm} cm — loose, per stacked m³`,
+    name: `Bûches mélange feuillus ${cm} cm - Vrac, au stère`,
+    nameEn: `Mixed hardwood logs ${cm} cm - loose, per stacked m³`,
     short: `Chêne, charme, hêtre et frêne mélangés, fendus à ${cm} cm. Livré en vrac et déversé à l'endroit que vous indiquez. Prix au stère, dégressif à partir de trois stères.`,
     shortEn: `Oak, hornbeam, beech and ash mixed, split to ${cm} cm. Delivered loose and tipped where you ask. Priced per stacked cubic metre, cheaper from three upwards.`,
     bullets: [
@@ -142,7 +142,7 @@ const BOIS_EN_VRAC: RayonImporte = {
 };
 
 // ---------------------------------------------------------------------------
-// Bois sur palette — relevé sur holzkerssenbrock.de
+// Bois sur palette - relevé sur holzkerssenbrock.de
 //
 // Le catalogue allemand raisonne en Raummeter, qui est le stère français. Les
 // dénominations sont traduites, les volumes et les prix repris tels quels.
@@ -161,14 +161,14 @@ function palette(options: {
   const { cm, steres, prix, extraSec = false, pur = false } = options;
   const volume = steres.toLocaleString("fr-FR");
   const suffixe = extraSec ? "-extra-sec" : pur ? "-feuillu" : "";
-  const qualifiant = extraSec ? " — Extra sec" : pur ? " — 100 % feuillu" : "";
-  const qualifiantEn = extraSec ? " — extra dry" : pur ? " — 100% hardwood" : "";
+  const qualifiant = extraSec ? " - Extra sec" : pur ? " - 100 % feuillu" : "";
+  const qualifiantEn = extraSec ? " - extra dry" : pur ? " - 100% hardwood" : "";
 
   return {
     slug: `mkt-palette-${cm}cm-${String(steres).replace(".", "-")}st${suffixe}`,
     brand: "MLC Bois",
-    name: `Bûches feuillu ${cm} cm — Palette ${volume} stère${steres >= 2 ? "s" : ""}${qualifiant}`,
-    nameEn: `Hardwood logs ${cm} cm — pallet ${steres} stacked m³${qualifiantEn}`,
+    name: `Bûches feuillu ${cm} cm - Palette ${volume} stère${steres >= 2 ? "s" : ""}${qualifiant}`,
+    nameEn: `Hardwood logs ${cm} cm - pallet ${steres} stacked m³${qualifiantEn}`,
     short: `Bûches de feuillu fendues à ${cm} cm, rangées et cerclées sur palette de ${volume} stère${steres >= 2 ? "s" : ""}. ${
       extraSec
         ? "Séchage poussé sous 15 % d'humidité sur brut : allumage immédiat, rendement maximal."
@@ -225,7 +225,7 @@ const BOIS_SUR_PALETTE: RayonImporte = {
 };
 
 // ---------------------------------------------------------------------------
-// Bûches compressées — relevé sur monsieur-buche.fr
+// Bûches compressées - relevé sur monsieur-buche.fr
 // ---------------------------------------------------------------------------
 
 const BOIS_COMPRESSE: RayonImporte = {
@@ -235,8 +235,8 @@ const BOIS_COMPRESSE: RayonImporte = {
     {
       slug: "mkt-compresse-hetre-pack-5",
       brand: "Ma Bûch'Hêtre",
-      name: "Ma Bûch'Hêtre — Pack de 5 bûches compressées",
-      nameEn: "Ma Bûch'Hêtre — pack of 5 compressed logs",
+      name: "Ma Bûch'Hêtre - Pack de 5 bûches compressées",
+      nameEn: "Ma Bûch'Hêtre - pack of 5 compressed logs",
       short:
         "Sciure de hêtre compressée sans liant, en pack de cinq bûches. Le format d'appoint : de quoi tenir une soirée, ou tester avant d'engager une palette.",
       shortEn:
@@ -261,8 +261,8 @@ const BOIS_COMPRESSE: RayonImporte = {
     {
       slug: "mkt-compresse-hetre-palette-104",
       brand: "Ma Bûch'Hêtre",
-      name: "Ma Bûch'Hêtre — Palette de 104 packs (520 bûches)",
-      nameEn: "Ma Bûch'Hêtre — pallet of 104 packs (520 logs)",
+      name: "Ma Bûch'Hêtre - Palette de 104 packs (520 bûches)",
+      nameEn: "Ma Bûch'Hêtre - pallet of 104 packs (520 logs)",
       short:
         "La palette complète : 104 packs, soit 520 bûches de hêtre compressé. De quoi passer l'hiver sur un quart de la place qu'exigerait le bois bûche.",
       shortEn:
@@ -289,8 +289,8 @@ const BOIS_COMPRESSE: RayonImporte = {
     {
       slug: "mkt-compresse-crepito-palette-104",
       brand: "CREPITO",
-      name: "CREPITO — Palette de 104 packs (520 bûches)",
-      nameEn: "CREPITO — pallet of 104 packs (520 logs)",
+      name: "CREPITO - Palette de 104 packs (520 bûches)",
+      nameEn: "CREPITO - pallet of 104 packs (520 logs)",
       short:
         "Bûches compressées CREPITO, 104 packs sur palette. Braise longue et rechargement propre : la formule des nuits de chauffe, en complément du bois bûche.",
       shortEn:
@@ -316,11 +316,11 @@ const BOIS_COMPRESSE: RayonImporte = {
 };
 
 // ---------------------------------------------------------------------------
-// Poêles à bois — relevé sur ecoflammebois.com
+// Poêles à bois - relevé sur ecoflammebois.com
 //
 // Contrairement au combustible, l'appareil est un produit de marque : le nom du
 // fabricant fait foi et n'est pas remplacé par le nôtre. La puissance commande
-// le volume chauffable — on compte environ 1 kW pour 10 m² correctement isolés,
+// le volume chauffable - on compte environ 1 kW pour 10 m² correctement isolés,
 // et c'est ce repère qui est repris dans chaque fiche plutôt qu'une promesse de
 // surface, qui dépendrait de l'isolation.
 // ---------------------------------------------------------------------------
@@ -348,8 +348,8 @@ function poele(options: {
     brand: marque,
     name: `${marque} ${modele}`,
     nameEn: `${marque} ${modele}`,
-    short: `Poêle à bûches de ${kw} kW. Cette puissance couvre environ ${surface} m² dans un logement correctement isolé — davantage dans une construction récente, moins dans une maison ancienne.`,
-    shortEn: `${kw} kW log stove. This output covers roughly ${surface} m² in a properly insulated home — more in a recent build, less in an older house.`,
+    short: `Poêle à bûches de ${kw} kW. Cette puissance couvre environ ${surface} m² dans un logement correctement isolé - davantage dans une construction récente, moins dans une maison ancienne.`,
+    shortEn: `${kw} kW log stove. This output covers roughly ${surface} m² in a properly insulated home - more in a recent build, less in an older house.`,
     bullets: [
       `Puissance nominale ${kw} kW`,
       `Environ ${surface} m² chauffés en logement correctement isolé`,
@@ -391,7 +391,7 @@ const POELES: RayonImporte = {
 };
 
 // ---------------------------------------------------------------------------
-// Granulés de bois — relevé sur combustiblesheil.com
+// Granulés de bois - relevé sur combustiblesheil.com
 //
 // Vendus exclusivement à la palette, dont le nombre de sacs varie d'une marque
 // à l'autre : c'est le tonnage, et non le nombre de sacs, qui permet de
@@ -416,10 +416,10 @@ function granules(options: {
   return {
     slug: `mkt-granules-${slugMarque}-palette`,
     brand: marque,
-    name: `Granulés ${marque} — Palette de ${sacs} sacs de 15 kg`,
-    nameEn: `${marque} wood pellets — pallet of ${sacs} × 15 kg bags`,
-    short: `${atout} Palette de ${sacs} sacs de 15 kg, soit ${tonnes} tonne${kg >= 2000 ? "s" : ""} — environ ${prixTonne} € la tonne.`,
-    shortEn: `${atoutEn} Pallet of ${sacs} × 15 kg bags, that is ${(kg / 1000).toFixed(2)} tonnes — around €${prixTonne} per tonne.`,
+    name: `Granulés ${marque} - Palette de ${sacs} sacs de 15 kg`,
+    nameEn: `${marque} wood pellets - pallet of ${sacs} × 15 kg bags`,
+    short: `${atout} Palette de ${sacs} sacs de 15 kg, soit ${tonnes} tonne${kg >= 2000 ? "s" : ""} - environ ${prixTonne} € la tonne.`,
+    shortEn: `${atoutEn} Pallet of ${sacs} × 15 kg bags, that is ${(kg / 1000).toFixed(2)} tonnes - around €${prixTonne} per tonne.`,
     bullets: [
       certification,
       `${sacs} sacs de 15 kg, soit ${tonnes} tonne${kg >= 2000 ? "s" : ""}`,
@@ -450,7 +450,7 @@ const GRANULES: RayonImporte = {
       prix: 305,
       atout: "Sciure de résineux issue d'une scierie en circuit court.",
       atoutEn: "Softwood sawdust from a short-supply-chain sawmill.",
-      certification: "Certifiés DINplus et ENplus A1 — cendres sous 0,5 %, humidité sous 8 %",
+      certification: "Certifiés DINplus et ENplus A1 - cendres sous 0,5 %, humidité sous 8 %",
     }),
     granules({
       marque: "Woodstock",
@@ -459,7 +459,7 @@ const GRANULES: RayonImporte = {
       prix: 305,
       atout: "Sciure française non traitée, comprimée sans colle ni liant.",
       atoutEn: "Untreated French sawdust, pressed without glue or binder.",
-      certification: "Certifiés NF et DINplus — taux de cendres sous 0,5 %",
+      certification: "Certifiés NF et DINplus - taux de cendres sous 0,5 %",
     }),
     granules({
       marque: "Valboval",
@@ -468,7 +468,7 @@ const GRANULES: RayonImporte = {
       prix: 360,
       atout: "Granulé haut de gamme 100 % résineux, pour les appareils les plus exigeants.",
       atoutEn: "Premium 100% softwood pellet, for the most demanding appliances.",
-      certification: "Certifiés DINplus — peu de cendres et de poussières",
+      certification: "Certifiés DINplus - peu de cendres et de poussières",
     }),
     granules({
       marque: "Total Premium",
@@ -486,7 +486,7 @@ const GRANULES: RayonImporte = {
       prix: 400,
       atout: "Sciures locales comprimées sans additif chimique.",
       atoutEn: "Local sawdust pressed with no chemical additive.",
-      certification: "100 % naturel — faible taux de cendres",
+      certification: "100 % naturel - faible taux de cendres",
     }),
     granules({
       marque: "Total Energies",
@@ -504,7 +504,7 @@ const GRANULES: RayonImporte = {
       prix: 405,
       atout: "Le taux de cendres le plus bas du rayon, sous 0,3 %.",
       atoutEn: "The lowest ash content in the range, below 0.3%.",
-      certification: "Certifiés DINplus — taux de cendres sous 0,3 %",
+      certification: "Certifiés DINplus - taux de cendres sous 0,3 %",
     }),
     granules({
       marque: "Starforest",
@@ -513,7 +513,7 @@ const GRANULES: RayonImporte = {
       prix: 429,
       atout: "Fabriqués en Champagne-Ardenne, 100 % résineux.",
       atoutEn: "Made in Champagne-Ardenne, 100% softwood.",
-      certification: "Certifiés DINplus — peu de cendres et de poussières",
+      certification: "Certifiés DINplus - peu de cendres et de poussières",
     }),
   ],
 };
@@ -530,7 +530,7 @@ async function main() {
       throw new Error(`Catégorie « ${rayon.categorie} » introuvable : lancer d'abord la restructuration.`);
     }
 
-    console.log(`\n=== ${rayon.categorie} — ${rayon.produits.length} références ===`);
+    console.log(`\n=== ${rayon.categorie} - ${rayon.produits.length} références ===`);
 
     for (const produit of rayon.produits) {
       const donnees = {
@@ -566,7 +566,7 @@ async function main() {
 
       if (existant) majs += 1;
       else crees += 1;
-      console.log(`  ${existant ? "maj " : "créé"}  ${produit.name}  —  ${produit.prix} €`);
+      console.log(`  ${existant ? "maj " : "créé"}  ${produit.name}  -  ${produit.prix} €`);
     }
   }
 

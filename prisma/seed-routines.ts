@@ -1,5 +1,5 @@
 /**
- * Routines prêtes à l'emploi — les cinq de la maquette client.
+ * Routines prêtes à l'emploi - les cinq de la maquette client.
  *
  * Elles reprennent à la lettre le bloc 5 de la maquette « Toutes pages »
  * (docs/design-references/kks/) : « ACHAT RAPIDE : NOS ROUTINES PRÊTES À
@@ -9,7 +9,7 @@
  * LA COMPOSITION N'EST PAS ÉCRITE EN DUR. Chaque geste déclare la catégorie où
  * puiser et les étiquettes qui comptent ; le produit est choisi dans la base au
  * moment du semis, par score de correspondance. Une routine écrite avec des
- * slugs figés serait cassée au premier produit retiré du catalogue — et le
+ * slugs figés serait cassée au premier produit retiré du catalogue - et le
  * catalogue est appelé à bouger.
  *
  * Aucun prix n'est stocké : il est la somme des gestes, calculée au rendu.
@@ -43,7 +43,7 @@ type Geste = {
    * ces cas sans figer le reste.
    */
   prefer?: string[];
-  /** Le rôle du geste DANS CETTE routine — vrai quel que soit le produit élu. */
+  /** Le rôle du geste DANS CETTE routine - vrai quel que soit le produit élu. */
   why: string;
   whyEn: string;
 };
@@ -65,7 +65,7 @@ type RoutineDef = {
  * Les cinq routines, dans l'ordre de la maquette.
  *
  * « Protéger » n'apparaît que là où la protection solaire change réellement le
- * résultat — sur les taches et l'anti-âge, où le soleil défait le travail des
+ * résultat - sur les taches et l'anti-âge, où le soleil défait le travail des
  * actifs. Ailleurs, un troisième geste utile vaut mieux qu'un geste ajouté pour
  * faire nombre : la charte demande une sélection courte, pas un panier gonflé.
  */
@@ -77,9 +77,9 @@ const ROUTINES: RoutineDef[] = [
     claim: "Assainir sans décaper",
     claimEn: "Clear skin without stripping it",
     description:
-      "Trois gestes pour les peaux sujettes aux imperfections. On nettoie sans agresser — une peau décapée produit davantage de sébum —, on traite le bouton et l'inflammation, puis on hydrate d'une texture légère qui ne rebouche rien.",
+      "Trois gestes pour les peaux sujettes aux imperfections. On nettoie sans agresser - une peau décapée produit davantage de sébum -, on traite le bouton et l'inflammation, puis on hydrate d'une texture légère qui ne rebouche rien.",
     descriptionEn:
-      "Three steps for blemish-prone skin. Cleanse without stripping — stripped skin makes more oil — treat the blemish and the inflammation, then hydrate with a light texture that clogs nothing.",
+      "Three steps for blemish-prone skin. Cleanse without stripping - stripped skin makes more oil - treat the blemish and the inflammation, then hydrate with a light texture that clogs nothing.",
     besoinTag: "imperfections",
     tint: "acne",
     gestes: [
@@ -166,8 +166,8 @@ const ROUTINES: RoutineDef[] = [
         labelEn: "Cleanse",
         category: "nettoyants",
         tags: ["eclat", "nettoyage", "apaisant"],
-        why: "Désencombre la surface : c'est elle qui renvoie — ou non — la lumière.",
-        whyEn: "Clears the surface: it is what does — or does not — catch the light.",
+        why: "Désencombre la surface : c'est elle qui renvoie - ou non - la lumière.",
+        whyEn: "Clears the surface: it is what does - or does not - catch the light.",
       },
       {
         label: "Traiter",
@@ -194,9 +194,9 @@ const ROUTINES: RoutineDef[] = [
     claim: "Soutenir la peau dans la durée",
     claimEn: "Support the skin over time",
     description:
-      "Une routine de fond, qui se juge sur des mois et non sur des jours. Nettoyage doux pour préserver la barrière, actif de fermeté le soir, protection solaire le matin — la première mesure anti-âge, et de loin.",
+      "Une routine de fond, qui se juge sur des mois et non sur des jours. Nettoyage doux pour préserver la barrière, actif de fermeté le soir, protection solaire le matin - la première mesure anti-âge, et de loin.",
     descriptionEn:
-      "A long-game routine, judged over months rather than days. Gentle cleansing to preserve the barrier, a firming active at night, sunscreen in the morning — the first anti-ageing measure, by far.",
+      "A long-game routine, judged over months rather than days. Gentle cleansing to preserve the barrier, a firming active at night, sunscreen in the morning - the first anti-ageing measure, by far.",
     besoinTag: "anti_age",
     tint: "age",
     gestes: [
@@ -213,8 +213,8 @@ const ROUTINES: RoutineDef[] = [
         labelEn: "Treat",
         category: "traitements",
         tags: ["anti_age", "eclat", "traitement"],
-        why: "L'actif de fond. Il demande de la régularité — les résultats se comptent en mois.",
-        whyEn: "The long-game active. It asks for consistency — results are counted in months.",
+        why: "L'actif de fond. Il demande de la régularité - les résultats se comptent en mois.",
+        whyEn: "The long-game active. It asks for consistency - results are counted in months.",
       },
       {
         label: "Protéger",
@@ -246,7 +246,7 @@ const ROUTINES: RoutineDef[] = [
         tags: ["peau_seche", "apaisant", "hydratation", "nettoyage"],
         // Le choix automatique retenait un lait démaquillant à 24 900 F parce
         // qu'il portait une étiquette de plus. Ce nettoyant-ci est doux,
-        // hydratant, et coûte 10 400 F de moins — sur une routine d'entrée,
+        // hydratant, et coûte 10 400 F de moins - sur une routine d'entrée,
         // l'écart change qui peut se l'offrir.
         prefer: ["beauty-of-joseon-nettoyant-prune-verte"],
         why: "Sans tensioactif décapant : le tiraillement après nettoyage vient de là.",
@@ -260,7 +260,7 @@ const ROUTINES: RoutineDef[] = [
         // Un tonique « correcteur de taches pigmentaires » gagnait au score : il
         // est bien hydratant, mais son nom raconte une autre routine que
         // celle-ci. Le Heartleaf est apaisant et pensé pour les peaux
-        // sensibles — ce que cherche une peau qui tire.
+        // sensibles - ce que cherche une peau qui tire.
         prefer: ["anua-lotion-tonique-heartleaf-77"],
         why: "Première couche d'eau, sur peau encore humide : c'est ce qui permet à la suivante de tenir.",
         whyEn: "The first layer of water, on still-damp skin: it is what lets the next one hold.",
@@ -334,19 +334,19 @@ async function main() {
       const candidats = disponibles.map((p) => ({ p, s: score(parseTags(p.tags), geste.tags) }));
 
       if (candidats.length === 0) {
-        console.warn(`  ⚠ ${def.slug} — aucun produit en « ${geste.category} » pour le geste « ${geste.label} »`);
+        console.warn(`  ⚠ ${def.slug} - aucun produit en « ${geste.category} » pour le geste « ${geste.label} »`);
         continue;
       }
 
-      // LA PERTINENCE FILTRE, LE PRIX CHOISIT — et non l'inverse.
+      // LA PERTINENCE FILTRE, LE PRIX CHOISIT - et non l'inverse.
       //
       // Trier par score puis départager par le prix laissait gagner un produit
       // quatre fois plus cher pour une étiquette de plus : la routine « Éclat »
       // sortait à 112 500 FCFA parce qu'une crème à 78 500 portait un tag
       // supplémentaire. Sous un libellé « à partir de », c'est un mensonge.
       //
-      // On retient donc la bande haute de pertinence — le meilleur score et
-      // celui juste en dessous — et on prend le moins cher de cette bande. La
+      // On retient donc la bande haute de pertinence - le meilleur score et
+      // celui juste en dessous - et on prend le moins cher de cette bande. La
       // routine reste juste sur le fond et atteignable sur le prix, ce que la
       // charte demande explicitement : « premium = luxe ACCESSIBLE ».
       const meilleur = Math.max(...candidats.map((c) => c.s));
@@ -408,7 +408,7 @@ async function main() {
       })),
     });
 
-    console.log(`  ✓ ${def.name} — ${choisis.length} gestes`);
+    console.log(`  ✓ ${def.name} - ${choisis.length} gestes`);
     posee += 1;
   }
 

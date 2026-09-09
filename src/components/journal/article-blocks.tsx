@@ -16,7 +16,7 @@ import type { KKProductView } from "@/types/kk";
  * n'est jamais du HTML. Le texte porte les marques restreintes de
  * `src/lib/richText.ts` et passe par `<RichText />`, qui produit des éléments
  * React. Un rédacteur qui colle une balise dans le back-office la verra
- * s'afficher telle quelle sur la page — l'injection est impossible par
+ * s'afficher telle quelle sur la page - l'injection est impossible par
  * construction, pas par filtrage.
  *
  * Un `kind` inconnu est ignoré silencieusement. Le jour où un type de bloc est

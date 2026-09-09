@@ -1,9 +1,9 @@
 /**
- * Adaptateur Square — encaissement par lien de paiement hébergé (Checkout API).
+ * Adaptateur Square - encaissement par lien de paiement hébergé (Checkout API).
  *
  * Même principe que Stripe : la page de paiement est hébergée par Square, aucune
  * donnée de carte ne transite par ce serveur, et la vérité du paiement vient du
- * webhook signé — jamais de la redirection de retour, que le client peut ne
+ * webhook signé - jamais de la redirection de retour, que le client peut ne
  * jamais suivre.
  *
  * Rattachement commande ↔ paiement : le lien de paiement est créé avec un objet
@@ -79,7 +79,7 @@ export const squareGateway: PaymentGateway = {
     id: "square",
     label: "Square",
     availability:
-      "Disponible en France (EUR) — CB, Apple Pay, Google Pay via une page de paiement hébergée par Square.",
+      "Disponible en France (EUR) - CB, Apple Pay, Google Pay via une page de paiement hébergée par Square.",
     implemented: true,
     keys: [
       {
@@ -238,7 +238,7 @@ export const squareGateway: PaymentGateway = {
     for (const location of locations) {
       details.push({
         label: location.name ?? "Établissement",
-        value: `${location.id ?? "?"} — ${location.country ?? "?"} / ${location.currency ?? "?"}`,
+        value: `${location.id ?? "?"} - ${location.country ?? "?"} / ${location.currency ?? "?"}`,
       });
     }
 
@@ -248,7 +248,7 @@ export const squareGateway: PaymentGateway = {
 
     const active = locationId ? locations.find((entry) => entry.id === locationId) : undefined;
     if (!locationId) {
-      issues.push("Identifiant d'établissement non renseigné — recopiez-en un dans la liste ci-dessous.");
+      issues.push("Identifiant d'établissement non renseigné - recopiez-en un dans la liste ci-dessous.");
     } else if (!active) {
       issues.push(
         `L'établissement « ${locationId} » n'appartient pas à ce compte Square (ou n'existe pas dans l'environnement « ${mode} »).`,

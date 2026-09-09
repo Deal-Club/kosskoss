@@ -1,7 +1,7 @@
 # Brancher la boutique sur un compte de paiement
 
 Cinq prestataires sont câblés : **Stripe**, **Square**, **Mollie**, **PayPal** et
-**Nexi**. Un seul encaisse à la fois — c'est le choix retenu pour la boutique, et
+**Nexi**. Un seul encaisse à la fois - c'est le choix retenu pour la boutique, et
 il se change en deux clics : les clés de tous restent enregistrées, le
 basculement d'un client à l'autre est immédiat.
 
@@ -22,12 +22,12 @@ aucune donnée de carte ne transite par le serveur de la boutique.
 3. Cliquer sur **« Enregistrer les clés et tester la connexion »**. Le test
    interroge le prestataire sans rien encaisser et affiche :
    - si les clés sont acceptées, et pour quel compte ;
-   - **l'URL de webhook exacte à déclarer** — la recopier de là plutôt que de la
+   - **l'URL de webhook exacte à déclarer** - la recopier de là plutôt que de la
      retaper ;
    - ce qui manque ou ne colle pas (devise, compte non vérifié, webhook absent…).
 4. **Déclarer le webhook** chez le prestataire si le test le demande.
 5. **Cocher les moyens de paiement** de la boutique qui passent par lui
-   (typiquement « Carte bancaire »). Ceux qui restent décochés — le virement —
+   (typiquement « Carte bancaire »). Ceux qui restent décochés - le virement -
    continuent d'être réglés hors ligne.
 6. **Enregistrer le paiement en ligne.**
 
@@ -40,12 +40,12 @@ aucune donnée de carte ne transite par le serveur de la boutique.
 3. Le client paie, puis revient sur la page de confirmation.
 4. Le prestataire notifie le webhook ; la commande passe en **« Payée »**.
 
-Le retour du client ne prouve rien — il peut fermer l'onglet. **Seule la
+Le retour du client ne prouve rien - il peut fermer l'onglet. **Seule la
 notification fait foi.** Corollaire : sans webhook correctement déclaré, le
 client paie et la commande reste « en attente ».
 
 Si le prestataire est injoignable au moment de la commande, la commande reste
-valable et simplement réglable autrement — elle n'est jamais perdue.
+valable et simplement réglable autrement - elle n'est jamais perdue.
 
 ---
 
@@ -65,7 +65,7 @@ Le plus simple, et le mieux couvert en France.
 Le test de connexion va plus loin ici : il lit la liste des webhooks déclarés
 chez Stripe et signale si l'URL manque, si l'endpoint est désactivé ou s'il ne
 suit pas le bon événement. (Avec une clé restreinte, cette lecture peut être
-refusée — c'est signalé, non bloquant.)
+refusée - c'est signalé, non bloquant.)
 
 Essais : utiliser `sk_test_…` et la carte `4242 4242 4242 4242`.
 
@@ -88,7 +88,7 @@ Essais : utiliser `sk_test_…` et la carte `4242 4242 4242 4242`.
 > une barre oblique en trop et toutes les notifications sont rejetées.
 
 Le jeton doit venir du compte Square **qui reçoit l'argent**. Si le compte
-appartient au client, c'est à lui de le générer depuis sa propre console — un
+appartient au client, c'est à lui de le générer depuis sa propre console - un
 identifiant de connexion Square ne suffit pas et ne devrait pas être partagé.
 
 Essais : onglet Sandbox de l'application, champ Environnement à `sandbox`, carte
@@ -108,12 +108,12 @@ Le plus léger à configurer : **une seule clé, et rien à déclarer côté Mol
 paiement.
 
 Le test de connexion affiche le profil, son statut de vérification, et **la liste
-des moyens de paiement réellement activés** chez Mollie — c'est là qu'on voit si
+des moyens de paiement réellement activés** chez Mollie - c'est là qu'on voit si
 la carte bancaire est ouverte ou encore en cours d'activation.
 
 > Les notifications Mollie ne sont pas signées : elles ne contiennent qu'un
 > identifiant de paiement, et la boutique relit le paiement depuis l'API avec sa
-> propre clé. C'est le modèle documenté par Mollie — une fausse notification ne
+> propre clé. C'est le modèle documenté par Mollie - une fausse notification ne
 > peut rien affirmer.
 
 > Mollie refuse une URL de notification non publique. En local, passer par un
@@ -184,7 +184,7 @@ Deux points à revalider avec un contrat de test :
 
 - **Les remboursements ne sont pas synchronisés.** Un remboursement fait depuis
   le tableau de bord d'un prestataire ne repasse pas la commande en
-  « remboursée » — il faut le faire à la main dans le back-office. C'est
+  « remboursée » - il faut le faire à la main dans le back-office. C'est
   volontaire : un remboursement partiel ne doit pas marquer toute la commande
   comme remboursée.
 - **Un seul prestataire actif à la fois.** Les clés des autres restent
@@ -199,8 +199,8 @@ Deux points à revalider avec un contrat de test :
 ## Ajouter un sixième prestataire
 
 Le contrat est dans [`src/server/gateways/types.ts`](../src/server/gateways/types.ts).
-Écrire un fichier qui satisfait `PaymentGateway` — `isConfigured`,
-`createCheckoutSession`, `handleWebhook`, et de préférence `verifyConnection` —
+Écrire un fichier qui satisfait `PaymentGateway` - `isConfigured`,
+`createCheckoutSession`, `handleWebhook`, et de préférence `verifyConnection` -
 puis l'inscrire dans le registre
 [`src/server/gateways/index.ts`](../src/server/gateways/index.ts) et dans
 `GATEWAY_IDS`. Rien d'autre ne change : ni le tunnel de commande, ni la route de

@@ -27,7 +27,7 @@ export default async function DiagnosticPage({ params }: { params: Params }) {
 
   // Profil du client connecté, s'il en a déjà un : `lireProfil` rend un
   // tableau vide (jamais une erreur) pour un visiteur sans session, sans
-  // diagnostic antérieur, ou si la colonne est corrompue — la page se
+  // diagnostic antérieur, ou si la colonne est corrompue - la page se
   // comporte alors comme pour un nouveau visiteur.
   const customer = await getCurrentCustomer();
   const savedAnswerIds = customer ? await lireProfil(customer.id) : [];

@@ -3,7 +3,7 @@
 // Le coût d'achat est le seul champ monétaire où zéro et « vide » veulent dire
 // deux choses différentes : un échantillon reçu gratuitement coûte zéro, un
 // produit dont personne n'a encore saisi le coût ne coûte rien de connu. Toute
-// la colonne nullable existe pour tenir cette distinction — ces tests la
+// la colonne nullable existe pour tenir cette distinction - ces tests la
 // verrouillent, du formulaire jusqu'à l'écriture en base.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -33,7 +33,7 @@ test("parseProductInput accepte une saisie vide, qui efface le coût", () => {
 test("parseProductInput refuse une saisie sans chiffre", () => {
   // « abc » et « 0 » donnent tous deux 0 après conversion : contrôler le
   // résultat au lieu de la saisie laissait passer la faute de frappe.
-  for (const saisie of ["abc", "—", "-"]) {
+  for (const saisie of ["abc", "-", "-"]) {
     const { errors } = parseProductInput({ cost: saisie }, "update");
     assert.equal(errors.length, 1, `« ${saisie} » aurait dû être refusé`);
     assert.match(errors[0], /Coût d'achat invalide/);
@@ -41,7 +41,7 @@ test("parseProductInput refuse une saisie sans chiffre", () => {
 });
 
 test("parseProductInput ne touche pas au coût quand le champ n'est pas transmis", () => {
-  // Une mise à jour partielle — changer le stock depuis la liste — ne doit pas
+  // Une mise à jour partielle - changer le stock depuis la liste - ne doit pas
   // effacer un coût qu'elle n'a jamais vu.
   const { values, errors } = parseProductInput({ stock: 4 }, "update");
   assert.deepEqual(errors, []);
@@ -59,7 +59,7 @@ test("parseProductInput n'exige pas de coût à la création", () => {
 // ── Ce que la base enregistre ───────────────────────────────────────────────
 //
 // `store.ts` délègue ses deux chemins d'écriture à `coutCentsAEnregistrer`,
-// que ces tests appellent directement — asserter contre une copie de la règle
+// que ces tests appellent directement - asserter contre une copie de la règle
 // n'aurait rien prouvé du code qui tourne.
 
 test("un coût de zéro s'enregistre en 0, pas en NULL", () => {
@@ -72,7 +72,7 @@ test("un coût effacé s'enregistre en NULL", () => {
 
 test("un coût de zéro déjà en base reste modifiable", () => {
   // Régression : tant que le parseur refusait zéro, un produit dont le coût
-  // valait 0 — par import ou par SQL — voyait chacune de ses sauvegardes
+  // valait 0 - par import ou par SQL - voyait chacune de ses sauvegardes
   // suivantes échouer, et devenait donc impossible à modifier.
   const relu = formatPrice(0);
   const { errors, values } = parseProductInput({ cost: relu }, "update");

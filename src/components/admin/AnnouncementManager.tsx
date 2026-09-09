@@ -130,7 +130,7 @@ export function AnnouncementManager({
         >
           {actifs.length === 0 ? (
             <p className="px-4 py-2 text-center text-[0.7rem] uppercase tracking-[0.2em] opacity-70">
-              Aucune annonce active — le bandeau ne s&apos;affiche pas
+              Aucune annonce active - le bandeau ne s&apos;affiche pas
             </p>
           ) : (
             <p className="flex flex-wrap items-center justify-center gap-6 px-4 py-2 text-center text-[0.7rem] font-medium uppercase tracking-[0.2em]">
@@ -181,7 +181,7 @@ export function AnnouncementManager({
 
               <span className="min-w-0 flex-1 text-sm text-foreground">{item.message}</span>
               <span className="rounded-sm bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                {item.icon || "—"}
+                {item.icon || "-"}
               </span>
 
               <label className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -273,7 +273,7 @@ export function AnnouncementManager({
 
           <label className="text-sm">
             <span className="mb-1 block font-semibold text-foreground">
-              Vitesse — {config.speedSeconds} s par tour
+              Vitesse - {config.speedSeconds} s par tour
             </span>
             {/* Le curseur est inversé : glisser vers la droite accélère, ce qui
                 est le sens attendu, alors que la valeur stockée est une durée. */}

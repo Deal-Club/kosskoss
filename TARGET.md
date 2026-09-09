@@ -6,7 +6,7 @@ Le socle technique vient d'un clone de quelle.de, transformé en boutique
 d'électroménager en s'inspirant d'alternate.de, puis repositionné en boutique
 française de bois de chauffage (MLC Bois). **Ce chantier l'a repositionné une
 seconde fois** : c'est aujourd'hui un **concept-store cosmétique multimarque,
-100 % en ligne, pour le marché camerounais** — nom de code interne du projet
+100 % en ligne, pour le marché camerounais** - nom de code interne du projet
 `kosskoss`, marque **KossKoss Select**. Le socle technique (Next.js, Prisma,
 composants) est conservé ; la langue, la devise, le marché, la marque, le
 catalogue et le mode de paiement ont changé une nouvelle fois.
@@ -15,7 +15,7 @@ catalogue et le mode de paiement ont changé une nouvelle fois.
 pas de TVA à 10 %, pas de zones de livraison France, pas de mètre cube
 apparent, pas de numérotation `MLC-`. Si un texte du dépôt (page légale,
 e-mail, commentaire de code) en porte encore, c'est un résidu à corriger là où
-il se trouve — pas une indication à suivre.
+il se trouve - pas une indication à suivre.
 
 ## Marque
 
@@ -25,7 +25,7 @@ Source unique de vérité : `src/config/brand.ts`.
 - **Marché** : Cameroun (`market: "CM"`)
 - **Slogan** : « La Sélection beauté qui vous choisit. »
 - **Typographie** : **Montserrat** pour le texte et l'interface, **Cormorant
-  Garamond** pour les titres et slogans — les deux polices imposées par la
+  Garamond** pour les titres et slogans - les deux polices imposées par la
   charte (planche A-8), gratuites sur Google Fonts. **Cinzel** ne sert plus
   qu'au lettrage du logo composé en texte. Naishila Dancing Script, troisième
   police de la charte, est commerciale et n'est pas chargée. La piste
@@ -34,15 +34,15 @@ Source unique de vérité : `src/config/brand.ts`.
   bascule imposait.
 - **Couleurs** : Bleu Profond `#0F3B46` (primaire), Beige Sable `#F3E8DD`
   (secondaire), gris neutre `#D9D9D9`, doré doux `#C89B3C` (planche A-7). La
-  palette d'écran s'en écarte volontairement — relevée sur la maquette et
+  palette d'écran s'en écarte volontairement - relevée sur la maquette et
   ajustée pour le contraste, voir `docs/CONFORMITE-CHARTE.md`.
 - **Réseaux** : `@kosskoss_select` (Instagram, Facebook)
 - **Dépôt** : `github.com/Deal-Club/kosskoss`
 
 ## Langues
 
-- **Français** à la racine (`/`) — langue de référence
-- **Anglais** sous `/en` — traduction intégrale
+- **Français** à la racine (`/`) - langue de référence
+- **Anglais** sous `/en` - traduction intégrale
 - L'allemand, hérité des activités précédentes, a été entièrement retiré.
 
 ## Devise
@@ -52,7 +52,7 @@ Source unique de vérité : `src/config/brand.ts`.
 Le FCFA n'a **pas de sous-unité** : les montants sont des francs entiers, sans
 division par 100. Le suffixe `Cents` que portent encore certains champs de la
 base (`priceCents`, `costCents`…) est un nom hérité d'une activité
-précédente — il ne signifie plus « centimes » et ne doit jamais être divisé
+précédente - il ne signifie plus « centimes » et ne doit jamais être divisé
 par 100. C'est documenté en tête de `src/lib/kk/marge.ts` et dans l'export des
 ventes (`src/app/api/admin/ventes/export/route.ts`).
 
@@ -61,7 +61,7 @@ ventes (`src/app/api/admin/ventes/export/route.ts`).
 Concept-store cosmétique **multimarque** : soins visage et corps, marques
 partenaires, diagnostic beauté qui recommande une routine, catalogue de
 produits avec variantes (contenances). Pas de catalogue de démonstration figé
-dans ce fichier — le catalogue réel vit en base (modèles `Group`, `Category`,
+dans ce fichier - le catalogue réel vit en base (modèles `Group`, `Category`,
 `Brand`, `Product`, `ProductVariant`) et se peuple par `npm run db:seed*`
 (voir `docs/HANDOVER.md`).
 
@@ -73,8 +73,8 @@ vedettes.
 ## Livraison et contact
 
 - **Livraison au Cameroun.** Le tunnel d'achat capture une **ville**
-  structurée (Douala, Yaoundé, ou une saisie libre pour les autres) — voir
-  `src/lib/kk/livraison.ts`, seule source de vérité des frais par ville — et
+  structurée (Douala, Yaoundé, ou une saisie libre pour les autres) - voir
+  `src/lib/kk/livraison.ts`, seule source de vérité des frais par ville - et
   un champ de localisation libre (`location`, quartier/repère). Le frais de
   livraison qui en découle **est facturé** : il s'ajoute au sous-total dans
   `totalCents` (`src/server/kk/checkout.ts`), le montant réellement transmis à
@@ -90,7 +90,7 @@ vedettes.
   (**Paramètres**) ; `NEXT_PUBLIC_WHATSAPP_NUMBER` n'est qu'un repli tant que
   ce réglage est vide.
 - Après livraison, un lien de **formulaire d'évaluation** (Google Form)
-  peut être envoyé au client — également réglable en back-office.
+  peut être envoyé au client - également réglable en back-office.
 
 ## Paiement
 
@@ -98,7 +98,7 @@ Moyens de paiement proposés au tunnel de commande, gérés en base
 (`PaymentMethod`, activables/désactivables et réordonnables depuis
 **Admin → Moyens de paiement**) :
 
-- **Mobile Money** — Orange Money, MTN Mobile Money
+- **Mobile Money** - Orange Money, MTN Mobile Money
 - **Carte bancaire**
 - **Paiement à la livraison** (espèces à la remise du colis)
 
@@ -129,15 +129,15 @@ Select (voir « Marque » ci-dessus, et le cahier des charges synthétisé dans
 - Catégories vedettes de l'accueil (`src/data/categoryNav.ts` vide, voir
   « Catalogue » ci-dessus)
 - Encaissement automatisé par un agrégateur Mobile Money local pleinement
-  validé pour le Cameroun — voir `docs/HANDOVER.md` et
+  validé pour le Cameroun - voir `docs/HANDOVER.md` et
   `docs/ETAT-DES-LIEUX.md` pour l'état exact des passerelles câblées
 
 ## À faire avant mise en ligne
 
 Les données d'entreprise (`src/content/legal/company.ts`, constante
-`COMPANY`) sont des **valeurs de test** — `COMPANY.provisoire` vaut `true`.
+`COMPANY`) sont des **valeurs de test** - `COMPANY.provisoire` vaut `true`.
 Elles s'impriment sur chaque facture et sur les pages légales tant qu'elles
 n'ont pas été remplacées par les vraies coordonnées de la société. Voir
-`docs/LEGAL.md` pour le détail des champs à compléter — ce document date
+`docs/LEGAL.md` pour le détail des champs à compléter - ce document date
 lui-même d'une activité antérieure sur certains points (droit français) et
 reste à recouper avec le droit camerounais.

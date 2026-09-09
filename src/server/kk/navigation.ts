@@ -33,7 +33,7 @@ export interface NavGroup {
 /**
  * Le méga-menu est sur toutes les pages : un menu français y annulerait
  * l'effet de toute autre traduction. `locale` est facultative, comme sur
- * `getShopBrands` ci-dessous — le français par défaut couvre les appelants
+ * `getShopBrands` ci-dessous - le français par défaut couvre les appelants
  * qui ne connaissent pas encore la langue de la page.
  */
 export const getShopNavigation = cache(async (locale: Locale = "fr"): Promise<NavGroup[]> => {
@@ -88,7 +88,7 @@ export interface NavHighlight {
  * Un menu de catalogue qui n'aligne que des noms de rayons demande au visiteur
  * de se projeter : il doit imaginer ce qu'il y a derrière « Sérums » avant de
  * cliquer. Deux vignettes réelles suffisent à faire basculer le menu de la
- * table des matières vers la vitrine — c'est le rôle qu'il tient dans une
+ * table des matières vers la vitrine - c'est le rôle qu'il tient dans une
  * boutique, et c'est là que se gagne le clic.
  *
  * Priorité aux produits badgés au back-office (« bestseller », « nouveau ») :
@@ -104,7 +104,7 @@ export const getNavHighlights = cache(
       include: { category: { include: { group: true } } },
     });
 
-    // Repli : catalogue sans aucun produit badgé — on montre les plus récents
+    // Repli : catalogue sans aucun produit badgé - on montre les plus récents
     // plutôt que de laisser un trou dans le menu.
     const complement =
       rows.length < limit
@@ -133,7 +133,7 @@ export const getNavHighlights = cache(
 
 /**
  * Marque telle que montrée sur `/marques` : soit une entité (logo, accroche,
- * fiche dédiée), soit un simple nom en mode repli — voir `getShopBrands`.
+ * fiche dédiée), soit un simple nom en mode repli - voir `getShopBrands`.
  */
 export interface NavBrand {
   /** Chemin de la fiche marque, préfixe de langue non compris ; absent en repli. */
@@ -146,7 +146,7 @@ export interface NavBrand {
 /**
  * Marques de la vitrine, dans l'ordre `position` puis alphabétique.
  *
- * Lit la table `Brand` : marques actives ayant au moins un produit actif — une
+ * Lit la table `Brand` : marques actives ayant au moins un produit actif - une
  * marque sans produit ne s'affiche pas, une page vide déçoit plus qu'une
  * absence.
  *
@@ -156,17 +156,17 @@ export interface NavBrand {
  * (`importerMarquesDuCatalogue`), pas par la migration : une installation où
  * personne ne l'a encore lancé a une table `Brand` VIDE alors que son
  * catalogue affiche déjà des marques sur chaque fiche produit. Sans ce repli,
- * `/marques` — qui existait avant cette table — se viderait le jour du
+ * `/marques` - qui existait avant cette table - se viderait le jour du
  * déploiement de cette lecture, et le resterait tant que l'import n'a pas été
  * cliqué. Ce n'est donc pas du code mort : ne le retire que si l'import
  * devient automatique ou obligatoire au déploiement.
  *
- * Le repli se décide sur `prisma.brand.count() === 0` — la table est-elle
- * VIDE — et non sur `rows.length === 0` : `rows` est déjà filtré sur les
+ * Le repli se décide sur `prisma.brand.count() === 0` - la table est-elle
+ * VIDE - et non sur `rows.length === 0` : `rows` est déjà filtré sur les
  * marques ACTIVES ayant un produit actif, donc un administrateur qui masque
  * ses douze marques (le geste que ce lot introduit) viderait `rows` sans
  * vider la table. Décider sur `rows` ferait alors resurgir, via le repli, les
- * douze noms qu'on vient précisément de masquer — le masquage ne masquerait
+ * douze noms qu'on vient précisément de masquer - le masquage ne masquerait
  * plus rien.
  *
  * En repli, chaque marque n'est qu'un nom sans fiche dédiée (`href: null`) :
@@ -206,7 +206,7 @@ export interface NavRoutine {
   name: string;
   /** Accroche d'une ligne : le besoin auquel la routine répond. */
   claim: string;
-  /** Jeton de teinte — l'un des `--tint-*` de globals.css. */
+  /** Jeton de teinte - l'un des `--tint-*` de globals.css. */
   tint: string;
   image: string | null;
   href: string;
@@ -218,8 +218,8 @@ export interface NavRoutine {
  * Routines actives, pour le panneau « Routines » de la barre.
  *
  * Requête volontairement maigre : l'en-tête est rendu sur CHAQUE page, et
- * `getRoutines` charge les produits complets de chaque geste — prix, stock,
- * variations, catégorie — pour n'en afficher ici que le nombre. On ne lit donc
+ * `getRoutines` charge les produits complets de chaque geste - prix, stock,
+ * variations, catégorie - pour n'en afficher ici que le nombre. On ne lit donc
  * que les colonnes montrées, plus un comptage.
  *
  * Une routine sans geste est écartée : elle ouvrirait une page vide, comme une
@@ -228,7 +228,7 @@ export interface NavRoutine {
  * TROIS PAR DÉFAUT, et pas davantage. Un panneau de navigation n'est pas la
  * page « Routines » : il donne un aperçu et un chemin. Les cinq routines
  * tenaient sur deux rangées de vignettes serrées, où les noms longs passaient à
- * la ligne — on y lisait moins bien que sur la page elle-même, qui reste à un
+ * la ligne - on y lisait moins bien que sur la page elle-même, qui reste à un
  * clic par le bouton « Voir toutes les routines ».
  */
 export const getNavRoutines = cache(

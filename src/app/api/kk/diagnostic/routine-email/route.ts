@@ -8,12 +8,12 @@ import { customerRoutineEmailRate } from "@/server/customerRate";
 /**
  * Envoi de la routine par e-mail.
  *
- * Même règle de validation d'adresse que la route newsletter — voir
+ * Même règle de validation d'adresse que la route newsletter - voir
  * `src/lib/kk/email-valide.ts`, qui explique pourquoi elle est partagée.
  *
  * Route publique, sans compte requis, qui envoie vers une adresse arbitraire :
  * sans frein, n'importe qui pourrait mailbomber un tiers sous la réputation
- * d'envoi de la boutique — la même que celle des confirmations de commande et
+ * d'envoi de la boutique - la même que celle des confirmations de commande et
  * des factures. Même limiteur que « mot de passe oublié »
  * (`src/app/api/account/password/forgot/route.ts`), qui affronte le même
  * risque et la même contrainte de ne rien révéler sur l'adresse.
@@ -98,7 +98,7 @@ export async function POST(request: Request) {
   //
   // Le résultat porte désormais DEUX routines (Essentielle et Premium) : ce
   // formulaire, hérité de l'ancien moteur à routine unique, envoie celle des
-  // deux qui existe en priorité — l'Essentielle, repli sur la Premium si elle
+  // deux qui existe en priorité - l'Essentielle, repli sur la Premium si elle
   // seule a pu être déterminée. L'écran de résultat nomme la routine envoyée
   // dans son propre libellé (voir DiagnosticFlow), pour que ce choix reste
   // honnête plutôt que silencieux.

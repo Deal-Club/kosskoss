@@ -30,7 +30,7 @@ export default async function AdminCategoriesPage({
   // Le tableau est déjà une liste à plat, simplement triée par univers puis par
   // position : la pagination porte donc sur cette liste à plat. Les catégories
   // d'un même univers restent contiguës, seul un univers à cheval sur deux pages
-  // se retrouve coupé — la colonne « Univers » garde l'information sur chaque ligne.
+  // se retrouve coupé - la colonne « Univers » garde l'information sur chaque ligne.
   const allRows = groups.flatMap((group) =>
     group.categories.map((category) => ({
       id: `${group.slug}/${category.slug}`,

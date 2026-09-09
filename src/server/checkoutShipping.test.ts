@@ -3,8 +3,8 @@
  *
  * L'enjeu : le navigateur choisit un mode, il n'en fixe jamais le prix. On
  * vérifie donc qu'une clé inconnue est refusée plutôt que ramenée en silence au
- * standard — livrer en standard un client qui a demandé et cru payer l'express
- * modifierait sa commande — et qu'un champ absent reste toléré.
+ * standard - livrer en standard un client qui a demandé et cru payer l'express
+ * modifierait sa commande - et qu'un champ absent reste toléré.
  *
  * `parseCheckoutPayload` ne touche pas la base : ces tests tournent sans
  * PostgreSQL.

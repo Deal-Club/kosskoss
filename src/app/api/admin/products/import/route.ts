@@ -5,10 +5,10 @@ import { parseProductInput, toCreateInput, type ProductInput } from "@/server/pr
 import { createProduct, listCategories } from "@/server/store";
 
 // Massenimport aus CSV oder JSON. Derselbe Endpunkt liefert die Vorschau
-// (dryRun) et exécute l'import — la même
+// (dryRun) et exécute l'import - la même
 // même logique : l'aperçu ne peut donc pas différer du résultat.
 
-// Seul POST est exporté — Next.js n'autorise pas d'exports libres dans route.ts.
+// Seul POST est exporté - Next.js n'autorise pas d'exports libres dans route.ts.
 const CSV_COLUMNS = [
   "categoryId",
   "brand",

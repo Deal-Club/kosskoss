@@ -8,11 +8,11 @@ import type { RaisonDetreView } from "@/server/kk/raison-detre";
  *
  * ── CE QUI A REMPLACÉ LE COMPARATEUR, ET POURQUOI ────────────────────────────
  *
- * La section portait un comparateur à curseur sur un visage — « LE PROBLÈME »
+ * La section portait un comparateur à curseur sur un visage - « LE PROBLÈME »
  * d'un côté, « NOTRE RÉPONSE » de l'autre. Le client l'a refusé, et le défaut
  * était structurel : LE VISUEL NE RÉPONDAIT PAS À LA MÊME QUESTION QUE LE TEXTE.
  *
- * Le texte parle de la difficulté de CHOISIR — trois obstacles nommés. L'image
+ * Le texte parle de la difficulté de CHOISIR - trois obstacles nommés. L'image
  * montrait une PEAU qui change. Elle promettait donc un résultat cutané là où
  * la section promet un parcours d'achat simplifié. Le signe qui ne trompe pas :
  * il avait fallu écrire sous l'image « ce n'est pas un résultat client » pour
@@ -25,7 +25,7 @@ import type { RaisonDetreView } from "@/server/kk/raison-detre";
  * littérale à « qu'est-ce que ça résout, et avec quoi ». Chaque affirmation
  * porte sa preuve, comptée en base (voir server/kk/raison-detre.ts).
  *
- * Un second étage montrait l'anatomie d'une routine — trois packshots dans
+ * Un second étage montrait l'anatomie d'une routine - trois packshots dans
  * l'ordre, avec le motif de chaque geste. Il a été retiré : la démonstration
  * faisait doublon avec le bloc « Achat rapide routines » qui suit dans la
  * page, et rallongeait une section dont on venait de resserrer le rythme.

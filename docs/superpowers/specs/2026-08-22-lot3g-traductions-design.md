@@ -1,14 +1,14 @@
-# Lot 3G — L'écran des traductions
+# Lot 3G - L'écran des traductions
 
-**Critère visé :** 13 (back-office complet — volet traductions FR/EN dédiées).
+**Critère visé :** 13 (back-office complet - volet traductions FR/EN dédiées).
 
 ---
 
 ## 1. Le problème
 
 Le contenu traduisible est partout et nulle part. **Dix-sept modèles portent
-quarante champs `*En`** — catégories, marques, produits, routines, questions du
-diagnostic, articles, campagnes — et chacun ne se remplit que depuis l'écran de
+quarante champs `*En`** - catégories, marques, produits, routines, questions du
+diagnostic, articles, campagnes - et chacun ne se remplit que depuis l'écran de
 l'entité concernée.
 
 Pour savoir ce qui manque en anglais, il faut donc ouvrir chaque produit, chaque
@@ -38,7 +38,7 @@ et personne ne le saura.
 - **Une vue d'ensemble** : par modèle, combien d'enregistrements sont traduits,
   combien ne le sont pas, et le pourcentage. C'est le chiffre qu'on veut voir en
   arrivant.
-- **Une liste filtrable**, par modèle et par état — « tout », « à traduire »,
+- **Une liste filtrable**, par modèle et par état - « tout », « à traduire »,
   « traduit ». Le défaut est **« à traduire »** : on ouvre cet écran pour combler,
   pas pour admirer.
 - **Un éditeur côte à côte** : le français à gauche, non modifiable, l'anglais à
@@ -52,7 +52,7 @@ français ont une contrepartie anglaise non vide.
 
 Deux précisions qui évitent des faux positifs :
 
-- **un champ vide en français n'attend aucune traduction** — compter un champ
+- **un champ vide en français n'attend aucune traduction** - compter un champ
   facultatif jamais rempli comme « à traduire » noierait le vrai travail sous du
   bruit ;
 - **un champ dont la traduction est identique au français** compte comme traduit :
@@ -76,7 +76,7 @@ l'éditeur d'article, qui sait le faire. **Le taire serait pire que l'exclure** 
 croirait l'article traduit.
 
 `bulletsEn` est édité comme une ligne par puce, avec le nombre de puces françaises
-rappelé à côté — une traduction qui perd une puce se voit alors immédiatement.
+rappelé à côté - une traduction qui perd une puce se voit alors immédiatement.
 
 ### 2.5 Ce que l'écran ne fait pas
 
@@ -91,8 +91,8 @@ rappelé à côté — une traduction qui perd une puce se voit alors immédiate
 ## 3. Architecture
 
 ```
-src/lib/kk/traductions.ts       pur — registre des champs, état d'un enregistrement
-src/lib/kk/traductions.test.ts  pur — l'état, cas par cas
+src/lib/kk/traductions.ts       pur - registre des champs, état d'un enregistrement
+src/lib/kk/traductions.test.ts  pur - l'état, cas par cas
 src/server/kk/traductions.ts    lecture des enregistrements, décomptes, écriture
 src/app/admin/(protected)/traductions/  l'écran
 src/app/api/admin/traductions/          les routes, capacité `contenu`
@@ -105,9 +105,9 @@ src/lib/kk/routesAdmin.ts       `traductions` sous `contenu`
 
 Prisma ne se parcourt pas dynamiquement sans perdre le typage. Deux voies :
 
-- **une carte de fonctions typées, une par modèle** — verbeuse, mais chaque accès
+- **une carte de fonctions typées, une par modèle** - verbeuse, mais chaque accès
   est vérifié à la compilation et se retrouve par une recherche de texte ;
-- **un accès indexé sur le client Prisma** — court, et qui échoue à l'exécution le
+- **un accès indexé sur le client Prisma** - court, et qui échoue à l'exécution le
   jour où un modèle est renommé.
 
 **La première est retenue.** Cet écran écrit dans dix-sept tables : la sécurité de
@@ -118,10 +118,10 @@ défaut.
 
 Purs, sans base :
 
-- **l'état d'un enregistrement** — tout traduit ; rien traduit ; partiellement ;
+- **l'état d'un enregistrement** - tout traduit ; rien traduit ; partiellement ;
   champ français vide ignoré ; traduction identique au français comptée comme
   traduite ; enregistrement sans aucun champ traduisible ;
-- **le registre** — chaque champ `*En` du schéma Prisma y figure, et chaque entrée
+- **le registre** - chaque champ `*En` du schéma Prisma y figure, et chaque entrée
   du registre correspond à un champ réel.
 
 L'écriture est vérifiée à la main : le dépôt n'a pas d'infrastructure de test avec
@@ -130,6 +130,6 @@ base.
 ## 6. Le risque, nommé
 
 **Cet écran écrit dans dix-sept tables.** Une confusion de modèle ou de champ y
-écrirait une traduction dans le mauvais enregistrement — visible seulement par
+écrirait une traduction dans le mauvais enregistrement - visible seulement par
 quelqu'un qui lit l'anglais. D'où la carte typée plutôt que l'accès dynamique, et
 d'où le test qui relie le registre au schéma.

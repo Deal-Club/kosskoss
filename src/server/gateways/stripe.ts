@@ -1,10 +1,10 @@
 /**
- * Adaptateur Stripe — le seul réellement implémenté aujourd'hui.
+ * Adaptateur Stripe - le seul réellement implémenté aujourd'hui.
  *
  * Encaissement par Stripe Checkout (page de paiement hébergée par Stripe) :
  * aucune donnée de carte ne transite par ce serveur, donc pas de contrainte PCI
  * lourde. La vérité du paiement vient du webhook signé, jamais de la redirection
- * de retour — un client peut fermer l'onglet avant que Stripe ne nous rappelle.
+ * de retour - un client peut fermer l'onglet avant que Stripe ne nous rappelle.
  *
  * Deux secrets, saisis en administration et stockés chiffrés :
  *   - stripe_secret_key      (sk_live_… / sk_test_…)
@@ -47,7 +47,7 @@ export const stripeGateway: PaymentGateway = {
   meta: {
     id: "stripe",
     label: "Stripe",
-    availability: "Recommandé — CB, Apple Pay, Google Pay. Excellent support France.",
+    availability: "Recommandé - CB, Apple Pay, Google Pay. Excellent support France.",
     implemented: true,
     keys: [
       {
@@ -222,7 +222,7 @@ export const stripeGateway: PaymentGateway = {
       } else {
         details.push({
           label: "Webhook déclaré",
-          value: `${declared.status} — ${declared.enabled_events.join(", ")}`,
+          value: `${declared.status} - ${declared.enabled_events.join(", ")}`,
         });
         const covered =
           declared.enabled_events.includes("*") ||
@@ -239,7 +239,7 @@ export const stripeGateway: PaymentGateway = {
     } catch {
       details.push({
         label: "Webhooks",
-        value: "non vérifiables avec cette clé (clé restreinte) — à contrôler manuellement",
+        value: "non vérifiables avec cette clé (clé restreinte) - à contrôler manuellement",
       });
     }
 

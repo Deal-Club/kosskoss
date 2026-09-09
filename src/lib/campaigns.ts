@@ -206,7 +206,7 @@ export function formatDuration(seconds: number): string {
 /**
  * Code court porté par les liens et recopié sur les commandes attribuées.
  * L'unicité est garantie par la contrainte de base, l'appelant réessaie en cas
- * de collision — 32^6 combinaisons rendent le cas très improbable.
+ * de collision - 32^6 combinaisons rendent le cas très improbable.
  */
 export function generateCampaignCode(): string {
   let code = "";
@@ -272,7 +272,7 @@ export type TemplateVariable = (typeof TEMPLATE_VARIABLES)[number];
 /**
  * Les quatre modèles. Les textes français sont ceux réellement envoyés aux
  * clients de la boutique ; l'anglais sert aux comptes dont la langue est « en ».
- * Le ton change franchement d'un type à l'autre — c'est tout l'intérêt d'avoir
+ * Le ton change franchement d'un type à l'autre - c'est tout l'intérêt d'avoir
  * quatre types plutôt qu'un seul champ libre.
  */
 export const CAMPAIGN_TYPES: readonly CampaignTypeDefinition[] = [
@@ -445,7 +445,7 @@ export const CAMPAIGN_STATUS_LABELS: Record<CampaignStatus, string> = {
 
 /**
  * Une campagne applique-t-elle sa remise sur le site ?
- * Le brouillon ne compte pas — sinon un prix baisserait avant même que le
+ * Le brouillon ne compte pas - sinon un prix baisserait avant même que le
  * premier message soit parti. L'annulation retire la remise immédiatement.
  */
 export function statusAppliesDiscount(status: CampaignStatus): boolean {

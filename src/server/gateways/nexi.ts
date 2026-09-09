@@ -1,5 +1,5 @@
 /**
- * Adaptateur Nexi — XPay, page de paiement hébergée (POST /orders/hpp).
+ * Adaptateur Nexi - XPay, page de paiement hébergée (POST /orders/hpp).
  *
  * ⚠ Écrit d'après la documentation publique de XPay Global, sans avoir pu être
  * éprouvé contre un vrai compte Nexi. Deux points sont à revalider avec un
@@ -104,7 +104,7 @@ export const nexiGateway: PaymentGateway = {
       {
         integrationKey: BASE_URL,
         label: "URL de base (si autre portail)",
-        hint: "À renseigner seulement si le contrat ne dépend pas de XPay Global — Intesa, Greece et CEE ont leur propre URL. Sinon laisser vide.",
+        hint: "À renseigner seulement si le contrat ne dépend pas de XPay Global - Intesa, Greece et CEE ont leur propre URL. Sinon laisser vide.",
         optional: true,
       },
     ],

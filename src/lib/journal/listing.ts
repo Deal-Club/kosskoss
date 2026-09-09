@@ -2,7 +2,7 @@
  * Filtrage et tri de la liste du back-office.
  *
  * Même parti pris que `src/server/productListing.ts` : le travail se fait en
- * mémoire. Les volumes concernés — quelques centaines d'articles au plus — ne
+ * mémoire. Les volumes concernés - quelques centaines d'articles au plus - ne
  * justifient pas un LIMIT/OFFSET, et cela garde la recherche, les filtres et la
  * pagination sur les mêmes données.
  *
@@ -48,7 +48,7 @@ export interface JournalFilters {
 /**
  * Même repli que la recherche produits (`src/app/[locale]/recherche/page.tsx`) :
  * minuscules, ligatures françaises développées, diacritiques retirés. Les mots
- * restent séparés — contrairement à `slugify` — pour que chaque terme se
+ * restent séparés - contrairement à `slugify` - pour que chaque terme se
  * retrouve indépendamment.
  */
 function fold(value: string): string {

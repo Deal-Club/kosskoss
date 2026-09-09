@@ -29,15 +29,15 @@ export type FacetteSelection = {
 /**
  * Correspondance d'un produit à une sélection de facettes réparties en familles.
  *
- * RÈGLE — non devinable, à ne jamais inverser : UNION dans une famille,
+ * RÈGLE - non devinable, à ne jamais inverser : UNION dans une famille,
  * INTERSECTION entre familles.
  *   - Cocher « peau grasse » et « peau mixte » (même famille « peau ») élargit :
- *     un produit qui porte l'un OU l'autre tag est retenu — c'est `produitCorrespond`,
+ *     un produit qui porte l'un OU l'autre tag est retenu - c'est `produitCorrespond`,
  *     appliqué à la famille.
  *   - Cocher un type de peau ET une préoccupation (deux familles différentes)
  *     restreint : le produit doit satisfaire LES DEUX familles cochées à la fois.
  * Inverser cette règle (tout mettre en union, ou tout en intersection) viderait
- * le catalogue au deuxième clic sur une famille différente — l'exact contraire
+ * le catalogue au deuxième clic sur une famille différente - l'exact contraire
  * de ce qu'une liste de cases à cocher doit produire. Une famille non cochée
  * (liste vide) ne contraint rien, comme le fait déjà `produitCorrespond` seul.
  */

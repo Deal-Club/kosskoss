@@ -6,7 +6,7 @@
  * manquaient : un visiteur sur /en lisait « Nettoyer ».
  *
  * Idempotent : upsert sur la clé, relançable sans créer de doublon. Sur une
- * ligne existante, seuls les libellés sont rafraîchis — voir plus bas.
+ * ligne existante, seuls les libellés sont rafraîchis - voir plus bas.
  *
  * Lancement : tsx prisma/seed-gestes.ts
  */

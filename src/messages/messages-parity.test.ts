@@ -7,7 +7,7 @@ import { describe, it } from "node:test";
  * Le seul garde-fou qui protège la parité entre `fr.json` et `en.json`.
  *
  * Le site sert next-intl : une clé absente d'un des deux fichiers ne casse
- * rien à la compilation — elle casse le RENDU, à l'exécution, sur la seule
+ * rien à la compilation - elle casse le RENDU, à l'exécution, sur la seule
  * locale où elle manque. Rien d'autre dans la chaîne (`tsc`, `eslint`, la
  * revue humaine d'un diff de plusieurs centaines de lignes) ne le détecte de
  * façon fiable. C'est ce test, et lui seul, qui doit tomber si une traduction
@@ -16,16 +16,16 @@ import { describe, it } from "node:test";
  * Relu à la lumière de trois garde-fous du projet qui se sont révélés plus
  * faibles qu'annoncé (voir traductions.test.ts, § « registre face au
  * schéma ») :
- *   — ne pas se fier à un nom de fichier ou de dossier : ce test lit le
+ *   - ne pas se fier à un nom de fichier ou de dossier : ce test lit le
  *     contenu réel des deux fichiers, clé par clé ;
- *   — ne pas s'arrêter à un seul point de contrôle : les TROIS conditions
+ *   - ne pas s'arrêter à un seul point de contrôle : les TROIS conditions
  *     (aucune clé manquante d'un côté, aucune manquante de l'autre, aucune
  *     valeur vide) sont vérifiées indépendamment, avec un message qui nomme
  *     la clé fautive ;
- *   — ne pas couper au premier caractère structurel rencontré : la lecture
+ *   - ne pas couper au premier caractère structurel rencontré : la lecture
  *     passe par `JSON.parse`, pas par une regex qui s'arrêterait à la
  *     première accolade venue (un commentaire n'existe pas en JSON, mais le
- *     principe — parser le format réel plutôt que le deviner au regex — est
+ *     principe - parser le format réel plutôt que le deviner au regex - est
  *     le même que celui qui a fait tomber le garde-fou de traductions.ts).
  *
  * Éprouvé par mutation (voir le rapport de la tâche 5, complété par la revue
@@ -53,8 +53,8 @@ function chargerMessages(nom: "fr" | "en"): Record<string, unknown> {
  * `{ common: { "mutation.depth": "y" } }` s'aplatiraient tous deux en la
  * chaîne `common.mutation.depth` : la fonction perdrait l'information qui les
  * distingue, et le test verrait une seule clé identique des deux côtés là où
- * next-intl — qui résout par imbrication réelle, jamais par une chaîne
- * pointée — ne retrouve la seconde forme sous aucun chemin.
+ * next-intl - qui résout par imbrication réelle, jamais par une chaîne
+ * pointée - ne retrouve la seconde forme sous aucun chemin.
  */
 function cheminVersCle(segments: string[]): string {
   return segments.map((s) => s.replace(/\\/g, "\\\\").replace(/\./g, "\\.")).join(".");
@@ -113,7 +113,7 @@ describe("parité des messages fr.json / en.json", () => {
 
   it("les deux fichiers comptent exactement le même nombre de clés", () => {
     // Redondant avec les deux premiers tests si l'ensemble des clés est
-    // identique ; gardé quand même comme filet séparé — un décompte qui
+    // identique ; gardé quand même comme filet séparé - un décompte qui
     // diverge alors que les deux `deepEqual` ci-dessus passent signalerait un
     // bug dans `aplatir` elle-même (une collision de chemin, par exemple).
     assert.equal(fr.size, en.size);

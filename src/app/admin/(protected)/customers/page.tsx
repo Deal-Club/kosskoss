@@ -24,7 +24,7 @@ const SALUTATION_LABELS: Record<string, string> = {
  *
  * Lecture seule : le back-office ne modifie ni ne supprime un compte client.
  * La suppression relève du droit à l'effacement, que le client exerce lui-même
- * depuis son espace — c'est aussi ce qui garantit qu'elle s'accompagne de
+ * depuis son espace - c'est aussi ce qui garantit qu'elle s'accompagne de
  * l'anonymisation des commandes.
  *
  * Aucun mot de passe, même haché, n'est chargé par cette page.
@@ -124,7 +124,7 @@ export default async function AdminCustomersPage({
                   {customer.firstName} {customer.lastName}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{customer.email}</td>
-                <td className="px-4 py-3 text-muted-foreground">{customer.city || "—"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{customer.city || "-"}</td>
                 <td className="px-4 py-3">
                   {customer.orderCount > 0 ? (
                     <Link

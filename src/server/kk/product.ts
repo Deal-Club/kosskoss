@@ -31,14 +31,14 @@ export type KKProductDetail = {
   variants: KKVariant[];
   href: string;
   // ---- Champs du master (lot 7B), pour la présentation de la fiche (lot 7D).
-  // Chacun retombe sur "" quand le master ne l'a pas renseigné — c'est à
+  // Chacun retombe sur "" quand le master ne l'a pas renseigné - c'est à
   // l'affichage de décider si une section vide se montre ou non, jamais ici.
   /** Tags bruts (préoccupation + type de peau), pour la ligne de préoccupations
-   *  et le tableau « en bref » — voir `src/lib/kk/besoins.ts`. */
+   *  et le tableau « en bref » - voir `src/lib/kk/besoins.ts`. */
   tags: string[];
   /** Question d'accroche du problème que le produit résout. */
   problemeAccroche: string;
-  /** À qui il s'adresse — texte libre du master, pas une liste. */
+  /** À qui il s'adresse - texte libre du master, pas une liste. */
   idealPour: string;
   usageMatin: string;
   usageSoir: string;
@@ -49,7 +49,7 @@ export type KKProductDetail = {
   actifsCles: string;
   /** Précautions d'usage, tableau « Comment l'utiliser ? ». */
   precautions: string;
-  /** « Le Choix KossKoss Select ? » — bloc dédié, distinct d'`idealPour`. */
+  /** « Le Choix KossKoss Select ? » - bloc dédié, distinct d'`idealPour`. */
   pourquoiKossKoss: string;
   /** Zone d'application (« Visage »…), ligne du tableau « en bref ». */
   zone: string;
@@ -80,14 +80,14 @@ export async function getProductDetail(
   });
   if (!p) return null;
 
-  // Le repli passe uniquement par pickText/pickList — jamais un accès direct
+  // Le repli passe uniquement par pickText/pickList - jamais un accès direct
   // à un champ *En. La marque, nom propre, ne se traduit jamais.
   const traduire = needsTranslation(locale);
   const name = pickText(p.name, traduire ? p.nameEn : undefined);
   const shortDescription = pickText(p.shortDescription ?? "", traduire ? p.shortDescriptionEn : undefined);
   const description = pickText(p.description ?? "", traduire ? p.descriptionEn : undefined);
   const bullets = pickList(parseStringArray(p.bullets), traduire ? parseStringArray(p.bulletsEn) : undefined);
-  // Champs du master (lot 7D) : même règle de repli que le reste de la fiche —
+  // Champs du master (lot 7D) : même règle de repli que le reste de la fiche -
   // pickText, jamais un accès direct au champ *En.
   const problemeAccroche = pickText(p.problemeAccroche, traduire ? p.problemeAccrocheEn : undefined);
   const idealPour = pickText(p.idealPour, traduire ? p.idealPourEn : undefined);

@@ -197,7 +197,7 @@ export default async function AdminProductsPage({
                       </span>
                     ) : low ? (
                       <span className="rounded-sm bg-accent px-2 py-1 text-xs font-bold text-accent-foreground">
-                        {stock} — seuil d&apos;alerte {threshold}
+                        {stock} - seuil d&apos;alerte {threshold}
                       </span>
                     ) : (
                       <span className="font-semibold text-foreground">{stock}</span>

@@ -51,7 +51,7 @@ export async function generateMetadata({
  * précise n'avait nulle part où aller, alors que c'est un chemin d'entrée
  * naturel en cosmétique (§2.3 de la spécification du lot).
  *
- * `marqueVitrineParSlug` rend `null` — et donc une 404 ici — pour une marque
+ * `marqueVitrineParSlug` rend `null` - et donc une 404 ici - pour une marque
  * inexistante, inactive, ou qui n'a plus aucun produit actif : une fiche vide
  * déçoit plus qu'une absence, et sortir la page du référencement vaut mieux
  * que d'y laisser une grille vide.
@@ -124,7 +124,7 @@ export default async function MarquePage({
           <p className="eyebrow">
             {/* Sur une marque paginée, « 60 produits » seul induit en erreur :
                 on en voit trente. On situe donc la tranche dès qu'il y a plus
-                d'une page — même règle que sur une page de rayon. */}
+                d'une page - même règle que sur une page de rayon. */}
             {marque.pageCount > 1
               ? t("countRange", { first: marque.firstItem, last: marque.lastItem, total: marque.total })
               : tCatalog("countTotal", { total: marque.total })}

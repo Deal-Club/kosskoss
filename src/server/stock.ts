@@ -4,7 +4,7 @@ import type { StockMovementRecord } from "@/server/types";
 // Gestion du stock : chaque variation est écrite avec son mouvement dans une
 // même transaction, pour que le stock et l'historique ne divergent jamais.
 
-/** Motifs autorisés — reflet des commentaires du schéma Prisma. */
+/** Motifs autorisés - reflet des commentaires du schéma Prisma. */
 export const STOCK_REASONS = ["wareneingang", "korrektur", "verkauf", "retoure"] as const;
 
 export type StockReason = (typeof STOCK_REASONS)[number];
@@ -28,7 +28,7 @@ export function isStockReason(value: unknown): value is StockReason {
  * Avant la correction, `adjustStock`/`setStock` gardaient le défaut Prisma de
  * 5 s alors que la réception peut retenir un verrou de ligne jusqu'à 30 s :
  * un client qui valide son panier sur un produit en cours de réception
- * attendait le verrou et voyait SA transaction expirer la première — l'échec
+ * attendait le verrou et voyait SA transaction expirer la première - l'échec
  * du magasinier se déplaçait vers le client, qui perd un panier qu'une
  * réception, elle, peut se permettre de relancer. Donner ici le même délai
  * qu'à la réception laisse le client attendre aussi longtemps que la
@@ -170,7 +170,7 @@ export async function adjustStock(
     // `SELECT … FOR UPDATE` verrouille la ligne : une autre transaction qui
     // ajusterait le même produit attend ici plutôt que de lire un stock qui
     // va changer sous elle. Sans ce verrou, deux appels concurrents peuvent
-    // lire le même stock de départ et l'un des deux deltas se perd — le
+    // lire le même stock de départ et l'un des deux deltas se perd - le
     // même défaut que celui corrigé dans `recevoirLignes`
     // (src/server/kk/bons.ts), pour la même raison : cette fonction déclare
     // en tête de fichier que le stock et son journal ne divergent jamais.
@@ -187,7 +187,7 @@ export async function adjustStock(
     }
 
     // Écrit en `{ increment }`, calculé sur le delta EFFECTIF (après le
-    // plancher à zéro) — un incrément nu ne borne rien, le plancher doit donc
+    // plancher à zéro) - un incrément nu ne borne rien, le plancher doit donc
     // être appliqué avant l'écriture, pas après. La ligne reste verrouillée
     // depuis le `SELECT … FOR UPDATE` ci-dessus : cette lecture et cette
     // écriture forment un tout, aucune autre transaction ne peut s'intercaler.
@@ -232,7 +232,7 @@ export async function setStock(
     // Même verrou que dans `adjustStock` ci-dessus, pour la même raison : sans
     // lui, deux appels concurrents liraient le même stock de départ et l'un
     // écraserait le mouvement de l'autre dans le journal. `setStock` fixe une
-    // valeur ABSOLUE — ce n'est pas un delta reçu de l'appelant — donc
+    // valeur ABSOLUE - ce n'est pas un delta reçu de l'appelant - donc
     // l'écriture reste `data: { stock: value }` plutôt qu'un `{ increment }` ;
     // le verrou garantit déjà que `delta` ci-dessous reflète le bon stock de
     // départ, ce qu'un incrément nu n'apporterait pas de plus ici.

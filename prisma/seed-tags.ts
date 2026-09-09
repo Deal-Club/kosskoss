@@ -1,18 +1,18 @@
 /**
- * ⚠️ AVERTISSEMENT (tâche 10) — le vocabulaire ci-dessous est désormais
+ * ⚠️ AVERTISSEMENT (tâche 10) - le vocabulaire ci-dessous est désormais
  * modifiable par le client depuis /admin/products/tags (libellés FR/EN,
  * famille, ordre, activation). Ce seed réécrit `labelFr` et `labelEn` à chaque
  * exécution ; `family`, `position` et `active` sont protégés, ils ne sont
  * posés qu'à la création (voir plus bas). Relancer `npm run db:seed` après que
  * le client a retouché un libellé depuis l'écran d'administration effacera
- * donc silencieusement cette retouche — pas sa recatégorisation. Ne pas
+ * donc silencieusement cette retouche - pas sa recatégorisation. Ne pas
  * relancer ce script en aveugle une fois le site en production.
  *
  * Vocabulaire des tags produits, relevé sur les données existantes.
  *
  * Les clés ci-dessous ne sont pas inventées : elles sont le résultat de la
  * requête suivante, exécutée sur la base (produits actifs + réponses du
- * diagnostic) —
+ * diagnostic) -
  *
  *   const vues = new Set();
  *   for (const p of produits) for (const t of JSON.parse(p.tags || "[]")) vues.add(t);
@@ -21,17 +21,17 @@
  * Seules les familles « peau » et « preoccupation » deviennent des facettes de
  * catalogue (tâches suivantes) ; les autres tags restent au service du
  * diagnostic et du merchandising interne :
- *   — « budget » : préférence de gamme de prix, lue par buildRoutine()
+ *   - « budget » : préférence de gamme de prix, lue par buildRoutine()
  *     (src/server/kk/diagnostic.ts) pour départager les candidats à score égal ;
- *   — « categorie » : rayons du catalogue distincts des soins visage (corps,
- *     homme, hygiène — voir prisma/data/kk-catalog.json) ;
- *   — « geste » : l'étape de routine que sert le produit (nettoyer, tonifier,
+ *   - « categorie » : rayons du catalogue distincts des soins visage (corps,
+ *     homme, hygiène - voir prisma/data/kk-catalog.json) ;
+ *   - « geste » : l'étape de routine que sert le produit (nettoyer, tonifier,
  *     traiter, protéger du soleil), reprise telle quelle dans seed-routines.ts
  *     et diagnostic.ts ;
- *   — « texture » : une propriété de formule (finition matifiante), ni un type
+ *   - « texture » : une propriété de formule (finition matifiante), ni un type
  *     de peau ni une préoccupation en soi.
  *
- * Deux tags sont d'une famille arbitrée plutôt qu'évidente — voir le rapport
+ * Deux tags sont d'une famille arbitrée plutôt qu'évidente - voir le rapport
  * de la tâche 7 pour le détail : « apaisant » est rangé en préoccupation
  * (l'irritation est une préoccupation au même titre que le manque d'éclat),
  * et « solaire » en geste (il désigne la catégorie « solaires », comme
@@ -63,12 +63,12 @@ const VOCABULAIRE: { key: string; labelFr: string; labelEn: string; family: stri
   { key: "anti_age", labelFr: "Anti-âge", labelEn: "Anti-ageing", family: "preoccupation" },
   { key: "apaisant", labelFr: "Apaisant", labelEn: "Soothing", family: "preoccupation" },
   // Porté par dix produits du catalogue (kk-catalog.json) et absent du premier
-  // relevé : sans lui, l'hyperpigmentation — première préoccupation de ce
-  // marché — n'existait tout simplement pas comme facette.
+  // relevé : sans lui, l'hyperpigmentation - première préoccupation de ce
+  // marché - n'existait tout simplement pas comme facette.
   { key: "taches", labelFr: "Taches", labelEn: "Dark spots", family: "preoccupation" },
 
   // ---- budget : préférence de gamme, lue par buildRoutine() pour départager
-  // des candidats à score de tags égal — jamais affichée en facette.
+  // des candidats à score de tags égal - jamais affichée en facette.
   { key: "budget_eco", labelFr: "Petit budget", labelEn: "Budget-friendly", family: "budget" },
   { key: "premium", labelFr: "Premium", labelEn: "Premium", family: "budget" },
 
@@ -93,7 +93,7 @@ async function main() {
     await prisma.productTag.upsert({
       where: { key: tag.key },
       // Le seed est rejouable : il rafraîchit les libellés sans toucher à ce
-      // qui décide du comportement — `family` (qui fait, ou non, d'un tag une
+      // qui décide du comportement - `family` (qui fait, ou non, d'un tag une
       // facette de catalogue), `position` et `active` ne sont fixés qu'à la
       // création. Réécrire `family` ici suffirait à dé-facetter en silence un
       // tag que le client vient de reclasser depuis l'écran d'administration.

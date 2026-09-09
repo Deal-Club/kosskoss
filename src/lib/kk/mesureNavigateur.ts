@@ -7,7 +7,7 @@
  * ── MODULE PUR CÔTÉ IMPORTS, PAS CÔTÉ EFFETS ─────────────────────────────────
  *
  * Ce fichier vit dans `src/lib/kk/` : il n'importe que `@/lib/consent` et
- * `@/lib/kk/mesure`, deux modules purs — voir la règle en tête de ceux-ci.
+ * `@/lib/kk/mesure`, deux modules purs - voir la règle en tête de ceux-ci.
  * Il touche en revanche `window` et `document`, des API du navigateur et non
  * des imports : c'est le même principe que `use-scroll-lock.ts`, déjà dans ce
  * dossier. Chaque fonction qui les utilise se protège par
@@ -19,19 +19,19 @@
  * GA4 ne se charge, et un événement ne part vers lui, QUE si `ga4Id` est
  * configuré ET que le visiteur a accepté la catégorie « mesure ». Le Pixel
  * (et sa CAPI, côté serveur) suit la même règle sur la catégorie « marketing »
- * — c'est la catégorie sous laquelle le bandeau de consentement présente déjà
+ * - c'est la catégorie sous laquelle le bandeau de consentement présente déjà
  * la publicité et le remarketing (voir `cookie-consent.tsx`), et le Pixel Meta
  * en est l'exemple même.
  *
  * La bibliothèque externe (`gtag/js`, `fbevents.js`) n'est chargée qu'une fois
  * les deux conditions réunies : c'est CETTE requête réseau, vers un domaine
- * tiers, qui constitue le dépôt soumis à article 82 — pas seulement les
+ * tiers, qui constitue le dépôt soumis à article 82 - pas seulement les
  * événements envoyés ensuite.
  *
  * ── LE CONSENTEMENT EST RELU À CHAQUE ÉVÉNEMENT, PAS SEULEMENT AU CHARGEMENT ─
  *
  * Un retrait de consentement en cours de visite n'entraîne PAS toujours un
- * rechargement de page — `cookie-consent.tsx` ne recharge que si le nouveau
+ * rechargement de page - `cookie-consent.tsx` ne recharge que si le nouveau
  * choix OUVRE une catégorie qui ne l'était pas, jamais quand il se contente
  * d'en refermer une. Une bibliothèque déjà chargée reste donc en mémoire après
  * un refus tardif : rien ne peut l'en retirer. C'est pourquoi
@@ -76,8 +76,8 @@ declare global {
  * ici à dessein plutôt qu'importée : ce fichier reste un module de
  * `src/lib/kk/`, qui n'importe que des modules purs (voir l'en-tête), et
  * `cookie-consent.tsx` est un composant React. Les deux copies partagent la
- * même logique de fond — `CONSENT_COOKIE` et `parseConsent`, tous deux définis
- * une seule fois dans `@/lib/consent` — ce qui est le format qui a divergé une
+ * même logique de fond - `CONSENT_COOKIE` et `parseConsent`, tous deux définis
+ * une seule fois dans `@/lib/consent` - ce qui est le format qui a divergé une
  * fois dans ce projet (voir `parametres.ts`), pas cette poignée de lignes.
  */
 function litConsentementCookie(): string | undefined {
@@ -121,7 +121,7 @@ function chargerGa4(id: string): void {
 }
 
 /**
- * Charge la bibliothèque `fbevents.js`, une seule fois — reprise du code de
+ * Charge la bibliothèque `fbevents.js`, une seule fois - reprise du code de
  * base officiel Meta, SANS l'appel automatique `fbq('track', 'PageView')`
  * qu'il porte d'habitude : seuls les quatre événements du critère 20 doivent
  * partir, pas une vue de page que le brief ne demande pas.
@@ -180,13 +180,13 @@ export function initialiserMesure(identifiants: { ga4Id: string; metaPixelId: st
 
 /**
  * Émet un événement vers GA4 et/ou le Pixel Meta, chacun sous condition de son
- * propre couple (identifiant configuré, catégorie de consentement accordée) —
+ * propre couple (identifiant configuré, catégorie de consentement accordée) -
  * relu ICI, pas seulement au chargement (voir l'en-tête du fichier).
  *
  * N'exige pas que `initialiserMesure` ait déjà tourné : si le traceur n'a pas
  * été chargé (identifiant absent au montage, consentement pas encore donné),
  * `window.gtag`/`window.fbq` sont simplement absents et rien ne part. Cette
- * fonction ne charge JAMAIS la bibliothèque elle-même — seul `chargerGa4`/
+ * fonction ne charge JAMAIS la bibliothèque elle-même - seul `chargerGa4`/
  * `chargerPixel`, appelés par `initialiserMesure`, le font. Un consentement
  * accordé APRÈS le montage sans rechargement de page (bandeau rouvert depuis
  * le pied de page, par exemple) n'active donc rien tant que la page n'a pas
@@ -232,7 +232,7 @@ export function mesurerEvenement(detail: EvenementDetail): void {
  *
  * `optionsMeta.evenement` : si renseigné, un `fbq('track', …)` part aussi sous
  * consentement « marketing » (ex. « Contact » pour le clic WhatsApp). Absent,
- * l'événement reste GA4 uniquement — le cas de `page_view` et du diagnostic,
+ * l'événement reste GA4 uniquement - le cas de `page_view` et du diagnostic,
  * que le Pixel n'a pas à recevoir.
  */
 export function mesurerAction(

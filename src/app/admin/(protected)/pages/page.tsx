@@ -10,7 +10,7 @@ import { listLegalPageSummaries } from "@/server/legalPages";
  *
  * La colonne qui compte est « État » : elle dit, pour chaque langue, si la page
  * affiche encore le texte livré avec le site ou une version réécrite depuis
- * l'administration — et par qui.
+ * l'administration - et par qui.
  */
 
 const LOCALES: readonly LegalLocale[] = ["fr", "en"];
@@ -108,7 +108,7 @@ export default async function AdminPagesPage() {
                         </span>
                       </>
                     ) : (
-                      "—"
+                      "-"
                     )}
                   </td>
 

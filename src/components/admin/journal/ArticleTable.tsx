@@ -14,7 +14,7 @@ import type { AdminArticleRow } from "@/server/journal/store";
  *
  * La sélection impose un composant client ; le filtrage, le tri et la
  * pagination restent côté serveur, dans l'URL. Un écran filtré reste donc
- * partageable et rechargeable — ce que perdrait un état gardé en mémoire.
+ * partageable et rechargeable - ce que perdrait un état gardé en mémoire.
  */
 
 const STATUS_STYLES: Record<ArticleStatus, string> = {
@@ -54,7 +54,7 @@ const TRASH_ACTIONS: BulkAction[] = [
 ];
 
 function formatDate(date: Date | null): string {
-  if (!date) return "—";
+  if (!date) return "-";
   return new Intl.DateTimeFormat("fr-FR", { dateStyle: "short", timeStyle: "short" }).format(date);
 }
 
@@ -223,10 +223,10 @@ export function ArticleTable({
                 </td>
 
                 <td className="px-4 py-3 align-top text-muted-foreground">
-                  {article.categoryLabel || "—"}
+                  {article.categoryLabel || "-"}
                 </td>
                 <td className="px-4 py-3 align-top text-muted-foreground">
-                  {article.authorName || "—"}
+                  {article.authorName || "-"}
                 </td>
 
                 <td className="px-4 py-3 align-top">

@@ -7,7 +7,7 @@
  *
  * Cette route n'est PAS ce qui rend un article visible : `isPubliclyVisible`
  * sert déjà tout article dont l'heure est passée. Elle met l'état de la base en
- * accord avec la réalité — pour que le back-office affiche « Publié », que le
+ * accord avec la réalité - pour que le back-office affiche « Publié », que le
  * sitemap reprenne l'article et que le cache soit invalidé au bon moment.
  *
  * Exemple de tâche planifiée (Coolify, cron système) :

@@ -14,10 +14,10 @@ import type { Locale } from "@/i18n/routing";
  * On alterne donc les marques : une par tour, dans l'ordre du catalogue, puis
  * on recommence. Chaque rangée de quatre montre ainsi quatre maisons
  * différentes tant qu'il y en a assez, et l'ordre reste stable d'un rendu à
- * l'autre — pas d'aléatoire, qui interdirait toute mise en cache.
+ * l'autre - pas d'aléatoire, qui interdirait toute mise en cache.
  *
  * Montants : le champ historique `priceCents` porte un entier de FCFA (pas de
- * sous-unité) — voir docs/13, chantier « fondation FCFA ».
+ * sous-unité) - voir docs/13, chantier « fondation FCFA ».
  * Renvoie une liste vide sans erreur si le catalogue est vide.
  */
 export async function getHomeProducts(limit: number, locale: Locale): Promise<KKProductView[]> {
@@ -59,10 +59,10 @@ export async function getHomeProducts(limit: number, locale: Locale): Promise<KK
  *
  * Trois garde-fous, parce que le bloc est titré « Avis clients » et qu'un
  * visiteur doit pouvoir s'y fier :
- *   1. `status: "approved"` — seuls les avis passés par la modération sortent ;
- *   2. note minimale de 4 — l'accueil est une vitrine, la fiche produit porte
+ *   1. `status: "approved"` - seuls les avis passés par la modération sortent ;
+ *   2. note minimale de 4 - l'accueil est une vitrine, la fiche produit porte
  *      l'intégralité des avis, bons comme mauvais ;
- *   3. corps d'au moins 40 caractères — un « super » isolé n'apporte rien.
+ *   3. corps d'au moins 40 caractères - un « super » isolé n'apporte rien.
  *
  * Renvoie une liste vide tant qu'aucun avis réel n'est publié : la section se
  * masque alors d'elle-même, comme les rails produits. Aucun texte de repli
@@ -107,11 +107,11 @@ export async function getHomeTestimonials(limit = 3): Promise<KKTestimonialView[
 /**
  * Note moyenne et répartition des avis publiés.
  *
- * Calculées en base sur les seuls avis MODÉRÉS, et sur TOUTES les notes — y
+ * Calculées en base sur les seuls avis MODÉRÉS, et sur TOUTES les notes - y
  * compris les mauvaises. C'est la différence entre une note moyenne et un
  * argument de vente : `getHomeTestimonials` ne montre que des avis à 4 et 5
  * parce que l'accueil est une vitrine, mais la moyenne affichée à côté doit
- * porter sur l'ensemble, sans quoi elle serait fausse — et une note inventée
+ * porter sur l'ensemble, sans quoi elle serait fausse - et une note inventée
  * ou tronquée relève de la pratique commerciale trompeuse (article L121-2 du
  * Code de la consommation).
  *

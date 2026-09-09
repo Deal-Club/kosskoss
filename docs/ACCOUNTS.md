@@ -1,4 +1,4 @@
-# Espace client `/konto` — MLC Bois
+# Espace client `/konto` - MLC Bois
 
 Ce document décrit l'espace client livré dans `src/app/[locale]/konto/`, les décisions de
 sécurité qui le sous-tendent, ce qui est couvert au regard du droit français et du RGPD,
@@ -38,7 +38,7 @@ PostgreSQL.
 | `src/server/accountMessages.ts` | Messages d'erreur français des routes API |
 | `src/server/emails/customerAccount.ts` | Gabarits d'e-mail (bienvenue, compte déjà existant, réinitialisation), DE et EN |
 
-### Routes API — `src/app/api/account/`
+### Routes API - `src/app/api/account/`
 
 | Route | Méthode | Session requise |
 | --- | --- | --- |
@@ -53,7 +53,7 @@ PostgreSQL.
 | `/api/account/export` | GET | **oui** |
 | `/api/account/delete` | POST | **oui** |
 
-### Pages — `src/app/[locale]/konto/`
+### Pages - `src/app/[locale]/konto/`
 
 | Chemin | Protégée | Contenu |
 | --- | --- | --- |
@@ -69,16 +69,16 @@ PostgreSQL.
 
 Toutes ces pages sont en `robots: { index: false, follow: false }` et en `force-dynamic`.
 Les textes vivent dans le namespace `account` de `src/messages/fr.json` et
-`src/messages/en.json` — 164 clés, strictement identiques dans les deux fichiers.
+`src/messages/en.json` - 164 clés, strictement identiques dans les deux fichiers.
 
 ### Back-office
 
-`src/app/admin/(protected)/customers/page.tsx` — liste paginée en français (nom, e-mail,
+`src/app/admin/(protected)/customers/page.tsx` - liste paginée en français (nom, e-mail,
 ville, nombre de commandes, inscription, dernière connexion, statut), recherche, entrée
 « Clients » dans la barre latérale (section « Boutique », icône `UserRound`).
 La page est en **lecture seule** : elle ne charge aucun mot de passe et ne permet ni
 modification ni suppression d'un compte. La suppression relève du droit à l'effacement, que
-le client exerce lui-même — c'est ce qui garantit qu'elle s'accompagne toujours de
+le client exerce lui-même - c'est ce qui garantit qu'elle s'accompagne toujours de
 l'anonymisation des commandes.
 
 ---
@@ -115,7 +115,7 @@ enregistrée.
 | Écran | Comportement |
 | --- | --- |
 | Connexion | Message unique `invalid_credentials` et statut 401, que l'adresse soit inconnue, le mot de passe faux ou le compte désactivé. Quand l'adresse n'existe pas, un **haché factice** est tout de même vérifié (`DUMMY_HASH`) pour que la durée de la réponse ne trahisse rien |
-| Inscription | Réponse **rigoureusement identique** dans les deux cas : même statut 200, même corps. L'information passe par la boîte aux lettres du titulaire — soit l'e-mail de bienvenue, soit « un compte existe déjà, voici le lien de réinitialisation » |
+| Inscription | Réponse **rigoureusement identique** dans les deux cas : même statut 200, même corps. L'information passe par la boîte aux lettres du titulaire - soit l'e-mail de bienvenue, soit « un compte existe déjà, voici le lien de réinitialisation » |
 | Mot de passe oublié | Réponse identique dans les deux cas, formulation OWASP : « Falls ein Konto mit dieser E-Mail-Adresse besteht … ». Aucun e-mail n'est envoyé à une adresse inconnue |
 | Compteurs de tentatives | Ils s'incrémentent que le compte existe ou non : un blocage 429 qui n'arriverait que sur les adresses connues serait un aveu |
 
@@ -129,7 +129,7 @@ un clic plus long ; c'est le prix de la règle.
 - Hachage **scrypt** via `src/lib/password.ts`, déjà en place pour le back-office. Sel unique
   par compte, comparaison en temps constant.
 - Longueur minimale **12 caractères**, maximum 200, **aucune règle de composition** et aucune
-  expiration périodique — la longueur prime sur la complexité (BSI ORP.4.A22, OWASP).
+  expiration périodique - la longueur prime sur la complexité (BSI ORP.4.A22, OWASP).
   La borne haute évite qu'une entrée démesurée serve de levier de déni de service sur scrypt.
 - Le mot de passe **n'est jamais renvoyé, même haché** (aucun `passwordHash` ne sort de
   `src/server/customers.ts` : `CustomerRecord` ne le contient pas) et **n'est jamais journalisé**.
@@ -140,7 +140,7 @@ un clic plus long ; c'est le prix de la règle.
 ### 2.4 Réinitialisation
 
 - Jeton de **32 octets aléatoires** (`randomBytes`), transmis uniquement dans le lien.
-- La base ne stocke que son **SHA-256** — une fuite de la base ne permet pas de prendre la main
+- La base ne stocke que son **SHA-256** - une fuite de la base ne permet pas de prendre la main
   sur un compte.
 - Validité **30 minutes**, usage unique, et toutes les demandes du même compte tombent
   ensemble à la première utilisation.
@@ -160,7 +160,7 @@ un clic plus long ; c'est le prix de la règle.
 ### 2.6 Cloisonnement des données
 
 - Une commande n'est visible dans l'espace client que si elle porte l'identifiant du compte
-  (`getCustomerOrder`). Une commande d'un autre compte, ou passée en invité, renvoie **404** —
+  (`getCustomerOrder`). Une commande d'un autre compte, ou passée en invité, renvoie **404** -
   rien n'indique si le numéro existe ailleurs (vérifié).
 - Le rattachement d'une commande à un compte est un **paramètre serveur** de `createOrder`, pas
   un champ de la charge utile : le navigateur ne peut pas désigner le compte à créditer.
@@ -170,7 +170,7 @@ un clic plus long ; c'est le prix de la règle.
 
 ---
 
-## 3. Conformité — ce qui est couvert et pourquoi
+## 3. Conformité - ce qui est couvert et pourquoi
 
 ### 3.1 La commande en tant qu'invité reste possible
 
@@ -215,7 +215,7 @@ téléphone, les demandes de réinitialisation en cours, la session.
 
 **Ce qui subsiste, et pourquoi** : la commande. Les justificatifs comptables et les factures se
 conservent **huit ans** depuis le *Viertes Bürokratieentlastungsgesetz* (BEG IV, BGBl. du
-29 octobre 2024, en vigueur au 1ᵉʳ janvier 2025) — § 147 al. 3 AO et § 257 al. 4 HGB ; les
+29 octobre 2024, en vigueur au 1ᵉʳ janvier 2025) - § 147 al. 3 AO et § 257 al. 4 HGB ; les
 livres, inventaires et comptes annuels restent à **dix ans**. L'art. 17 § 3 b RGPD réserve
 expressément le traitement nécessaire au respect d'une obligation légale.
 
@@ -247,7 +247,7 @@ jeton d'accès changé.
   § 7 UWG et concerne la publicité par e-mail, pas la création d'un compte. Le drapeau
   `emailVerified` est néanmoins en place pour l'ajouter (voir § 5).
 - **Aucun couplage publicitaire** : la création du compte ne s'accompagne d'aucune case
-  d'inscription à une newsletter, et l'e-mail de bienvenue est purement transactionnel — un
+  d'inscription à une newsletter, et l'e-mail de bienvenue est purement transactionnel - un
   message de confirmation contenant de la publicité est une cause classique d'Abmahnung.
 - **§ 312j BGB** : l'espace client ne propose **aucune commande en un clic ni recommande**
   depuis l'historique. Le seul chemin de commande reste le tunnel existant, avec son
@@ -326,21 +326,21 @@ page, exactement comme le code de connexion du back-office. Le garde-fou porte s
 
 ## 6. Sources
 
-- DSK, *Beschluss* du 24 mars 2022, « Datenschutzkonformer Online-Handel mittels Gastzugang » —
+- DSK, *Beschluss* du 24 mars 2022, « Datenschutzkonformer Online-Handel mittels Gastzugang » -
   <https://www.datenschutzkonferenz-online.de/media/dskb/20222604_beschluss_datenminimierung_onlinehandel.pdf>
 - OLG Hamburg, 27 février 2025, 5 U 30/24 (limites du Beschluss précédent)
-- § 147 AO — <https://www.gesetze-im-internet.de/ao_1977/__147.html>
-- § 257 HGB — <https://www.gesetze-im-internet.de/hgb/__257.html>
+- § 147 AO - <https://www.gesetze-im-internet.de/ao_1977/__147.html>
+- § 257 HGB - <https://www.gesetze-im-internet.de/hgb/__257.html>
 - Viertes Bürokratieentlastungsgesetz (BEG IV), BGBl. du 29 octobre 2024 : justificatifs
   comptables ramenés de dix à huit ans au 1ᵉʳ janvier 2025
 - § 14 al. 4 UStG (mentions obligatoires de la facture) ; § 312f et § 312j BGB
 - RGPD, art. 5 § 1 c, 6 § 1 b, 7 § 4, 15, 16, 17 (dont § 3 b), 20, 32
-- OWASP Authentication Cheat Sheet —
+- OWASP Authentication Cheat Sheet -
   <https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html>
 - OWASP WSTG-IDNT-04, « Testing for Account Enumeration »
-- OWASP Session Management Cheat Sheet —
+- OWASP Session Management Cheat Sheet -
   <https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html>
-- BSI IT-Grundschutz ORP.4 (A13, A22, A23) —
+- BSI IT-Grundschutz ORP.4 (A13, A22, A23) -
   <https://www.bsi.bund.de/SharedDocs/Downloads/DE/BSI/Grundschutz/IT-GS-Kompendium_Einzel_PDFs_2023/02_ORP_Organisation_und_Personal/ORP_4_Identitaets_und_Berechtigungsmanagement_Editon_2023.pdf>
 
 ---
@@ -353,7 +353,7 @@ Un seul compte de test subsiste, volontairement identifiable :
 testkonto+claude@mlc-bois.fr   /   WiederEinNeuesPasswort26
 ```
 
-Il porte la commande `HP-2026-000004`. À supprimer avant toute mise en production — depuis
+Il porte la commande `HP-2026-000004`. À supprimer avant toute mise en production - depuis
 `/konto/daten`, ce qui exerce au passage le chemin de suppression décrit au § 3.3.
 La commande `HP-2026-000006` est le résidu anonymisé du compte de test supprimé, et
 `HP-2026-000005` une commande invité de vérification.

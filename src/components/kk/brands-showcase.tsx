@@ -9,21 +9,21 @@ import type { BrandShowcaseItem } from "@/server/kk/brands";
  *
  * ── Pourquoi cette section existe ─────────────────────────────────────────
  * La boutique regroupe les produits de douze maisons, dont des marques que la
- * cliente connaît déjà — Clinique, Clarins, Biotherm, Drunk Elephant. C'est un
+ * cliente connaît déjà - Clinique, Clarins, Biotherm, Drunk Elephant. C'est un
  * argument de confiance de premier ordre sur un marché où la contrefaçon est le
  * premier frein d'achat, et l'accueil ne le disait nulle part : les marques n'y
  * apparaissaient qu'en petites capitales au-dessus du nom de chaque produit.
  *
  * ── Pourquoi des packshots et non des logos ───────────────────────────────
  * Le projet ne possède aucun logo de ces maisons. Plutôt que d'attendre douze
- * fichiers, chaque carte montre une référence réelle de la maison — celle que
+ * fichiers, chaque carte montre une référence réelle de la maison - celle que
  * la rédaction a le mieux notée. On y gagne d'ailleurs quelque chose qu'un mur
  * de logos ne donne pas : on voit ce qu'on vend.
  *
  * ── Ce que la carte promet ────────────────────────────────────────────────
  * Le nombre de références est un compte réel, pas un chiffre d'affichage : qui
  * clique sur « 18 références » en trouve dix-huit. C'est la raison pour
- * laquelle les maisons sont classées par volume — une carte qui mène à un rayon
+ * laquelle les maisons sont classées par volume - une carte qui mène à un rayon
  * d'un seul article déçoit deux fois.
  */
 export function BrandsShowcase({ brands }: { brands: BrandShowcaseItem[] }) {
@@ -35,7 +35,7 @@ export function BrandsShowcase({ brands }: { brands: BrandShowcaseItem[] }) {
         <div>
           <p className="eyebrow">Nos maisons</p>
           {/* Pas de compte dans le titre : le catalogue s'étoffe, et un titre
-              qui annonce un nombre vieillit à chaque maison ajoutée — ou pire,
+              qui annonce un nombre vieillit à chaque maison ajoutée - ou pire,
               se contredit tout seul si la grille en montre douze quand le
               catalogue en compte vingt. Ce que le titre doit dire tient dans
               « un seul panier » : c'est la promesse du multimarque, et elle
@@ -43,7 +43,7 @@ export function BrandsShowcase({ brands }: { brands: BrandShowcaseItem[] }) {
           <h2 className="mt-2 text-deep">Toutes vos marques, un seul panier</h2>
           <p className="lead mt-2 max-w-xl">
             Des maisons que vous connaissez et d&rsquo;autres à découvrir, réunies au même
-            endroit — et toutes achetées par un circuit identifié.
+            endroit - et toutes achetées par un circuit identifié.
           </p>
         </div>
         <Link
@@ -67,7 +67,7 @@ export function BrandsShowcase({ brands }: { brands: BrandShowcaseItem[] }) {
               {/* Le packshot occupe TOUT le cadre, sans marge intérieure.
                   Les visuels ne sont pas détourés : ce sont des JPEG carrés
                   déjà photographiés sur fond blanc, et ce blanc n'est même pas
-                  constant d'un fichier à l'autre — mesuré entre 245 et 254 sur
+                  constant d'un fichier à l'autre - mesuré entre 245 et 254 sur
                   le catalogue. Posé sur un aplat, quel qu'il soit, un tel visuel
                   dessine un carré clair au milieu de la carte ; aucune couleur
                   de fond ne peut le rattraper puisqu'elle ne peut pas coller à

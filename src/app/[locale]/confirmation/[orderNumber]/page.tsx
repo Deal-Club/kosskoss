@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
  * celle de la page consultée : un client qui a commandé en anglais peut
  * rouvrir cette page depuis un lien reçu par e-mail sur un navigateur réglé en
  * français, et le message envoyé au vendeur doit rester celui qu'il a choisi
- * à la commande — voir `src/lib/kk/langue.ts`, déjà utilisé pour les e-mails
+ * à la commande - voir `src/lib/kk/langue.ts`, déjà utilisé pour les e-mails
  * transactionnels avec la même exigence.
  */
 function whatsappHref(
@@ -82,7 +82,7 @@ export default async function ConfirmationPage({
   // Deux preuves d'accès acceptées, dans cet ordre.
   //
   // Le COOKIE d'abord : c'est la voie normale depuis que le retour de paiement
-  // ne peut plus emporter le jeton dans l'adresse — le prestataire enregistre
+  // ne peut plus emporter le jeton dans l'adresse - le prestataire enregistre
   // cette adresse chez lui, un jeton n'y a pas sa place.
   //
   // Le paramètre `?t=` ensuite, pour les accès qui ne viennent pas du
@@ -96,11 +96,11 @@ export default async function ConfirmationPage({
   // Même source que le pied de page et le bouton flottant : `getParametres`
   // est mémoïsé par requête, cet appel ne coûte donc rien de plus qu'une
   // lecture déjà faite ailleurs sur la page. Le numéro rendu est en chiffres
-  // seuls — c'est tout ce que `wa.me` accepte — donc utilisable tel quel dans
+  // seuls - c'est tout ce que `wa.me` accepte - donc utilisable tel quel dans
   // le lien construit par `whatsappHref`, sans nettoyage supplémentaire.
   const numeroWhatsapp = numeroWhatsappEffectif(await getParametres());
 
-  // La langue de la COMMANDE fait foi pour le message WhatsApp — pas celle de
+  // La langue de la COMMANDE fait foi pour le message WhatsApp - pas celle de
   // la page consultée. `choisirLangue` filtre toute valeur historique qui ne
   // serait ni « fr » ni « en ».
   const tWa = await getTranslations({ locale: choisirLangue(order.locale), namespace: "commande" });
@@ -113,13 +113,13 @@ export default async function ConfirmationPage({
   //
   // Elle sert deux parcours devenus très différents depuis le branchement de
   // la passerelle :
-  //   — le client a payé en ligne et revient de GeniusPay ; le webhook a déjà
+  //   - le client a payé en ligne et revient de GeniusPay ; le webhook a déjà
   //     fait basculer la commande en « payée » ;
-  //   — le client a choisi le paiement à la livraison, ou la passerelle n'était
+  //   - le client a choisi le paiement à la livraison, ou la passerelle n'était
   //     pas configurée : le règlement se cale par WhatsApp.
   //
   // Le texte était écrit pour le second cas uniquement. Il disait à quelqu'un
-  // QUI VENAIT DE PAYER d'aller « organiser le paiement » par WhatsApp —
+  // QUI VENAIT DE PAYER d'aller « organiser le paiement » par WhatsApp -
   // c'est-à-dire l'invitait à régler une seconde fois.
   const payee = order.paymentStatus === "payee";
 
@@ -179,7 +179,7 @@ export default async function ConfirmationPage({
             </ul>
             {/* Sous-total, remise éventuelle et frais de livraison AVANT le
                 total (TK-06) : sans eux, la somme des lignes d'articles ne
-                retombait pas sur le total — les frais de livraison, facturés,
+                retombait pas sur le total - les frais de livraison, facturés,
                 n'apparaissaient nulle part. Mêmes champs que le calcul serveur
                 (subtotalCents / discountCents / shippingCents, voir
                 server/kk/checkout.ts), jamais une arithmétique refaite ici. */}

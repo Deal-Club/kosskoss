@@ -246,7 +246,7 @@ export function CartView() {
         </div>
       </div>
 
-      {/* Récapitulatif : prix total TTC, frais de port et part de TVA — les
+      {/* Récapitulatif : prix total TTC, frais de port et part de TVA - les
           informations exigées par la Preisangabenverordnung § 3. */}
       <aside className="lg:sticky lg:top-4 lg:self-start">
         <div className="rounded-sm border border-border bg-white p-5">

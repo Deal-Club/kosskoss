@@ -1,5 +1,5 @@
 /**
- * ATTENTION — CE SCRIPT DÉCRIT L'ANCIENNE ORGANISATION DU CATALOGUE.
+ * ATTENTION - CE SCRIPT DÉCRIT L'ANCIENNE ORGANISATION DU CATALOGUE.
  *
  * Le catalogue a été réorganisé par conditionnement (vrac, palette, granulés,
  * bois compressé, poêle à bois, allumage) par scripts/restructurer-categories.ts.
@@ -14,7 +14,7 @@
  *
  * Le script est ADDITIF : il crée ou met à jour les groupes « brennholz » et
  * « zubehoer » et leurs produits, sans jamais toucher aux autres. Relançable
- * autant de fois que nécessaire — tout passe par des upserts sur le slug.
+ * autant de fois que nécessaire - tout passe par des upserts sur le slug.
  * Les fiches guide (intro, sections, conclusion) sont recréées à chaque
  * passage : elles n'ont pas de clé naturelle à upserter dessus.
  *
@@ -140,8 +140,8 @@ function scheite(options: {
       produits.push({
         slug: `${slugBase}-${laenge.cm}cm-${box.suffix}`,
         brand,
-        name: `${essence} prêt à brûler ${laenge.cm} cm — ${box.label} ${box.map.toLocaleString("fr-FR")} MAP`,
-        nameEn: `${essenceEn} kiln-dried ${laenge.cm} cm — ${box.labelEn} ${box.map} loose m³`,
+        name: `${essence} prêt à brûler ${laenge.cm} cm - ${box.label} ${box.map.toLocaleString("fr-FR")} MAP`,
+        nameEn: `${essenceEn} kiln-dried ${laenge.cm} cm - ${box.labelEn} ${box.map} loose m³`,
         short: `Bûches de ${essence.toLowerCase()} fendues à ${laenge.cm} cm, séchées en séchoir sous 18 % d'humidité sur brut. ${box.label} de ${box.map.toLocaleString("fr-FR")} mètre cube apparent, prête à brûler dès la livraison.`,
         shortEn: `${essenceEn} logs cut to ${laenge.cm} cm, kiln-dried below 18 % residual moisture. ${box.labelEn} holding ${box.map} loose cubic metres, ready to burn.`,
         bullets: [
@@ -200,9 +200,9 @@ const groups: SeedGroup[] = [
           {
             heading: "Pourquoi le hêtre reste la référence",
             headingEn: "Why beech remains the benchmark",
-            body: "Bois dense à combustion lente, il tient la braise longtemps et ne projette presque pas d'étincelles — un atout dès qu'un enfant ou un animal partage la pièce.",
+            body: "Bois dense à combustion lente, il tient la braise longtemps et ne projette presque pas d'étincelles - un atout dès qu'un enfant ou un animal partage la pièce.",
             bodyEn:
-              "A dense, slow-burning wood, it holds embers for a long time and throws almost no sparks — an advantage whenever a child or a pet shares the room.",
+              "A dense, slow-burning wood, it holds embers for a long time and throws almost no sparks - an advantage whenever a child or a pet shares the room.",
           },
           {
             heading: "Poêle fermé, insert ou masse",
@@ -237,14 +237,14 @@ const groups: SeedGroup[] = [
         label: "Chêne",
         labelEn: "Oak firewood",
         description:
-          "Le chêne est le bois qui tient la braise le plus longtemps. Dense et riche en tanins, il convient aux poêles de masse et aux longues soirées de chauffe — moins aux foyers ouverts, car sa combustion dégage une odeur plus marquée.",
+          "Le chêne est le bois qui tient la braise le plus longtemps. Dense et riche en tanins, il convient aux poêles de masse et aux longues soirées de chauffe - moins aux foyers ouverts, car sa combustion dégage une odeur plus marquée.",
         descriptionEn:
-          "Oak holds embers the longest. The wood is dense and rich in tannins, which suits masonry heaters and long evenings — less so open fireplaces, as it smells stronger while burning.",
+          "Oak holds embers the longest. The wood is dense and rich in tannins, which suits masonry heaters and long evenings - less so open fireplaces, as it smells stronger while burning.",
         image: `${IMG}/eiche.jpg`,
         guideIntro:
           "Le chêne demande un séchage plus long que les autres essences à cause de sa densité : c'est pour cela que nous le passons systématiquement au séchoir plutôt que de le vendre séché à l'air.",
         guideIntroEn:
-          "Because of its density, oak needs longer drying than other species — which is why we always kiln-dry it instead of selling it air-dried.",
+          "Because of its density, oak needs longer drying than other species - which is why we always kiln-dry it instead of selling it air-dried.",
         guideClosing:
           "Un doute sur l'humidité d'une bûche ? Un humidimètre à moins de 20 € règle la question en quelques secondes.",
         guideClosingEn:
@@ -308,8 +308,8 @@ const groups: SeedGroup[] = [
           {
             heading: "Allumage facile, combustion rapide",
             headingEn: "Easy to light, quick to burn",
-            body: "Il prend feu plus vite que le hêtre ou le chêne — pratique en complément d'allumage, moins adapté pour tenir une longue soirée seul.",
-            bodyEn: "It catches faster than beech or oak — handy as a kindling booster, less suited on its own for a long evening.",
+            body: "Il prend feu plus vite que le hêtre ou le chêne - pratique en complément d'allumage, moins adapté pour tenir une longue soirée seul.",
+            bodyEn: "It catches faster than beech or oak - handy as a kindling booster, less suited on its own for a long evening.",
           },
           {
             heading: "Attention aux étincelles",
@@ -335,9 +335,9 @@ const groups: SeedGroup[] = [
         label: "Frêne",
         labelEn: "Ash firewood",
         description:
-          "Le frêne se fend proprement, brûle avec beaucoup de calme et laisse peu de cendres. Chez les poêliers, c'est souvent considéré comme le bois de chauffage le plus agréable — ce qui explique qu'il reste rarement longtemps en stock.",
+          "Le frêne se fend proprement, brûle avec beaucoup de calme et laisse peu de cendres. Chez les poêliers, c'est souvent considéré comme le bois de chauffage le plus agréable - ce qui explique qu'il reste rarement longtemps en stock.",
         descriptionEn:
-          "Ash splits cleanly, burns very calmly and leaves little residue. Stove builders rate it the most pleasant firewood there is — which is why it rarely stays in stock.",
+          "Ash splits cleanly, burns very calmly and leaves little residue. Stove builders rate it the most pleasant firewood there is - which is why it rarely stays in stock.",
         image: `${IMG}/scheite-hell.jpg`,
         guideIntro:
           "Le frêne a la réputation, méritée, d'être le bois de chauffage le plus agréable à vivre au quotidien : peu de cendres, peu d'entretien, combustion sans à-coups.",
@@ -351,8 +351,8 @@ const groups: SeedGroup[] = [
           {
             heading: "Peu de cendres, peu d'entretien",
             headingEn: "Little ash, little upkeep",
-            body: "Sa combustion propre réduit la fréquence de vidage du cendrier — un vrai confort pour un usage quotidien.",
-            bodyEn: "Its clean burn reduces how often the ash pan needs emptying — a real comfort for daily use.",
+            body: "Sa combustion propre réduit la fréquence de vidage du cendrier - un vrai confort pour un usage quotidien.",
+            bodyEn: "Its clean burn reduces how often the ash pan needs emptying - a real comfort for daily use.",
           },
           {
             heading: "Un fendage sans effort",
@@ -384,9 +384,9 @@ const groups: SeedGroup[] = [
         label: "Mélange de feuillus",
         labelEn: "Mixed hardwood",
         description:
-          "Hêtre, chêne, frêne et charme mélangés, tels qu'ils sortent de la coupe. La voie la plus économique vers le bois dur — le pouvoir calorifique moyen reste à peine en dessous du hêtre pur.",
+          "Hêtre, chêne, frêne et charme mélangés, tels qu'ils sortent de la coupe. La voie la plus économique vers le bois dur - le pouvoir calorifique moyen reste à peine en dessous du hêtre pur.",
         descriptionEn:
-          "Beech, oak, ash and hornbeam mixed as they come off the saw. The cheapest route to hardwood — average heat output sits only just below pure beech.",
+          "Beech, oak, ash and hornbeam mixed as they come off the saw. The cheapest route to hardwood - average heat output sits only just below pure beech.",
         image: `${IMG}/hartholz-mix.jpg`,
         guideIntro:
           "Le mélange de feuillus n'est pas un choix par défaut : c'est le meilleur rapport qualité-prix du catalogue pour qui ne cherche pas une essence en particulier.",
@@ -458,8 +458,8 @@ const groups: SeedGroup[] = [
           {
             heading: "Un tiers de la place",
             headingEn: "A third of the space",
-            body: "À pouvoir calorifique égal, une bûche compressée occupe bien moins de volume qu'une bûche fendue classique — appréciable en cave ou en appartement.",
-            bodyEn: "For the same heat output, a compressed log takes up far less volume than a classic split log — a real plus in a cellar or a flat.",
+            body: "À pouvoir calorifique égal, une bûche compressée occupe bien moins de volume qu'une bûche fendue classique - appréciable en cave ou en appartement.",
+            bodyEn: "For the same heat output, a compressed log takes up far less volume than a classic split log - a real plus in a cellar or a flat.",
           },
           {
             heading: "La braise tient toute la nuit",
@@ -478,8 +478,8 @@ const groups: SeedGroup[] = [
           {
             slug: "crepito-buches-compressees-hetre-960-kg",
             brand: "CREPITO",
-            name: "CREPITO Bûches compressées Hêtre — Palette 960 kg",
-            nameEn: "CREPITO compressed beech logs — 960 kg pallet",
+            name: "CREPITO Bûches compressées Hêtre - Palette 960 kg",
+            nameEn: "CREPITO compressed beech logs - 960 kg pallet",
             short:
               "96 paquets de 10 kg, pure sciure de hêtre compressée sans liant. Humidité sous 8 %, pouvoir calorifique 4,9 kWh/kg.",
             shortEn:
@@ -502,8 +502,8 @@ const groups: SeedGroup[] = [
           {
             slug: "crepito-buches-compressees-hetre-240-kg",
             brand: "CREPITO",
-            name: "CREPITO Bûches compressées Hêtre — Quart de palette 240 kg",
-            nameEn: "CREPITO compressed beech logs — quarter pallet 240 kg",
+            name: "CREPITO Bûches compressées Hêtre - Quart de palette 240 kg",
+            nameEn: "CREPITO compressed beech logs - quarter pallet 240 kg",
             short:
               "24 paquets de 10 kg pour démarrer ou compléter du bois bûche. Même qualité que la palette complète.",
             shortEn:
@@ -525,8 +525,8 @@ const groups: SeedGroup[] = [
           {
             slug: "ma-buchhetre-manubois-ronde-900-kg",
             brand: "Ma Bûch'Hêtre",
-            name: "Ma Bûch'Hêtre (Manubois) Bûches rondes à trou — Palette 900 kg",
-            nameEn: "Ma Bûch'Hêtre (Manubois) round core-hole logs — 900 kg pallet",
+            name: "Ma Bûch'Hêtre (Manubois) Bûches rondes à trou - Palette 900 kg",
+            nameEn: "Ma Bûch'Hêtre (Manubois) round core-hole logs - 900 kg pallet",
             short:
               "Le trou central laisse l'air circuler à cœur : ces bûches s'enflamment plus vite et brûlent plus régulièrement que les formats pleins.",
             shortEn:
@@ -551,9 +551,9 @@ const groups: SeedGroup[] = [
         label: "Granulés de bois",
         labelEn: "Wood pellets",
         description:
-          "Certifiés ENplus A1, fabriqués à partir de sciure non traitée. Pour poêles et chaudières à granulés — un taux de cendres sous 0,7 % pour que le brûleur reste propre.",
+          "Certifiés ENplus A1, fabriqués à partir de sciure non traitée. Pour poêles et chaudières à granulés - un taux de cendres sous 0,7 % pour que le brûleur reste propre.",
         descriptionEn:
-          "ENplus A1 certified, made from untreated sawmill by-products. For pellet stoves and boilers — ash content below 0.7 % keeps the burner clean.",
+          "ENplus A1 certified, made from untreated sawmill by-products. For pellet stoves and boilers - ash content below 0.7 % keeps the burner clean.",
         image: `${IMG}/pellets.jpg`,
         guideIntro:
           "La certification ENplus A1 est le seul repère qui compte au moment d'acheter des granulés : elle garantit un taux d'humidité, un taux de cendres et une densité constants d'un sac à l'autre.",
@@ -587,8 +587,8 @@ const groups: SeedGroup[] = [
           {
             slug: "piveteau-bois-pellets-enplus-a1-975-kg-palette",
             brand: "Piveteau Bois",
-            name: "Piveteau Bois Granulés ENplus A1 — Palette 65 × 15 kg",
-            nameEn: "Piveteau Bois ENplus A1 wood pellets — pallet of 65 × 15 kg",
+            name: "Piveteau Bois Granulés ENplus A1 - Palette 65 × 15 kg",
+            nameEn: "Piveteau Bois ENplus A1 wood pellets - pallet of 65 × 15 kg",
             short:
               "975 kg sur une palette, chaque sac soudé individuellement. Diamètre 6 mm, pouvoir calorifique 4,9 kWh/kg, taux de cendres sous 0,5 %.",
             shortEn:
@@ -611,8 +611,8 @@ const groups: SeedGroup[] = [
           {
             slug: "limouzi-pellets-enplus-a1-15-kg-sac",
             brand: "Limouzi",
-            name: "Limouzi Granulés ENplus A1 — Sac 15 kg",
-            nameEn: "Limouzi ENplus A1 wood pellets — single 15 kg bag",
+            name: "Limouzi Granulés ENplus A1 - Sac 15 kg",
+            nameEn: "Limouzi ENplus A1 wood pellets - single 15 kg bag",
             short: "Pour compléter ou essayer avant de commander une palette entière. Même standard de qualité.",
             shortEn: "To top up or to try out before ordering a full pallet. Same quality standard.",
             bullets: ["Certifié ENplus A1", "4,8 kWh par kilogramme", "Sac de 15 kg", "Taux de cendres sous 0,5 %"],
@@ -630,9 +630,9 @@ const groups: SeedGroup[] = [
         label: "Allumage",
         labelEn: "Kindling & firelighters",
         description:
-          "Petit bois résineux sec et allume-feux naturels. Le résineux prend feu vite car sa résine dégaze tôt — d'où sa place au démarrage du feu, jamais en charge continue.",
+          "Petit bois résineux sec et allume-feux naturels. Le résineux prend feu vite car sa résine dégaze tôt - d'où sa place au démarrage du feu, jamais en charge continue.",
         descriptionEn:
-          "Dry softwood kindling and natural firelighters. Softwood lights fast because its resin gases off early — which is why it belongs at the start of a fire, not in the sustained load.",
+          "Dry softwood kindling and natural firelighters. Softwood lights fast because its resin gases off early - which is why it belongs at the start of a fire, not in the sustained load.",
         image: `${IMG}/anzuendholz.jpg`,
         guideIntro:
           "Un feu qui prend du premier coup dépend surtout de ce qu'on met au fond de l'âtre : petit bois résineux bien sec et un allume-feu qui laisse le temps aux flammes de s'installer.",
@@ -647,7 +647,7 @@ const groups: SeedGroup[] = [
             heading: "Pourquoi du résineux, jamais du feuillu",
             headingEn: "Why softwood, never hardwood",
             body: "La résine du pin et de l'épicéa dégage du gaz combustible dès les premières secondes : c'est ce qui rend l'allumage rapide et fiable.",
-            bodyEn: "Pine and spruce resin gives off combustible gas within seconds — that's what makes lighting fast and reliable.",
+            bodyEn: "Pine and spruce resin gives off combustible gas within seconds - that's what makes lighting fast and reliable.",
           },
           {
             heading: "L'allumage inversé",
@@ -658,16 +658,16 @@ const groups: SeedGroup[] = [
           {
             heading: "Quelle quantité par flambée",
             headingEn: "How much per fire",
-            body: "Comptez une poignée de petit bois et un allume-feu par démarrage — un sac de 25 litres couvre environ 25 flambées.",
-            bodyEn: "Budget a handful of kindling and one firelighter per start — a 25-litre bag covers roughly 25 fires.",
+            body: "Comptez une poignée de petit bois et un allume-feu par démarrage - un sac de 25 litres couvre environ 25 flambées.",
+            bodyEn: "Budget a handful of kindling and one firelighter per start - a 25-litre bag covers roughly 25 fires.",
           },
         ],
         products: [
           {
             slug: "mlc-bois-allumage-resineux-25-litres",
             brand: "MLC Bois",
-            name: "MLC Bois Allumage résineux — Sac 25 litres",
-            nameEn: "MLC Bois softwood kindling — 25 litre sack",
+            name: "MLC Bois Allumage résineux - Sac 25 litres",
+            nameEn: "MLC Bois softwood kindling - 25 litre sack",
             short:
               "Pin et épicéa finement fendus, séchés en séchoir sous 12 % d'humidité. De quoi démarrer environ 25 feux.",
             shortEn:
@@ -683,8 +683,8 @@ const groups: SeedGroup[] = [
           {
             slug: "mlc-bois-allumage-resineux-palette",
             brand: "MLC Bois",
-            name: "MLC Bois Allumage résineux — Palette 60 sacs",
-            nameEn: "MLC Bois softwood kindling — pallet of 60 sacks",
+            name: "MLC Bois Allumage résineux - Palette 60 sacs",
+            nameEn: "MLC Bois softwood kindling - pallet of 60 sacks",
             short: "Pour toute la saison. 60 sacs de 25 litres, gerbés sur une palette Europe.",
             shortEn: "For a whole season. 60 sacks of 25 litres, stacked on a Euro pallet.",
             bullets: ["Humidité inférieure à 12 %", "60 sacs de 25 litres", "Sur palette Europe", "Pin et épicéa"],
@@ -704,12 +704,12 @@ const groups: SeedGroup[] = [
           {
             slug: "mlc-bois-allume-feu-laine-cire-32-pieces",
             brand: "MLC Bois",
-            name: "MLC Bois Allume-feu laine de bois & cire — 32 pièces",
-            nameEn: "MLC Bois wood wool and wax firelighters — 32 pieces",
+            name: "MLC Bois Allume-feu laine de bois & cire - 32 pièces",
+            nameEn: "MLC Bois wood wool and wax firelighters - 32 pieces",
             short:
-              "Laine de bois imprégnée de cire végétale, neutre en odeur et sans suie. Combustion de huit minutes — largement de quoi laisser le petit bois prendre le relais.",
+              "Laine de bois imprégnée de cire végétale, neutre en odeur et sans suie. Combustion de huit minutes - largement de quoi laisser le petit bois prendre le relais.",
             shortEn:
-              "Wood wool in plant wax, odourless and soot-free. Burns for eight minutes — long enough for the kindling to take over on its own.",
+              "Wood wool in plant wax, odourless and soot-free. Burns for eight minutes - long enough for the kindling to take over on its own.",
             bullets: ["32 allume-feux", "Combustion de 8 minutes", "Neutre en odeur", "Cire végétale"],
             bulletsEn: ["32 firelighters", "8 minutes burn time", "Odourless", "Made with plant wax"],
             price: 9,

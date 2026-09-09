@@ -43,7 +43,7 @@ export const EMPTY_ADDRESS_VALUES: AddressValues = {
  *
  * L'adresse de facturation reprend le nom des données personnelles : le
  * dupliquer ici créerait deux vérités pour la même information. L'adresse de
- * livraison, elle, porte son propre nom — on livre souvent chez quelqu'un
+ * livraison, elle, porte son propre nom - on livre souvent chez quelqu'un
  * d'autre.
  */
 export function AddressForm({
@@ -107,7 +107,7 @@ export function AddressForm({
       <section className={CARD}>
         <h2 className="mb-1 text-lg font-black text-foreground">{t("addresses.billingTitle")}</h2>
         <p className="mb-4 text-sm text-muted-foreground">
-          {ownerName} — {t("addresses.nameHint")}
+          {ownerName} - {t("addresses.nameHint")}
         </p>
         <AddressFields idPrefix="billing" value={billing} onChange={setBilling} withName={false} />
       </section>

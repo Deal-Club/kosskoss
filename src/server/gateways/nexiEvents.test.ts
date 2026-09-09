@@ -49,7 +49,7 @@ describe("readNexiNotification", () => {
     assert.equal(read?.notification.operation?.operationId, "op_1");
   });
 
-  it("refuse une notification sans jeton — rien ne pourrait l'authentifier", () => {
+  it("refuse une notification sans jeton - rien ne pourrait l'authentifier", () => {
     const body = JSON.stringify({ operation: { orderId: "MLC-2026-000123" } });
     assert.equal(readNexiNotification(body), null);
   });

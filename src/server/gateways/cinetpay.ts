@@ -1,20 +1,20 @@
 /**
- * Passerelle de paiement CinetPay — Mobile Money et carte, API OAuth v1.
+ * Passerelle de paiement CinetPay - Mobile Money et carte, API OAuth v1.
  *
  * Recommandée par le cahier des charges (voir docs/ETAT-DES-LIEUX.md §4) à la
  * place de GeniusPay : couverture Cameroun documentée (Orange Money, MTN
- * MoMo) et XAF accepté nativement — les deux réserves qui bloquaient
+ * MoMo) et XAF accepté nativement - les deux réserves qui bloquaient
  * GeniusPay avant la mise en production.
  *
  * ── LA VARIANTE D'API RÉELLEMENT UTILISÉE ───────────────────────────────────
  *
  * CinetPay expose plusieurs générations d'API. Trois identifiants
  * (`cinetpay_apikey`, `cinetpay_site_id`, `cinetpay_secret_key`) existaient
- * déjà en base depuis un lot précédent, orphelins — voir
+ * déjà en base depuis un lot précédent, orphelins - voir
  * docs/ETAT-DES-LIEUX.md. Ce ne sont PAS ceux que le tableau de bord du
  * compte marchand réellement ouvert délivre : celui-ci porte un « API Key »
  * (`sk_test_…`) et un « Mot de passe API », soit `api_key`/`api_password`
- * au sens de l'API OAuth documentée ci-dessous — une génération différente,
+ * au sens de l'API OAuth documentée ci-dessous - une génération différente,
  * sans site_id ni secret_key. C'est CETTE variante que ce fichier implémente,
  * confirmée par capture d'écran du tableau de bord du compte sandbox
  * (Cameroun) le 02/09/2026. Les trois champs orphelins restent inertes ; à
@@ -28,19 +28,19 @@
  * le corps d'exemple porte `expires_in: 86400` (24 h), le texte
  * « Bonnes pratiques » affirme 5 minutes. On ne tranche pas : on fait
  * confiance à la valeur `expires_in` REÇUE à chaque connexion, mise en
- * cache jusqu'à expiration, jamais une constante supposée — même principe
+ * cache jusqu'à expiration, jamais une constante supposée - même principe
  * que geniuspay.ts face à une documentation qui se contredit.
  *
  * ── POURQUOI LE WEBHOOK NE FAIT PAS AUTORITÉ ────────────────────────────────
  *
  * La documentation CinetPay est explicite, avertissement en tête de la page
  * « Notification » : ne JAMAIS conclure depuis le statut porté par
- * `notify_url` — n'importe qui connaissant l'URL peut forger un faux
+ * `notify_url` - n'importe qui connaissant l'URL peut forger un faux
  * `status: SUCCESS`. La seule source de vérité est un appel serveur-à-
  * serveur `GET /v1/payment/{merchant_transaction_id}`, authentifié par le
  * jeton Bearer. C'est ce que fait `lirePaiement`, et c'est lui seul que le
  * webhook (`src/app/api/payments/webhook/cinetpay/route.ts`) consulte pour
- * conclure — jamais le corps de la requête entrante.
+ * conclure - jamais le corps de la requête entrante.
  *
  * ── LE REFUS « This Ip is not withlisted » (code 2011) ──────────────────────
  *
@@ -51,13 +51,13 @@
  *  1. L'adresse IPv4 appelante doit être inscrite dans la liste blanche du
  *     compte (tableau de bord CinetPay → API & sécurité). Une liste VIDE
  *     refuse tout, alors que leur panneau annonce « accessible depuis
- *     n'importe quelle IP » — le texte ment, vérifié le 03/09/2026.
+ *     n'importe quelle IP » - le texte ment, vérifié le 03/09/2026.
  *
  *  2. La connexion doit effectivement PARTIR en IPv4. `api.cinetpay.net`
  *     publie aussi une adresse IPv6, et Node applique « Happy Eyeballs »
  *     (RFC 8305) : il ouvre les deux familles en parallèle et garde la
  *     première établie. Quand l'IPv6 gagne, l'adresse source est une tout
- *     autre adresse — absente de la liste blanche, donc refusée. Le tirage
+ *     autre adresse - absente de la liste blanche, donc refusée. Le tirage
  *     étant aléatoire, le même appel réussissait et échouait tour à tour sur
  *     la même machine, à la même seconde.
  *
@@ -77,7 +77,7 @@
  *
  * La condition 1 est INTENABLE sur Vercel : les fonctions n'ont pas d'adresse
  * de sortie fixe. Tant que le filtre IP reste actif sur le compte, la
- * production ne peut pas encaisser — il faut soit obtenir de CinetPay qu'ils
+ * production ne peut pas encaisser - il faut soit obtenir de CinetPay qu'ils
  * le désactivent, soit faire transiter ces appels par un relais à adresse
  * fixe, lui seul inscrit en liste blanche. Ce fichier n'y peut rien : le
  * forçage IPv4 ne règle que la condition 2.
@@ -95,7 +95,7 @@ interface ReponseHttp {
 }
 
 /**
- * Appel HTTPS vers CinetPay, forcé en IPv4 — voir la condition 2 de l'en-tête.
+ * Appel HTTPS vers CinetPay, forcé en IPv4 - voir la condition 2 de l'en-tête.
  *
  * `fetch` ne sait pas choisir sa famille d'adresses ; `https.request` l'accepte
  * par requête, sans réglage global ni dépendance ajoutée.
@@ -143,7 +143,7 @@ function appelCinetPay(
   });
 }
 
-/** Devise transmise au prestataire — XAF est accepté nativement. */
+/** Devise transmise au prestataire - XAF est accepté nativement. */
 export const DEVISE_PRESTATAIRE = "XAF";
 
 export interface ConfigCinetPay {
@@ -152,7 +152,7 @@ export interface ConfigCinetPay {
   apiKey: string;
   /** « Mot de passe API » du tableau de bord (compte `api_password`). */
   apiPassword: string;
-  /** Indicatif seulement — rien dans leur documentation ne distingue
+  /** Indicatif seulement - rien dans leur documentation ne distingue
    *  sandbox et live par le format des identifiants (à la différence de
    *  GeniusPay) : déduit de l'hôte, `api.cinetpay.net` étant celui que leur
    *  documentation nomme explicitement pour le sandbox. */
@@ -164,7 +164,7 @@ export interface ConfigCinetPay {
  *
  * Rend `null` si l'une des deux clés manque : le tunnel retombe alors sur
  * GeniusPay s'il est configuré, ou sur la confirmation manuelle par
- * WhatsApp sinon — voir `src/server/kk/paiement.ts`, qui choisit le
+ * WhatsApp sinon - voir `src/server/kk/paiement.ts`, qui choisit le
  * prestataire actif.
  */
 export function lireConfig(): ConfigCinetPay | null {
@@ -179,7 +179,7 @@ export function lireConfig(): ConfigCinetPay | null {
 // ---- Jeton d'accès ----
 
 /**
- * Cache en mémoire du jeton — un seul compte actif à la fois dans cette
+ * Cache en mémoire du jeton - un seul compte actif à la fois dans cette
  * boutique, une entrée suffit. Ne survit pas au redémarrage du processus,
  * ce qui est sans conséquence : la première requête suivante en redemande
  * un.
@@ -188,7 +188,7 @@ let jetonCache: { token: string; expireA: number; apiKey: string } | null = null
 
 /**
  * Jeton Bearer valide, redemandé seulement si le précédent a expiré (ou n'a
- * jamais été obtenu, ou porte sur une autre clé — utile si les variables
+ * jamais été obtenu, ou porte sur une autre clé - utile si les variables
  * d'environnement changent sans redémarrage, en développement).
  *
  * Marge de 30 s sous l'expiration annoncée : éviter qu'un jeton tout juste
@@ -233,7 +233,7 @@ export interface DemandePaiement {
   montant: number;
   description: string;
   /** Identifiant de transaction, UNIQUE côté CinetPay et limité à 30
-   *  caractères d'après leur documentation — voir la construction du
+   *  caractères d'après leur documentation - voir la construction du
    *  suffixe de reprise dans `src/server/kk/paiement.ts`. */
   orderNumber: string;
   client: { nom: string; email: string; telephone: string };
@@ -259,7 +259,7 @@ export interface PaiementCree {
  *
  * `payment_method` n'est VOLONTAIREMENT PAS transmis : sans lui, CinetPay
  * affiche tous les moyens disponibles pour le Cameroun sur sa page, et
- * c'est le client qui choisit — jamais le serveur à sa place. Même choix
+ * c'est le client qui choisit - jamais le serveur à sa place. Même choix
  * que le mode checkout de GeniusPay.
  */
 export async function creerPaiement(
@@ -331,7 +331,7 @@ export async function creerPaiement(
 }
 
 /**
- * Relit une transaction chez le prestataire — LA source de vérité.
+ * Relit une transaction chez le prestataire - LA source de vérité.
  *
  * Voir l'en-tête de fichier : c'est cet appel, et lui seul, qui conclut un
  * paiement CinetPay, jamais le corps d'une notification reçue.
@@ -374,7 +374,7 @@ export function estEncaisse(statut: string): boolean {
  * Statuts CinetPay qui valent échec définitif.
  *
  * `INSUFFICIENT_BALANCE` est documenté comme une réponse de statut à part
- * (code 2005) plutôt qu'une simple variante de `FAILED` — mais c'est un
+ * (code 2005) plutôt qu'une simple variante de `FAILED` - mais c'est un
  * refus définitif de l'opérateur, pas un état transitoire : il rejoint donc
  * les échecs plutôt que les statuts « en attente ».
  */

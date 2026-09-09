@@ -12,7 +12,7 @@ import {
 
 /**
  * Écran des traductions : une vue d'ensemble, des filtres, puis la liste
- * éditable — dans cet ordre, comme le veut la spécification (le chiffre
+ * éditable - dans cet ordre, comme le veut la spécification (le chiffre
  * qu'on vient chercher d'abord, le formulaire ensuite).
  *
  * Le français est TOUJOURS affiché en lecture seule, à gauche de l'anglais :
@@ -33,7 +33,7 @@ interface LigneVue {
   libelle: string;
   valeurs: Record<string, string>;
   etat: EtatVue;
-  /** Corps de l'article traduit ou non — absent hors du modèle Article. Déjà
+  /** Corps de l'article traduit ou non - absent hors du modèle Article. Déjà
    * répercuté sur `etat.complet` ; affiché à part pour que ce ne soit jamais
    * silencieux. */
   corpsTraduit?: boolean;
@@ -78,7 +78,7 @@ export function TraductionsEditeur({
   const [lignes, setLignes] = useState(lignesInitiales);
   const [chargement, setChargement] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
-  // Copies éditées, indexées par id d'enregistrement — permet de modifier une
+  // Copies éditées, indexées par id d'enregistrement - permet de modifier une
   // ligne sans perdre la saisie des autres pendant qu'on navigue la liste.
   const [editions, setEditions] = useState<Record<string, Record<string, string>>>({});
   const [enregistrementEnCours, setEnregistrementEnCours] = useState<string | null>(null);
@@ -207,7 +207,7 @@ export function TraductionsEditeur({
       {/* 1. La vue d'ensemble */}
       <section>
         <h2 className="mb-3 text-sm font-black text-foreground">
-          Vue d&apos;ensemble — {completsGeneral} / {totalGeneral} enregistrements complets
+          Vue d&apos;ensemble - {completsGeneral} / {totalGeneral} enregistrements complets
         </h2>
         <div className="overflow-x-auto rounded-sm border border-border bg-white">
           <table className="w-full text-sm">
@@ -348,7 +348,7 @@ export function TraductionsEditeur({
                       <div key={champ.en} className="grid gap-2 sm:grid-cols-2">
                         <label className="text-xs">
                           <span className="mb-1 block font-semibold text-foreground">
-                            {champ.libelle} (français) — {nbFr} puce{nbFr > 1 ? "s" : ""}
+                            {champ.libelle} (français) - {nbFr} puce{nbFr > 1 ? "s" : ""}
                           </span>
                           <textarea
                             value={fr}
@@ -359,7 +359,7 @@ export function TraductionsEditeur({
                         </label>
                         <label className="text-xs">
                           <span className="mb-1 block font-semibold text-foreground">
-                            {champ.libelle} (anglais) — {nbEn} puce{nbEn > 1 ? "s" : ""} sur {nbFr}
+                            {champ.libelle} (anglais) - {nbEn} puce{nbEn > 1 ? "s" : ""} sur {nbFr}
                           </span>
                           <textarea
                             value={en}

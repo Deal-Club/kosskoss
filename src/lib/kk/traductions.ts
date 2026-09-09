@@ -1,5 +1,5 @@
 // Registre des champs traduisibles en anglais et calcul de l'état d'un
-// enregistrement — module pur, sans accès base de données.
+// enregistrement - module pur, sans accès base de données.
 //
 // La convention du schéma (voir src/server/localizedContent.ts) : un champ
 // français facultatif `xxx` porte à côté de lui une colonne `xxxEn`, vide par
@@ -8,7 +8,7 @@
 //
 // `Article.blocksEn` EST EXCLU DU REGISTRE : c'est un tableau de blocs éditoriaux
 // sérialisé en JSON, pas un texte. L'éditer depuis une case de traduction
-// reviendrait à modifier du JSON à la main — une virgule oubliée casserait
+// reviendrait à modifier du JSON à la main - une virgule oubliée casserait
 // l'article. Le taire ferait croire l'article entièrement traduit alors que
 // son contenu ne l'est pas ; l'exclusion doit donc être dite, ici et à l'écran.
 
@@ -39,7 +39,7 @@ export interface EtatTraduction {
 }
 
 // Dix-neuf modèles, un par table portant au moins un couple de champs
-// `xxx` / `xxxEn`. Les noms de champs reprennent exactement ceux du schéma —
+// `xxx` / `xxxEn`. Les noms de champs reprennent exactement ceux du schéma -
 // voir prisma/schema.prisma, vérifié champ par champ à l'écriture de ce
 // registre, et confirmé par le test qui relit le schéma (traductions.test.ts).
 //
@@ -129,7 +129,7 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
       // `moment` n'a pas de contrepartie *En : « AM/PM », « AM », « PM » sont
       // déjà lisibles tels quels en anglais, et une formulation libre plus
       // longue (« PM / AM si besoin ») reste un repère d'usage, pas un texte
-      // éditorial destiné à la traduction — voir traductions.test.ts.
+      // éditorial destiné à la traduction - voir traductions.test.ts.
     ],
   },
   {
@@ -180,7 +180,7 @@ export const MODELES_TRADUISIBLES: ModeleTraduisible[] = [
     champs: [
       { fr: "title", en: "titleEn", libelle: "Titre", format: "texte" },
       { fr: "excerpt", en: "excerptEn", libelle: "Chapeau", format: "texte-long" },
-      // blocks / blocksEn volontairement absents — voir le commentaire d'en-tête.
+      // blocks / blocksEn volontairement absents - voir le commentaire d'en-tête.
       { fr: "coverAlt", en: "coverAltEn", libelle: "Texte alternatif de couverture", format: "texte" },
       { fr: "metaTitle", en: "metaTitleEn", libelle: "Titre SEO", format: "texte" },
       { fr: "metaDescription", en: "metaDescriptionEn", libelle: "Description SEO", format: "texte-long" },

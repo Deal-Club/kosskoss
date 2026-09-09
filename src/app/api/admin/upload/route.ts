@@ -20,7 +20,7 @@ import { isS3Configured, uploadImage } from "@/server/storage";
 // le navigateur, et aucun upload non signé n'est possible depuis le client.
 //
 // Remplace l'ancien stockage Cloudinary (src/server/cloudinary.ts, laissé en
-// place mais plus appelé depuis cette route) — même interface de réponse
+// place mais plus appelé depuis cette route) - même interface de réponse
 // (`path`/`url`/`storage`), pour ne rien casser côté formulaire produit.
 
 export const runtime = "nodejs";

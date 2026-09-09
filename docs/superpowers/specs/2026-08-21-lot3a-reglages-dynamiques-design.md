@@ -1,4 +1,4 @@
-# Lot 3A — Réglages dynamiques du back-office
+# Lot 3A - Réglages dynamiques du back-office
 
 *Conception validée le 21 août 2026. Couvre le critère d'acceptation 16 de l'annexe 3.*
 
@@ -24,7 +24,7 @@ Il débloque aussi le lot de mesure d'audience : les identifiants GA4 et Pixel y
 | **F** | Fournisseurs et bons de commande | 13 |
 | **G** | Écran de traductions FR/EN | 13 |
 
-Trois dépendances : **B débloque C** — sans coût d'achat, ni la marge du tableau de bord ni
+Trois dépendances : **B débloque C** - sans coût d'achat, ni la marge du tableau de bord ni
 les colonnes de l'export n'existent ; **A débloque le lot de mesure d'audience** ; **E doit
 précéder F** si les bons de commande référencent des marques.
 
@@ -37,7 +37,7 @@ précéder F** si les bons de commande référencent des marques.
   (`server/announcements.ts:22`), le virement bancaire (`server/bankTransfer.ts:64`) et les
   passerelles de paiement (`server/gateways/index.ts:73`). Chacun stocke un JSON dans une
   clé `Setting`, lu par `findUnique`, écrit par `upsert`.
-- `getAnnouncementConfig` est mémoïsé par **`cache()` de React** — le bon précédent, parce
+- `getAnnouncementConfig` est mémoïsé par **`cache()` de React** - le bon précédent, parce
   que cette valeur est lue à chaque rendu de page.
 - **Le Google Form est le formulaire d'évaluation**, dont le lien est envoyé au client par
   WhatsApp (`docs/13-cdc-synthesis-and-gap.md:63`). Ce n'était pas une inconnue à faire
@@ -63,9 +63,9 @@ interface ParametresBoutique {
   whatsapp: string;
   /** Lien du formulaire d'évaluation, envoyé au client par WhatsApp après livraison. */
   formulaireEvaluation: string;
-  /** Identifiant de mesure GA4 — public, il part dans le HTML. */
+  /** Identifiant de mesure GA4 - public, il part dans le HTML. */
   ga4: string;
-  /** Identifiant du Pixel Meta — public lui aussi. */
+  /** Identifiant du Pixel Meta - public lui aussi. */
   metaPixel: string;
 }
 ```
@@ -77,7 +77,7 @@ Le **jeton de l'API Conversions** de Meta est un secret. `Integration`
 
 Les deux ne doivent pas se mélanger : mettre un jeton dans ce JSON le ferait voyager en
 clair vers toute route d'administration qui lit les réglages, et vers l'écran qui les
-affiche. La règle est simple — **ce qui part dans le HTML va dans `Setting`, ce qui reste
+affiche. La règle est simple - **ce qui part dans le HTML va dans `Setting`, ce qui reste
 au serveur va dans `Integration`.**
 
 ---
@@ -105,7 +105,7 @@ La lecture retombe sur `NEXT_PUBLIC_WHATSAPP_NUMBER` tant que le réglage est vi
 la migration et la première saisie, le site continue donc d'afficher le bon numéro.
 
 Un seed initialise le réglage avec la valeur actuelle de la variable. Celle-ci devient
-morte ensuite — mais **on ne la supprime pas dans ce sous-lot** : la retirer pendant que la
+morte ensuite - mais **on ne la supprime pas dans ce sous-lot** : la retirer pendant que la
 production tourne encore sur l'ancien code casserait le site entre le déploiement et la
 propagation. Sa suppression est une tâche de nettoyage à part, une fois le réglage vérifié
 en production.
@@ -114,7 +114,7 @@ en production.
 
 ## 3. Écran d'administration
 
-`/admin/parametres`, sur le patron des deux écrans livrés aux lots précédents —
+`/admin/parametres`, sur le patron des deux écrans livrés aux lots précédents -
 `/admin/products/tags` et `/admin/diagnostic/gestes` : `requireAdminApi()` en première
 instruction de la route d'écriture, validation de **chaque** champ avant **toute** écriture,
 valeurs stockées rognées.
@@ -131,7 +131,7 @@ enregistrer les trois autres.
 | `ga4` | motif `G-XXXXXXXXXX`, ou vide | Une faute de frappe ne remonterait aucune mesure, en silence |
 | `metaPixel` | chiffres, ou vide | Idem |
 
-Les motifs GA4 et Pixel ne garantissent pas que le compte existe — rien ne le peut depuis
+Les motifs GA4 et Pixel ne garantissent pas que le compte existe - rien ne le peut depuis
 ce formulaire. Ils attrapent la faute de frappe, qui est le cas réel : une mesure qui ne
 remonte pas ne se signale jamais d'elle-même.
 

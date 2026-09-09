@@ -56,8 +56,8 @@ export default async function AdminScriptsPage() {
             boutique. Un fragment fautif ne peut donc pas vous enfermer dehors.
           </li>
           <li>
-            Un fragment qui dépose un cookie non nécessaire — mesure d&apos;audience, publicité,
-            réseau social — demande le consentement du visiteur, et la page « Politique de
+            Un fragment qui dépose un cookie non nécessaire - mesure d&apos;audience, publicité,
+            réseau social - demande le consentement du visiteur, et la page « Politique de
             confidentialité » doit alors être mise à jour.
           </li>
         </ul>

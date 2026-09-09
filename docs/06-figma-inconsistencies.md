@@ -1,4 +1,4 @@
-# 06 — Tableau de décisions : incohérences de maquette
+# 06 - Tableau de décisions : incohérences de maquette
 
 > **Portée limitée** : l'analyse Figma complète est bloquée par la limite du plan Starter (voir `05`). Ce tableau ne peut pas encore lister les incohérences réelles de la maquette. Il est **pré-rempli** avec (a) la seule observation Figma disponible et (b) les points de vigilance e-commerce **systématiques** à vérifier écran par écran dès que Figma sera lisible. Aucune incohérence n'est corrigée silencieusement.
 

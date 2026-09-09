@@ -35,7 +35,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   const idCatalogue = identifiantProduitCatalogue(product.slug, product.id);
 
   // `view_item` : une fois par affichage de la fiche, jamais à chaque
-  // changement de variante ou de quantité — c'est la CONSULTATION du produit
+  // changement de variante ou de quantité - c'est la CONSULTATION du produit
   // qui est mesurée, pas chacune des interactions qui suivent. Le garde par
   // `useRef` évite un second envoi au double montage du Strict Mode.
   const vueEnvoyee = useRef(false);
@@ -67,7 +67,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   }
 
   /**
-   * `add_to_cart` : référence = `idCatalogue`, comme `view_item` plus haut —
+   * `add_to_cart` : référence = `idCatalogue`, comme `view_item` plus haut -
    * pas la variante choisie. Le flux Merchant ne connaît qu'une offre par
    * produit, jamais par variante ; y faire correspondre la mesure garantit
    * l'appariement catalogue plutôt que de le casser pour gagner un détail que
@@ -85,7 +85,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
   /**
    * Achat direct : on dépose la ligne au panier et on file au tunnel.
    *
-   * Le panier reste le passage obligé — c'est lui qui porte l'état de la
+   * Le panier reste le passage obligé - c'est lui qui porte l'état de la
    * commande, et le tunnel le lit. La différence avec l'ajout ordinaire tient
    * à ce qui NE se produit pas : ni vol vers le panier, ni ouverture du
    * tiroir, ni message de confirmation. Trois interruptions qui, sur un achat
@@ -127,7 +127,7 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           Le grand prix reste le prix UNITAIRE : c'est lui qui se compare d'une
           fiche à l'autre, et le multiplier en place ferait croire à un produit
           plus cher. Le total s'ajoute donc en dessous, avec le détail du calcul
-          — on voit à la fois ce qu'on paie et pourquoi.
+          - on voit à la fois ce qu'on paie et pourquoi.
           Il ne s'affiche pas à l'unité : « Total : 20 500 FCFA » sous
           « 20 500 FCFA » n'apprend rien et alourdit le bloc d'achat. */}
       {qty > 1 && (
@@ -142,13 +142,13 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
         </p>
       )}
 
-      {/* Sélecteur de variante (contenance) — seulement s'il y a un VRAI choix
+      {/* Sélecteur de variante (contenance) - seulement s'il y a un VRAI choix
           à faire. `> 1` et non `> 0` : sur les 71 produits actuels, aucun ne
           porte plus d'une contenance active (voir la contenance déjà lisible
-          dans le titre — `formatProductTitle`), donc le sélecteur ne servait
+          dans le titre - `formatProductTitle`), donc le sélecteur ne servait
           qu'à répéter cette même information sous forme de bouton non
           cliquable-utilement. Le jour où un produit porte deux volumes, il
-          réapparaît de lui-même — rien à changer ici. */}
+          réapparaît de lui-même - rien à changer ici. */}
       {product.variants.length > 1 && (
         <fieldset className="mt-5">
           <legend className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -183,12 +183,12 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
           paiement se fait par Mobile Money en quelques secondes, envoyer tout
           le monde par le panier ajoute une étape à une décision déjà prise.
           « Ajouter au panier » reste juste en dessous, pour qui compose une
-          commande de plusieurs produits — les deux publics sont réels, l'ordre
+          commande de plusieurs produits - les deux publics sont réels, l'ordre
           dit lequel est le plus courant.
 
           BLEU PROFOND, la couleur primaire de la charte : l'action principale
           porte la couleur de la marque, pas une teinte tierce. Il s'est
-          essayé en laiton d'encre pour se distinguer de l'ajout au panier —
+          essayé en laiton d'encre pour se distinguer de l'ajout au panier -
           une couleur hors charte qui faisait tache. La hiérarchie se joue
           maintenant sur le poids, pas sur une couleur inventée : l'achat est
           plein, l'ajout est au contour, tous deux dans le même bleu. Le blanc
@@ -287,17 +287,17 @@ export function AddToCart({ product }: { product: KKProductDetail }) {
 
 /**
  * Rappel bas de fiche : achat direct, pas un simple ancrage vers le bloc
- * d'achat plus haut. Retour client — remonter l'utilisateur pour qu'il
+ * d'achat plus haut. Retour client - remonter l'utilisateur pour qu'il
  * reclique « Payer maintenant » retardait un achat déjà décidé.
  *
- * Achète la VARIANTE DE RÉFÉRENCE (`product.variants[0]`, qté 1) — même
+ * Achète la VARIANTE DE RÉFÉRENCE (`product.variants[0]`, qté 1) - même
  * présélection que celle d'`AddToCart` au premier rendu (voir `variantId`
  * plus haut) : si le client a changé de contenance dans le bloc d'achat,
  * cette instance-ci ne le sait pas, elle repart de la même valeur par défaut.
  * Ce n'est PAS un second `AddToCart` monté sur la page : `view_item` ne se
  * mesure qu'à l'ouverture de la fiche (voir le `useEffect` plus haut), et un
  * second montage l'aurait renvoyé une deuxième fois. Ce bouton ne mesure
- * `add_to_cart` qu'à son propre clic — aucun doublon possible.
+ * `add_to_cart` qu'à son propre clic - aucun doublon possible.
  */
 export function BuyNowReminder({ product }: { product: KKProductDetail }) {
   const t = useTranslations("product");

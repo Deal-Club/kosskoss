@@ -35,7 +35,7 @@ describe("produitCorrespondFacettes", () => {
 
   it("UNION dans une famille : cocher deux types de peau élargit", () => {
     // Un produit qui ne porte que « peau_mixte » doit rester retenu quand on
-    // coche AUSSI « peau_grasse » — cocher une deuxième valeur d'une même
+    // coche AUSSI « peau_grasse » - cocher une deuxième valeur d'une même
     // famille ne doit jamais faire disparaître un produit déjà retenu.
     const selection = { peau: ["peau_grasse", "peau_mixte"], preoccupation: [] };
     assert.equal(produitCorrespondFacettes(["peau_mixte"], selection), true);

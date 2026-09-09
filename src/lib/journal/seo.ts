@@ -3,7 +3,7 @@
  *
  * Un rédacteur remplit le titre et le chapeau ; il ne remplit presque jamais
  * les douze champs SEO. L'enjeu n'est donc pas de les stocker mais de décider
- * proprement ce qui est servi quand ils sont vides — une seule fois, ici,
+ * proprement ce qui est servi quand ils sont vides - une seule fois, ici,
  * plutôt que dispersé dans `generateMetadata`, le JSON-LD et l'aperçu du
  * back-office, où les trois finiraient par diverger.
  */
@@ -57,10 +57,10 @@ export function resolveArticleSeo(
   options: ArticleSeoOptions,
 ): ResolvedArticleSeo {
   // Suffixer la marque aide en résultat de recherche, mais « Le guide KossKoss
-  // Select — KossKoss Select » dessert tout le monde.
+  // Select - KossKoss Select » dessert tout le monde.
   const withBrand = source.title.includes(options.brandName)
     ? source.title
-    : `${source.title} — ${options.brandName}`;
+    : `${source.title} - ${options.brandName}`;
 
   const title = trimmed(source.metaTitle) || withBrand;
   const description = trimmed(source.metaDescription) || trimmed(source.excerpt);

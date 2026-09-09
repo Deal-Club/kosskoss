@@ -12,7 +12,7 @@ tsconfig.tsbuildinfo
 # Client Prisma généré (recréé par `prisma generate` au postinstall)
 /src/generated
 
-# Secrets — ne JAMAIS versionner.
+# Secrets - ne JAMAIS versionner.
 # Tout ce qui commence par .env est exclu, y compris les copies de sauvegarde
 # (.env.local.bak et consorts) : lister les variantes une à une laissait passer
 # celles qu'on n'avait pas prévues, et le dépôt est public.
@@ -31,7 +31,7 @@ tsconfig.tsbuildinfo
 
 # Maquette client : sortie régénérable de scripts/maquette (construire.mjs +
 # capture.mjs), 14 Mo de HTML autoportant et de captures. Le générateur est
-# versionné, son produit non — comme un dossier de build.
+# versionné, son produit non - comme un dossier de build.
 /livrables
 /prisma-migrations-mysql.bak
 /prisma-migrations-sqlite.bak
@@ -48,7 +48,7 @@ tsconfig.tsbuildinfo
 # Notes de travail personnelles
 /texte
 
-# Espace de travail des agents (registres SDD, rapports de revue) — scratch
+# Espace de travail des agents (registres SDD, rapports de revue) - scratch
 /.superpowers/
 
 # Système
@@ -59,10 +59,10 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 
-# Variables de production préparées pour Hostinger — contient les secrets
+# Variables de production préparées pour Hostinger - contient les secrets
 /hostinger-env.txt
 
-# Dossier de session Claude Code (mémoire, worktrees d'agents) — jamais versionné
+# Dossier de session Claude Code (mémoire, worktrees d'agents) - jamais versionné
 /.claude/
 
 # Graphe de code local (graphify), regenerable via `graphify extract . --code-only`.

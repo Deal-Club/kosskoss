@@ -55,7 +55,7 @@ function CarteRoutine({ routine }: { routine: ArbreRoutine }) {
                   ? "bg-sand text-deep"
                   : "bg-muted text-muted-foreground line-through decoration-destructive/70"
               }`}
-              title={p.servable ? undefined : "Produit inactif ou en rupture — ignoré"}
+              title={p.servable ? undefined : "Produit inactif ou en rupture - ignoré"}
             >
               {p.nom}
             </li>
@@ -101,7 +101,7 @@ function Branche({ branche }: { branche: ArbreBranche }) {
         ) : (
           <div className="flex items-center gap-2 rounded-xl border border-destructive/40 bg-destructive/5 px-3 py-2.5 text-destructive">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <p className="text-xs font-semibold">Aucun besoin — réponse ignorée par le moteur</p>
+            <p className="text-xs font-semibold">Aucun besoin - réponse ignorée par le moteur</p>
           </div>
         )}
 
@@ -115,7 +115,7 @@ function Branche({ branche }: { branche: ArbreBranche }) {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-muted-foreground">—</p>
+          <p className="text-xs text-muted-foreground">-</p>
         )}
       </div>
     </li>
@@ -201,7 +201,7 @@ export function ArbreDiagnostic({ data }: { data: ArbreData }) {
             <div className="mb-3 flex items-center gap-2 text-deep">
               <ShieldCheck className="h-5 w-5 shrink-0" />
               <p className="text-sm font-bold">
-                Règle spéciale — si « peau réactive » (Q3) → Besoin : {data.securite.besoinLabel}
+                Règle spéciale - si « peau réactive » (Q3) → Besoin : {data.securite.besoinLabel}
               </p>
             </div>
             <p className="mb-3 text-xs text-muted-foreground">

@@ -58,10 +58,10 @@ export default async function CategoryPage({
   const sort = parseSort(sp.tri);
   // Le vocabulaire est lu D'ABORD : `parseFacettes` en a besoin pour router
   // un `besoin` hérité vers la bonne famille (voir catalog-params.ts). Il est
-  // mémoïsé par `cache()` — le second appel, à l'intérieur de `getCatalog`,
+  // mémoïsé par `cache()` - le second appel, à l'intérieur de `getCatalog`,
   // ne coûte donc pas de requête supplémentaire.
   const vocabulaire = await lireVocabulaire(locale);
-  // `besoin` — l'ancien paramètre à choix unique — est versé dans la bonne
+  // `besoin` - l'ancien paramètre à choix unique - est versé dans la bonne
   // famille par `parseFacettes` : un lien de diagnostic ou un lien déjà
   // partagé continue de filtrer correctement (voir catalog-params.ts).
   const selection = parseFacettes({ peau: sp.peau, preoccupation: sp.preoccupation, besoin: sp.besoin }, vocabulaire);

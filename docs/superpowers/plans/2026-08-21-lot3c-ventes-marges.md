@@ -1,6 +1,6 @@
-# Lot 3C — Tableau de bord des ventes et export comptable — Plan d'implémentation
+# Lot 3C - Tableau de bord des ventes et export comptable - Plan d'implémentation
 
-> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE — utiliser
+> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE - utiliser
 > superpowers:subagent-driven-development (recommandé) ou
 > superpowers:executing-plans pour dérouler ce plan tâche par tâche. Les étapes
 > utilisent la syntaxe à cases (`- [ ]`).
@@ -29,7 +29,7 @@ implicitement.
 
 1. **Le FCFA n'a pas de sous-unité.** Les entiers des champs `*Cents` **sont**
    des francs entiers. Le suffixe est hérité d'une activité précédente et ment.
-   **Aucune division par 100 nulle part** — ni à l'écran, ni dans le CSV, ni
+   **Aucune division par 100 nulle part** - ni à l'écran, ni dans le CSV, ni
    dans les tests.
 2. **Les modules de `src/lib/kk/` sont purs : zéro import.** C'est ce qui les
    rend consommables par un composant client sans tirer Prisma dans le
@@ -59,28 +59,28 @@ implicitement.
 |---|---|
 | `prisma/schema.prisma` | ajoute `OrderItem.unitCostCents Int?` |
 | `src/server/orders.ts` | recopie le coût sur la ligne à la création de commande |
-| `src/lib/kk/periode.ts` | **créé** — bornes de dates depuis l'URL, raccourcis, défaut |
+| `src/lib/kk/periode.ts` | **créé** - bornes de dates depuis l'URL, raccourcis, défaut |
 | `src/lib/kk/periode.test.ts` | **créé** |
-| `src/lib/kk/ventes.ts` | **créé** — totaux, classement produits, série par jour |
+| `src/lib/kk/ventes.ts` | **créé** - totaux, classement produits, série par jour |
 | `src/lib/kk/ventes.test.ts` | **créé** |
-| `src/lib/kk/csv.ts` | **créé** — échappement et assemblage CSV |
+| `src/lib/kk/csv.ts` | **créé** - échappement et assemblage CSV |
 | `src/lib/kk/csv.test.ts` | **créé** |
 | `src/app/api/admin/products/export/route.ts` | recâblé sur `csv.ts` |
-| `src/server/kk/ventes.ts` | **créé** — lecture Prisma → lignes plates |
-| `src/app/admin/(protected)/ventes/page.tsx` | **créé** — l'écran |
-| `src/components/admin/VentesPeriodeForm.tsx` | **créé** — la barre de période (client) |
-| `src/components/admin/VentesHistogramme.tsx` | **créé** — l'histogramme SVG |
+| `src/server/kk/ventes.ts` | **créé** - lecture Prisma → lignes plates |
+| `src/app/admin/(protected)/ventes/page.tsx` | **créé** - l'écran |
+| `src/components/admin/VentesPeriodeForm.tsx` | **créé** - la barre de période (client) |
+| `src/components/admin/VentesHistogramme.tsx` | **créé** - l'histogramme SVG |
 | `src/components/admin/AdminSidebar.tsx` | ajoute l'entrée « Ventes » |
-| `src/app/api/admin/ventes/export/route.ts` | **créé** — le CSV |
+| `src/app/api/admin/ventes/export/route.ts` | **créé** - le CSV |
 
 ---
 
 ### Tâche 1 : Le coût d'achat est figé sur la ligne de commande
 
 **Fichiers :**
-- Modifier : `prisma/schema.prisma` — modèle `OrderItem`
+- Modifier : `prisma/schema.prisma` - modèle `OrderItem`
 - Créer : `prisma/migrations/<horodatage>_cout_unitaire_ligne_commande/migration.sql`
-- Modifier : `src/server/orders.ts` — la construction des `items` à la création
+- Modifier : `src/server/orders.ts` - la construction des `items` à la création
 
 **Interfaces :**
 - Produit : la colonne `OrderItem.unitCostCents Int?`, que la tâche 5 lit.
@@ -89,7 +89,7 @@ implicitement.
 prix unitaire au moment de la vente : renommer ou reprixer un produit ne doit pas
 réécrire une commande passée. Le coût d'achat suit la même règle. La colonne est
 nullable parce que les commandes antérieures n'ont pas de coût et n'en auront
-jamais — leur en inventer un serait pire que la case vide.
+jamais - leur en inventer un serait pire que la case vide.
 
 - [ ] **Étape 1 : ajouter la colonne au schéma**
 
@@ -118,14 +118,14 @@ npx prisma migrate dev --create-only --name cout_unitaire_ligne_commande
 cat prisma/migrations/*_cout_unitaire_ligne_commande/migration.sql
 ```
 
-Attendu — exactement une instruction, additive :
+Attendu - exactement une instruction, additive :
 
 ```sql
 ALTER TABLE "OrderItem" ADD COLUMN "unitCostCents" INTEGER;
 ```
 
-**Si le fichier contient autre chose — un `DROP`, un `NOT NULL`, une table
-recréée — arrêter et signaler.** La base de développement est la base de
+**Si le fichier contient autre chose - un `DROP`, un `NOT NULL`, une table
+recréée - arrêter et signaler.** La base de développement est la base de
 production.
 
 - [ ] **Étape 4 : appliquer et régénérer le client**
@@ -190,7 +190,7 @@ git commit -m "Le coût d'achat est figé sur la ligne de commande"
   - `function periodeDepuisUrl(params: { du?: string; au?: string; p?: string }, maintenant: Date): Periode`
   - `function bornesRaccourci(raccourci: Raccourci, maintenant: Date): { du: Date; au: Date }`
   - `function estRaccourci(valeur: string | undefined): valeur is Raccourci`
-  - `function formatJourIso(date: Date): string` — « AAAA-MM-JJ », heure locale
+  - `function formatJourIso(date: Date): string` - « AAAA-MM-JJ », heure locale
 
 **Rappel :** module pur, **zéro import**.
 
@@ -244,7 +244,7 @@ describe("bornesRaccourci", () => {
 
   it("ouvre la borne basse à minuit et ferme la haute à la fin du jour", () => {
     // Sans la fin de journée, une période « du 1er au 31 » perdrait toutes les
-    // ventes du 31 après minuit — c'est-à-dire toutes.
+    // ventes du 31 après minuit - c'est-à-dire toutes.
     const { du, au } = bornesRaccourci("7j", MAINTENANT);
     assert.equal(du.getHours(), 0);
     assert.equal(du.getMinutes(), 0);
@@ -330,7 +330,7 @@ describe("periodeDepuisUrl", () => {
 node --test --import tsx src/lib/kk/periode.test.ts
 ```
 
-Attendu : ÉCHEC — le module `./periode` n'existe pas.
+Attendu : ÉCHEC - le module `./periode` n'existe pas.
 
 - [ ] **Étape 3 : écrire le module**
 
@@ -344,7 +344,7 @@ Créer `src/lib/kk/periode.ts` :
  *
  * L'écran, la barre de période (composant client) et la route d'export lisent
  * tous les trois la même période depuis l'URL. En gardant le module sans
- * dépendance, les trois partagent la règle au lieu de la recopier — et surtout
+ * dépendance, les trois partagent la règle au lieu de la recopier - et surtout
  * rien de serveur n'entre dans le paquet du navigateur.
  *
  * ── TOUT SE JOUE EN HEURE LOCALE ────────────────────────────────────────────
@@ -369,7 +369,7 @@ export function estRaccourci(valeur: string | undefined): valeur is Raccourci {
   return valeur !== undefined && RACCOURCIS.includes(valeur);
 }
 
-/** « AAAA-MM-JJ » en heure locale — `toISOString` donnerait le jour UTC. */
+/** « AAAA-MM-JJ » en heure locale - `toISOString` donnerait le jour UTC. */
 export function formatJourIso(date: Date): string {
   const mois = String(date.getMonth() + 1).padStart(2, "0");
   const jour = String(date.getDate()).padStart(2, "0");
@@ -479,7 +479,7 @@ git commit -m "Bornes de période du tableau de bord des ventes"
 - Produit, consommé par les tâches 5 et 6 : les types `LigneVente`,
   `TotauxVentes`, `VenteProduit`, `PointJour` et les fonctions
   `totaliserVentes(lignes)`, `classerParProduit(lignes, limite)`,
-  `ventesParJour(lignes, du, au)` — signatures exactes à l'étape 3.
+  `ventesParJour(lignes, du, au)` - signatures exactes à l'étape 3.
 
 **Rappel :** module pur, **zéro import**. Aucune division par 100.
 
@@ -560,7 +560,7 @@ describe("totaliserVentes", () => {
 
   it("rapporte le taux au CA des seules lignes qui ont un coût", () => {
     // 12 000 avec coût, 40 000 sans. La marge de 4 000 vaut 33,3 % des 12 000
-    // renseignés — pas 7,7 % des 52 000, chiffre qui ne veut rien dire.
+    // renseignés - pas 7,7 % des 52 000, chiffre qui ne veut rien dire.
     const totaux = totaliserVentes([
       ligne(),
       ligne({ orderId: "cmd2", lineTotalCents: 40000, unitCostCents: null }),
@@ -581,7 +581,7 @@ describe("totaliserVentes", () => {
     assert.equal(totaux.lignesTotal, 3);
   });
 
-  it("rend une marge nulle — pas zéro — quand aucune ligne n'a de coût", () => {
+  it("rend une marge nulle - pas zéro - quand aucune ligne n'a de coût", () => {
     // Zéro se lirait « vendu à prix coûtant » ; il faut lire « on ne sait pas ».
     const totaux = totaliserVentes([ligne({ unitCostCents: null })]);
     assert.equal(totaux.margeCents, null);
@@ -719,7 +719,7 @@ describe("ventesParJour", () => {
 node --test --import tsx src/lib/kk/ventes.test.ts
 ```
 
-Attendu : ÉCHEC — le module `./ventes` n'existe pas.
+Attendu : ÉCHEC - le module `./ventes` n'existe pas.
 
 - [ ] **Étape 3 : écrire le module**
 
@@ -732,7 +732,7 @@ Créer `src/lib/kk/ventes.ts` :
  * ── POURQUOI CE MODULE EST PUR ──────────────────────────────────────────────
  *
  * L'écran et l'export CSV consomment les mêmes totaux. En gardant le module
- * sans dépendance, la règle de calcul est testable sans base — et c'est la
+ * sans dépendance, la règle de calcul est testable sans base - et c'est la
  * seule partie du lot où une erreur se verrait chez le comptable.
  *
  * ── LE FCFA N'A PAS DE SOUS-UNITÉ ───────────────────────────────────────────
@@ -807,7 +807,7 @@ function margeLigne(ligne: LigneVente): number | null {
 /**
  * Clé de regroupement : les libellés RECOPIÉS sur la ligne, jamais
  * l'identifiant produit. Une ligne dont le produit a été supprimé du catalogue
- * porte `productId` à `null` — grouper là-dessus fondrait tous les produits
+ * porte `productId` à `null` - grouper là-dessus fondrait tous les produits
  * disparus en un seul. La clé passe par JSON.stringify plutôt que par une
  * concaténation : un séparateur, quel qu’il soit, peut figurer dans un nom de
  * produit et ferait alors se confondre deux articles distincts.
@@ -816,7 +816,7 @@ function cleProduit(ligne: LigneVente): string {
   return JSON.stringify([ligne.brand, ligne.name, ligne.variantLabel]);
 }
 
-/** « AAAA-MM-JJ » en heure locale — `toISOString` donnerait le jour UTC. */
+/** « AAAA-MM-JJ » en heure locale - `toISOString` donnerait le jour UTC. */
 function jourLocal(date: Date): string {
   const mois = String(date.getMonth() + 1).padStart(2, "0");
   const jour = String(date.getDate()).padStart(2, "0");
@@ -974,7 +974,7 @@ git commit -m "Agrégation des ventes : totaux, classement, série par jour"
 **Fichiers :**
 - Créer : `src/lib/kk/csv.ts`
 - Créer : `src/lib/kk/csv.test.ts`
-- Modifier : `src/app/api/admin/products/export/route.ts` — supprimer `csvCell`
+- Modifier : `src/app/api/admin/products/export/route.ts` - supprimer `csvCell`
   et `buildCsv` locales, importer le module
 
 **Interfaces :**
@@ -984,7 +984,7 @@ git commit -m "Agrégation des ventes : totaux, classement, série par jour"
 
 **Contexte.** L'export produits porte déjà ces deux fonctions, recopiées dans son
 fichier de route. La tâche les extrait pour que l'export des ventes n'en fasse pas
-une troisième copie — deux copies d'une règle divergent tôt ou tard.
+une troisième copie - deux copies d'une règle divergent tôt ou tard.
 
 `src/app/feed/google-csv/route.ts` et `src/app/api/account/export/route.ts` ne
 sont **pas** recâblés : leurs conventions sont celles de Google et du RGPD, pas
@@ -1070,7 +1070,7 @@ describe("buildCsv", () => {
 node --test --import tsx src/lib/kk/csv.test.ts
 ```
 
-Attendu : ÉCHEC — le module `./csv` n'existe pas.
+Attendu : ÉCHEC - le module `./csv` n'existe pas.
 
 - [ ] **Étape 3 : écrire le module**
 
@@ -1084,15 +1084,15 @@ Créer `src/lib/kk/csv.ts` :
  *
  * Ces deux fonctions vivaient recopiées dans la route d'export des produits.
  * L'export des ventes en aurait fait une deuxième copie, et deux copies d'une
- * règle d'échappement divergent tôt ou tard — au détriment d'un fichier que
+ * règle d'échappement divergent tôt ou tard - au détriment d'un fichier que
  * personne ne relit avant de l'ouvrir chez le comptable.
  *
  * ── LES DEUX CONVENTIONS, ET LEURS RAISONS ──────────────────────────────────
  *
- *  • SÉPARATEUR POINT-VIRGULE — c'est celui qu'Excel attend dans un
+ *  • SÉPARATEUR POINT-VIRGULE - c'est celui qu'Excel attend dans un
  *    environnement francophone. La virgule y couperait « 12 000,50 » en deux
  *    colonnes.
- *  • BOM EN TÊTE — sans lui, Excel lit le fichier dans son encodage local et
+ *  • BOM EN TÊTE - sans lui, Excel lit le fichier dans son encodage local et
  *    affiche « CrÃ¨me » au lieu de « Crème ».
  *
  * Ces conventions valent pour les exports du back-office. Le flux Google
@@ -1171,7 +1171,7 @@ npx tsc --noEmit && npx eslint src --ext .ts,.tsx && npm test && npm run build
 ```
 
 Attendu : aucune erreur, tous les tests au vert, construction en succès. La
-séparation par point-virgule, le BOM et les fins de ligne CRLF sont inchangés —
+séparation par point-virgule, le BOM et les fins de ligne CRLF sont inchangés -
 c'est ce que les tests de l'étape 1 verrouillent.
 
 - [ ] **Étape 7 : commit**
@@ -1190,7 +1190,7 @@ git commit -m "Le CSV du back-office a enfin un seul assembleur"
 - Créer : `src/app/admin/(protected)/ventes/page.tsx`
 - Créer : `src/components/admin/VentesPeriodeForm.tsx`
 - Créer : `src/components/admin/VentesHistogramme.tsx`
-- Modifier : `src/components/admin/AdminSidebar.tsx` — entrée « Ventes »
+- Modifier : `src/components/admin/AdminSidebar.tsx` - entrée « Ventes »
 
 **Interfaces :**
 - Consomme : `periodeDepuisUrl`, `formatJourIso`, `type Periode` (`@/lib/kk/periode`) ;
@@ -1205,7 +1205,7 @@ git commit -m "Le CSV du back-office a enfin un seul assembleur"
 annulées). Le paiement à la livraison n'a pas de webhook : ce second montant
 existe, mais il n'est pas acquis.
 
-La date de référence est `paidAt` quand il est posé, `createdAt` sinon — les
+La date de référence est `paidAt` quand il est posé, `createdAt` sinon - les
 commandes antérieures au suivi de l'encaissement n'ont pas de `paidAt`, et les
 écarter creuserait un trou silencieux dans l'historique.
 
@@ -1311,7 +1311,7 @@ npx tsc --noEmit
 ```
 
 Attendu : aucune erreur. Si `unitCostCents` est inconnu du client Prisma,
-relancer `npx prisma generate` — la tâche 1 l'a ajouté au schéma.
+relancer `npx prisma generate` - la tâche 1 l'a ajouté au schéma.
 
 - [ ] **Étape 3 : écrire la barre de période**
 
@@ -1323,7 +1323,7 @@ Créer `src/components/admin/VentesPeriodeForm.tsx` :
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-// `periode` est un module pur — vérifié : aucun import. Rien de serveur
+// `periode` est un module pur - vérifié : aucun import. Rien de serveur
 // n'entre donc dans le paquet du navigateur par cette porte.
 import type { Raccourci } from "@/lib/kk/periode";
 
@@ -1444,7 +1444,7 @@ export function VentesHistogramme({ points }: { points: PointJour[] }) {
               height={hauteur}
               className="fill-primary"
             >
-              <title>{`${point.jour} — ${formatFcfa(point.chiffreAffairesCents)} (${point.nombreCommandes} commande${point.nombreCommandes > 1 ? "s" : ""})`}</title>
+              <title>{`${point.jour} - ${formatFcfa(point.chiffreAffairesCents)} (${point.nombreCommandes} commande${point.nombreCommandes > 1 ? "s" : ""})`}</title>
             </rect>
           );
         })}
@@ -1518,7 +1518,7 @@ export default async function AdminVentesPage({
       ? undefined
       : lignesSansCout === 0
         ? `calculée sur les ${totaux.lignesTotal} lignes de la période`
-        : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} — le coût d’achat manque sur les autres`;
+        : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} - le coût d’achat manque sur les autres`;
 
   const exportHref = `/api/admin/ventes/export?du=${formatJourIso(periode.du)}&au=${formatJourIso(periode.au)}`;
 
@@ -1550,7 +1550,7 @@ export default async function AdminVentesPage({
           titre="Marge"
           valeur={
             totaux.margeCents === null
-              ? "—"
+              ? "-"
               : `${formatFcfa(totaux.margeCents)}${totaux.tauxMarge === null ? "" : ` (${totaux.tauxMarge.toString().replace(".", ",")} %)`}`
           }
           mention={
@@ -1618,7 +1618,7 @@ export default async function AdminVentesPage({
                     <span className="text-muted-foreground">{produit.brand}</span>{" "}
                     {produit.name}
                     {produit.variantLabel ? (
-                      <span className="text-muted-foreground"> — {produit.variantLabel}</span>
+                      <span className="text-muted-foreground"> - {produit.variantLabel}</span>
                     ) : null}
                   </td>
                   <td className="px-4 py-2">{produit.quantite}</td>
@@ -1626,7 +1626,7 @@ export default async function AdminVentesPage({
                   <td className="px-4 py-2">
                     {produit.margeCents === null ? (
                       <span className="text-muted-foreground" title="Coût d’achat non renseigné">
-                        —
+                        -
                       </span>
                     ) : (
                       <>
@@ -1682,7 +1682,7 @@ Ouvrir `http://localhost:3000/admin/ventes` et contrôler :
 1. l'écran s'ouvre sur les 30 derniers jours, bouton « 30 jours » actif ;
 2. chaque raccourci change la période et l'histogramme ;
 3. deux dates saisies désactivent les quatre raccourcis ;
-4. la carte « Marge » porte sa mention de complétude, ou « — » si aucun coût.
+4. la carte « Marge » porte sa mention de complétude, ou « - » si aucun coût.
 
 - [ ] **Étape 9 : commit**
 
@@ -1734,7 +1734,7 @@ import { margeUnitaire, tauxMarge } from "@/lib/kk/marge";
  *
  * Ni séparateur de milliers, ni symbole : un tableur doit pouvoir additionner
  * la colonne, et « 12 000 FCFA » n'est pas un nombre. La devise est dite une
- * fois, dans l'en-tête. Rappel : le FCFA n'a pas de sous-unité — les entiers
+ * fois, dans l'en-tête. Rappel : le FCFA n'a pas de sous-unité - les entiers
  * de la base SONT des francs, on ne divise jamais par 100.
  *
  * ── UNE CASE VIDE N'EST PAS UN ZÉRO ─────────────────────────────────────────
@@ -1856,11 +1856,11 @@ un éditeur de texte et contrôler :
 2. les accents s'affichent correctement (« Coût », « N° commande ») ;
 3. les montants sont des entiers nus : `12000`, jamais `12 000 FCFA` ni `120,00` ;
 4. une ligne dont le produit n'a pas de coût d'achat laisse les quatre dernières
-   colonnes vides — **pas** des zéros ;
+   colonnes vides - **pas** des zéros ;
 5. le nom du fichier porte les deux bornes de la période.
 
 Ouvrir ensuite le fichier dans un tableur et vérifier que la colonne
-« Total ligne » s'additionne — c'est le seul test qui compte pour le comptable.
+« Total ligne » s'additionne - c'est le seul test qui compte pour le comptable.
 
 - [ ] **Étape 5 : commit**
 
@@ -1892,7 +1892,7 @@ grep -c "^import" src/lib/kk/periode.ts src/lib/kk/ventes.ts src/lib/kk/csv.ts
 
 Attendu : `0` pour les trois. C'est ce qui permet à la barre de période, qui est
 un composant client, d'importer le type `Raccourci` sans tirer Prisma dans le
-navigateur — un lot précédent a cassé la construction exactement là.
+navigateur - un lot précédent a cassé la construction exactement là.
 
 - [ ] **Ce que le lot ne fait pas, et qu'il ne faut pas croire fait**
 

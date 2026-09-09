@@ -54,7 +54,7 @@ export default async function AdminSuppliersPage() {
                         {fournisseur.phone && <span className="block">{fournisseur.phone}</span>}
                       </>
                     ) : (
-                      "—"
+                      "-"
                     )}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">{fournisseur.orderCount}</td>

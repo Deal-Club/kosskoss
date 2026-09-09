@@ -7,7 +7,7 @@ import type { CompteRenduImport } from "@/server/kk/marques";
 /**
  * Le bouton d'import lit les marques distinctes des produits, crée celles qui
  * manquent, et rattache les produits dont `brandId` est vide. Idempotent :
- * relancé, il ne crée plus rien. Le compte rendu est affiché en clair — un
+ * relancé, il ne crée plus rien. Le compte rendu est affiché en clair - un
  * import muet ne se vérifie pas, et celui-ci modifie le catalogue.
  */
 export function BrandImportButton() {

@@ -12,12 +12,12 @@
  *
  * Le même achat part deux fois : une fois du navigateur (Pixel), une fois du
  * serveur (CAPI). Sans identifiant partagé entre les deux envois, Meta compte
- * la vente deux fois — et rien ne le signale, les chiffres de conversion sont
+ * la vente deux fois - et rien ne le signale, les chiffres de conversion sont
  * simplement faux.
  *
  * `identifiantEvenement` est donc une fonction PURE de (type, référence) :
  * navigateur et serveur, qui ne se parlent pas au moment de l'envoi, calculent
- * la même chaîne à partir de la même donnée déjà connue des deux côtés — le
+ * la même chaîne à partir de la même donnée déjà connue des deux côtés - le
  * numéro de commande pour un achat, par exemple. Un identifiant tiré au hasard
  * de chaque côté (`crypto.randomUUID()`, un compteur en mémoire…) romprait
  * cette garantie : c'est précisément le défaut que le critère 20 nomme.
@@ -26,7 +26,7 @@
  *
  * Les montants internes portent le suffixe historique « Cents » (hérité de
  * l'époque où la boutique facturait en euros), mais représentent déjà des
- * francs CFA entiers — voir `src/config/brand.ts` (`minorUnit: 0`) et l'appel
+ * francs CFA entiers - voir `src/config/brand.ts` (`minorUnit: 0`) et l'appel
  * direct `unit_amount: order.amountCents` dans l'adaptateur Stripe. `montantXaf`
  * ne divise donc jamais par 100 : diviser transformerait 15 000 FCFA en 150.
  */
@@ -48,7 +48,7 @@ export function estEvenementMesure(value: unknown): value is EvenementMesure {
  * Identifiant partagé entre GA4/Pixel (navigateur) et la CAPI (serveur).
  *
  * Déterministe : mêmes `type` et `reference` → même chaîne, toujours. C'est
- * volontairement une simple concaténation — aucun hachage n'est nécessaire ni
+ * volontairement une simple concaténation - aucun hachage n'est nécessaire ni
  * souhaitable ici, un hachage ajouterait une dépendance sans rien garantir de
  * plus que la concaténation ne garantit déjà. Le séparateur `:` ne peut pas
  * apparaître dans `type` (un des quatre littéraux fixes ci-dessus) : deux
@@ -70,7 +70,7 @@ export interface ArticleMesure {
 }
 
 /**
- * Ce qu'un événement porte, avant sa mise en forme pour GA4 ou Meta —
+ * Ce qu'un événement porte, avant sa mise en forme pour GA4 ou Meta -
  * l'endroit où navigateur et serveur doivent s'accorder sur les mêmes valeurs.
  */
 export interface EvenementDetail {
@@ -86,7 +86,7 @@ export interface EvenementDetail {
   totalCents: number;
 }
 
-/** Montant en francs CFA entiers — jamais divisé par 100 (voir l'en-tête du fichier). */
+/** Montant en francs CFA entiers - jamais divisé par 100 (voir l'en-tête du fichier). */
 export function montantXaf(cents: number): number {
   return Math.round(cents);
 }
@@ -103,12 +103,12 @@ export function montantXaf(cents: number): number {
  * Avant cette fonction, trois points d'émission utilisaient trois identifiants
  * différents pour le MÊME produit : l'identifiant de variante ou le SKU à
  * l'ajout au panier, l'identifiant interne sur la fiche, le SKU puis
- * l'identifiant interne à l'achat — et aucun des trois ne correspondait à
+ * l'identifiant interne à l'achat - et aucun des trois ne correspondait à
  * celui déjà annoncé à Google (`merchantOfferId`, construit sur le slug).
  * Résultat : l'appariement avec le catalogue Meta et les rapports par article
  * de GA4 voyaient un produit différent à chaque étape du parcours.
  *
- * `slug` gagne donc partout où il est disponible — c'est lui que Google connaît
+ * `slug` gagne donc partout où il est disponible - c'est lui que Google connaît
  * déjà pour ce produit. Un identifiant de variante n'a pas d'équivalent côté
  * catalogue Merchant (une seule offre par produit, pas par variante) : la
  * mesure ne le distingue donc plus non plus, par cohérence.
@@ -148,7 +148,7 @@ export interface EvenementPixel {
  *
  * Correspondance (même donnée, deux formes) :
  *   - `event_id`           = `identifiantEvenement(type, reference)`, partagé avec `versPixel`
- *   - `value`, `currency`  = `montantXaf(totalCents)`, `"XAF"` — GA4 nomme ce couple `value`/`currency`
+ *   - `value`, `currency`  = `montantXaf(totalCents)`, `"XAF"` - GA4 nomme ce couple `value`/`currency`
  *   - `items[].item_id`    = `articles[].reference`
  *   - `items[].item_name`  = `articles[].nom`
  *   - `items[].price`      = `montantXaf(articles[].prixCents)`
@@ -169,15 +169,15 @@ export function versGa4(evenement: EvenementDetail): EvenementGa4 {
 }
 
 /**
- * `EvenementDetail` → forme Meta (Pixel navigateur ET CAPI serveur — c'est
+ * `EvenementDetail` → forme Meta (Pixel navigateur ET CAPI serveur - c'est
  * volontairement la même fonction pour les deux : la CAPI, à venir dans un
  * prochain lot, ne doit pas réinventer sa propre mise en forme sous peine de
  * diverger du Pixel et de casser la déduplication).
  *
  * Correspondance (même donnée que `versGa4`, forme différente) :
  *   - `event_id`              = `identifiantEvenement(type, reference)`, partagé avec `versGa4`
- *   - `value`, `currency`     = `montantXaf(totalCents)`, `"XAF"` — Meta nomme ce couple pareil
- *   - `content_ids`           = `articles[].reference` — l'équivalent Meta de `items[].item_id`
+ *   - `value`, `currency`     = `montantXaf(totalCents)`, `"XAF"` - Meta nomme ce couple pareil
+ *   - `content_ids`           = `articles[].reference` - l'équivalent Meta de `items[].item_id`
  *   - `contents[].id`         = `articles[].reference`
  *   - `contents[].quantity`   = `articles[].quantite`
  *   - `contents[].item_price` = `montantXaf(articles[].prixCents)`
@@ -198,7 +198,7 @@ export function versPixel(evenement: EvenementDetail): EvenementPixel {
 }
 
 /**
- * Vocabulaire d'événements standard de Meta — distinct des quatre littéraux
+ * Vocabulaire d'événements standard de Meta - distinct des quatre littéraux
  * `EvenementMesure` (qui sont ceux de GA4). PARTAGÉ par le Pixel navigateur
  * ET la CAPI serveur, pour la même raison que `versPixel` : les deux envois
  * du même achat doivent porter EXACTEMENT le même nom d'événement, sous peine

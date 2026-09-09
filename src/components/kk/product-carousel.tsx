@@ -31,7 +31,7 @@ import { ProductCard } from "./product-card";
  * Un rail qui continue de bouger pendant qu'on vise une carte est un piège :
  * la cible se dérobe au moment du clic.
  *
- * `prefers-reduced-motion` coupe l'automatisme entièrement — les flèches, elles,
+ * `prefers-reduced-motion` coupe l'automatisme entièrement - les flèches, elles,
  * restent disponibles. Le mouvement devient alors un choix, jamais une
  * imposition.
  */
@@ -70,7 +70,7 @@ export function ProductCarousel({
    *
    * Le glissement automatique doit être suspendu pendant l'opération : il
    * écrit `scrollLeft` à chaque image, et écraserait donc le défilement doux
-   * dès la frame suivante — c'est ce qui rendait les flèches inopérantes.
+   * dès la frame suivante - c'est ce qui rendait les flèches inopérantes.
    * On rend la main une fois l'animation terminée.
    */
   const avancer = useCallback(
@@ -143,7 +143,7 @@ export function ProductCarousel({
   return (
     // Les gestionnaires de pause sont ici et non sur la piste : les flèches
     // débordent du rail, et les survoler laissait le glissement continuer sous
-    // le pointeur — la carte visée se dérobait au moment du clic.
+    // le pointeur - la carte visée se dérobait au moment du clic.
     <div
       className="relative"
       onMouseEnter={pause}
@@ -162,7 +162,7 @@ export function ProductCarousel({
            rail, et le padding les rétablit à l'intérieur de la piste : les
            cartes courent alors jusqu'au bord du cadre au lieu de s'arrêter à
            deux centimètres. Sur un téléphone, c'est ce qui fait comprendre
-           qu'il y a une suite — une carte coupée par une marge se lit comme
+           qu'il y a une suite - une carte coupée par une marge se lit comme
            une carte mal placée, coupée par le bord elle se lit comme un rail.
            Les valeurs suivent celles du cadre : p-5 sur mobile, p-6 au-delà. */
         className="kk-piste -mx-5 flex gap-5 overflow-x-auto px-5 pb-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-deep sm:-mx-6 sm:px-6"

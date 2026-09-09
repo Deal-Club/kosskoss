@@ -45,7 +45,7 @@ export async function WhatsAppButton() {
       // derrière la barre gestuelle iOS.
       className={[
         // `pastille-whatsapp` : cible des règles « barres basses » de
-        // globals.css — la pastille se masque sous le bandeau cookies et
+        // globals.css - la pastille se masque sous le bandeau cookies et
         // remonte au-dessus de la barre de total du tunnel (TK-01).
         "pastille-whatsapp group fixed bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-5 z-40",
         "flex h-14 items-center rounded-full bg-[#25D366] text-white",

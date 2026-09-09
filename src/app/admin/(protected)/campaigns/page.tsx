@@ -32,7 +32,7 @@ const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
 
 /** Taux rapporté aux messages réellement partis, jamais à la file entière. */
 function rate(part: number, sent: number): string {
-  if (sent <= 0) return "—";
+  if (sent <= 0) return "-";
   return `${Math.round((part / sent) * 100)} %`;
 }
 

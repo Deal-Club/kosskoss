@@ -161,7 +161,7 @@ async function main() {
       description:
         "Bois de chauffage livré en vrac, en mélange de feuillus durs (Chêne, Charme, Hêtre). Humidité d'environ 30 %, idéal pour un stockage de quelques mois avant utilisation.",
       descriptionEn:
-        "Firewood delivered loose, a mix of dense hardwoods (Oak, Hornbeam, Beech). Around 30% moisture — ideal for a few months of storage before use.",
+        "Firewood delivered loose, a mix of dense hardwoods (Oak, Hornbeam, Beech). Around 30% moisture - ideal for a few months of storage before use.",
       image: `${IMG}/lose-schuettung.jpg`,
       guideIntro:
         "Le bois en vrac est la solution la plus économique pour les gros volumes. Il arrive par camion-grue et se décharge directement à l'endroit voulu.",
@@ -189,9 +189,9 @@ async function main() {
       label: "Bois de chauffage sur palette",
       labelEn: "Palletised firewood",
       description:
-        "Bois de chauffage extra-sec (feuillus durs — Chêne, Charme, Hêtre) livré sur palette filmée, prêt à brûler. Humidité inférieure à 20 %, idéal pour une utilisation immédiate.",
+        "Bois de chauffage extra-sec (feuillus durs - Chêne, Charme, Hêtre) livré sur palette filmée, prêt à brûler. Humidité inférieure à 20 %, idéal pour une utilisation immédiate.",
       descriptionEn:
-        "Extra-dry firewood (hardwoods — Oak, Hornbeam, Beech) delivered on a wrapped pallet, ready to burn. Moisture below 20%, ideal for immediate use.",
+        "Extra-dry firewood (hardwoods - Oak, Hornbeam, Beech) delivered on a wrapped pallet, ready to burn. Moisture below 20%, ideal for immediate use.",
       image: `${IMG}/palette-box.jpg`,
       guideIntro:
         "Le bois sur palette est conditionné en atelier, séché en séchoir et filmé : il arrive prêt à brûler, sans manipulation supplémentaire.",
@@ -323,13 +323,13 @@ async function main() {
         bullets: JSON.stringify([
           `Longueur de bûche ${produit.longueurCm} cm`,
           "Essences : Chêne, Charme, Hêtre",
-          "Humidité inférieure à 20 % — prêt à brûler",
+          "Humidité inférieure à 20 % - prêt à brûler",
           "Livraison sur palette filmée",
         ]),
         bulletsEn: JSON.stringify([
           `Log length ${produit.longueurCm} cm`,
           "Species: Oak, Hornbeam, Beech",
-          "Moisture below 20% — ready to burn",
+          "Moisture below 20% - ready to burn",
           "Delivered on wrapped pallet",
         ]),
         image,
@@ -352,13 +352,13 @@ async function main() {
         bullets: JSON.stringify([
           `Longueur de bûche ${produit.longueurCm} cm`,
           "Essences : Chêne, Charme, Hêtre",
-          "Humidité inférieure à 20 % — prêt à brûler",
+          "Humidité inférieure à 20 % - prêt à brûler",
           "Livraison sur palette filmée",
         ]),
         bulletsEn: JSON.stringify([
           `Log length ${produit.longueurCm} cm`,
           "Species: Oak, Hornbeam, Beech",
-          "Moisture below 20% — ready to burn",
+          "Moisture below 20% - ready to burn",
           "Delivered on wrapped pallet",
         ]),
         image,

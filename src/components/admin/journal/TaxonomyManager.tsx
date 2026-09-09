@@ -379,7 +379,7 @@ export function TaxonomyManager({
                   onChange={(event) => setCategory({ ...category, parentId: event.target.value })}
                   className={cn(inputClass, "mt-1")}
                 >
-                  <option value="">— Aucune —</option>
+                  <option value="">- Aucune -</option>
                   {categories
                     .filter((entry) => entry.id !== editingId && !entry.parentId)
                     .map((entry) => (

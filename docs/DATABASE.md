@@ -1,7 +1,7 @@
 # Base de données
 
 Le site tourne sur Prisma 7. Toute la boutique (catalogue, avis, paiements,
-intégrations, stock, comptes admin) est en base — plus rien n'est lu depuis
+intégrations, stock, comptes admin) est en base - plus rien n'est lu depuis
 `data/store/*.json`, ces fichiers ne servent plus qu'au premier peuplement.
 
 ## Moteur : PostgreSQL (Neon)
@@ -51,7 +51,7 @@ aucune liste scalaire, uniquement des types communs aux moteurs SQL.
 
 `AdminLoginChallenge.adminUserId` porte un index **unique** : un compte n'a
 qu'un défi de connexion vivant à la fois. C'est la base qui garantit
-l'invariant, et non l'ordre d'arrivée des requêtes — sans lui, deux connexions
+l'invariant, et non l'ordre d'arrivée des requêtes - sans lui, deux connexions
 simultanées créaient deux défis et expédiaient deux codes par e-mail.
 
 ## Migrations
@@ -60,8 +60,8 @@ simultanées créaient deux défis et expédiaient deux codes par e-mail.
 `prisma migrate diff`. Les migrations des moteurs précédents sont conservées
 hors du dossier Prisma, à titre d'archive seulement :
 
-- `prisma-migrations-sqlite.bak/` — l'historique SQLite d'origine
-- `prisma-migrations-mysql.bak/` — la parenthèse MySQL/MariaDB (Hostinger)
+- `prisma-migrations-sqlite.bak/` - l'historique SQLite d'origine
+- `prisma-migrations-mysql.bak/` - la parenthèse MySQL/MariaDB (Hostinger)
 
 Aucune des deux n'est transposable telle quelle.
 

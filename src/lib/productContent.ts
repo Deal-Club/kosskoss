@@ -32,7 +32,7 @@ export interface ProductContent {
 // Le plafond était fixé à 800 caractères, ce qui produisait des fiches jugées
 // trop maigres par le commerçant : à ce format, la description tient les
 // caractéristiques techniques et rien d'autre. Il est passé à 2400 pour laisser
-// place à ce qui fait vraiment décider un acheteur — quel appareil, quelle
+// place à ce qui fait vraiment décider un acheteur - quel appareil, quelle
 // autonomie, comment stocker, comment choisir entre deux longueurs.
 //
 // Deuxième passe : le commerçant demande des fiches rédigées en plusieurs
@@ -83,7 +83,7 @@ const MOTS_PROMOTIONNELS = [
   "offre spéciale",
   "profitez",
   "commandez",
-  // Anglais — mêmes formules commerciales, pour la version /en du site.
+  // Anglais - mêmes formules commerciales, pour la version /en du site.
   "free delivery",
   "free shipping",
   "best price",
@@ -170,7 +170,7 @@ export function validateProductContent(entries: ProductContent[]): string[] {
 
     // Champs courts : pas de fourchette 400-800 (ils visent ~140 caractères),
     // mais soumis aux mêmes contrôles HTML / promotionnel / allemand, plus une
-    // vérification de non-vacuité — une valeur vide y passait jusqu'ici sans
+    // vérification de non-vacuité - une valeur vide y passait jusqu'ici sans
     // anomalie alors que `merchant.ts` peut s'en servir en repli.
     for (const [champ, texte] of [
       ["shortDescription", entry.shortDescription],

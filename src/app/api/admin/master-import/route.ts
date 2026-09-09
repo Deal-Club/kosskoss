@@ -5,10 +5,10 @@ import { importerMaster } from "@/server/kk/master";
 
 /**
  * Déclenche l'import du master client (fiches produits + routines) depuis le
- * back-office — sans corps de requête, un bouton comme celui des marques
+ * back-office - sans corps de requête, un bouton comme celui des marques
  * (`src/app/api/admin/brands/import/route.ts`). Idempotent EN ACCÈS
  * SÉRIALISÉ : relancé, il ne crée rien de plus (voir `src/server/kk/master.ts`).
- * Le compte rendu est renvoyé intégralement — l'écran doit pouvoir nommer,
+ * Le compte rendu est renvoyé intégralement - l'écran doit pouvoir nommer,
  * pas seulement compter (règle 2 des contraintes globales du lot).
  */
 export async function POST() {

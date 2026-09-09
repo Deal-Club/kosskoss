@@ -10,7 +10,7 @@ import { CONSENT_COOKIE } from "@/lib/consent";
 // Exécuté par `node --test`, sans DOM : `window` et `document` n'existent pas
 // dans cet environnement. C'est exactement le cas qu'un rendu serveur (ou tout
 // script qui importerait ce module par erreur hors navigateur) rencontrerait
-// aussi — les fonctions ci-dessous doivent donc rester silencieuses plutôt que
+// aussi - les fonctions ci-dessous doivent donc rester silencieuses plutôt que
 // de lever `ReferenceError: window is not defined`.
 //
 // `nomEvenementMeta` a migré vers `mesure.ts` (partagé avec la CAPI serveur,
@@ -41,12 +41,12 @@ describe("mesurerEvenement hors navigateur", () => {
 
 // ── LA GARDE DE CONSENTEMENT, PAS SEULEMENT L'ABSENCE DE NAVIGATEUR ─────────
 //
-// Les tests ci-dessus prouvent que rien ne lève hors navigateur — mais ils ne
+// Les tests ci-dessus prouvent que rien ne lève hors navigateur - mais ils ne
 // prouvent PAS que `mesurerEvenement`/`initialiserMesure` refusent d'agir sans
 // consentement : sans `window`, `fbq`/`gtag` ne sont de toute façon jamais
 // définis, garde ou pas. Un faux navigateur minimal (pas de dépendance jsdom
 // dans ce projet) est donc posé ci-dessous pour observer ce que le module fait
-// RÉELLEMENT de `window.fbq`/`window.gtag` selon le cookie de consentement —
+// RÉELLEMENT de `window.fbq`/`window.gtag` selon le cookie de consentement -
 // de sorte qu'un test tombe si `consentementAutorise` était un jour forcé à
 // toujours répondre « oui ».
 
@@ -75,7 +75,7 @@ function retirerFauxNavigateur(): void {
   _reinitialiserPourLesTests();
 }
 
-/** Cookie de consentement valide, au format `version.mesure.marketing.horodatage` — voir `@/lib/consent`. */
+/** Cookie de consentement valide, au format `version.mesure.marketing.horodatage` - voir `@/lib/consent`. */
 function cookieConsentement(mesure: boolean, marketing: boolean): string {
   const horodatage = Math.floor(Date.now() / 1000);
   return `${CONSENT_COOKIE}=1.${mesure ? "1" : "0"}.${marketing ? "1" : "0"}.${horodatage}`;
@@ -87,7 +87,7 @@ afterEach(() => {
   retirerFauxNavigateur();
 });
 
-describe("mesurerEvenement — garde du Pixel Meta sur la catégorie « marketing »", () => {
+describe("mesurerEvenement - garde du Pixel Meta sur la catégorie « marketing »", () => {
   it("NE POSE PAS `window.fbq` et n'envoie rien sans consentement marketing", () => {
     const { window } = poserFauxNavigateur(cookieConsentement(true, false));
     try {
@@ -129,7 +129,7 @@ describe("mesurerEvenement — garde du Pixel Meta sur la catégorie « marketin
   });
 });
 
-describe("mesurerEvenement — garde de GA4 sur la catégorie « mesure »", () => {
+describe("mesurerEvenement - garde de GA4 sur la catégorie « mesure »", () => {
   it("NE POSE PAS `window.gtag` et n'envoie rien sans consentement de mesure", () => {
     const { window } = poserFauxNavigateur(cookieConsentement(false, true));
     try {

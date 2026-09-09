@@ -34,8 +34,8 @@ export async function generateMetadata({ params }: { params: TagParams }): Promi
         : `Tous les articles du Journal étiquetés « ${tag.label} ».`,
     alternates: alternatesFor(`/journal/tag/${tag.slug}`, locale),
     // Hygiène d'indexation : un tag utilisé une ou deux fois produit une page
-    // presque identique à celle de l'article. On la garde accessible — un
-    // lecteur peut vouloir la parcourir — mais hors de l'index.
+    // presque identique à celle de l'article. On la garde accessible - un
+    // lecteur peut vouloir la parcourir - mais hors de l'index.
     robots:
       tag.publishedCount < TAG_INDEX_THRESHOLD ? { index: false, follow: true } : undefined,
   };

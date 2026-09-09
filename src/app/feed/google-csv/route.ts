@@ -4,7 +4,7 @@ import {
   type MerchantRecord,
 } from "@/server/merchant";
 
-// Même flux produits, au format tabulé (TSV) — l'autre format accepté par
+// Même flux produits, au format tabulé (TSV) - l'autre format accepté par
 // Merchant Center. Google recommande explicitement le TSV plutôt que le CSV :
 // les valeurs répétées (product_highlight) contiennent souvent des virgules.
 //

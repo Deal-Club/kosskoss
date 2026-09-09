@@ -49,7 +49,7 @@ import type { AvantApresView } from "@/data/kk/avant-apres";
  *
  * Le point décisif est l'ordre : les deux modules « solution » (diagnostic,
  * routines) passent AVANT les modules « produit » (catégories, best-sellers).
- * L'accueil précédent faisait l'inverse — trois blocs produit avant le
+ * L'accueil précédent faisait l'inverse - trois blocs produit avant le
  * diagnostic, et aucune routine.
  *
  * Second changement de fond : la réassurance remonte en position 2. Elle était
@@ -59,7 +59,7 @@ import type { AvantApresView } from "@/data/kk/avant-apres";
  * Troisième : deux blocs disaient la même chose sur nous-mêmes (« un
  * concept-store, pas un catalogue de plus » et « des soins choisis avec
  * méthode »). La maquette occupe cette place par un focus sur une marque
- * distribuée — c'est-à-dire par quelque chose qu'on peut acheter.
+ * distribuée - c'est-à-dire par quelque chose qu'on peut acheter.
  */
 
 /* ---------------------------------------------------------- 2. Promesses -- */
@@ -68,7 +68,7 @@ import type { AvantApresView } from "@/data/kk/avant-apres";
  * Les quatre promesses, immédiatement sous le hero.
  *
  * Bande basse et serrée, comme sur la maquette : ce n'est pas une section, c'est
- * une ceinture de réassurance. L'authenticité passe en tête — c'est la première
+ * une ceinture de réassurance. L'authenticité passe en tête - c'est la première
  * inquiétude de cette clientèle, avant le prix et avant le délai.
  */
 export function PromisesRow() {
@@ -83,7 +83,7 @@ export function PromisesRow() {
   return (
     /* Fond de page, pas d'aplat : cette bande court sur toute la largeur, juste
        sous le hero, et son sable se lisait comme la couleur de fond du site.
-       Le vert profond du hero la délimite en haut, un filet la ferme en bas —
+       Le vert profond du hero la délimite en haut, un filet la ferme en bas -
        c'est tout ce dont elle a besoin pour se détacher. */
     <section className="border-b border-border/60 bg-background">
       <div className="section-tight mx-auto grid max-w-7xl gap-x-8 gap-y-6 px-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -109,8 +109,8 @@ export function PromisesRow() {
  * clic.
  *
  * C'est ce qui a permis de supprimer l'écran d'intro du parcours (voir
- * diagnostic-flow.tsx) : la promesse — cinq questions, gratuit, sans engagement
- * — est tenue ici, donc le bouton peut mener directement à la question 1 au lieu
+ * diagnostic-flow.tsx) : la promesse - cinq questions, gratuit, sans engagement
+ * - est tenue ici, donc le bouton peut mener directement à la question 1 au lieu
  * d'un second écran qui redemandait le même clic.
  */
 function DiagnosticCard({ questions }: { questions: string[] }) {
@@ -211,7 +211,7 @@ export function BrandFocus({
               Posés sur le vert profond, leurs fonds de studio ressortaient ;
               rapatriés sur une dalle claire, ils devenaient une grande surface
               vide occupée par de petits flacons. Le bloc dit ce qu'il a à dire
-              — la maison, son parti pris, le lien vers ses références — et les
+              - la maison, son parti pris, le lien vers ses références - et les
               produits se montrent là où c'est leur place : dans les rails et
               les routines. */}
         </div>
@@ -228,8 +228,8 @@ export function BrandFocus({
  * Accès direct aux rayons, en pastilles.
  *
  * Les grandes cartes précédentes occupaient un écran entier pour trois liens.
- * La maquette traite les catégories comme un raccourci — petites pastilles
- * rondes, deux rangées, à côté des best-sellers — et non comme une section.
+ * La maquette traite les catégories comme un raccourci - petites pastilles
+ * rondes, deux rangées, à côté des best-sellers - et non comme une section.
  * C'est aussi ce qui permet de tenir treize blocs sans doubler la hauteur de
  * page : la maquette compose en colonnes là où l'accueil empilait des bandes
  * pleine largeur.
@@ -239,13 +239,13 @@ export function BrandFocus({
  *
  * La même silhouette de flacon servait pour toutes : la grille se lisait comme
  * un damier indifférencié et l'icône n'aidait pas à choisir. La table est
- * explicite parce que les slugs viennent de la base — une catégorie inconnue
+ * explicite parce que les slugs viennent de la base - une catégorie inconnue
  * retombe sur la goutte, jamais sur rien.
  *
  * `cheveux` et `masques` y figurent alors que le catalogue ne les contient pas
  * encore : ce sont deux entrées prévues, prêtes à s'afficher le jour où elles
  * sont créées. Toute autre catégorie ajoutée sans icône ici s'affichera avec la
- * goutte — c'est correct, mais c'est le signe qu'il faut compléter la table.
+ * goutte - c'est correct, mais c'est le signe qu'il faut compléter la table.
  */
 const ICONE_CATEGORIE: Record<string, LucideIcon> = {
   nettoyants: SprayCan,
@@ -268,7 +268,7 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
   return (
     /* `h-full` et colonne flex : la carte doit atteindre la hauteur du rail de
        best-sellers qu'elle accompagne, les deux blocs étant posés côte à côte.
-       Le `mt-auto` sur le pied de carte absorbe la différence — l'écart s'ouvre
+       Le `mt-auto` sur le pied de carte absorbe la différence - l'écart s'ouvre
        entre les icônes et les deux liens, jamais à l'intérieur de la grille
        d'icônes, qui garde son pas régulier. */
     <div className="flex h-full flex-col rounded-2xl border border-border/70 bg-card p-5 sm:p-6">
@@ -280,7 +280,7 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
           Le catalogue compte huit catégories : à quatre par ligne elles
           tenaient en deux rangées et la carte restait nettement plus courte que
           le rail de best-sellers posé à côté. À trois, les mêmes huit entrées
-          occupent trois rangées et les deux blocs s'équilibrent — sans inventer
+          occupent trois rangées et les deux blocs s'équilibrent - sans inventer
           de catégorie. Une catégorie sans produit est d'ailleurs masquée
           d'office par la navigation (voir server/kk/navigation.ts) : en créer
           pour remplir la grille ne remplirait rien du tout.
@@ -302,7 +302,7 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
                pourcentage. Deux colonnes donnent 105 px, ce qui les loge.
                `min-w-0` + `break-words` sont la ceinture : ils garantissent
                qu'aucun libellé, même inconnu à l'écriture de ce code, ne peut
-               élargir sa case — les catégories viennent de la base. */
+               élargir sa case - les catégories viennent de la base. */
             <li
               key={category.href}
               className="min-w-0 w-[calc((100%-0.75rem)/2)] min-[380px]:w-[calc((100%-1.5rem)/3)]"
@@ -311,7 +311,7 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
                 {/* 72 px sur grand écran, 56 sur mobile.
 
                     Le 72 vient du passage de quatre à trois colonnes, qui a
-                    élargi chaque case d'un tiers — mais seulement là où la
+                    élargi chaque case d'un tiers - mais seulement là où la
                     carte occupe un tiers de la page. Sur un téléphone elle
                     prend toute la largeur : trois cases dans 264 px utiles font
                     80 px chacune, et un cercle de 72 les remplissait au point
@@ -363,12 +363,12 @@ export function CategoryPills({ groups }: { groups: NavGroup[] }) {
 /* ------------------------------------------ 8 + 9 + 10. Conseils & preuves -- */
 
 /**
- * Une seule section pour les blocs 8, 9 et 10 de la structure client —
+ * Une seule section pour les blocs 8, 9 et 10 de la structure client -
  * « Conseils & contenu », « Avant / après » et « Avis clientes ».
  *
  * Ils étaient rendus en trois cartes autonomes posées côte à côte : trois
  * cadres, trois sur-titres dorés, trois titres de section, pour ce qui est un
- * seul propos — la preuve. À l'écran, cela faisait trois blocs qui se
+ * seul propos - la preuve. À l'écran, cela faisait trois blocs qui se
  * disputaient l'attention là où il n'en fallait qu'un, et multipliait les
  * accents de couleur sans rien hiérarchiser.
  *
@@ -460,8 +460,8 @@ export function InsightsSection({
 
   /* Le panneau « Elles nous font confiance » vivait ici. Il montrait UN
      témoignage sur les trois lus en base, sans note moyenne ni volume, dans un
-     tiers de cadre partagé avec la FAQ et l'avant/après. La preuve sociale —
-     le seul contenu de la page qui ne soit pas écrit par la marque — a
+     tiers de cadre partagé avec la FAQ et l'avant/après. La preuve sociale -
+     le seul contenu de la page qui ne soit pas écrit par la marque - a
      désormais sa propre section : voir components/kk/avis-clients.tsx, montée
      juste au-dessus de celle-ci sur l'accueil. */
 
@@ -469,7 +469,7 @@ export function InsightsSection({
 
   // Le nombre de colonnes suit le nombre de panneaux servis : à deux panneaux,
   // une grille de trois laisserait une colonne vide et déséquilibrerait la
-  // section — exactement le défaut qu'on cherche à corriger.
+  // section - exactement le défaut qu'on cherche à corriger.
   const colonnes =
     panneaux.length === 1 ? "" : panneaux.length === 2 ? "md:grid-cols-2" : "md:grid-cols-2 lg:grid-cols-3";
 
@@ -558,7 +558,7 @@ export function ServicesBand({ whatsappUrl }: { whatsappUrl?: string }) {
 
 /**
  * Rappel du diagnostic, posé juste après les best-sellers et avant la section
- * « Bon à savoir » — c'est la place demandée par le client.
+ * « Bon à savoir » - c'est la place demandée par le client.
  *
  * Il s'adresse à qui vient de parcourir le rayon sans se reconnaître dans aucun
  * produit. Volontairement sobre : le module complet est en haut de page

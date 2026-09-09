@@ -16,7 +16,7 @@ import type { Locale } from "@/i18n/routing";
  * fusionnerait deux marques réellement distinctes, et des produits
  * changeraient de marque sans que personne ne s'en aperçoive.
  *
- * C'est pourquoi tout rapprochement — ici comme dans le rattachement — passe
+ * C'est pourquoi tout rapprochement - ici comme dans le rattachement - passe
  * par `cleMarque` (src/lib/kk/marques.ts) et RIEN D'AUTRE : la casse et les
  * accents sont ignorés parce qu'une saisie au clavier les fait varier sans
  * intention, mais les espaces internes et la ponctuation restent significatifs.
@@ -34,7 +34,7 @@ export interface MarqueRecord {
   logo: string;
   position: number;
   active: boolean;
-  /** Produits actuellement rattachés — actifs ou non. */
+  /** Produits actuellement rattachés - actifs ou non. */
   productCount: number;
 }
 
@@ -57,7 +57,7 @@ export interface CompteRenduImport {
   fusionnees: { conservee: string; variantes: string[] }[];
   /** Produits dont le rattachement vient d'être fait. */
   produitsRattaches: number;
-  /** Produits déjà rattachés avant cette exécution — pour mesurer l'idempotence. */
+  /** Produits déjà rattachés avant cette exécution - pour mesurer l'idempotence. */
   produitsDejaRattaches: number;
 }
 
@@ -116,7 +116,7 @@ export async function listerMarques(options?: {
 }
 
 /**
- * Slugs des marques ayant réellement une page — même filtre que
+ * Slugs des marques ayant réellement une page - même filtre que
  * `marqueVitrineParSlug` : actives, avec au moins un produit actif. Alimente
  * `src/app/sitemap.ts`, qui ne déclare que ce qui a de la matière, comme il
  * le fait déjà pour les rubriques et auteurs du Journal.
@@ -136,7 +136,7 @@ export interface MarqueVitrine {
   name: string;
   description: string;
   logo: string;
-  /** Produits de la page courante uniquement — voir `CATALOG_PAGE_SIZE`. */
+  /** Produits de la page courante uniquement - voir `CATALOG_PAGE_SIZE`. */
   products: KKProductView[];
   /** Total de produits actifs de la marque, toutes pages confondues. */
   total: number;
@@ -149,13 +149,13 @@ export interface MarqueVitrine {
 
 /**
  * Marque de vitrine par slug. `null` si elle n'existe pas, si elle est
- * inactive, ou si elle n'a plus aucun produit actif — même règle que sur le
+ * inactive, ou si elle n'a plus aucun produit actif - même règle que sur le
  * listing : une page de marque vide déçoit plus qu'une absence, et fait sortir
  * la fiche du référencement plutôt que de la laisser à vide.
  *
  * Paginée comme une page de catégorie (`getCatalog`, src/server/kk/catalog.ts) :
  * une marque à cinq cents produits rendrait cinq cents vignettes sur une seule
- * page sans ce découpage. Même gabarit — `CATALOG_PAGE_SIZE`, comptage puis
+ * page sans ce découpage. Même gabarit - `CATALOG_PAGE_SIZE`, comptage puis
  * lecture de la tranche, page hors bornes ramenée à la dernière.
  */
 export async function marqueVitrineParSlug(
@@ -199,7 +199,7 @@ export async function marqueVitrineParSlug(
 
 /**
  * Cherche, parmi les marques existantes, celle qui partage la clé de
- * rapprochement du nom donné — « Nivea » et « Nivéa » sont la même clé, la
+ * rapprochement du nom donné - « Nivea » et « Nivéa » sont la même clé, la
  * seule contrainte d'unicité de la base ne les distinguerait pas puisqu'elle
  * est sensible à la casse et aux accents. `ignoreId` exclut la marque qu'on
  * modifie elle-même de la recherche.
@@ -272,7 +272,7 @@ export async function modifierMarque(
   // Une seule transaction : soit la marque ET ses produits changent de
   // libellé ensemble, soit rien ne bouge. Sans ça, un crash entre les deux
   // écritures laisserait une marque déjà renommée avec des produits qui
-  // affichent encore l'ancien nom — exactement le défaut que cette écriture
+  // affichent encore l'ancien nom - exactement le défaut que cette écriture
   // corrige.
   const row = await prisma.$transaction(async (tx) => {
     const updated = await tx.brand.update({
@@ -297,7 +297,7 @@ export async function modifierMarque(
     // son libellé doit suivre le nom courant de sa marque, comme le titre
     // d'une fiche suit le nom qu'on lui a donné. Ne pas le faire laisserait
     // les fiches déjà rattachées afficher l'ancien nom sous un titre de page
-    // qui, lui, aurait changé — et le prochain import recréerait même une
+    // qui, lui, aurait changé - et le prochain import recréerait même une
     // DEUXIÈME marque pour l'ancienne graphie, jamais réparée depuis.
     //
     // `OrderItem.brand`, à l'inverse, NE DOIT JAMAIS être touché ici : une
@@ -337,7 +337,7 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
     select: { id: true, brand: true, brandId: true },
   });
 
-  // Regroupement par CLÉ DE RAPPROCHEMENT — jamais par égalité stricte ni par
+  // Regroupement par CLÉ DE RAPPROCHEMENT - jamais par égalité stricte ni par
   // `slugify`, qui écraserait des différences peut-être volontaires.
   const groupes = new Map<string, { id: string; brand: string; brandId: string | null }[]>();
   for (const produit of produits) {
@@ -351,8 +351,8 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
   }
 
   // `orderBy` explicite : sans lui, deux marques qui partagent une clé de
-  // rapprochement (cas normalement empêché à la création — voir
-  // `marqueEnConflit` — mais qu'une base plus ancienne peut déjà porter)
+  // rapprochement (cas normalement empêché à la création - voir
+  // `marqueEnConflit` - mais qu'une base plus ancienne peut déjà porter)
   // laisseraient l'ordre physique de la table décider laquelle des deux
   // reçoit les produits, un ordre qui peut changer d'une exécution à
   // l'autre. La plus ancienne l'emporte, pour rester déterministe.
@@ -361,7 +361,7 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
   });
   // Construit à la main plutôt que via `new Map(marques.map(...))` : ce
   // dernier garderait la DERNIÈRE entrée d'une clé dupliquée, donc la plus
-  // récente — l'inverse de ce que l'`orderBy` ci-dessus doit garantir.
+  // récente - l'inverse de ce que l'`orderBy` ci-dessus doit garantir.
   const parCle = new Map<string, (typeof marquesExistantes)[number]>();
   for (const marque of marquesExistantes) {
     const cle = cleMarque(marque.name);
@@ -383,7 +383,7 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
     let marque = parCle.get(cle);
 
     if (!marque) {
-      // Nom canonique retenu : la graphie portée par le plus de produits — à
+      // Nom canonique retenu : la graphie portée par le plus de produits - à
       // égalité, l'ordre alphabétique tranche pour rester déterministe d'un
       // import à l'autre.
       const occurrences = new Map<string, number>();
@@ -403,7 +403,7 @@ export async function importerMarquesDuCatalogue(): Promise<CompteRenduImport> {
       compteRendu.creees.push(marque.name);
     }
 
-    // Écritures distinctes réellement fondues par cette exécution — celles
+    // Écritures distinctes réellement fondues par cette exécution - celles
     // déjà rattachées lors d'une exécution précédente ne comptent plus.
     //
     // Le test porte sur le NOMBRE DE GRAPHIES OBSERVÉES DANS CE LOT

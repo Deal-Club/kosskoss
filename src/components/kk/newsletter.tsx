@@ -30,7 +30,7 @@ function FacebookIcon({ className }: { className?: string }) {
  *
  * La maquette montre aussi TikTok, mais aucun compte n'est renseigné dans
  * `src/config/brand.ts` : une icône qui mène à une page vide dit à un visiteur
- * méfiant — la cible décrite par la charte — que la maison est à l'abandon.
+ * méfiant - la cible décrite par la charte - que la maison est à l'abandon.
  * L'entrée s'ajoutera d'elle-même le jour où le compte existera.
  */
 const RESEAUX = [
@@ -47,7 +47,7 @@ const RESEAUX = [
 ];
 
 /**
- * Bloc 12 de la structure fournie par le client : « NEWSLETTER — inscription
+ * Bloc 12 de la structure fournie par le client : « NEWSLETTER - inscription
  * pour conseils · offres exclusives ».
  *
  * C'EST LE SEUL ENDROIT DU SITE QUI PORTE ENCORE LE MOTIF DE MARQUE.
@@ -55,7 +55,7 @@ const RESEAUX = [
  * La règle posée (voir pattern-backdrop.tsx) est « un seul motif sur tout le
  * parcours, jamais sous du texte courant ». Ce bandeau la respecte : une ligne
  * de titre, une ligne de chapô, un champ. Aucune colonne de liens, aucun
- * paragraphe. Le motif y signe la page sans gêner personne — et le client avait
+ * paragraphe. Le motif y signe la page sans gêner personne - et le client avait
  * explicitement trouvé notre usage du motif « intéressant », il aurait été
  * dommage de le perdre entièrement.
  */

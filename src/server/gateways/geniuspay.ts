@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 /**
- * Passerelle de paiement GeniusPay — Mobile Money et carte.
+ * Passerelle de paiement GeniusPay - Mobile Money et carte.
  *
  * Documentation fournie par le prestataire : `API_Documentation.md` et
  * `geniuspay-webhook-integration-guide.md`.
@@ -13,12 +13,12 @@ import { createHmac, timingSafeEqual } from "node:crypto";
  *    au Cameroun : la disponibilité d'Orange Money CM et de MTN MoMo CM est à
  *    confirmer auprès de GeniusPay avant d'ouvrir le mode live.
  *
- * 2. DEVISE : LEUR API REFUSE LE XAF. Vérifié en sandbox — `currency: "XAF"`
+ * 2. DEVISE : LEUR API REFUSE LE XAF. Vérifié en sandbox - `currency: "XAF"`
  *    renvoie 422 `validation.in`. Seul le XOF (franc CFA UEMOA) est accepté,
  *    alors que la boutique vend en XAF (franc CFA CEMAC).
  *
- *    Les deux francs sont à parité fixe — 1 XOF = 1 XAF, tous deux arrimés à
- *    l'euro à 655,957 — donc le MONTANT transite juste. Mais l'encaissement
+ *    Les deux francs sont à parité fixe - 1 XOF = 1 XAF, tous deux arrimés à
+ *    l'euro à 655,957 - donc le MONTANT transite juste. Mais l'encaissement
  *    sera libellé en XOF chez le prestataire pendant que la boutique affiche
  *    des XAF : c'est un point à valider avec le comptable, et à confirmer avec
  *    GeniusPay avant d'ouvrir le mode live.
@@ -30,9 +30,9 @@ import { createHmac, timingSafeEqual } from "node:crypto";
  * ── DEUX DOCUMENTATIONS QUI SE CONTREDISENT ─────────────────────────────────
  *
  * Sur la signature des webhooks, les deux fichiers divergent :
- *   — `API_Documentation.md` : en-tête `X-GeniusPay-Signature`, signature
+ *   - `API_Documentation.md` : en-tête `X-GeniusPay-Signature`, signature
  *     calculée sur le corps SEUL ;
- *   — le guide d'intégration (plus récent, 30/12/2025) : en-tête
+ *   - le guide d'intégration (plus récent, 30/12/2025) : en-tête
  *     `X-Webhook-Signature`, signature sur `timestamp + "." + corps`.
  *
  * On ne choisit pas : `verifierSignature` accepte les deux en-têtes et essaie
@@ -49,7 +49,7 @@ export const MONTANT_MINIMUM = 200;
  * Devise transmise au prestataire.
  *
  * XOF et non XAF : leur API refuse le XAF (422 `validation.in`, vérifié en
- * sandbox). Parité fixe entre les deux, donc le montant est identique — voir
+ * sandbox). Parité fixe entre les deux, donc le montant est identique - voir
  * la réserve n°2 en tête de fichier.
  */
 export const DEVISE_PRESTATAIRE = "XOF";
@@ -123,7 +123,7 @@ export interface PaiementCree {
  * `payment_method` n'est VOLONTAIREMENT PAS transmis : c'est le mode
  * « checkout » recommandé par le prestataire, où le client choisit son moyen
  * sur leur page. Le forcer côté serveur reviendrait à décider à sa place entre
- * Orange Money, MTN et la carte — et à perdre celui qui n'a pas le moyen
+ * Orange Money, MTN et la carte - et à perdre celui qui n'a pas le moyen
  * imposé.
  */
 export async function creerPaiement(
@@ -212,7 +212,7 @@ export async function creerPaiement(
  *
  * Sert de filet quand un webhook s'est perdu : le retour du client sur la page
  * de confirmation peut déclencher cette vérification. On ne se fie JAMAIS au
- * seul retour navigateur pour marquer « payée » — c'est cette lecture-ci qui
+ * seul retour navigateur pour marquer « payée » - c'est cette lecture-ci qui
  * fait foi, pas le fait que le client soit revenu.
  */
 export async function lirePaiement(
@@ -277,7 +277,7 @@ export function verifierSignature(
  * Comparaison à temps constant, tolérante aux longueurs différentes.
  *
  * `timingSafeEqual` LÈVE une exception si les deux tampons n'ont pas la même
- * taille — c'est le piège de l'exemple Node de leur documentation, qui plante
+ * taille - c'est le piège de l'exemple Node de leur documentation, qui plante
  * au lieu de refuser proprement une signature tronquée.
  */
 function comparaisonConstante(a: string, b: string): boolean {

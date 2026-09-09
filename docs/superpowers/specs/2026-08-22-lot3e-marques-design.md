@@ -1,6 +1,6 @@
-# Lot 3E — Les marques deviennent une entité
+# Lot 3E - Les marques deviennent une entité
 
-**Critère visé :** 13 (back-office complet — volet marques).
+**Critère visé :** 13 (back-office complet - volet marques).
 
 ---
 
@@ -12,11 +12,11 @@ Une marque n'est aujourd'hui qu'une chaîne recopiée sur chaque produit
 
 Ce que cela empêche :
 
-- **aucune page de marque** — un visiteur qui cherche « Nivea » n'a nulle part où
+- **aucune page de marque** - un visiteur qui cherche « Nivea » n'a nulle part où
   aller, alors que c'est un chemin d'entrée naturel en cosmétique ;
-- **aucun logo, aucune description** — donc rien à montrer et rien à référencer ;
-- **aucun ordre choisi** — l'ordre alphabétique décide seul de qui est mis en avant ;
-- **une faute de frappe crée une marque** — « Nivéa » et « Nivea » deviennent deux
+- **aucun logo, aucune description** - donc rien à montrer et rien à référencer ;
+- **aucun ordre choisi** - l'ordre alphabétique décide seul de qui est mis en avant ;
+- **une faute de frappe crée une marque** - « Nivéa » et « Nivea » deviennent deux
   marques, silencieusement, et rien ne le signale ;
 - **impossible de retirer une marque de la vitrine** sans toucher aux produits.
 
@@ -52,7 +52,7 @@ peut pas porter : logo, description, ordre, état. Supprimer la chaîne obligera
 réécrire 94 fichiers pour un gain nul.
 
 `onDelete: SetNull` : supprimer une marque ne doit pas emporter ses produits. Le
-produit garde son libellé et perd son rattachement — visible, réparable.
+produit garde son libellé et perd son rattachement - visible, réparable.
 
 ### 2.2 Le rattachement se fait par un écran, pas par une migration
 
@@ -70,7 +70,7 @@ Le rattachement des produits existants se fait par un bouton du back-office,
 
 **Pourquoi un bouton plutôt qu'un script SQL.** Le rattachement doit tourner sur la
 base de production, et un script suppose un accès shell qu'on n'a pas toujours sous
-la main. Un bouton est idempotent, se relance sans risque, et dit ce qu'il a fait —
+la main. Un bouton est idempotent, se relance sans risque, et dit ce qu'il a fait -
 un `UPDATE` massif ne dit rien.
 
 **Le rapprochement est insensible à la casse et aux accents**, ce qui fait apparaître
@@ -85,7 +85,7 @@ la même marque, et le compte rendu signale que deux orthographes ont été fond
 - **`/marques/[slug]`** présente la marque et ses produits. C'est la page qui
   n'existait pas.
 - Les deux existent en français et en anglais, avec repli sur le français quand la
-  traduction est vide — la règle déjà établie pour les catégories.
+  traduction est vide - la règle déjà établie pour les catégories.
 
 ### 2.4 Le back-office
 
@@ -96,12 +96,12 @@ un produit dont la marque n'existe pas encore doit pouvoir être créé.
 
 ## 3. Hors périmètre
 
-- **La facette « marque » du catalogue** — elle relève du lot 4, avec les autres
+- **La facette « marque » du catalogue** - elle relève du lot 4, avec les autres
   facettes. Cette entité en est le préalable.
-- **La fusion manuelle de deux marques** — l'import fond déjà les variantes
+- **La fusion manuelle de deux marques** - l'import fond déjà les variantes
   d'orthographe ; fusionner deux marques réellement distinctes est un cas rare qui
   se traite par une modification de produits.
-- **Les traductions au-delà du nom et de la description** — le lot 3G leur donne un
+- **Les traductions au-delà du nom et de la description** - le lot 3G leur donne un
   écran dédié.
 
 ## 4. Architecture
@@ -109,7 +109,7 @@ un produit dont la marque n'existe pas encore doit pouvoir être créé.
 ```
 prisma/schema.prisma              modèle Brand, Product.brandId
 prisma/migrations/…               additive : une table, deux colonnes
-src/lib/kk/slug.ts                pur — identifiant d'URL, et clé de rapprochement
+src/lib/kk/slug.ts                pur - identifiant d'URL, et clé de rapprochement
 src/server/kk/marques.ts          lecture, écriture, import depuis le catalogue
 src/app/admin/(protected)/brands/ liste et formulaire
 src/app/api/admin/brands/         CRUD + import
@@ -124,7 +124,7 @@ ponctuation, chaîne vide, collisions. La **clé de rapprochement** est testée
 séparément du **slug d'URL** : ce sont deux fonctions, et les confondre ferait
 fusionner des marques distinctes.
 
-L'import est vérifié à la main sur la base réelle, avec son compte rendu — le dépôt
+L'import est vérifié à la main sur la base réelle, avec son compte rendu - le dépôt
 n'a pas d'infrastructure de test avec base.
 
 ## 6. Le risque, nommé

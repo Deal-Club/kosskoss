@@ -56,7 +56,7 @@ export function ProductCard({ product }: { product: KKProductView }) {
               sizes="(max-width: 1024px) 45vw, 22vw"
               // `contain` et non `cover` : les visuels détourés sont carrés, le
               // cadre est en 4/5. En `cover`, le flacon était rogné d'un
-              // cinquième — bouchons et bas d'étiquette coupés sur toute la
+              // cinquième - bouchons et bas d'étiquette coupés sur toute la
               // grille.
               // L'envol : le flacon s'élève et s'incline pendant que le
               // panneau sable monte sous lui. Ce sont ces deux mouvements

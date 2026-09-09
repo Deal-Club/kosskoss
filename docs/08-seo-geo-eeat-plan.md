@@ -1,4 +1,4 @@
-# 08 — Plan SEO technique, GEO (moteurs de réponse) et E-E-A-T
+# 08 - Plan SEO technique, GEO (moteurs de réponse) et E-E-A-T
 
 ## 1. Acquis dans `mlcbois` (à conserver / réutiliser)
 
@@ -8,14 +8,14 @@
 - `hreflang` FR/EN via `src/lib/hreflang.ts` ; canonical par page.
 - JSON-LD : `OrganizationJsonLd`, `ProductJsonLd` (+ Offer, MerchantReturnPolicy, shippingDetails, AggregateRating, classe énergétique), `BreadcrumbJsonLd`.
 - Flux Google Merchant (`/feed/google`, `/feed/google-csv`) aligné sur le balisage produit.
-- HTML sémantique, Server Components (contenu principal rendu côté serveur — bon pour crawl et GEO).
+- HTML sémantique, Server Components (contenu principal rendu côté serveur - bon pour crawl et GEO).
 
-## 2. SEO technique — actions Koss Koss
+## 2. SEO technique - actions Koss Koss
 
 | Action | Détail |
 |---|---|
 | Métadonnées globales + dynamiques | reprendre `generateMetadata`, réécrire tous les textes pour Koss Koss |
-| **Champs SEO dédiés** (nouveau) | ajouter `metaTitle`, `metaDescription`, `canonicalUrl?`, `noindex?`, `ogImage?`, `altText` sur Product/Category/Page — **séparés** des champs commerciaux |
+| **Champs SEO dédiés** (nouveau) | ajouter `metaTitle`, `metaDescription`, `canonicalUrl?`, `noindex?`, `ogImage?`, `altText` sur Product/Category/Page - **séparés** des champs commerciaux |
 | URL canoniques | une URL canonique par entité, gérée en base pour les cas particuliers |
 | robots.txt / indexation | reconduire les `Disallow` transactionnels ; **ne pas indexer** admin, compte, panier, paiement, confirmation, reset mot de passe, prévisualisations, résultats de recherche internes |
 | Sitemaps | pages + produits + catégories ; images si pertinent |
@@ -27,12 +27,12 @@
 | Langue du document | `lang` correct par locale (déjà géré) |
 | Contenus dupliqués | descriptions produit uniques ; **pas de génération de centaines de descriptions quasi identiques** |
 
-## 3. Données structurées (JSON-LD) — règles
+## 3. Données structurées (JSON-LD) - règles
 
 - Types selon la page : `Organization`, `WebSite`, `WebPage`, `BreadcrumbList`, `CollectionPage`, `Product`, `ProductGroup` (variantes), `Offer`, `AggregateOffer`, `Brand`, `MerchantReturnPolicy`, `OfferShippingDetails`.
 - **Interdits** : faux avis, fausses notes, faux stocks/prix/promos, données non visibles, balisage sans rapport.
 - Prix, disponibilité, devise, variantes, SKU/GTIN/MPN **issus des données réelles** uniquement.
-- Fonction centrale typée pour générer + tester le JSON-LD ; **sérialisation protégée contre l'injection** (échapper `<`, sortie sûre) — à généraliser à partir de `src/components/seo/JsonLd.tsx`.
+- Fonction centrale typée pour générer + tester le JSON-LD ; **sérialisation protégée contre l'injection** (échapper `<`, sortie sûre) - à généraliser à partir de `src/components/seo/JsonLd.tsx`.
 
 ## 4. SEO produits & catégories
 
@@ -40,10 +40,10 @@
 - **Catégorie** : titre clair, introduction utile (`guideIntro/Closing` existent déjà), produits accessibles par liens, filtres, tri, pagination crawlable, contenu éditorial réellement lié (`GuideSection`), FAQ **seulement si vraies questions**, liens sous-catégories, métadonnées uniques.
 - **Pas de bourrage de mots-clés.**
 
-## 5. GEO — moteurs de réponse (IA)
+## 5. GEO - moteurs de réponse (IA)
 
 - HTML rendu côté serveur pour les informations principales (déjà le cas via Server Components).
-- Identité d'entreprise cohérente et stable (nom, adresse, contact vérifiables — voir E-E-A-T).
+- Identité d'entreprise cohérente et stable (nom, adresse, contact vérifiables - voir E-E-A-T).
 - Données produit structurées ; descriptions précises ; prix et stock non ambigus.
 - Réponses directes aux questions commerciales (livraison, retours, paiement) en **pages claires**.
 - Tableaux de caractéristiques en **HTML** quand les données s'y prêtent ; contenus lisibles sans interaction obligatoire.

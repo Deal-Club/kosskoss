@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
   if (hasDelta === hasAbsolute) {
     return NextResponse.json(
-      { error: "Indiquez soit delta, soit stock — pas les deux." },
+      { error: "Indiquez soit delta, soit stock - pas les deux." },
       { status: 400 },
     );
   }

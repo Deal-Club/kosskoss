@@ -54,7 +54,7 @@ export default async function LocaleLayout({
         {children}
         <CartDrawerKK />
         {/* GA4 et le Pixel Meta : ne charge et n'émet RIEN sans identifiant
-            configuré ET consentement — voir @/lib/kk/mesureNavigateur. Monté
+            configuré ET consentement - voir @/lib/kk/mesureNavigateur. Monté
             même si les deux identifiants sont vides : le composant ne fait
             alors rien, `initialiserMesure` sort au premier test. */}
         <MesureAudience ga4Id={parametres.ga4} metaPixelId={parametres.metaPixel} />
@@ -70,7 +70,7 @@ export default async function LocaleLayout({
             aucune raison d'entrer dans l'ordre de lecture avant le contenu.
 
             Et il n'est monté QUE si la boutique dépose autre chose que du
-            strictement nécessaire — c'est-à-dire si un fragment de mesure ou de
+            strictement nécessaire - c'est-à-dire si un fragment de mesure ou de
             publicité est actif au back-office. Sans traceur, il n'y a rien à
             faire consentir : demander quand même reviendrait à déranger chaque
             visiteur pour une question sans objet. Voir `tracageActif`. */}

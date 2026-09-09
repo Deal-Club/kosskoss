@@ -40,7 +40,7 @@ export function GatewaySettingsForm({ state, methods }: GatewaySettingsFormProps
 
   /**
    * Enregistre les clés saisies puis interroge le prestataire en lecture seule.
-   * Le double effet est assumé — et annoncé par le libellé du bouton : tester
+   * Le double effet est assumé - et annoncé par le libellé du bouton : tester
    * une clé qu'on vient de taper suppose de l'avoir enregistrée.
    */
   async function handleTest() {
@@ -176,7 +176,7 @@ export function GatewaySettingsForm({ state, methods }: GatewaySettingsFormProps
       {selected && (
         <fieldset className="mb-5 border-t border-border pt-5">
           <legend className="sr-only">Clés de {selected.label}</legend>
-          <h4 className="mb-1 text-sm font-black text-foreground">Clés secrètes — {selected.label}</h4>
+          <h4 className="mb-1 text-sm font-black text-foreground">Clés secrètes - {selected.label}</h4>
           <p className="mb-3 text-xs text-muted-foreground">
             Stockées chiffrées, jamais réaffichées. Laissez un champ vide pour conserver la clé déjà
             enregistrée.
@@ -190,7 +190,7 @@ export function GatewaySettingsForm({ state, methods }: GatewaySettingsFormProps
           )}
           {selected.caution && (
             <p className="mb-3 rounded-sm border border-destructive bg-destructive/5 px-3 py-2 text-xs text-foreground">
-              <span className="font-bold text-destructive">À valider avant production — </span>
+              <span className="font-bold text-destructive">À valider avant production - </span>
               {selected.caution}
             </p>
           )}

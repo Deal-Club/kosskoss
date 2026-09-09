@@ -3,7 +3,7 @@ import { describe, it, before, after } from "node:test";
 import { config as loadEnv } from "dotenv";
 
 // `npm test` (`node --test --import tsx`) ne charge aucune variable
-// d'environnement de lui-même — contrairement à `next dev` — d'où ce chargement
+// d'environnement de lui-même - contrairement à `next dev` - d'où ce chargement
 // explicite, identique à celui de prisma/seed-tags.ts. Sans base réelle
 // disponible (poste sans `.env.local`, CI sans secret), la suite s'ignore
 // proprement plutôt que d'échouer sur une `DATABASE_URL` absente.
@@ -15,7 +15,7 @@ const BASE_DISPONIBLE = Boolean(process.env.DATABASE_URL);
  * Ce fichier existe pour une raison précise, documentée en revue du lot :
  * `produitCorrespondFacettes` (src/lib/kk/facettes.ts) porte la règle UNION
  * dans une famille / INTERSECTION entre familles, et cinq tests unitaires la
- * verrouillent — mais RIEN en production ne l'appelait plus pour le rayon
+ * verrouillent - mais RIEN en production ne l'appelait plus pour le rayon
  * KK : `getCatalog` reconstruit la même règle en Prisma (`tagsWhere`/`whereFor`
  * dans catalog.ts), et un test de mutation l'a prouvé : inverser le `OR` de
  * `tagsWhere` en `AND` transforme l'union en intersection et fait tomber un
@@ -23,16 +23,16 @@ const BASE_DISPONIBLE = Boolean(process.env.DATABASE_URL);
  * bouge. Les tests de facettes.test.ts gardaient donc une fonction morte.
  *
  * Ce test-ci porte sur `getCatalog` lui-même, à travers Prisma, contre une
- * base réelle (aucune infrastructure de mock Prisma n'existe dans ce dépôt —
+ * base réelle (aucune infrastructure de mock Prisma n'existe dans ce dépôt -
  * voir le rapport de la tâche 2 du lot). Les données sont créées ici, jamais
  * dans le jeu existant : un groupe et une catégorie au slug unique
  * (horodaté), trois produits aux tags de test, tous supprimés en fin de
- * suite — et la suppression est RELUE pour être confirmée, pas seulement
+ * suite - et la suppression est RELUE pour être confirmée, pas seulement
  * supposée.
  */
-describe("getCatalog — la règle union/intersection réellement exécutée en base", { skip: !BASE_DISPONIBLE }, () => {
+describe("getCatalog - la règle union/intersection réellement exécutée en base", { skip: !BASE_DISPONIBLE }, () => {
   // Import différé : si la suite est ignorée (pas de DATABASE_URL), le module
-  // prisma ne doit jamais être évalué — `src/server/prisma.ts` lève dès
+  // prisma ne doit jamais être évalué - `src/server/prisma.ts` lève dès
   // l'ouverture d'une connexion si la variable est absente.
   let prisma: typeof import("@/server/prisma").prisma;
   let getCatalog: typeof import("./catalog").getCatalog;
@@ -50,7 +50,7 @@ describe("getCatalog — la règle union/intersection réellement exécutée en 
     ({ getCatalog } = await import("./catalog"));
 
     const group = await prisma.group.create({
-      data: { slug: groupSlug, label: "Groupe de test — facettes" },
+      data: { slug: groupSlug, label: "Groupe de test - facettes" },
     });
     groupId = group.id;
 
@@ -61,7 +61,7 @@ describe("getCatalog — la règle union/intersection réellement exécutée en 
 
     // A : porte uniquement « test_peau_a ».
     // B : porte uniquement « test_peau_b ».
-    // C : porte « test_peau_a » ET « test_preoc_a » — seul produit qui doit
+    // C : porte « test_peau_a » ET « test_preoc_a » - seul produit qui doit
     //     rester quand les deux familles sont cochées à la fois (intersection).
     const produits = [
       { suffix: "a", tags: ["test_peau_a"] },
@@ -87,7 +87,7 @@ describe("getCatalog — la règle union/intersection réellement exécutée en 
 
   after(async () => {
     // La suppression du groupe entraîne, en cascade (voir prisma/schema.prisma),
-    // celle de sa catégorie puis de ses produits — un seul appel suffit à tout
+    // celle de sa catégorie puis de ses produits - un seul appel suffit à tout
     // nettoyer. On la relit ensuite pour CONFIRMER la suppression plutôt que de
     // la supposer.
     if (groupId) {

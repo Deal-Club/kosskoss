@@ -80,7 +80,7 @@ export function CategoryProductBrowser({
 
     const filtered = products.filter((product) => {
       if (selectedBrands.length > 0 && !selectedBrands.includes(product.brand)) return false;
-      // Union DANS une famille, intersection ENTRE familles — la même règle
+      // Union DANS une famille, intersection ENTRE familles - la même règle
       // que `getCatalog` applique en base pour le rayon KK, exprimée ici en
       // mémoire par le module pur qui la porte (voir src/lib/kk/facettes.ts),
       // plutôt que réimplémentée à la main avec deux `produitCorrespond`.
@@ -107,7 +107,7 @@ export function CategoryProductBrowser({
     } else if (sortBy === "price-desc") {
       sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
     } else if (sortBy === "newest") {
-      // Le tri « Nouveautés » cherchait le badge « Neu » — l'allemand du site
+      // Le tri « Nouveautés » cherchait le badge « Neu » - l'allemand du site
       // dont ce composant est hérité. Aucun produit ne l'a jamais porté depuis
       // le passage au français : l'option de tri ne changeait rien à l'ordre.
       // Elle s'appuie maintenant sur la clé réellement stockée, via la même
@@ -196,7 +196,7 @@ export function CategoryProductBrowser({
   return (
     <div className="flex flex-col gap-6 lg:flex-row">
       {/* Barre latérale : uniquement à partir de « lg », où la largeur ne
-          manque pas. En dessous, les filtres vivent dans le panneau plus bas —
+          manque pas. En dessous, les filtres vivent dans le panneau plus bas -
           les dupliquer ici plutôt que les déplacer en JS évite tout à-coup au
           changement de largeur. */}
       <div className="hidden lg:block">
@@ -276,7 +276,7 @@ export function CategoryProductBrowser({
       </div>
 
       {/* Panneau de filtres mobile : un tiroir qui remonte du bas, plutôt que
-          du côté — c'est le geste le plus naturel au pouce sur un téléphone,
+          du côté - c'est le geste le plus naturel au pouce sur un téléphone,
           et il laisse toute la largeur aux champs (marque, prix, note). */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">

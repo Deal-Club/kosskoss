@@ -14,7 +14,7 @@ import type { KKProductView } from "@/types/kk";
  * Corps d'une page article.
  *
  * Ce composant est utilisé à DEUX endroits : la page publique et l'aperçu du
- * back-office. C'est volontaire — l'aperçu doit montrer exactement ce que verra
+ * back-office. C'est volontaire - l'aperçu doit montrer exactement ce que verra
  * un lecteur, pas une approximation qui dériverait au fil des modifications.
  * D'où l'absence totale d'accès aux données ici : tout arrive en props.
  */

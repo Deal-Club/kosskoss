@@ -9,7 +9,7 @@ import {
 } from "@/server/kk/routine-admin";
 import { RoutineEditor } from "@/components/admin/RoutineEditor";
 
-export const metadata: Metadata = { title: "Modifier une routine — Administration" };
+export const metadata: Metadata = { title: "Modifier une routine - Administration" };
 
 export default async function AdminRoutinePage({ params }: { params: Promise<{ id: string }> }) {
   await requireCapacitePage("reglages");

@@ -1,5 +1,5 @@
 /**
- * Lecture des événements de webhook Square — partie pure, sans appel réseau ni
+ * Lecture des événements de webhook Square - partie pure, sans appel réseau ni
  * base de données, pour être testable telle quelle.
  *
  * Le SDK Square ne désérialise pas les webhooks : le corps arrive en JSON brut,
@@ -17,8 +17,8 @@ export interface SquareEventPayment {
   status?: string;
   reference_id?: string;
   /**
-   * Montant encaissé. Square l'exprime en plus petite unité monétaire — donc en
-   * centimes pour l'euro — et le sérialise en nombre dans le JSON du webhook,
+   * Montant encaissé. Square l'exprime en plus petite unité monétaire - donc en
+   * centimes pour l'euro - et le sérialise en nombre dans le JSON du webhook,
    * là où le SDK manipule un BigInt. La route de webhook s'en sert pour vérifier
    * que la somme reçue correspond bien au total de la commande.
    */
@@ -36,7 +36,7 @@ const HANDLED_TYPES = new Set(["payment.created", "payment.updated"]);
 /**
  * Traduit un statut de paiement Square en statut de commande de la boutique.
  *
- * Les états transitoires (`PENDING`, `APPROVED` — carte autorisée mais non
+ * Les états transitoires (`PENDING`, `APPROVED` - carte autorisée mais non
  * capturée) rendent null : la commande reste « en_attente » jusqu'à l'encaissement
  * réel, sans quoi une autorisation jamais capturée passerait pour un paiement.
  */
@@ -54,7 +54,7 @@ export function squarePaymentStatus(status: string | undefined): PaymentStatus |
 
 /**
  * Extrait de l'événement ce qui est exploitable : le paiement et le statut à
- * appliquer. Rend null dès que l'événement ne concerne pas l'état de paiement —
+ * appliquer. Rend null dès que l'événement ne concerne pas l'état de paiement -
  * la route webhook accuse alors réception sans rien changer.
  */
 export function readSquareEvent(

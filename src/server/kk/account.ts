@@ -2,7 +2,7 @@ import { prisma } from "@/server/prisma";
 import { ORDER_STATUS_LABELS, isOrderStatus } from "@/lib/orderStatus";
 import type { Locale } from "@/i18n/routing";
 
-// Les libellés viennent de src/lib/orderStatus.ts — la table bilingue que le
+// Les libellés viennent de src/lib/orderStatus.ts - la table bilingue que le
 // back-office et /compte/commandes utilisent déjà. Ce module portait sa propre
 // copie française, qui s'affichait donc telle quelle sur /en/compte.
 export function orderStatusLabel(status: string, locale: Locale): string {

@@ -4,7 +4,7 @@ import { prisma } from "../src/server/prisma";
 import { validateProductContent } from "../src/lib/productContent";
 import { PRODUCT_CONTENT } from "./data/product-content";
 
-// Applique le contenu rédigé au catalogue, par slug (unique en base — le SKU ne l'est pas).
+// Applique le contenu rédigé au catalogue, par slug (unique en base - le SKU ne l'est pas).
 //
 // Lancement complet :
 //   npx tsx --env-file=.env scripts/apply-product-content.ts
@@ -14,8 +14,8 @@ import { PRODUCT_CONTENT } from "./data/product-content";
 // La réécriture du catalogue se fait catégorie par catégorie. Sans ce filtre, une
 // seule fiche encore au format court bloquerait l'application de toutes les
 // autres : la validation est volontairement globale et refuse d'écrire dès la
-// première anomalie. Restreindre aux slugs demandés limite la validation — et
-// l'écriture — au lot en cours de reprise, sans relâcher le contrôle sur lui.
+// première anomalie. Restreindre aux slugs demandés limite la validation - et
+// l'écriture - au lot en cours de reprise, sans relâcher le contrôle sur lui.
 
 async function main() {
   const slugsDemandes = process.argv.slice(2).filter((a) => !a.startsWith("-"));
@@ -62,7 +62,7 @@ async function main() {
   // route, aucune écriture n'est retenue plutôt que de laisser le catalogue
   // à moitié modifié sans que rien ne le signale.
   //
-  // Les délais par défaut de Prisma — 5 s d'exécution, 2 s d'attente — sont
+  // Les délais par défaut de Prisma - 5 s d'exécution, 2 s d'attente - sont
   // taillés pour une base locale. Ici la cible est Neon, dont chaque aller-retour
   // porte la latence du réseau : trente-cinq écritures y demandent une poignée de
   // secondes, et la transaction expirait avant la fin. Les valeurs ci-dessous

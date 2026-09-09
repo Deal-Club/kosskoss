@@ -62,7 +62,7 @@ export function TagVocabularyAdmin({ initial }: { initial: ProductTagAdmin[] }) 
         <div>
           <h1 className="text-2xl font-black text-foreground">Tags produits</h1>
           <p className="text-sm text-muted-foreground">
-            Libellés, famille et ordre des tags — « peau » et « preoccupation » alimentent les
+            Libellés, famille et ordre des tags - « peau » et « preoccupation » alimentent les
             filtres du catalogue dans les deux langues, sans redéploiement.
           </p>
         </div>

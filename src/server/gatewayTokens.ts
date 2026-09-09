@@ -5,7 +5,7 @@
  * adaptateurs de paiement s'en servent sans passer par @/server/orders, ce qui
  * évite un cycle d'imports entre la couche commandes et la couche prestataires.
  *
- * Seul Nexi en a l'usage — ses notifications ne sont pas signées, elles rejouent
+ * Seul Nexi en a l'usage - ses notifications ne sont pas signées, elles rejouent
  * le jeton remis à la création, qu'on compare à celui conservé ici.
  */
 

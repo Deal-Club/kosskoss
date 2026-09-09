@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
  *
  * Il pointait vers l'accueil : un visiteur venu du panier ou d'un achat direct
  * depuis une fiche produit se retrouvait éjecté du tunnel à la racine du site
- * au lieu de revenir simplement à la page précédente — retour client explicite
+ * au lieu de revenir simplement à la page précédente - retour client explicite
  * là-dessus.
  *
  * Le choix entre « revenir en arrière » et « aller au panier » se prend AU

@@ -1,4 +1,4 @@
-# 03 — Modèle de données (`prisma/schema.prisma`)
+# 03 - Modèle de données (`prisma/schema.prisma`)
 
 Contrainte volontaire du schéma : **ni enum Prisma ni liste scalaire** (portabilité SQL). Les « enums » sont des `String` documentés. Montants **en centimes, TTC**. Traductions EN via champs `*En` (vides = repli FR). 6 migrations appliquées (`0_init` → `20260803213000_code_snippets`).
 
@@ -35,7 +35,7 @@ Contrainte volontaire du schéma : **ni enum Prisma ni liste scalaire** (portabi
 - **Product** : `categoryId`, `brand`, `name(+En)`, `slug*`, `sku`, `shortDescription/description(+En)`, `bullets(+En)` (JSON), attributs Merchant (`gtin?`, `mpn?`, `condition`=new, `googleProductCategory`, `shippingWeightGrams?`, `energyEfficiencyClass?`), `image?`, `images` (JSON), `priceCents`, `oldPriceCents?`, `badge?`, `editorialRating?`, `stock`, `lowStockThreshold`=5, `active`. Index `categoryId`, `brand`. → reviews, stockMovements, orderItems, campaigns, variants.
 - **ProductVariant** : `label(+En)`, `sku`, `priceCents`, `oldPriceCents?`, `position`, `active`. Un produit sans variante = prix unique.
 
-### Commandes (archivage légal — libellés figés)
+### Commandes (archivage légal - libellés figés)
 - **Order** : `orderNumber*` (`MLC-AAAA-NNNNNN`), `customerId?` (invité possible), `anonymizedAt?`, `accessToken` (jeton aléatoire de consultation), `locale`, coordonnées + **adresses facturation/livraison inline**, `paymentMethodKey/Label/Fee`, `shippingMethodKey/Label`, `stripePaymentIntentId?`, `gatewaySecurityToken?` (Nexi), **statuts** `status` (`eingegangen\|in_bearbeitung\|versandt\|zugestellt\|storniert`) & `paymentStatus` (`offen\|bezahlt\|erstattet\|fehlgeschlagen`), montants `subtotal/shipping/tax/totalCents`, `taxRatePercent` (défaut **19** ⚠️), `currency`, consentements horodatés (`termsAcceptedAt`, `withdrawalAcknowledgedAt`), `stockRestored`, attribution campagne. Index status, paymentStatus, createdAt, customerId, campaignId.
 - **OrderItem** : libellés recopiés (`brand`, `name`, `sku`, `slug`, `image`, `path`, `variantLabel`), `unitPriceCents`, `quantity`, `lineTotalCents`. Relations `product?`/`variant?` en `SetNull`.
 - **OrderEvent** : journal (`kind` status/payment/note/email).
@@ -47,13 +47,13 @@ Contrainte volontaire du schéma : **ni enum Prisma ni liste scalaire** (portabi
 - **Customer** : `email*`, `passwordHash` (scrypt), identité (`salutation` libre `herr/frau/divers` ⚠️), adresses facturation/livraison inline (défaut pays `DE` ⚠️), `locale`, `emailVerified`, `active`, `lastLoginAt`.
 - **CustomerPasswordReset** : `tokenHash*` (SHA-256), `expiresAt`, `consumedAt?`.
 - **AdminUser** : `email*`, `name`, `passwordHash`, `role`=admin, `active`.
-- **AdminLoginChallenge** : 2FA — `adminUserId*` (un défi vivant à la fois), `codeHash` (scrypt), `attempts`, `expiresAt`, `sentAt`.
+- **AdminLoginChallenge** : 2FA - `adminUserId*` (un défi vivant à la fois), `codeHash` (scrypt), `attempts`, `expiresAt`, `sentAt`.
 - **Setting** : `key`/`value` (config runtime, ex. `payment_gateway`).
 - **Integration** : `key*`, `label`, `secretCipher?` (AES-256-GCM), `lastFour?`, `enabled`.
 - **PaymentMethod** : `key*`, `label`, `icon` (lucide), `feeLabel` (défaut `kostenlos` ⚠️), `enabled`, `position`.
 
 ### Contenu & marketing
-- **CodeSnippet** : `placement` (head/bodyStart/bodyEnd), `content` (HTML brut injecté — **risque XSS maîtrisé par restriction admin**), `enabled`, `position`, `updatedBy`.
+- **CodeSnippet** : `placement` (head/bodyStart/bodyEnd), `content` (HTML brut injecté - **risque XSS maîtrisé par restriction admin**), `enabled`, `position`, `updatedBy`.
 - **LegalContent** : `@@id([slug, locale])`, `data` (page sérialisée JSON), surcharge les fichiers `content/legal`.
 - **Campaign** : `code*`, `type`, `status`, contenus (+En), `discountKind`/`discountValue`, `startsAt/endsAt` (période de remise), `landingSlug`, cadence d'envoi randomisée (`batchMin/Max`, `delayMin/MaxSec`), verrous (`nextBatchAt`, `dispatchingAt`). → products, recipients, events, orders.
 - **CampaignProduct** : `basePriceCents` (prix figé barré).

@@ -16,7 +16,7 @@ import { pickText, needsTranslation } from "@/server/localizedContent";
 import { serverAllows } from "@/server/consent";
 import { estVilleLivraison, fraisLivraisonFcfa, type VilleLivraison } from "@/lib/kk/livraison";
 
-/** Nom affichable d'une ville de livraison — jamais le nom anglais pour une commande francophone, ni l'inverse. */
+/** Nom affichable d'une ville de livraison - jamais le nom anglais pour une commande francophone, ni l'inverse. */
 const LIBELLE_VILLE: Record<Exclude<VilleLivraison, "autre">, Record<"fr" | "en", string>> = {
   douala: { fr: "Douala", en: "Douala" },
   yaounde: { fr: "Yaoundé", en: "Yaoundé" },
@@ -25,7 +25,7 @@ const LIBELLE_VILLE: Record<Exclude<VilleLivraison, "autre">, Record<"fr" | "en"
 /**
  * Clé d'un moyen de paiement, telle qu'enregistrée en base (table
  * PaymentMethod). Volontairement une chaîne libre et non une union figée : la
- * liste est administrable, et le contrôle se fait contre la base — voir
+ * liste est administrable, et le contrôle se fait contre la base - voir
  * `resolvePaymentMethod`.
  */
 export type KKPaymentMethod = string;
@@ -37,7 +37,7 @@ export type CheckoutInput = {
   email: string;
   phone: string;
   location: string;
-  /** Clé de `VILLES_LIVRAISON` (src/lib/kk/livraison.ts) — pas un nom libre. */
+  /** Clé de `VILLES_LIVRAISON` (src/lib/kk/livraison.ts) - pas un nom libre. */
   city: string;
   /** Nom de ville saisi, uniquement quand `city === "autre"`. */
   cityOther?: string;
@@ -58,10 +58,10 @@ function isValidEmail(email: string): boolean {
 
 /**
  * Crée une commande KossKoss. Le prix, le stock et le total sont TOUJOURS
- * recalculés côté serveur à partir de la base — jamais fiés au navigateur.
+ * recalculés côté serveur à partir de la base - jamais fiés au navigateur.
  * Montants en FCFA entiers. Le frais de livraison (src/lib/kk/livraison.ts)
  * est recalculé ICI à partir de la seule `city` reçue, jamais reçu comme
- * montant : c'est lui qui, ajouté au sous-total, forme `totalCents` — le
+ * montant : c'est lui qui, ajouté au sous-total, forme `totalCents` - le
  * montant réellement transmis à la passerelle de paiement.
  */
 export async function createKossOrder(input: CheckoutInput): Promise<CheckoutResult> {
@@ -82,14 +82,14 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   }
   // Le numéro stocké est TOUJOURS en +237XXXXXXXXX, quelle que soit la saisie :
   // le service client, les rappels et l'export ne doivent pas avoir à deviner
-  // le format. Refuser ici et non seulement dans le formulaire — la route
+  // le format. Refuser ici et non seulement dans le formulaire - la route
   // accepte n'importe quel corps JSON, la validation du formulaire ne protège
   // de rien.
   const telephone = normaliserTelephone(input.phone ?? "");
   if (!telephone) {
     return { ok: false, error: "telephone_invalide" };
   }
-  // Langue de l'acheteur, résolue ICI — AVANT de construire les lignes de
+  // Langue de l'acheteur, résolue ICI - AVANT de construire les lignes de
   // commande, pas seize lignes plus bas comme précédemment.
   //
   // Une commande fige la langue dans laquelle l'achat a été fait, parce que
@@ -97,12 +97,12 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   // libellé de variante inscrits sur la ligne sont ceux montrés au client au
   // moment où il a payé, pas ceux du catalogue à l'instant où quelqu'un
   // rouvre la commande. Résoudre la langue après coup fige alors la mauvaise
-  // — le français, quel que soit l'acheteur — et aucune traduction ultérieure
+  // - le français, quel que soit l'acheteur - et aucune traduction ultérieure
   // de la fiche produit ne peut plus corriger une commande déjà écrite.
   //
   // SANS CETTE NOTE : ne re-traduis JAMAIS `name`/`variantLabel` à l'affichage
   // (confirmation, e-mails, espace client, facture) une fois la commande
-  // écrite — un client verrait sa commande changer de langue après coup, ce
+  // écrite - un client verrait sa commande changer de langue après coup, ce
   // qui n'a pas de sens pour un document historique.
   const langue = choisirLangue(input.locale);
   const traduireLignes = needsTranslation(langue);
@@ -155,7 +155,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       const v = p.variants.find((x) => x.id === item.variantId && x.active);
       if (!v) return { ok: false, error: "variante_indisponible" };
       unit = v.priceCents;
-      // Libellé figé dans la langue de l'acheteur — voir le commentaire sur
+      // Libellé figé dans la langue de l'acheteur - voir le commentaire sur
       // `langue` ci-dessus. Repli par `pickText`, comme partout ailleurs.
       variantLabel = pickText(v.label, traduireLignes ? v.labelEn : undefined);
       variantId = v.id;
@@ -169,7 +169,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       variantId,
       variantLabel,
       brand: p.brand,
-      // Nom figé dans la langue de l'acheteur — même règle que `variantLabel`.
+      // Nom figé dans la langue de l'acheteur - même règle que `variantLabel`.
       name: pickText(p.name, traduireLignes ? p.nameEn : undefined),
       sku: p.sku,
       slug: p.slug,
@@ -184,7 +184,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
     });
   }
 
-  // Code promo — revalidé ici, sur le sous-total qu'on vient de recalculer à
+  // Code promo - revalidé ici, sur le sous-total qu'on vient de recalculer à
   // partir des prix en base. Le montant de la remise affiché par le tunnel n'est
   // jamais transmis, et ne serait pas lu : seul ce calcul-ci fait foi.
   //
@@ -200,13 +200,13 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
       discountCents = resultat.coupon.discountCents;
     }
   }
-  // Frais de livraison — voir le commentaire d'en-tête de la fonction.
+  // Frais de livraison - voir le commentaire d'en-tête de la fonction.
   const shippingCents = fraisLivraisonFcfa(input.city);
   const total = Math.max(0, subtotal - discountCents) + shippingCents;
 
   // Nom affichable de la ville, dans la langue de la commande (même principe
   // que `name`/`variantLabel` plus haut) : Douala/Yaoundé viennent de
-  // `LIBELLE_VILLE`, « Autre » reprend tel quel ce que le client a saisi — un
+  // `LIBELLE_VILLE`, « Autre » reprend tel quel ce que le client a saisi - un
   // nom de ville ne se traduit pas.
   const villeAffichee =
     input.city === "autre" ? (villeAutre ?? "") : LIBELLE_VILLE[input.city as "douala" | "yaounde"][langue];
@@ -260,7 +260,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   const orderNumber = `KOSS-${year}-${String(count + 1).padStart(6, "0")}`;
   const accessToken = randomBytes(24).toString("hex");
 
-  // Consentement « marketing » figé ICI, à la commande — voir le commentaire
+  // Consentement « marketing » figé ICI, à la commande - voir le commentaire
   // sur la colonne `marketingConsent` dans le schéma. C'est un cookie de la
   // REQUÊTE EN COURS (cette fonction est appelée depuis la route
   // `/api/kk/checkout`, qui a `cookies()` dans sa portée) : la CAPI, elle,
@@ -293,8 +293,8 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
         shippingMethodKey: "whatsapp",
         shippingMethodLabel:
           langue === "en"
-            ? `Delivery to ${villeAffichee} — appointment arranged via WhatsApp`
-            : `Livraison à ${villeAffichee} — rendez-vous coordonné via WhatsApp`,
+            ? `Delivery to ${villeAffichee} - appointment arranged via WhatsApp`
+            : `Livraison à ${villeAffichee} - rendez-vous coordonné via WhatsApp`,
         // Statuts KossKoss (voir docs/13). La commande naît TOUJOURS en attente
         // de paiement : c'est le webhook signé de la passerelle, et lui seul,
         // qui la fera basculer en « payée » (voir server/kk/paiement.ts).
@@ -324,7 +324,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
 
   // Le compteur d'usage n'est incrémenté qu'une fois la commande réellement
   // écrite : un panier abandonné au moment de payer ne doit pas consommer le
-  // code. Hors transaction, à dessein — un échec d'incrément ne doit pas
+  // code. Hors transaction, à dessein - un échec d'incrément ne doit pas
   // annuler une commande déjà valide.
   if (couponCode) {
     await consommerCoupon(couponCode);
@@ -336,7 +336,7 @@ export async function createKossOrder(input: CheckoutInput): Promise<CheckoutRes
   }
 
   // E-mails transactionnels (best-effort : les fonctions avalent leurs erreurs
-  // et ne partent que si le SMTP est configuré — la commande n'échoue jamais).
+  // et ne partent que si le SMTP est configuré - la commande n'échoue jamais).
   // Ils partent dans la `langue` résolue plus haut, celle-là même qui a été
   // écrite sur la commande.
   await sendOrderConfirmationEmail({

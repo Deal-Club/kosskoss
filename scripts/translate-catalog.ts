@@ -43,13 +43,13 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Coffee Machines",
     description: "Bean-to-cup and filter coffee machines for a perfect brew every morning.",
     guideIntro:
-      "From the classic bean-to-cup machine to the compact portafilter — at Hausgeräte Pfeffer you will find the right solution for your perfect cup of coffee.",
+      "From the classic bean-to-cup machine to the compact portafilter - at Hausgeräte Pfeffer you will find the right solution for your perfect cup of coffee.",
     guideClosing:
       "Not sure which coffee machine suits how much coffee you drink? Our service team is happy to advise you personally.",
     sections: [
       {
         heading: "Bean-to-cup or portafilter machine?",
-        body: "Bean-to-cup machines handle grinding, brewing and milk frothing at the touch of a button — ideal for everyday use. If you want full control over grind size, brew pressure and crema, go for a classic portafilter machine.",
+        body: "Bean-to-cup machines handle grinding, brewing and milk frothing at the touch of a button - ideal for everyday use. If you want full control over grind size, brew pressure and crema, go for a classic portafilter machine.",
       },
       {
         heading: "What to look for when buying",
@@ -57,7 +57,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
       },
       {
         heading: "Popular coffee machine brands",
-        body: "De'Longhi, Siemens, Jura, Krups, Philips and Melitta are among the most sought-after manufacturers — you will find current models from all of them here, side by side.",
+        body: "De'Longhi, Siemens, Jura, Krups, Philips and Melitta are among the most sought-after manufacturers - you will find current models from all of them here, side by side.",
       },
     ],
   },
@@ -65,7 +65,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Washing Machines",
     description: "Front loaders with high spin speeds, automatic dosing and quiet operation.",
     guideIntro:
-      "Clean laundry, low energy consumption and quiet operation — our washing machines combine modern technology for every household.",
+      "Clean laundry, low energy consumption and quiet operation - our washing machines combine modern technology for every household.",
     guideClosing:
       "Questions about installation, dimensions or matching accessories? Our service team is glad to help.",
     sections: [
@@ -109,7 +109,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Vacuum Cleaners",
     description: "Robot vacuums, cordless sticks and cylinder vacuums for effortless cleaning.",
     guideIntro:
-      "From classic cylinder vacuums to nimble cordless sticks and fully autonomous robot vacuums — we have the right solution for every floor.",
+      "From classic cylinder vacuums to nimble cordless sticks and fully autonomous robot vacuums - we have the right solution for every floor.",
     guideClosing:
       "Still wondering how much suction power your home needs? We are happy to advise you.",
     sections: [
@@ -131,7 +131,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Ovens & Cookers",
     description: "Built-in ovens, cooker sets and hobs with pyrolytic cleaning and smart functions.",
     guideIntro:
-      "From a built-in oven with pyrolytic self-cleaning to a complete cooker set — the right heat source for every kitchen.",
+      "From a built-in oven with pyrolytic self-cleaning to a complete cooker set - the right heat source for every kitchen.",
     guideClosing:
       "We are happy to advise you on built-in dimensions and the right hob to match your new oven.",
     sections: [
@@ -153,7 +153,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Food Processors & Mixers",
     description: "Food processors and blenders for dough, smoothies and everything in between.",
     guideIntro:
-      "Kneading, mixing, blending and more — a food processor takes a great deal of work out of everyday cooking.",
+      "Kneading, mixing, blending and more - a food processor takes a great deal of work out of everyday cooking.",
     guideClosing:
       "Questions about the right accessories for your food processor? Our service team is glad to help.",
     sections: [
@@ -175,7 +175,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Air Conditioners",
     description: "Split and portable air conditioners for cooling and heating, with app control.",
     guideIntro:
-      "Comfortable temperatures on hot days — our split and portable air conditioners help you keep a cool head in any room.",
+      "Comfortable temperatures on hot days - our split and portable air conditioners help you keep a cool head in any room.",
     guideClosing:
       "Not sure how much cooling capacity you need? Our service team will gladly advise you on your room.",
     sections: [
@@ -197,7 +197,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Smartphones",
     description: "Current smartphone models with strong cameras and long battery life.",
     guideIntro:
-      "From the camera to the battery life — compare current smartphones from all the major manufacturers here.",
+      "From the camera to the battery life - compare current smartphones from all the major manufacturers here.",
     guideClosing:
       "Questions about the right storage size or accessories? Our service team is happy to advise you.",
     sections: [
@@ -241,7 +241,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "TVs",
     description: "OLED, QLED and 4K televisions that bring the cinema home.",
     guideIntro:
-      "OLED, QLED or LED — for a genuine cinema feel at home we stock current televisions in every common screen technology.",
+      "OLED, QLED or LED - for a genuine cinema feel at home we stock current televisions in every common screen technology.",
     guideClosing:
       "Questions about the right screen size for your living room? Our service team is happy to advise you.",
     sections: [
@@ -285,7 +285,7 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Smartwatches",
     description: "Fitness tracking, notifications and long battery life on your wrist.",
     guideIntro:
-      "Fitness tracking, notifications and smart features right on your wrist — for an active, connected day.",
+      "Fitness tracking, notifications and smart features right on your wrist - for an active, connected day.",
     guideClosing:
       "Questions about which smartwatch suits your operating system? Our service team is happy to advise you.",
     sections: [
@@ -307,13 +307,13 @@ const CATEGORIES: Record<string, CategoryTranslation> = {
     label: "Drones",
     description: "Camera drones with 4K recording, long flight times and obstacle sensing.",
     guideIntro:
-      "Whether it is aerial footage on holiday, property photography or a first flight in the park — at Hausgeräte Pfeffer you will find camera drones for every use and every budget.",
+      "Whether it is aerial footage on holiday, property photography or a first flight in the park - at Hausgeräte Pfeffer you will find camera drones for every use and every budget.",
     guideClosing:
       "Not sure which drone you may fly without a licence? Our service team will gladly advise you on classes, insurance and accessories.",
     sections: [
       {
         heading: "Under 250 g or a larger class?",
-        body: "Drones with a take-off weight below 250 g fall into EU class C0 and may be flown without a remote pilot certificate — ideal for beginners and for travel. Heavier models offer larger sensors, better wind stability and longer range, but require registration and the EU proof of competency.",
+        body: "Drones with a take-off weight below 250 g fall into EU class C0 and may be flown without a remote pilot certificate - ideal for beginners and for travel. Heavier models offer larger sensors, better wind stability and longer range, but require registration and the EU proof of competency.",
       },
       {
         heading: "What to look for when buying",

@@ -105,7 +105,7 @@ for (let pi = 0; pi < products.length; pi++) {
   const p = products[pi];
   const sku = p["SKU"].trim();
   const f = fileByProduct[pi];
-  if (!f) { unmatched.push(`${sku} — ${p["Référence Courte"]}`); continue; }
+  if (!f) { unmatched.push(`${sku} - ${p["Référence Courte"]}`); continue; }
   try {
     const buf = await download(f.id);
     const file = `${sku}.jpg`;

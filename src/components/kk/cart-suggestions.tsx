@@ -11,14 +11,14 @@ import { BottleMotif } from "./motifs";
 import type { KKProductView } from "@/types/kk";
 
 /**
- * « Vous aimeriez aussi » — suggestions au pied du tiroir.
+ * « Vous aimeriez aussi » - suggestions au pied du tiroir.
  *
  * Chargées à l'ouverture, à partir de ce que contient le panier : voir
  * `getCartSuggestions`. Elles sont relues à chaque ouverture parce que le
  * panier a pu changer entre-temps, et qu'une suggestion portant sur un produit
  * qu'on vient d'ajouter n'a plus de sens.
  *
- * Le bloc disparaît entièrement s'il n'y a rien à proposer — un titre
+ * Le bloc disparaît entièrement s'il n'y a rien à proposer - un titre
  * « Vous aimeriez aussi » suivi du vide vaut moins que rien.
  */
 export function CartSuggestions() {

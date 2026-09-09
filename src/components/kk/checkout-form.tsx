@@ -40,7 +40,7 @@ const CLES_ERREUR: Record<string, string> = {
   panier_vide: "errors.cartEmpty",
   champs_invalides: "errors.invalidFields",
   // La route accepte n'importe quel corps JSON : le message nomme le format
-  // attendu plutôt que de dire « invalide », pour le cas — rare mais réel —
+  // attendu plutôt que de dire « invalide », pour le cas - rare mais réel -
   // où ce message serveur est ce que le client voit (validation client
   // contournée, JS désactivé…).
   telephone_invalide: "errors.invalidPhone",
@@ -61,8 +61,8 @@ type Traduire = ReturnType<typeof useTranslations>;
  * Moyens de paiement qui n'ont besoin d'aucune passerelle.
  *
  * Le paiement à la livraison se règle en espèces à la remise du colis : la
- * commande peut donc aller jusqu'au bout dès aujourd'hui. Tous les autres —
- * Orange Money, MTN, carte bancaire — attendent le branchement d'un
+ * commande peut donc aller jusqu'au bout dès aujourd'hui. Tous les autres -
+ * Orange Money, MTN, carte bancaire - attendent le branchement d'un
  * prestataire de paiement. Tant qu'il n'est pas là, les proposer sans le dire
  * enverrait le client dans une impasse au dernier clic.
  *
@@ -77,7 +77,7 @@ const CLES_HORS_LIGNE = ["paiement-livraison", "paiement-a-la-livraison"];
  * Le serveur revalide tout : ce qui se joue ici est la conversion, pas la
  * sécurité. Un client qui découvre au clic sur « Commander » que son e-mail
  * est mal saisi remonte quatre champs plus haut et, souvent, abandonne. Le
- * message tombe donc à la sortie du champ, jamais pendant la frappe — corriger
+ * message tombe donc à la sortie du champ, jamais pendant la frappe - corriger
  * quelqu'un qui écrit encore est le meilleur moyen de le braquer.
  *
  * Renvoie `null` quand le champ est bon, sinon la phrase à afficher.
@@ -103,12 +103,12 @@ function validate(
     case "email":
       // Volontairement permissif : le rôle de ce test est d'attraper la faute
       // de frappe évidente (« @gmail » sans point), pas de juger de l'existence
-      // de l'adresse — ce qu'aucune expression régulière ne sait faire.
+      // de l'adresse - ce qu'aucune expression régulière ne sait faire.
       return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : t("validation.email");
     case "phone":
       // Format camerounais : neuf chiffres, mobile en 6 ou fixe en 2,
       // l'indicatif étant accepté sous toutes ses formes. Le message nomme le
-      // format attendu — « numéro invalide » laisserait le client deviner.
+      // format attendu - « numéro invalide » laisserait le client deviner.
       return normaliserTelephone(v) ? null : t("validation.phone");
     case "location":
       return v.length >= 3 ? null : t("validation.location");
@@ -147,8 +147,8 @@ export function CheckoutForm({
   });
   const [touched, setTouched] = useState<Partial<Record<FieldName, boolean>>>({});
   const [followOrder, setFollowOrder] = useState(true);
-  // Un moyen aboutit s'il ne demande aucune passerelle — le paiement à la
-  // livraison, encaissé à la remise du colis — ou si la passerelle est
+  // Un moyen aboutit s'il ne demande aucune passerelle - le paiement à la
+  // livraison, encaissé à la remise du colis - ou si la passerelle est
   // réellement configurée côté serveur.
   //
   // Cette seconde branche est nouvelle : le formulaire refusait TOUS les
@@ -165,7 +165,7 @@ export function CheckoutForm({
    * « En ligne » rassemble tout ce qui passera par la passerelle, avec les
    * logos de chaque moyen accolés : le client voit ce qu'il pourra utiliser
    * sans avoir à choisir maintenant. La clé envoyée au serveur reste celle du
-   * premier moyen du groupe — provisoire, jusqu'à ce que la passerelle
+   * premier moyen du groupe - provisoire, jusqu'à ce que la passerelle
    * renvoie le moyen réellement employé.
    *
    * Une option dont le groupe est vide n'est pas affichée : si la boutique
@@ -194,7 +194,7 @@ export function CheckoutForm({
         titre: t("step2.onlineTitle"),
         // « Bientôt disponible » SEULEMENT quand aucune passerelle ne tourne :
         // la note restait affichée passerelle active, sur une option cochée
-        // par défaut — un moyen qui marche annoncé comme indisponible (TK-06).
+        // par défaut - un moyen qui marche annoncé comme indisponible (TK-06).
         note: passerelleActive ? t("step2.onlineNote") : t("step2.comingSoon"),
         marques,
       });
@@ -205,7 +205,7 @@ export function CheckoutForm({
         cle: p.key,
         titre: p.label,
         note: t("step2.cashNote"),
-        // Aucun logo à afficher — ce n'est pas une marque, c'est un geste. La
+        // Aucun logo à afficher - ce n'est pas une marque, c'est un geste. La
         // carte se retrouvait donc en texte nu à côté d'une carte illustrée de
         // trois logos, et paraissait la moins sérieuse des deux alors que
         // c'est le seul moyen réellement actif aujourd'hui. Le camion lui rend
@@ -221,7 +221,7 @@ export function CheckoutForm({
   const [paymentMethod, setPaymentMethod] = useState(
     // Le paiement à la livraison d'abord (TK-06) : c'est le moyen qui
     // fonctionne toujours, sans passerelle ni réseau Mobile Money. L'en-ligne
-    // présélectionné bloquait la validation quand la passerelle manquait —
+    // présélectionné bloquait la validation quand la passerelle manquait -
     // et même active, il ne doit pas être coché d'office sur un marché où
     // l'espèce à la remise reste la norme. À défaut d'un moyen hors ligne
     // actif en base, on retombe sur le premier moyen disponible.
@@ -261,7 +261,7 @@ export function CheckoutForm({
 
   // `begin_checkout` : une fois par entrée dans le tunnel avec un panier non
   // vide. `ready` distingue le panier réellement lu (localStorage hydraté) du
-  // panier vide affiché avant hydratation — sans quoi une visite avec panier
+  // panier vide affiché avant hydratation - sans quoi une visite avec panier
   // enverrait d'abord un événement à zéro article. Le garde par `useRef` évite
   // un second envoi au double montage du Strict Mode.
   const debutTunnelEnvoye = useRef(false);
@@ -272,11 +272,11 @@ export function CheckoutForm({
       type: "begin_checkout",
       // Clé d'événement pour la déduplication navigateur/navigateur (pas de
       // pendant serveur pour `begin_checkout`) : identifie CE panier précis,
-      // pas un article — `productId`/`variantId` y restent légitimes.
+      // pas un article - `productId`/`variantId` y restent légitimes.
       reference: lines.map((l) => `${l.productId}:${l.variantId ?? ""}:${l.quantity}`).join("|"),
       // Références PAR ARTICLE, elles, alignées sur le flux Google Merchant
-      // (voir `identifiantProduitCatalogue`) — comme aux trois autres points
-      // d'émission — pour que Meta/GA4 apparient chaque ligne au bon produit
+      // (voir `identifiantProduitCatalogue`) - comme aux trois autres points
+      // d'émission - pour que Meta/GA4 apparient chaque ligne au bon produit
       // du catalogue plutôt qu'à sa variante ou à son identifiant interne.
       articles: lines.map((l) => ({
         reference: identifiantProduitCatalogue(l.slug, l.productId),
@@ -308,7 +308,7 @@ export function CheckoutForm({
   const formulaireComplet = Object.values(erreurs).every((e) => e === null);
   const remise = coupon?.discountCents ?? 0;
   // Frais de livraison : connu dès qu'une ville valide est choisie, à zéro
-  // avant — pas d'estimation affichée avant que le client ait renseigné de
+  // avant - pas d'estimation affichée avant que le client ait renseigné de
   // quoi la calculer. Recalculé à l'identique côté serveur à la commande
   // (voir le commentaire d'en-tête de `src/lib/kk/livraison.ts`) : ce qui
   // s'affiche ici n'est jamais ce qui fait foi.
@@ -320,7 +320,7 @@ export function CheckoutForm({
   // au navigateur pour la redirection vers le prestataire. React, lui, re-rend
   // dès que l'état du panier change : sans cette condition, le client voyait
   // l'écran « votre panier est vide » s'afficher une fraction de seconde entre
-  // son clic et la page de paiement — au pire moment du tunnel, celui où il
+  // son clic et la page de paiement - au pire moment du tunnel, celui où il
   // confie son argent.
   //
   // `submitting` n'est volontairement jamais relâché sur le chemin de la
@@ -454,7 +454,7 @@ export function CheckoutForm({
       //
       // `window.location.href` et non `router.push` : la destination est un
       // domaine tiers, que le routeur de Next ne sait pas atteindre. Et on ne
-      // relâche PAS `submitting` — le formulaire doit rester verrouillé pendant
+      // relâche PAS `submitting` - le formulaire doit rester verrouillé pendant
       // la redirection, sinon un double clic ouvre deux paiements.
       if (data.urlPaiement) {
         window.location.href = data.urlPaiement;
@@ -1001,7 +1001,7 @@ export function CheckoutForm({
  *
  * La numérotation est ici légitime : ce sont trois moments qui se suivent
  * réellement, et le client a besoin de savoir combien il en reste. C'est la
- * réponse à la question qui fait fermer un tunnel — « ça va durer combien de
+ * réponse à la question qui fait fermer un tunnel - « ça va durer combien de
  * temps ? ».
  */
 function FilEtapes() {
@@ -1080,7 +1080,7 @@ function TitreEtape({ numero, titre }: { numero: number; titre: string }) {
  * Champ de saisie du tunnel.
  *
  * Trois états visibles : neutre, validé (coche verte), fautif (filet rouge et
- * phrase). La coche n'est pas un ornement — sur un formulaire de commande, elle
+ * phrase). La coche n'est pas un ornement - sur un formulaire de commande, elle
  * dit « celui-là est réglé, passez au suivant », et c'est ce qui donne le
  * sentiment d'avancer.
  */

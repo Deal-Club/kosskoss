@@ -15,10 +15,10 @@ import type { ProductTag } from "@/generated/prisma/client";
  * (budget_eco, premium…) servent le diagnostic et n'ont rien à faire dans une
  * barre de filtres.
  *
- * Mémoïsée par `cache()` de React (comme ailleurs dans le dépôt — voir
+ * Mémoïsée par `cache()` de React (comme ailleurs dans le dépôt - voir
  * src/server/kk/navigation.ts) : sur une page de rayon, `getCatalog` lit ce
  * même vocabulaire pour ses décomptes, et la page appelle aussi cette fonction
- * directement pour les libellés — deux appels, mêmes arguments, un seul rendu.
+ * directement pour les libellés - deux appels, mêmes arguments, un seul rendu.
  * Sans mémoïsation, ça fait une requête de plus à chaque affichage de rayon.
  */
 export const lireVocabulaire = cache(async (locale: string): Promise<OptionFacette[]> => {
@@ -30,7 +30,7 @@ export const lireVocabulaire = cache(async (locale: string): Promise<OptionFacet
 
   return lignes.map((l) => ({
     key: l.key,
-    // Repli sur le français si la traduction n'a pas encore été saisie —
+    // Repli sur le français si la traduction n'a pas encore été saisie -
     // via `pickText`, la seule règle de repli du projet (voir
     // src/server/localizedContent.ts). Un `||` direct sur `labelEn` laissait
     // passer une traduction faite uniquement d'espaces.
@@ -64,7 +64,7 @@ export async function lireVocabulaireAdmin(): Promise<ProductTagAdmin[]> {
  * La clé étant l'identifiant, un `upsert` par entrée suffit : renommer un
  * libellé ne casse aucun lien, et les tags déjà écrits sur les produits
  * continuent de résoudre. La validation du contenu (clé non vide, famille non
- * vide, etc.) est la responsabilité de l'appelant — la route API — pour que
+ * vide, etc.) est la responsabilité de l'appelant - la route API - pour que
  * cette fonction reste réutilisable sans dupliquer les règles à deux endroits.
  */
 export async function enregistrerVocabulaire(items: ProductTagAdmin[]): Promise<void> {

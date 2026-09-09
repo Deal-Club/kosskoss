@@ -4,12 +4,12 @@
  * La publication programmée repose sur DEUX mécanismes, volontairement
  * redondants :
  *
- *  1. `dueForPublication` — la tâche planifiée (`/api/cron/journal`) bascule
+ *  1. `dueForPublication` - la tâche planifiée (`/api/cron/journal`) bascule
  *     les articles dont l'heure est venue, comme le fait déjà le répartiteur de
  *     campagnes. L'état vit en base, jamais dans un intervalle en mémoire qui
  *     disparaîtrait au premier redémarrage.
  *
- *  2. `isPubliclyVisible` — la boutique ne sert un article que si sa date est
+ *  2. `isPubliclyVisible` - la boutique ne sert un article que si sa date est
  *     passée, que la tâche ait tourné ou non. Si le cron n'est pas branché,
  *     rien ne fuite ; s'il a du retard, l'article sort quand même à la première
  *     visite. Une fonctionnalité qui dépend d'un ordonnanceur externe ne doit
@@ -61,7 +61,7 @@ export interface PublicationFields {
  *
  * Le cas qui justifie cette fonction : un administrateur programme un article
  * pour une heure déjà passée. Le laisser en « programmé » l'aurait suspendu
- * jusqu'au prochain passage de la tâche — ou pour toujours. Il est publié tout
+ * jusqu'au prochain passage de la tâche - ou pour toujours. Il est publié tout
  * de suite, à la date demandée.
  */
 export function resolvePublication(input: PublicationInput, now: Date): PublicationFields {

@@ -18,7 +18,7 @@ const eslintConfig = defineConfig([
     ".tmp-*/**",
     ".playwright-mcp/**",
     // Espace de travail des agents (worktrees compris) : déjà ignoré par git
-    // (voir .gitignore), il ne doit pas non plus entrer dans le lint — un
+    // (voir .gitignore), il ne doit pas non plus entrer dans le lint - un
     // worktree résiduel y fait échouer `npm run lint` sur du code dupliqué.
     ".claude/**",
     // Client Prisma généré : code machine, jamais relu à la main.

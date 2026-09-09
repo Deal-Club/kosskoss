@@ -6,7 +6,7 @@ import { accountErrorResponse } from "@/server/accountMessages";
 /**
  * Demande de réinitialisation du mot de passe.
  *
- * La réponse est toujours identique — statut 200 et même message — que
+ * La réponse est toujours identique - statut 200 et même message - que
  * l'adresse soit enregistrée ou non. C'est la formulation recommandée par
  * l'OWASP Authentication Cheat Sheet : « If that email address is in our
  * database, we will send you an email to reset your password. »

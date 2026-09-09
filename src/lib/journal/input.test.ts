@@ -3,7 +3,7 @@
  *
  * C'est l'unique porte d'entrée en écriture : tout ce qui finit dans la table
  * `Article` passe par `parseArticleInput`. Les cas couverts sont ceux qui
- * abîment quelque chose — un titre absent, une date illisible, une couverture
+ * abîment quelque chose - un titre absent, une date illisible, une couverture
  * hostile, un statut inventé, un chapeau qu'on croyait automatique et qui ne
  * l'était pas.
  *
@@ -34,7 +34,7 @@ function rejected(raw: Record<string, unknown>): string {
   return result.error;
 }
 
-describe("parseArticleInput — champs obligatoires", () => {
+describe("parseArticleInput - champs obligatoires", () => {
   it("refuse un corps qui n'est pas un objet", () => {
     assert.match(rejected(null as unknown as Record<string, unknown>), /illisible/i);
   });
@@ -54,7 +54,7 @@ describe("parseArticleInput — champs obligatoires", () => {
   });
 });
 
-describe("parseArticleInput — dérivés", () => {
+describe("parseArticleInput - dérivés", () => {
   it("génère le chapeau quand il est laissé vide", () => {
     const values = accepted({ excerpt: "" });
     assert.equal(values.excerpt, "Trois critères suffisent.");
@@ -80,7 +80,7 @@ describe("parseArticleInput — dérivés", () => {
   });
 });
 
-describe("parseArticleInput — statut et dates", () => {
+describe("parseArticleInput - statut et dates", () => {
   it("retient le brouillon par défaut", () => {
     assert.equal(accepted({}).status, "draft");
   });
@@ -110,7 +110,7 @@ describe("parseArticleInput — statut et dates", () => {
   });
 });
 
-describe("parseArticleInput — média et liens", () => {
+describe("parseArticleInput - média et liens", () => {
   it("accepte une couverture hébergée sur Cloudinary", () => {
     const values = accepted({ coverImage: "https://res.cloudinary.com/demo/a.jpg", coverAlt: "Flacon" });
     assert.equal(values.coverImage, "https://res.cloudinary.com/demo/a.jpg");
@@ -132,7 +132,7 @@ describe("parseArticleInput — média et liens", () => {
   });
 });
 
-describe("parseArticleInput — organisation", () => {
+describe("parseArticleInput - organisation", () => {
   it("rend null pour une catégorie non choisie", () => {
     assert.equal(accepted({ categoryId: "" }).categoryId, null);
   });
@@ -151,7 +151,7 @@ describe("parseArticleInput — organisation", () => {
   });
 });
 
-describe("parseArticleInput — SEO", () => {
+describe("parseArticleInput - SEO", () => {
   it("conserve les champs SEO renseignés", () => {
     const values = accepted({ metaTitle: "Nettoyant : le guide", robotsNoindex: true });
     assert.equal(values.metaTitle, "Nettoyant : le guide");

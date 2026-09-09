@@ -5,8 +5,8 @@ import { LocalizedLink as Link } from "@/components/kk/localized-link";
  * Page 404 de la boutique.
  *
  * Sans elle, une adresse inconnue rendait l'écran par défaut de Next.js :
- * anglais, sans marque, sans issue. Or une 404 n'est pas rare — un lien
- * partagé qui vieillit, un produit retiré, une faute de frappe — et c'est
+ * anglais, sans marque, sans issue. Or une 404 n'est pas rare - un lien
+ * partagé qui vieillit, un produit retiré, une faute de frappe - et c'est
  * souvent la première page qu'un visiteur voit du site.
  *
  * Elle propose donc trois issues plutôt qu'un constat : le catalogue, le

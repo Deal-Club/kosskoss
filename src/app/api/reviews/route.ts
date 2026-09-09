@@ -3,7 +3,7 @@ import { createReview, productExists } from "@/server/reviews";
 
 // Anti-spam volontairement minimaliste : au plus trois avis par produit et par
 // fenêtre de dix minutes. Le compteur vit en mémoire du processus, comme
-// src/server/loginRate.ts — suffisant pour un serveur unique, à déplacer vers
+// src/server/loginRate.ts - suffisant pour un serveur unique, à déplacer vers
 // Redis le jour où plusieurs instances tournent en parallèle.
 const MAX_REVIEWS_PER_WINDOW = 3;
 const WINDOW_MS = 10 * 60 * 1000;

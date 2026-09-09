@@ -1,17 +1,17 @@
 /**
- * Adaptateur PayPal — Orders v2, approbation sur une page hébergée par PayPal.
+ * Adaptateur PayPal - Orders v2, approbation sur une page hébergée par PayPal.
  *
  * Écrit directement sur l'API REST plutôt que sur `@paypal/paypal-server-sdk` :
  * le SDK ne couvre pas la vérification de signature des webhooks, qui est le
  * point le plus sensible de l'intégration. Une seule voie d'authentification
  * (OAuth2 client_credentials) sert à tous les appels.
  *
- * Déroulé, entièrement piloté par les webhooks — la redirection de retour du
+ * Déroulé, entièrement piloté par les webhooks - la redirection de retour du
  * client ne prouve rien :
  *   1. `createCheckoutSession` crée une commande PayPal (intent CAPTURE) et rend
  *      le lien d'approbation ;
  *   2. le client approuve, PayPal notifie `CHECKOUT.ORDER.APPROVED` ;
- *   3. on capture alors les fonds côté serveur — sans cette étape, l'argent
+ *   3. on capture alors les fonds côté serveur - sans cette étape, l'argent
  *      approuvé n'est jamais encaissé ;
  *   4. PayPal notifie `PAYMENT.CAPTURE.COMPLETED`, la commande passe en « payée ».
  *

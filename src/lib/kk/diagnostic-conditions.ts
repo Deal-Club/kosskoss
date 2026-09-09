@@ -1,4 +1,4 @@
-// Visibilité conditionnelle d'une question du Diagnostic Beauté — module pur,
+// Visibilité conditionnelle d'une question du Diagnostic Beauté - module pur,
 // sans accès base de données.
 //
 // Le quiz du client (Quiz Diagnostic Peau KossKoss Select_complète.docx)
@@ -32,7 +32,7 @@ function parseConditionReponses(valeur: string): string[] {
 
 /**
  * Une question est visible quand :
- *  - sa condition est vide (`conditionQuestion` vide) — c'est le cas de
+ *  - sa condition est vide (`conditionQuestion` vide) - c'est le cas de
  *    toutes les questions aujourd'hui en base ;
  *  - ou l'une des réponses attendues (`conditionReponses`) figure parmi les
  *    clés de réponses déjà données (`reponsesDonnees`).
@@ -40,7 +40,7 @@ function parseConditionReponses(valeur: string): string[] {
  * Une condition qui porte sur une question à laquelle on n'a pas encore
  * répondu, ou dont `conditionReponses` est illisible en base, rend la
  * question INVISIBLE plutôt que de faire une hypothèse sur ce qu'aurait
- * répondu le visiteur — une condition cassée doit se taire, pas s'afficher
+ * répondu le visiteur - une condition cassée doit se taire, pas s'afficher
  * à tort.
  */
 export function questionVisible(

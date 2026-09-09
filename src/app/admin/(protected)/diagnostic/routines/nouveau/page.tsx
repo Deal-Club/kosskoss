@@ -7,7 +7,7 @@ import {
 } from "@/server/kk/routine-admin";
 import { RoutineEditor } from "@/components/admin/RoutineEditor";
 
-export const metadata: Metadata = { title: "Créer une routine — Administration" };
+export const metadata: Metadata = { title: "Créer une routine - Administration" };
 
 export default async function AdminNouvelleRoutinePage() {
   await requireCapacitePage("reglages");

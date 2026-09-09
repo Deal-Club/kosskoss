@@ -14,7 +14,7 @@ export type CatalogSort = "pertinence" | "prix-asc" | "prix-desc" | "nouveautes"
  *
  * Le découpage se fait en BASE (skip/take), pas en mémoire comme pour les
  * tableaux du back-office : une page de rayon charge des fiches complètes
- * — variantes, avis, images — et en rapatrier soixante pour n'en montrer
+ * - variantes, avis, images - et en rapatrier soixante pour n'en montrer
  * trente coûte la bande passante et le temps de rendu de trente fiches
  * inutiles, à chaque visite.
  */
@@ -37,8 +37,8 @@ export type CatalogView = {
   firstItem: number;
   lastItem: number;
   /**
-   * Bornes de prix (FCFA entiers) de tout le rayon — univers, éventuellement
-   * restreint à la catégorie — indépendamment des filtres appliqués : elles
+   * Bornes de prix (FCFA entiers) de tout le rayon - univers, éventuellement
+   * restreint à la catégorie - indépendamment des filtres appliqués : elles
    * calibrent le curseur, qui ne doit pas se resserrer à mesure qu'on filtre.
    */
   prixMin: number;
@@ -49,7 +49,7 @@ export type CatalogView = {
    * ignore le filtre de SA PROPRE famille (mais tient compte de toutes les
    * autres) : celui d'une marque dit « combien de produits avec cette marque
    * EN PLUS de celles déjà cochées » (union, comme les autres valeurs déjà
-   * sélectionnées de la même famille) — pas « combien de produits avec
+   * sélectionnées de la même famille) - pas « combien de produits avec
    * cette seule marque ». Ce n'est donc « combien si je coche CETTE case » que
    * pour la première case cochée d'une famille ; dès la deuxième, le nombre
    * inclut l'union avec celles déjà cochées. C'est voulu : sans cette
@@ -65,8 +65,8 @@ export type CatalogView = {
  * Ordre de tri, avec l'identifiant en départage systématique.
  *
  * Ce second critère n'est pas cosmétique : dès qu'on pagine, un tri ambigu
- * devient faux. Deux produits au même prix — le cas courant sur un catalogue
- * où les prix sont ronds — peuvent sortir dans un ordre différent d'une
+ * devient faux. Deux produits au même prix - le cas courant sur un catalogue
+ * où les prix sont ronds - peuvent sortir dans un ordre différent d'une
  * requête à l'autre ; l'un se retrouve alors en fin de page 1 ET en tête de
  * page 2, pendant qu'un autre n'apparaît nulle part. L'identifiant, unique,
  * fige l'ordre.
@@ -94,12 +94,12 @@ export type CatalogMeta = {
 
 /**
  * Vue minimale pour `generateMetadata` : de quoi composer un `<title>` et une
- * adresse canonique, rien de plus. `getCatalog` en fait dix-huit fois plus —
- * décomptes par marque et par facette, produits de la page, bornes de prix —
+ * adresse canonique, rien de plus. `getCatalog` en fait dix-huit fois plus -
+ * décomptes par marque et par facette, produits de la page, bornes de prix -
  * pour qu'un `<head>` n'en tire jamais qu'un titre et un lien `canonical`.
  * Mesuré sur ce lot : 37 requêtes pour afficher un rayon (18 pour la page,
  * 18 de plus pour sa métadonnée, dupliquées) sont tombées à 20 en retirant
- * cette redondance — 18 pour la page, 2 ici. `generateMetadata` ne reçoit
+ * cette redondance - 18 pour la page, 2 ici. `generateMetadata` ne reçoit
  * jamais de filtres (marque, facette, prix) : seule la pagination du rayon
  * NON filtré importe pour son titre et sa canonique.
  */
@@ -145,15 +145,15 @@ export async function getCatalogMeta(opts: {
  * anti-brillance rangé dans soins-visage/nettoyants et étiqueté `homme` doit
  * apparaître sur /homme sans quitter sa catégorie d'origine. L'univers
  * agrège donc trois sources, en OR :
- *   — ses propres catégories (comportement de tout univers) ;
- *   — les produits portant son étiquette dans `Product.tags` (c'est là que
+ *   - ses propres catégories (comportement de tout univers) ;
+ *   - les produits portant son étiquette dans `Product.tags` (c'est là que
  *     vit la donnée aujourd'hui : 9 produits au moment de TK-05) ;
- *   — les produits dont le champ libre `Product.cible` contient un des
- *     termes (« Homme », « Unisexe », insensible à la casse) — vide sur tout
+ *   - les produits dont le champ libre `Product.cible` contient un des
+ *     termes (« Homme », « Unisexe », insensible à la casse) - vide sur tout
  *     le catalogue actuel, mais c'est le champ que le back-office remplira.
  *
  * L'agrégation ne joue QUE sur la page d'univers : une catégorie ouverte
- * (/homme/homme) reste strictement ce qu'elle contient — chaque catégorie
+ * (/homme/homme) reste strictement ce qu'elle contient - chaque catégorie
  * garde son rangement.
  */
 const AGREGATION_UNIVERS: Record<string, { tag: string; cibles: string[] }> = {
@@ -198,12 +198,12 @@ function tagsWhere(tags: string[] | undefined): Prisma.ProductWhereInput | undef
  * Renvoie `null` si l'univers (ou la catégorie) n'existe pas.
  *
  * `besoin`, `peau` et `preoccupation` portent tous sur les étiquettes du
- * Diagnostic Beauté stockées dans `Product.tags` — un tableau JSON sérialisé.
+ * Diagnostic Beauté stockées dans `Product.tags` - un tableau JSON sérialisé.
  * `besoin` est l'ancien paramètre (une seule étiquette, lien déjà partagé ou
  * résultat de diagnostic) ; il continue de fonctionner et se combine en ET
  * avec les nouvelles facettes plutôt que de les remplacer.
  *
- * RÈGLE DE COMBINAISON — union DANS une famille, intersection ENTRE familles :
+ * RÈGLE DE COMBINAISON - union DANS une famille, intersection ENTRE familles :
  * `peau` et `preoccupation` sont chacune un OR sur leurs valeurs cochées (voir
  * `tagsWhere`), et les familles renseignées (plus `besoin` et le prix) se
  * combinent en AND. Cocher deux types de peau élargit ; cocher un type de peau
@@ -218,13 +218,13 @@ export async function getCatalog(opts: {
   besoin?: string;
   peau?: string[];
   preoccupation?: string[];
-  /** Bornes de prix en FCFA entiers — jamais de division par 100. */
+  /** Bornes de prix en FCFA entiers - jamais de division par 100. */
   prixMin?: number;
   prixMax?: number;
   sort?: CatalogSort;
   /** Page demandée, 1 par défaut. Hors bornes, on ramène à la dernière page. */
   page?: number;
-  /** Langue de la page qui affiche le catalogue — voir `toProductView`. */
+  /** Langue de la page qui affiche le catalogue - voir `toProductView`. */
   locale: Locale;
 }): Promise<CatalogView | null> {
   const group = await prisma.group.findUnique({
@@ -235,7 +235,7 @@ export async function getCatalog(opts: {
 
   // Repli identique à `toProductView` : accès direct au champ `*En` déjà
   // chargé sur la ligne (aucun `select` restrictif sur ces requêtes), passé
-  // par `pickText` — jamais affiché tel quel.
+  // par `pickText` - jamais affiché tel quel.
   const traduire = needsTranslation(opts.locale);
 
   let category: { slug: string; label: string } | undefined;
@@ -245,7 +245,7 @@ export async function getCatalog(opts: {
     category = { slug: match.slug, label: pickText(match.label, traduire ? match.labelEn : undefined) };
   }
 
-  // Portée : univers (agrégé s'il y a lieu — voir AGREGATION_UNIVERS),
+  // Portée : univers (agrégé s'il y a lieu - voir AGREGATION_UNIVERS),
   // éventuellement restreinte à une catégorie, alors toujours stricte.
   const scope = scopeFor(opts.group, opts.category);
 
@@ -260,13 +260,13 @@ export async function getCatalog(opts: {
       : undefined;
 
   /**
-   * Portée filtrée, à l'exclusion optionnelle d'UNE famille — pour les
+   * Portée filtrée, à l'exclusion optionnelle d'UNE famille - pour les
    * décomptes par option (`countsByBrand`/`countsByPeau`/`countsByPreoccupation`
    * sur `CatalogView`) : le compteur d'une valeur non cochée doit ignorer le
    * filtre de SA PROPRE famille tout en respectant toutes les autres, marque
    * et prix compris. Sans cette exclusion, cocher une première valeur d'une
    * famille en union ferait chuter à zéro le compteur des autres valeurs de
-   * la même famille — l'inverse de l'union voulue.
+   * la même famille - l'inverse de l'union voulue.
    *
    * Le prix se filtre ici, dans le `where`, jamais après coup : un filtrage en
    * mémoire après la pagination donnerait des pages de tailles inégales.
@@ -325,7 +325,7 @@ export async function getCatalog(opts: {
         orderBy: { brand: "asc" },
       }),
       // Décompte par marque : `brand` est une colonne native, un seul `groupBy`
-      // suffit — contrairement aux facettes, portées par le JSON `tags`.
+      // suffit - contrairement aux facettes, portées par le JSON `tags`.
       prisma.product.groupBy({
         by: ["brand"],
         where: whereFor("brand"),
@@ -346,7 +346,7 @@ export async function getCatalog(opts: {
       }),
       // Un `groupBy` ne peut pas porter sur une clé à l'intérieur du JSON
       // `tags`. La parade évidente est une requête `count` par option de
-      // vocabulaire — c'est ce que faisait cette lecture, soit dix allers-retours
+      // vocabulaire - c'est ce que faisait cette lecture, soit dix allers-retours
       // pour afficher un rayon, sur une base distante mesurée à 220 ms l'unité.
       //
       // On lit donc la colonne `tags` UNE fois par famille, et on compte en

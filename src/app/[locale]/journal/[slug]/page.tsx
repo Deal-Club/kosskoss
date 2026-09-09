@@ -23,7 +23,7 @@ type ArticleParams = Promise<{ locale: Locale; slug: string }>;
 
 /**
  * Les articles publiés sont prérendus. `dynamicParams` reste vrai : un article
- * publié après le build — par la tâche planifiée, par exemple — doit s'afficher
+ * publié après le build - par la tâche planifiée, par exemple - doit s'afficher
  * sans attendre le déploiement suivant.
  */
 export const dynamicParams = true;

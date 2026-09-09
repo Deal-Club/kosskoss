@@ -18,7 +18,7 @@ export function DeleteButton({ action, confirmLabel }: { action: string; confirm
       router.refresh();
       return;
     }
-    // Le refus a souvent une raison que seul le serveur connaît — une commande
+    // Le refus a souvent une raison que seul le serveur connaît - une commande
     // déjà facturée, par exemple, répond 409 avec un motif rédigé. L'écraser
     // par un message générique la rendrait indéchiffrable pour l'opérateur.
     const motif = await response

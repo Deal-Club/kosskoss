@@ -9,7 +9,7 @@ import type { CouponKind, CouponView } from "@/lib/kk/coupon";
  * Administration des codes promo.
  *
  * Les montants sont saisis et affichés en FCFA entiers, comme partout dans la
- * boutique — le champ historique `priceCents` ne porte pas de sous-unité.
+ * boutique - le champ historique `priceCents` ne porte pas de sous-unité.
  */
 
 const CHAMP =
@@ -250,7 +250,7 @@ export function CouponManager({ coupons: initiaux }: { coupons: CouponView[] }) 
                       ? new Intl.DateTimeFormat("fr-FR", { dateStyle: "short" }).format(
                           new Date(c.endsAt),
                         )
-                      : "—"}
+                      : "-"}
                   </td>
                   <td className="px-4 py-3">
                     <input

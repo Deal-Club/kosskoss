@@ -1,7 +1,7 @@
 import { MousePointerClick, ShoppingCart } from "lucide-react";
 
 /**
- * Graphiques du tableau de bord d'une campagne, en SVG écrit à la main —
+ * Graphiques du tableau de bord d'une campagne, en SVG écrit à la main -
  * mêmes règles que DashboardCharts.tsx : aucune librairie, une étiquette
  * chiffrée sur chaque part, et jamais la couleur comme seule information.
  */

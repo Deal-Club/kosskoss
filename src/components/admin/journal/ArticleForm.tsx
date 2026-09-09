@@ -190,7 +190,7 @@ export function ArticleForm({ article, categories, tags, authors }: ArticleFormP
    * Volontairement une fonction simple, sans `useCallback` : le compilateur
    * React est actif sur ce projet et mémorise lui-même. Une liste de vingt-cinq
    * dépendances écrite à la main serait fausse à la première évolution du
-   * formulaire — et le compilateur refuse d'ailleurs de la préserver.
+   * formulaire - et le compilateur refuse d'ailleurs de la préserver.
    */
   function payload() {
     return {
@@ -462,7 +462,7 @@ export function ArticleForm({ article, categories, tags, authors }: ArticleFormP
               onChange={(event) => setCategoryId(event.target.value)}
               className={cn(inputClass, "mt-1")}
             >
-              <option value="">— Aucune —</option>
+              <option value="">- Aucune -</option>
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.label}
@@ -478,7 +478,7 @@ export function ArticleForm({ article, categories, tags, authors }: ArticleFormP
               onChange={(event) => setAuthorId(event.target.value)}
               className={cn(inputClass, "mt-1")}
             >
-              <option value="">— Aucun —</option>
+              <option value="">- Aucun -</option>
               {authors.map((author) => (
                 <option key={author.id} value={author.id}>
                   {author.name}
@@ -682,7 +682,7 @@ export function ArticleForm({ article, categories, tags, authors }: ArticleFormP
       </Section>
 
       {/* ---- Traduction anglaise ---- */}
-      <Section title="Version anglaise" hint="facultative — vide = repli sur le français">
+      <Section title="Version anglaise" hint="facultative - vide = repli sur le français">
         <label className="block">
           <span className={labelClass}>Titre</span>
           <input

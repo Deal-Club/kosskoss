@@ -177,7 +177,7 @@ export async function ProductReviewSection({
 
       {/* Formulaire replié par défaut. Déployé en permanence, il occupait le bas
           de chaque fiche produit alors qu'une infime part des visiteurs vient
-          pour déposer un avis — les autres lisent ceux des acheteurs. Le
+          pour déposer un avis - les autres lisent ceux des acheteurs. Le
           <details> natif suffit : il se déplie sans JavaScript, reste
           accessible au clavier et s'imprime ouvert. Même mécanique que la FAQ. */}
       <details className="group rounded-sm border border-border">

@@ -2,7 +2,7 @@
  * Mode maintenance.
  *
  * Tant qu'il est actif, la boutique répond une page d'attente en 503 à tout le
- * monde — sauf au back-office, qui reste ouvert pour se connecter, et à
+ * monde - sauf au back-office, qui reste ouvert pour se connecter, et à
  * l'administrateur déjà connecté, qui voit le site normalement et peut donc le
  * vérifier de bout en bout avant de l'ouvrir.
  *

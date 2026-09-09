@@ -8,7 +8,7 @@ import { buildCsv } from "@/lib/kk/csv";
 /**
  * Export de la liste des produits, au format tableur (CSV) ou imprimable (PDF).
  *
- * L'export reprend les filtres de l'écran — catégorie, recherche, tri — mais
+ * L'export reprend les filtres de l'écran - catégorie, recherche, tri - mais
  * jamais la pagination : on exporte toute la sélection, pas la page affichée.
  */
 
@@ -75,14 +75,14 @@ function toRow(product: ProductRecord, categoryLabel: string): ExportRow {
 
 /**
  * Les polices standard d'un PDF n'acceptent que le jeu WinAnsi. Tout ce qui en
- * sort — guillemets typographiques, tirets longs, symboles — est ramené à un
+ * sort - guillemets typographiques, tirets longs, symboles - est ramené à un
  * équivalent, sans quoi pdf-lib refuse d'écrire la ligne.
  */
 function sanitize(value: string): string {
   return value
     .replace(/[‘’‛]/g, "'")
     .replace(/[“”]/g, '"')
-    .replace(/[–—]/g, "-")
+    .replace(/[–-]/g, "-")
     .replace(/…/g, "...")
     .replace(/ /g, " ")
     .replace(/[^\x20-\x7E¡-ÿ€]/g, "");
@@ -175,7 +175,7 @@ async function buildPdf(rows: ExportRow[], subtitle: string): Promise<Uint8Array
     doc,
     font: await doc.embedFont(StandardFonts.Helvetica),
     bold: await doc.embedFont(StandardFonts.HelveticaBold),
-    title: "KossKoss Select — Catalogue produits",
+    title: "KossKoss Select - Catalogue produits",
     subtitle,
   };
 
@@ -266,7 +266,7 @@ export async function GET(request: Request): Promise<Response> {
   if (query.trim()) parts.push(`recherche : « ${query.trim()} »`);
   parts.push(`export du ${new Date().toLocaleDateString("fr-FR")}`);
 
-  const pdf = await buildPdf(rows, parts.join(" — "));
+  const pdf = await buildPdf(rows, parts.join(" - "));
 
   return new Response(pdf as BodyInit, {
     headers: {

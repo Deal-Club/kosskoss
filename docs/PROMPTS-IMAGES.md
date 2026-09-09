@@ -1,4 +1,4 @@
-# Prompts de génération — visuels d'accueil
+# Prompts de génération - visuels d'accueil
 
 Trois emplacements, trois intentions différentes. Les prompts sont en anglais :
 tous les générateurs (Midjourney, Flux, DALL·E, Ideogram) y répondent mieux.
@@ -30,20 +30,20 @@ tous les générateurs (Midjourney, Flux, DALL·E, Ideogram) y répondent mieux.
 
 **Où** : la bannière sable de l'accueil (`DiagnosticPromo`), pleine largeur,
 coins arrondis 2 rem.
-**Format** : 3:1 — générer en 2400 × 800 px.
+**Format** : 3:1 - générer en 2400 × 800 px.
 **Composition** : le sujet occupe **le tiers droit**. Les deux tiers gauches
 restent une surface calme où viendront le titre, le paragraphe et le bouton.
 
 ```
 Editorial beauty banner, 3:1 ultra-wide format. A Black woman with deep
 melanin-rich skin sits in the right third of the frame, three-quarter view,
-eyes closed, serene — a moment of care rather than a pose. Bare shoulders,
+eyes closed, serene - a moment of care rather than a pose. Bare shoulders,
 minimal styling, no jewellery. Soft diffused daylight from the right, gentle
 falloff. Around her, sparse tropical botanicals: hibiscus, frangipani, a few
 broad green leaves, arranged loosely, never crowding the subject.
 
 The left two thirds dissolve into a smooth warm gradient of sand beige #F3E8DD
-fading to cream #FAF6F0 — empty, unoccupied negative space with no detail,
+fading to cream #FAF6F0 - empty, unoccupied negative space with no detail,
 reserved for text. Deep teal #0F3B46 appears only as shadow depth and in the
 darkest botanical tones. A single brass #B98A4B highlight, no more.
 
@@ -66,24 +66,24 @@ clinical white, busy background, subject centred or on the left.
 
 **Où** : colonne droite du hero, `aspect-[4/5]`, coins arrondis 2 rem, ombre
 portée.
-**Format** : 4:5 portrait — générer en 1200 × 1500 px.
+**Format** : 4:5 portrait - générer en 1200 × 1500 px.
 
 > **Parti pris à trancher.** Le hero porte aujourd'hui un packshot produit
 > détourné (Nubiance HRB-3), choisi parce qu'il illustre littéralement le
 > positionnement « hyperpigmentation, peaux noires ». Une image d'ambiance
-> raconte mieux la marque mais nomme moins l'offre. Les deux se défendent —
+> raconte mieux la marque mais nomme moins l'offre. Les deux se défendent -
 > le prompt ci-dessous suit la demande d'une image d'ambiance.
 
 ```
 Vertical portrait, 4:5. Close three-quarter crop of a Black woman applying
-facial serum with her fingertips, chin to forehead only — no full face, keeping
+facial serum with her fingertips, chin to forehead only - no full face, keeping
 her unidentifiable. Deep melanin-rich skin, luminous and healthy, visible skin
 texture kept natural: no retouching, no plastic smoothing, fine pores and a
 soft sheen where the light catches. Short natural nails, no rings.
 
 Background: a deep teal #0F3B46 wall in soft shadow, with one warm sand #F3E8DD
 light shape falling diagonally behind her. A dropper bottle in undecorated
-frosted glass rests out of focus at the lower edge — unbranded, unlabelled.
+frosted glass rests out of focus at the lower edge - unbranded, unlabelled.
 
 Warm directional window light from the upper left, deep gentle shadows, no
 hard specular hotspots. Rich, quiet, editorial. Analogue film grain.
@@ -103,16 +103,16 @@ stock-photo smile.
 ## 3. Visuel « Notre exigence »
 
 **Où** : colonne gauche de `EditorialBlock`, `aspect-[5/4]`, coins arrondis 2 rem.
-**Format** : 5:4 paysage — générer en 1500 × 1200 px.
+**Format** : 5:4 paysage - générer en 1500 × 1200 px.
 
 La section parle de **méthode et de tri** : « nous filtrons l'offre plutôt que
 de l'empiler », « peu de doublons, aucun produit au hasard ». Une nature morte
-sobre dit cela mieux qu'un portrait — le sujet ici, c'est le choix, pas la
+sobre dit cela mieux qu'un portrait - le sujet ici, c'est le choix, pas la
 cliente. Trois objets, pas douze : la rareté dans l'image porte le propos.
 
 ```
-Still life, 5:4 landscape. Exactly three unbranded skincare vessels — one
-frosted glass dropper bottle, one matte ceramic jar, one small amber flask —
+Still life, 5:4 landscape. Exactly three unbranded skincare vessels - one
+frosted glass dropper bottle, one matte ceramic jar, one small amber flask -
 arranged with wide, deliberate spacing on a raw textured surface of warm
 terracotta and sand #F3E8DD. Generous empty space between objects: the
 composition should feel curated and edited down, not abundant.
@@ -139,5 +139,5 @@ scattered petals, cold tones.
 1. Convertir en WebP et redimensionner à la largeur d'affichage réelle
    (`scripts/generer-logos.mjs` montre le motif avec `sharp`).
 2. Déposer dans `public/images/editorial/`.
-3. Vérifier le contraste du texte posé par-dessus — surtout sur le bandeau
+3. Vérifier le contraste du texte posé par-dessus - surtout sur le bandeau
    diagnostic, où le titre est en Bleu Profond sur la zone claire de gauche.

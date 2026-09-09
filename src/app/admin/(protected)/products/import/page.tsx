@@ -31,23 +31,23 @@ export default async function ProductImportPage() {
         </pre>
         <ul className="mb-4 list-disc space-y-1 pl-5 text-muted-foreground">
           <li>
-            <span className="font-semibold text-foreground">categoryId</span> — catégorie au format
+            <span className="font-semibold text-foreground">categoryId</span> - catégorie au format
             « univers/slug », voir la liste ci-dessous.
           </li>
           <li>
-            <span className="font-semibold text-foreground">price / oldPrice</span> — montant en
+            <span className="font-semibold text-foreground">price / oldPrice</span> - montant en
             FCFA, ex. 18 500.
           </li>
           <li>
-            <span className="font-semibold text-foreground">bullets</span> — caractéristiques
+            <span className="font-semibold text-foreground">bullets</span> - caractéristiques
             séparées par |, ex. 9 kg|EcoSilence Drive|AquaStop.
           </li>
           <li>
-            <span className="font-semibold text-foreground">shortDescription</span> — 200 caractères
+            <span className="font-semibold text-foreground">shortDescription</span> - 200 caractères
             maximum.
           </li>
           <li>
-            <span className="font-semibold text-foreground">stock</span> — nombre entier à partir de
+            <span className="font-semibold text-foreground">stock</span> - nombre entier à partir de
             0 ; sans valeur, le stock par défaut est utilisé.
           </li>
         </ul>

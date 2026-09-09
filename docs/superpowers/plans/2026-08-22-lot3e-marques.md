@@ -1,10 +1,10 @@
-# Lot 3E — Les marques deviennent une entité — Plan d'implémentation
+# Lot 3E - Les marques deviennent une entité - Plan d'implémentation
 
-> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE —
+> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE -
 > superpowers:subagent-driven-development.
 
-**But :** donner aux marques une existence propre — logo, description, ordre, page
-dédiée — au lieu d'une chaîne recopiée sur chaque produit.
+**But :** donner aux marques une existence propre - logo, description, ordre, page
+dédiée - au lieu d'une chaîne recopiée sur chaque produit.
 
 **Architecture :** une table `Brand`, une relation nullable depuis `Product` qui
 **garde** son libellé, un rattachement par bouton idempotent plutôt que par
@@ -21,15 +21,15 @@ migration de données, un écran d'administration et une page de marque en vitri
    `npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script`
    pour lire le SQL, puis écrire le dossier de migration à la main, puis
    `npx prisma migrate deploy` et `npx prisma generate`.
-   **`prisma migrate dev` se bloque dans cet environnement — ne l'utilise pas.**
+   **`prisma migrate dev` se bloque dans cet environnement - ne l'utilise pas.**
 2. **`Product.brand` reste.** C'est le libellé affiché, figé comme le sont ceux de
    `OrderItem`. La relation apporte ce que la chaîne ne peut pas porter.
 3. **Le rapprochement des marques ignore la casse et les accents, et RIEN
    D'AUTRE.** Ni les espaces internes, ni la ponctuation. Un rapprochement trop
    large fond deux marques distinctes et change la marque de produits réels.
 4. **Toute nouvelle route et tout nouvel écran d'administration nomment leur
-   capacité** — `requireCapaciteApi("catalogue")` / `requireCapacitePage("catalogue")`
-   — et la famille `brands` doit être ajoutée à `CAPACITE_PAR_FAMILLE`. Un test
+   capacité** - `requireCapaciteApi("catalogue")` / `requireCapacitePage("catalogue")`
+   - et la famille `brands` doit être ajoutée à `CAPACITE_PAR_FAMILLE`. Un test
    ouvre chaque fichier et échoue sinon.
 5. **Les modules de `src/lib/kk/` n'importent que des modules purs.**
    `src/lib/slugify.ts` en est un (zéro import) : réutilise-le, ne le recopie pas.
@@ -107,7 +107,7 @@ describe("cleMarque", () => {
  * ── DEUX FONCTIONS, DEUX RÔLES ──────────────────────────────────────────────
  *
  * `slugify` (src/lib/slugify.ts) fabrique un identifiant d'URL : il écrase tout
- * ce qui n'est pas alphanumérique en tirets. `cleMarque` sert à autre chose —
+ * ce qui n'est pas alphanumérique en tirets. `cleMarque` sert à autre chose -
  * décider si deux écritures désignent la même marque.
  *
  * Les confondre ferait fondre « La Roche Posay » et « LaRochePosay », qui sont
@@ -151,8 +151,8 @@ git commit src/lib/kk/marques.ts src/lib/kk/marques.test.ts -m "Clé de rapproch
 
 ```prisma
 /// Marque du catalogue. Le libellé reste recopié sur `Product.brand` : la
-/// relation apporte ce que la chaîne ne peut pas porter — logo, description,
-/// ordre, état — sans obliger à réécrire tout ce qui lit la chaîne.
+/// relation apporte ce que la chaîne ne peut pas porter - logo, description,
+/// ordre, état - sans obliger à réécrire tout ce qui lit la chaîne.
 model Brand {
   id            String    @id @default(cuid())
   slug          String    @unique
@@ -267,11 +267,11 @@ git commit src/server/kk/marques.ts -m "Lecture, écriture et import des marques
 ### Tâche 4 : Le back-office des marques
 
 **Fichiers :**
-- `src/lib/kk/routesAdmin.ts` — ajouter `brands: "catalogue"`
+- `src/lib/kk/routesAdmin.ts` - ajouter `brands: "catalogue"`
 - `src/app/api/admin/brands/route.ts` et `[id]/route.ts` et `import/route.ts`
 - `src/app/admin/(protected)/brands/page.tsx`, `new/page.tsx`, `[id]/page.tsx`
 - `src/components/admin/BrandForm.tsx`
-- `src/components/admin/AdminSidebar.tsx` — entrée « Marques » dans la section Catalogue
+- `src/components/admin/AdminSidebar.tsx` - entrée « Marques » dans la section Catalogue
 
 - [ ] **Étape 1 : la carte des capacités d'abord**
 
@@ -284,7 +284,7 @@ Chaque fonction exportée appelle `requireCapaciteApi("catalogue")`. La route d'
 est un `POST` sans corps qui rend le compte rendu en JSON.
 
 Validation : nom obligatoire et unique, slug dérivé du nom s'il n'est pas fourni,
-logo suivant la règle des images du dépôt (chemin interne ou URL absolue — regarde
+logo suivant la règle des images du dépôt (chemin interne ou URL absolue - regarde
 comment `productInput.ts` le fait et suis la même règle).
 
 - [ ] **Étape 3 : les écrans**
@@ -292,7 +292,7 @@ comment `productInput.ts` le fait et suis la même règle).
 Chaque page appelle `requireCapacitePage("catalogue")`.
 
 La liste montre : logo, nom, nombre de produits, état, position. Le bouton d'import
-y figure, avec **le compte rendu affiché après exécution** — nommant les marques
+y figure, avec **le compte rendu affiché après exécution** - nommant les marques
 créées et les écritures fusionnées. Un import muet ne se vérifie pas.
 
 Le formulaire porte : nom, nom anglais, description, description anglaise, logo,
@@ -316,7 +316,7 @@ npx tsc --noEmit && npx eslint src --ext .ts,.tsx && npm test && npm run build
 
 Depuis `/admin/brands`, clique « Importer les marques du catalogue » et **recopie le
 compte rendu dans ton rapport** : marques créées, écritures fusionnées, produits
-rattachés. Relance-le une seconde fois et vérifie qu'il ne crée rien — c'est la
+rattachés. Relance-le une seconde fois et vérifie qu'il ne crée rien - c'est la
 preuve de l'idempotence.
 
 ---
@@ -324,9 +324,9 @@ preuve de l'idempotence.
 ### Tâche 5 : La vitrine
 
 **Fichiers :**
-- `src/app/[locale]/marques/page.tsx` — réécrit sur l'entité
-- `src/app/[locale]/marques/[slug]/page.tsx` — créé
-- `src/server/kk/navigation.ts` — `getShopBrands` lit désormais la table
+- `src/app/[locale]/marques/page.tsx` - réécrit sur l'entité
+- `src/app/[locale]/marques/[slug]/page.tsx` - créé
+- `src/server/kk/navigation.ts` - `getShopBrands` lit désormais la table
 
 - [ ] **Étape 1 : le listing**
 
@@ -338,7 +338,7 @@ accroche, dans l'ordre `position` puis alphabétique.
 
 `/marques/[slug]` : nom, logo, description, et la grille de ses produits actifs.
 `generateMetadata` avec le nom et la description, et `alternatesFor` pour les deux
-langues — regarde comment `marques/page.tsx` le fait aujourd'hui et suis le même
+langues - regarde comment `marques/page.tsx` le fait aujourd'hui et suis le même
 patron. Un slug inconnu rend `notFound()`.
 
 L'anglais se replie sur le français quand `nameEn` ou `descriptionEn` est vide.
@@ -346,11 +346,11 @@ L'anglais se replie sur le français quand `nameEn` ou `descriptionEn` est vide.
 - [ ] **Étape 3 : `getShopBrands`**
 
 Il rend aujourd'hui des chaînes distinctes des produits. Fais-le lire la table, en
-gardant **le même type de retour** si ses appelants s'en contentent — sinon adapte
+gardant **le même type de retour** si ses appelants s'en contentent - sinon adapte
 les appelants et dis lesquels dans ton rapport.
 
-**Cas de repli à traiter explicitement :** si la table est vide — import jamais
-lancé — la vitrine ne doit pas perdre sa page marques. Retombe alors sur les chaînes
+**Cas de repli à traiter explicitement :** si la table est vide - import jamais
+lancé - la vitrine ne doit pas perdre sa page marques. Retombe alors sur les chaînes
 distinctes des produits, et écris en commentaire pourquoi ce repli existe.
 
 - [ ] **Étape 4 : vérifier**
@@ -374,6 +374,6 @@ catalogue.
 - [ ] `npm test` au vert, `npm run build` en succès.
 - [ ] `npx prisma migrate diff --from-config-datasource --to-schema prisma/schema.prisma --script`
       rend une migration vide.
-- [ ] Aucune route ni écran `brands` sans capacité déclarée — le test d'arborescence
+- [ ] Aucune route ni écran `brands` sans capacité déclarée - le test d'arborescence
       le garantit.
 - [ ] L'import a été lancé deux fois, et la seconde n'a rien créé.

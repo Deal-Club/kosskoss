@@ -117,9 +117,9 @@ export function PaymentMethodTable({ methods }: PaymentMethodTableProps) {
                     </span>
                   </td>
                   <td className="max-w-xs px-4 py-3 text-muted-foreground">
-                    {method.description || "—"}
+                    {method.description || "-"}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{method.feeLabel || "—"}</td>
+                  <td className="px-4 py-3 text-muted-foreground">{method.feeLabel || "-"}</td>
                   <td className="px-4 py-3">
                     <button
                       type="button"

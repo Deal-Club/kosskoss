@@ -278,7 +278,7 @@ export const POSITIFS: Record<Famille, Bloc> = {
 
 /**
  * Ce que disent les acheteurs mécontents. Un avis négatif crédible porte sur
- * un point précis — un retard, un calibrage, un écart de volume — et non sur
+ * un point précis - un retard, un calibrage, un écart de volume - et non sur
  * un rejet global : c'est ce qui distingue un vrai mécontentement d'un
  * dénigrement de façade.
  */

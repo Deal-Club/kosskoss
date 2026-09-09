@@ -6,13 +6,13 @@ import { PASSWORD_MIN_LENGTH, type AccountErrorCode } from "@/server/customers";
  *
  * La boutique est française : `error` porte le message français, seul texte
  * qu'un appelant brut (curl, intégration) verra. L'interface, elle, traduit à
- * partir de `code` via le namespace « account » — l'anglais est donc complet
+ * partir de `code` via le namespace « account » - l'anglais est donc complet
  * sans dupliquer les libellés ici.
  *
  * Aucun message ne distingue « adresse inconnue » de « mot de passe faux » :
  * l'OWASP Authentication Cheat Sheet demande un libellé unique, et la CNIL
  * recommande la même chose dans son guide de la sécurité des données
- * personnelles — un message distinct permettrait d'énumérer les comptes.
+ * personnelles - un message distinct permettrait d'énumérer les comptes.
  */
 const MESSAGES: Record<AccountErrorCode, { fr: string; en: string }> = {
   invalid_payload: {

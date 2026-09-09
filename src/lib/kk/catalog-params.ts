@@ -12,7 +12,7 @@ function one(value: string | string[] | undefined): string | undefined {
  * et débarrassée des entrées vides. Comme pour `parseBrands`, aucune clé n'est
  * validée contre un vocabulaire connu : une clé qui ne correspond à aucun tag
  * réel ne fait simplement correspondre aucun produit, ce qui n'est pas une
- * erreur — voir la contrainte globale sur les valeurs d'URL inconnues.
+ * erreur - voir la contrainte globale sur les valeurs d'URL inconnues.
  */
 function list(value: string | string[] | undefined): string[] {
   const v = one(value);
@@ -38,7 +38,7 @@ export function parseBrands(value: string | string[] | undefined): string[] {
 }
 
 /**
- * Page demandée (`?page=2`). Une valeur absurde — « 0 », « abc », « -3 » —
+ * Page demandée (`?page=2`). Une valeur absurde - « 0 », « abc », « -3 » -
  * ramène à la première page plutôt qu'à une erreur : une URL malformée doit
  * afficher le rayon, pas un 500. Le plafond, lui, est appliqué par getCatalog,
  * seul à connaître le nombre de pages.
@@ -51,36 +51,36 @@ export function parsePage(value: string | string[] | undefined): number {
 /**
  * Une entrée de vocabulaire telle qu'il faut la connaître ici : la clé et sa
  * famille. `OptionFacette` (src/lib/kk/facettes.ts) porte davantage (le
- * libellé), mais ce module n'a besoin que de ces deux champs — n'importer que
+ * libellé), mais ce module n'a besoin que de ces deux champs - n'importer que
  * ce qui sert évite de coupler ce paramètre à la forme exacte de la vue.
  */
 export type EntreeVocabulaire = { key: string; family: string };
 
 /**
- * Facettes demandées dans l'URL — `?peau=grasse,mixte&preoccupation=taches` —
+ * Facettes demandées dans l'URL - `?peau=grasse,mixte&preoccupation=taches` -
  * réparties dans les deux familles que `produitCorrespondFacettes` sait
  * combiner (union dans une famille, intersection entre familles).
  *
  * Compatibilité : l'ancien paramètre `?besoin=` circule encore dans des liens
  * partagés et, surtout, dans les résultats du Diagnostic Beauté. Il continue
- * de fonctionner ici — un `besoin` reçu est versé dans la bonne famille, en
+ * de fonctionner ici - un `besoin` reçu est versé dans la bonne famille, en
  * plus des clés déjà présentes dans `peau`/`preoccupation`. Un lien de
  * diagnostic ne doit jamais casser : c'est la fonctionnalité la plus visible
  * de la boutique.
  *
  * Le routage dérive du VOCABULAIRE RÉEL (`vocabulaire`, lu par
- * `lireVocabulaire` — src/server/kk/vocabulaire-tags.ts), pas d'une liste
+ * `lireVocabulaire` - src/server/kk/vocabulaire-tags.ts), pas d'une liste
  * figée dans le code : une clé administrable ajoutée après coup (un type de
  * peau, une préoccupation) est routée correctement dès sa création, sans
  * modifier ce module. Une ancienne liste statique (`src/lib/kk/besoins.ts`)
- * a longtemps servi ici et a divergé du vocabulaire administrable — trois clés
+ * a longtemps servi ici et a divergé du vocabulaire administrable - trois clés
  * actives (peau_normale, anti_age, apaisant) y étaient inconnues, un `?besoin=`
  * les portant disparaissait alors en silence. Ce module reste pur : c'est
  * l'appelant (une page, qui a déjà accès à Prisma) qui fournit `vocabulaire`,
  * jamais un import direct d'un module impur ici.
  *
  * Une clé absente du vocabulaire (tag réellement retiré) reste ignorée
- * plutôt que de lever une erreur — même repli que pour une clé de
+ * plutôt que de lever une erreur - même repli que pour une clé de
  * `peau`/`preoccupation` inconnue.
  */
 export function parseFacettes(
@@ -109,11 +109,11 @@ export function parseFacettes(
 export type FacettePrix = { min?: number; max?: number };
 
 /**
- * Borne haute d'un entier Postgres `Int` (signé, 32 bits) — c'est la colonne
+ * Borne haute d'un entier Postgres `Int` (signé, 32 bits) - c'est la colonne
  * `priceCents` qui reçoit cette borne dans `getCatalog` (`gte`/`lte`).
  * Au-delà, Prisma lève au lieu d'exécuter la requête : un `?prixMax=` de dix
  * chiffres tapé dans le champ (aucun `max` HTML ne l'en empêchait) faisait
- * alors tomber toute la page de rayon à zéro produit — la faute la plus
+ * alors tomber toute la page de rayon à zéro produit - la faute la plus
  * grave relevée en revue sur ce lot. Le champ HTML porte aussi un `max`
  * (voir catalog-filters.tsx), mais c'est ICI que la borne est réellement
  * tenue : un `max` HTML se contourne (DevTools, requête directe).

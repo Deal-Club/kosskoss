@@ -1,8 +1,8 @@
 /**
  * Retire tous les avis de démonstration créés par `scripts/seed-avis-demo.ts`.
  *
- * La suppression porte sur la double empreinte laissée à la création —
- * `moderatorNote` ET `moderatedBy` — pour qu'un avis véritable ne puisse jamais
+ * La suppression porte sur la double empreinte laissée à la création -
+ * `moderatorNote` ET `moderatedBy` - pour qu'un avis véritable ne puisse jamais
  * être emporté par erreur : il faudrait qu'un client ait par hasard les deux
  * champs de modération remplis avec ces valeurs exactes.
  *

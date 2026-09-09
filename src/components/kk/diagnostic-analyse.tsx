@@ -9,12 +9,12 @@ import { KK_PETAL_PATH, KK_PETAL_VEIN, KK_PETAL_VEINS_SIDE } from "./motifs";
  * Écran d'analyse du Diagnostic Beauté.
  *
  * Il n'y avait ici qu'une roue qui tourne. Une roue ne dit rien : ni ce qui se
- * passe, ni chez qui l'on est. Or il se passe quelque chose de précis — les
+ * passe, ni chez qui l'on est. Or il se passe quelque chose de précis - les
  * réponses sont lues, croisées aux formules du catalogue, une routine est
- * composée — et c'est ce travail qu'il faut donner à voir. Un diagnostic qui
+ * composée - et c'est ce travail qu'il faut donner à voir. Un diagnostic qui
  * répond instantanément ne paraît pas rapide : il paraît n'avoir rien regardé.
  *
- * Le geste est celui de l'écran d'attente de la maison — de l'encre qui monte
+ * Le geste est celui de l'écran d'attente de la maison - de l'encre qui monte
  * dans une forme, jamais un objet qui tourne. La forme est le pétale du
  * diagnostic, celui-là même qui orne les questions : son contour se trace, il
  * se remplit par le bas, ses nervures se posent. Le remplissage tient lieu de
@@ -27,7 +27,7 @@ import { KK_PETAL_PATH, KK_PETAL_VEIN, KK_PETAL_VEINS_SIDE } from "./motifs";
 /**
  * Les quatre temps de l'analyse et l'instant où chacun s'affiche.
  *
- * Ils suivent `buildRoutine()` pas à pas — profil agrégé depuis les réponses,
+ * Ils suivent `buildRoutine()` pas à pas - profil agrégé depuis les réponses,
  * lecture du rayon soins du visage, score de correspondance par tags, puis
  * composition des gestes. Rien n'est ajouté pour meubler : une étape inventée
  * se verrait à la première lecture attentive, et c'est la crédibilité du
@@ -47,11 +47,11 @@ const GESTE_PAS = 450;
  *
  * Douze secondes. C'est très long pour une attente, et c'est assumé : le moteur
  * répond en quelques dizaines de millisecondes, mais un diagnostic instantané
- * ne se lit pas comme rapide — il se lit comme n'ayant rien regardé. La durée
+ * ne se lit pas comme rapide - il se lit comme n'ayant rien regardé. La durée
  * n'est tenable qu'à une condition, respectée ici : que rien ne s'arrête en
  * route. L'encre monte jusqu'à 9000 ms, les ondes bouclent sans fin, la
  * dernière coche se pose à 9620 ms et les gestes s'inscrivent ensuite un à un
- * — quatre gestes actifs occupent jusqu'à 11600 ms, la configuration livrée.
+ * - quatre gestes actifs occupent jusqu'à 11600 ms, la configuration livrée.
  * Leur nombre se règle au back-office : au-delà de cinq, les derniers
  * s'inscriraient après la fin de la séquence et ne seraient pas vus.
  *
@@ -66,7 +66,7 @@ export function DiagnosticAnalyse({ gestes = [] }: {
    *
    * Depuis le lot 7C, le moteur ne compose plus une routine geste par geste
    * à partir du catalogue (`buildRoutine()`, remplacé par
-   * `computeDiagnostic()` — src/server/kk/diagnostic.ts) : il choisit deux
+   * `computeDiagnostic()` - src/server/kk/diagnostic.ts) : il choisit deux
    * routines toutes faites. Cet écran n'a donc plus de gestes réels à annoncer
    * ; le paramètre reste accepté (vide par défaut) plutôt que de forcer une
    * réécriture de tous ses appelants, mais `DiagnosticFlow` ne le renseigne
@@ -109,13 +109,13 @@ export function DiagnosticAnalyse({ gestes = [] }: {
         <div className="kkd-souffle relative h-full w-full">
         <svg viewBox="0 0 200 200" className="h-full w-full text-deep" aria-hidden="true">
           {/* L'encre : le pétale plein, découpé par le bas puis dévoilé.
-              En vert profond et non en sable — un remplissage qu'on ne voit pas
+              En vert profond et non en sable - un remplissage qu'on ne voit pas
               n'est pas un indicateur de progression. */}
           <path d={KK_PETAL_PATH} fill="currentColor" className="kkd-encre" />
           {/* Le contour, tracé d'un seul geste, avant que l'encre ne monte.
               `pathLength={1}` normalise la longueur : les réglages de tirets ne
               dépendent plus de la géométrie réelle du chemin. Il se fond dans
-              l'encre à la fin — c'est voulu, la forme devient pleine. */}
+              l'encre à la fin - c'est voulu, la forme devient pleine. */}
           <path
             d={KK_PETAL_PATH}
             fill="none"
@@ -158,7 +158,7 @@ export function DiagnosticAnalyse({ gestes = [] }: {
       </h1>
 
       {/* Les quatre temps. `ol` et non `ul` : ils se suivent dans cet ordre, et
-          c'est l'ordre qui porte l'information — on ne compose pas la routine
+          c'est l'ordre qui porte l'information - on ne compose pas la routine
           avant d'avoir lu les réponses. */}
       <ol className="mt-7 space-y-3 text-left">
         {tempsListe.map((temps, i) => {
@@ -190,7 +190,7 @@ export function DiagnosticAnalyse({ gestes = [] }: {
 
       {/* Second acte : la routine se compose sous les yeux du visiteur.
           Sans lui, les trois dernières secondes se passeraient devant un écran
-          où plus rien n'arrive — et c'est précisément à ce moment-là qu'une
+          où plus rien n'arrive - et c'est précisément à ce moment-là qu'une
           longue attente bascule de « ça travaille » à « c'est bloqué ».
 
           Gardé par une longueur : si tous les gestes étaient désactivés au

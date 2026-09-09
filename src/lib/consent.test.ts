@@ -25,7 +25,7 @@ import {
 
 const MAINTENANT = new Date("2026-08-17T10:00:00Z");
 
-describe("parseConsent — absence et corruption", () => {
+describe("parseConsent - absence et corruption", () => {
   it("rend null quand aucun cookie n'existe", () => {
     assert.equal(parseConsent(undefined), null);
   });
@@ -46,7 +46,7 @@ describe("parseConsent — absence et corruption", () => {
     assert.equal(parseConsent("1.1.0.hier"), null);
   });
 
-  it("rend null sur une version inconnue — le consentement est redemandé", () => {
+  it("rend null sur une version inconnue - le consentement est redemandé", () => {
     assert.equal(parseConsent(`${CONSENT_VERSION + 1}.1.1.1755424800`), null);
   });
 
@@ -55,7 +55,7 @@ describe("parseConsent — absence et corruption", () => {
   });
 });
 
-describe("parseConsent — lecture", () => {
+describe("parseConsent - lecture", () => {
   it("lit un refus total", () => {
     const consent = parseConsent(`${CONSENT_VERSION}.0.0.1755424800`);
     assert.deepEqual(

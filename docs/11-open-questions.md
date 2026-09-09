@@ -1,4 +1,4 @@
-# 11 — Questions ouvertes (non bloquantes sauf indication)
+# 11 - Questions ouvertes (non bloquantes sauf indication)
 
 Recherche effectuée d'abord dans : code, `.env.example`, migrations, docs du dépôt, Figma (partiel), historique Git. Les points ci-dessous restent à trancher.
 
@@ -18,7 +18,7 @@ Recherche effectuée d'abord dans : code, `.env.example`, migrations, docs du d�
 | # | Question | Hypothèse retenue |
 |---|---|---|
 | Q7 | **Nom exact du dossier cible** : le cahier des charges propose `koss-koss`, mais le dossier de travail actuel est `kosskoss` (sans tiret), vide | docs créés dans `kosskoss/docs` (dossier de travail). À confirmer avant de scaffolder le projet. |
-| Q8 | **Catalogue Koss Koss** : quels produits/catégories ? (l'ancien est du bois de chauffage) | inconnu — attendre Figma + brief produit ; le modèle de données est généraliste |
+| Q8 | **Catalogue Koss Koss** : quels produits/catégories ? (l'ancien est du bois de chauffage) | inconnu - attendre Figma + brief produit ; le modèle de données est généraliste |
 | Q9 | **Langues** cibles (FR/EN comme l'ancien ? autres ?) | reprendre FR/EN par défaut |
 | Q10 | **Déploiement** : Hostinger (comme l'ancien, `server.js`) ou Vercel ? | à confirmer ; impacte le stockage d'images (Cloudinary déjà prévu) |
 | Q11 | **Système de variantes** : mono-axe (comme « volume ») suffit-il, ou multi-axes (taille×couleur) ? | dépend du catalogue (Q8) |
@@ -32,15 +32,15 @@ Recherche effectuée d'abord dans : code, `.env.example`, migrations, docs du d�
 
 ---
 
-## MISE À JOUR — Cahier des charges KossKoss Select reçu (v2.2)
+## MISE À JOUR - Cahier des charges KossKoss Select reçu (v2.2)
 
 Le CDC + la charte (voir `13`) **résolvent** la plupart des questions ci-dessus :
 
 | Ancien # | Résolution |
 |---|---|
-| Q1 paiement | **Agrégateur Mobile Money, reco CinetPay** (OM/MTN) — reste à confirmer selon l'activation du compte marchand KossKoss |
+| Q1 paiement | **Agrégateur Mobile Money, reco CinetPay** (OM/MTN) - reste à confirmer selon l'activation du compte marchand KossKoss |
 | Q3 TVA | Devise **FCFA sans sous-unité** ; fiscalité hors périmètre logiciel (factures + export CSV seulement) |
-| Q4 livraison | **Externe**, coordonnée par **WhatsApp manuel** — plus de zones/modes FR |
+| Q4 livraison | **Externe**, coordonnée par **WhatsApp manuel** - plus de zones/modes FR |
 | Q8 catalogue | **Cosmétique multimarque** |
 | Q9 langues | **FR + EN** confirmé |
 | Q11 variantes | à préciser selon le catalogue cosmétique (contenance ?) |
@@ -50,10 +50,10 @@ Le CDC + la charte (voir `13`) **résolvent** la plupart des questions ci-dessus
 
 | # | Question | Impact |
 |---|---|---|
-| Q13 | **Licence Gilroy** : acquérir la webfont **ou** valider un substitut libre (Manrope / Sora / Poppins) | typographie — bloquant avant de figer le design system |
+| Q13 | **Licence Gilroy** : acquérir la webfont **ou** valider un substitut libre (Manrope / Sora / Poppins) | typographie - bloquant avant de figer le design system |
 | Q14 | **Auth admin** : conserver l'OTP e-mail **maison** de `mlcbois` (fonctionnel) ou migrer vers **Auth.js** comme le suggère le CDC | sécurité/auth |
 | Q15 | **E-mail transactionnel** : garder SMTP nodemailer existant ou passer à **Resend/Brevo/Postmark** (délivrabilité) | notifications |
 | Q16 | **Hébergement** : **Vercel + PG managé (Neon/Supabase)** comme le CDC, ou Hostinger comme `mlcbois` | déploiement, `server.js` |
 | Q17 | **Confirmation CinetPay** (vs Maviance/ElyonPay) selon activation compte marchand | paiement |
-| Q18 | **Contenus, textes légaux (FR+EN), domaine, visuels produits** fournis par KossKoss | contenu — bloquant mise en ligne |
+| Q18 | **Contenus, textes légaux (FR+EN), domaine, visuels produits** fournis par KossKoss | contenu - bloquant mise en ligne |
 | Q19 | **Option WhatsApp automatisé** (BSP) : incluse ou non ? | périmètre/chiffrage |

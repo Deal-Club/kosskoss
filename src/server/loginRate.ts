@@ -1,6 +1,6 @@
 // Frein simple contre les tentatives de mot de passe : cinq échecs par
 // adresse, puis quinze minutes de blocage. Le compteur est volontairement en
-// mémoire — suffisant pour un serveur unique, sans infrastructure en plus.
+// mémoire - suffisant pour un serveur unique, sans infrastructure en plus.
 // Avec plusieurs instances, il faudra le déplacer dans Redis.
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000;

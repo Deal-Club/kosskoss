@@ -30,14 +30,14 @@ import { CartSuggestions } from "./cart-suggestions";
  *     garde la largeur du contenu : la ligne « sélecteur de quantité + prix »
  *     réclame environ 180 px alors qu'il n'en reste 160 sur un écran de
  *     360 px. Le contenu débordait, `overflow-y-auto` basculait l'axe
- *     horizontal en `auto`, et le panier se mettait à glisser latéralement —
+ *     horizontal en `auto`, et le panier se mettait à glisser latéralement -
  *     le bouton de suppression sortant de l'écran. `min-w-0` rend la colonne
  *     compressible, et la ligne prix/quantité passe à la ligne plutôt que de
  *     déborder.
  *
  *  3. `h-full` MESURAIT LA MAUVAISE HAUTEUR. Sur mobile, un bloc `fixed` se
- *     cale sur la fenêtre barre d'adresse repliée : le pied du tiroir — donc
- *     le bouton d'achat — passait sous l'interface du navigateur. `100dvh`
+ *     cale sur la fenêtre barre d'adresse repliée : le pied du tiroir - donc
+ *     le bouton d'achat - passait sous l'interface du navigateur. `100dvh`
  *     suit la hauteur réellement visible.
  *
  *  4. LA PAGE DÉFILAIT DERRIÈRE LE TIROIR. Voir `useScrollLock`.
@@ -161,7 +161,7 @@ export function CartDrawerKK() {
                         )}
                         {/* Le prix passe sous le sélecteur plutôt que de
                             déborder quand les deux ne tiennent pas côte à côte
-                            — un montant à quatre chiffres sur un écran de
+                            - un montant à quatre chiffres sur un écran de
                             320 px. `ms-auto` le maintient à droite dans les
                             deux cas. */}
                         <div className="mt-auto flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 pt-2">
@@ -200,7 +200,7 @@ export function CartDrawerKK() {
                         /* Pas de marge négative ici : `-mr-1.5` rentrait la
                            BOÎTE DE MARGE du bouton de 6 px, mais laissait sa
                            boîte de bordure dépasser d'autant du cadre de la
-                           ligne — mesuré à 294 px de contenu pour 288 px
+                           ligne - mesuré à 294 px de contenu pour 288 px
                            utiles sur un écran de 320. Le bouton mordait le
                            bord du tiroir. */
                         className="grid h-8 w-8 shrink-0 place-items-center self-start rounded-full text-muted-foreground transition hover:bg-sand hover:text-destructive"

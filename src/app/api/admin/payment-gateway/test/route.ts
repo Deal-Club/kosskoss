@@ -9,7 +9,7 @@ import { ensureGatewayIntegrations, getGateway, isGatewayId } from "@/server/gat
 // Enregistre d'abord les clés fraîchement saisies (mêmes règles que la route de
 // configuration : une valeur vide ne remplace jamais une clé existante), puis
 // interroge le prestataire en lecture seule. Rien n'est encaissé, aucun secret
-// n'est renvoyé — seulement de quoi corriger la configuration.
+// n'est renvoyé - seulement de quoi corriger la configuration.
 
 export async function POST(request: Request) {
   const { session, unauthorized } = await requireCapaciteApi("reglages");

@@ -12,7 +12,7 @@ import { prisma } from "@/server/prisma";
  *
  * Le classeur porte 71 fiches produit, 14 routines et leurs gestes (colonne
  * PRODUITS_ROUTINES) : le master du client, préparé à la main dans un
- * tableur. Ce module en fait la lecture SEULE — la validation des lignes, sans
+ * tableur. Ce module en fait la lecture SEULE - la validation des lignes, sans
  * toucher à la base. L'écriture (rapprochement par SKU/code, mise à jour,
  * création de routine, remplacement des gestes) vit dans les fonctions
  * `importer*` plus bas, ajoutées lot après lot sur ce même fichier.
@@ -20,7 +20,7 @@ import { prisma } from "@/server/prisma";
  * ── DÉPENDANCE AJOUTÉE ───────────────────────────────────────────────────────
  *
  * Aucune bibliothèque de lecture de tableur n'était présente dans le dépôt.
- * Choix : `read-excel-file` — pure JS (aucune dépendance native à compiler),
+ * Choix : `read-excel-file` - pure JS (aucune dépendance native à compiler),
  * maintenue, et nettement plus légère que l'alternative `exceljs` (~2,5 Mo
  * contre ~22 Mo de dépendances). `xlsx` (SheetJS) a été écarté : la version
  * publiée sur npm traîne des CVE non corrigées depuis plusieurs années.
@@ -29,7 +29,7 @@ import { prisma } from "@/server/prisma";
  *
  * Il portera des lignes vides (séparateurs visuels dans le tableur) et des
  * cellules mal typées (un prix saisi en texte, une étape non numérique). Une
- * ligne invalide est ÉCARTÉE et NOMMÉE dans le compte rendu — jamais devinée,
+ * ligne invalide est ÉCARTÉE et NOMMÉE dans le compte rendu - jamais devinée,
  * jamais silencieusement ignorée.
  */
 
@@ -59,13 +59,13 @@ export interface LigneIgnoree {
 export interface FicheMaster {
   ligne: number;
   sku: string;
-  /** EAN_UPC — candidat pour `Product.gtin`, encore non validé (voir `isValidGtin`). */
+  /** EAN_UPC - candidat pour `Product.gtin`, encore non validé (voir `isValidGtin`). */
   ean: string;
   marque: string;
   nom: string;
-  /** FCFA entier — le FCFA n'a pas de sous-unité, jamais de division par 100. */
+  /** FCFA entier - le FCFA n'a pas de sous-unité, jamais de division par 100. */
   prixFcfa: number;
-  /** Libellé de catégorie du master (« Nettoyant », « Toner »…) — sert uniquement
+  /** Libellé de catégorie du master (« Nettoyant », « Toner »…) - sert uniquement
    *  au signalement d'écart, jamais à déplacer un produit (voir `CATEGORIE_MASTER_VERS_SLUG`). */
   categorie: string;
   /** Solution_Courte → `Product.shortDescription`. */
@@ -83,7 +83,7 @@ export interface FicheMaster {
   /** Reprises telles quelles : ce sont des indications pour le commerçant, pas du contenu client. */
   statutPublication: string;
   donneesAConfirmer: string;
-  /** Besoin_Principal — jusqu'ici purement descriptive. Sert désormais à poser un
+  /** Besoin_Principal - jusqu'ici purement descriptive. Sert désormais à poser un
    *  tag de préoccupation (voir `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`), quand
    *  la valeur en désigne une. */
   besoinPrincipal: string;
@@ -92,7 +92,7 @@ export interface FicheMaster {
 /** Une routine du master (onglet ROUTINES), colonnes validées. */
 export interface RoutineMaster {
   ligne: number;
-  /** Routine_ID — clé de rapprochement, jamais le nom ni le slug. */
+  /** Routine_ID - clé de rapprochement, jamais le nom ni le slug. */
   code: string;
   niveau: NiveauRoutine;
   besoin: string;
@@ -110,7 +110,7 @@ export interface RoutineMaster {
 export interface LiaisonMaster {
   ligne: number;
   routineCode: string;
-  /** Etape — entier positif, sert d'ordre d'affichage du geste. */
+  /** Etape - entier positif, sert d'ordre d'affichage du geste. */
   etape: number;
   role: string;
   sku: string;
@@ -137,7 +137,7 @@ export function indexerEntetes(entetes: Row): Record<string, number> {
   return index;
 }
 
-/** Valeur d'une colonne nommée sur une ligne — `undefined` si la colonne est absente. */
+/** Valeur d'une colonne nommée sur une ligne - `undefined` si la colonne est absente. */
 function cellule(index: Record<string, number>, ligne: Row, colonne: string): CellValue | null | undefined {
   const i = index[colonne];
   return i === undefined ? undefined : ligne[i];
@@ -153,7 +153,7 @@ function texte(valeur: CellValue | null | undefined): string {
 
 /**
  * Entier positif tolérant à la saisie tableur : un nombre déjà typé, ou un
- * texte du type « 18 000 FCFA » — espaces et lettres retirés avant conversion.
+ * texte du type « 18 000 FCFA » - espaces et lettres retirés avant conversion.
  * Rend `null` pour tout ce qui ne se réduit pas à un entier strictement positif.
  */
 function versEntierPositif(valeur: CellValue | null | undefined): number | null {
@@ -169,7 +169,7 @@ function versEntierPositif(valeur: CellValue | null | undefined): number | null 
   return null;
 }
 
-/** Vrai si toutes les cellules de la ligne sont vides — un séparateur visuel du tableur. */
+/** Vrai si toutes les cellules de la ligne sont vides - un séparateur visuel du tableur. */
 function ligneVide(ligne: Row): boolean {
   return ligne.every((c) => c === null || c === undefined || (typeof c === "string" && c.trim() === ""));
 }
@@ -353,7 +353,7 @@ export async function lireMaster(chemin: string = CHEMIN_MASTER_PAR_DEFAUT): Pro
  * Hydratant 15, Protection 3, Corps 8, Hygiène 3 = 71). Cette table est donc
  * un CONTRÔLE, jamais une réaffectation : déplacer un produit de rayon est une
  * décision de merchandising, pas une correction que cet import doit prendre à
- * la place du commerçant — vider un rayon en silence serait pire que signaler
+ * la place du commerçant - vider un rayon en silence serait pire que signaler
  * un écart qu'un humain tranche.
  */
 export const CATEGORIE_MASTER_VERS_SLUG: Record<string, string> = {
@@ -374,25 +374,25 @@ export const CATEGORIE_MASTER_VERS_SLUG: Record<string, string> = {
  *
  * Volontairement ABSENTES de cette table, donc jamais transformées en tag de
  * préoccupation :
- *  - « Homme essentiel » (9 fiches) — un segment client, pas une
+ *  - « Homme essentiel » (9 fiches) - un segment client, pas une
  *    préoccupation ; les produits concernés portent déjà le tag `homme`
  *    (famille « categorie »), posé ailleurs (installation du quiz client) ;
- *  - « Démaquillage » (4), « Nettoyage » (3) — un geste de routine, pas une
+ *  - « Démaquillage » (4), « Nettoyage » (3) - un geste de routine, pas une
  *    préoccupation ;
- *  - « Protection solaire » (2) — un geste, déjà couvert par le tag `solaire` ;
+ *  - « Protection solaire » (2) - un geste, déjà couvert par le tag `solaire` ;
  *  - « Hydratation corps » (4), « Fermeté corps » (3), « Hygiène corps » (1),
- *    « Protection solaire corps » (1), « Taches corps » (1) — le rayon corps,
+ *    « Protection solaire corps » (1), « Taches corps » (1) - le rayon corps,
  *    pas le visage : même une valeur qui contient « Taches » désigne ici un
  *    soin corps, pas la préoccupation « taches » du visage.
  *
  * « Sensibilité / Barrière » (7 fiches) pointe vers `apaisant`, PAS vers un
  * nouveau tag `sensibilite` : ce tag existe déjà (27 produits actifs) et
  * porte déjà, à la date de cet ajout, les sept produits que le master range
- * sous « Sensibilité / Barrière » — un second tag pour la même idée créerait
+ * sous « Sensibilité / Barrière » - un second tag pour la même idée créerait
  * deux vocabulaires là où un seul suffit.
  *
  * Une valeur de `Besoin_Principal` absente de cette table (ou vide) n'ajoute
- * simplement aucun tag — le champ reste purement descriptif pour elle, comme
+ * simplement aucun tag - le champ reste purement descriptif pour elle, comme
  * avant cet import.
  */
 export const BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION: Record<string, string> = {
@@ -406,9 +406,9 @@ export const BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION: Record<string, string> = {
 
 /**
  * Le tag de préoccupation à ajouter aux tags déjà portés par le produit,
- * d'après son `Besoin_Principal` — `null` si la valeur ne désigne aucune
+ * d'après son `Besoin_Principal` - `null` si la valeur ne désigne aucune
  * préoccupation (voir `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`) ou si le tag
- * visé est déjà présent. Fonction pure : AJOUTE, ne retire jamais — les tags
+ * visé est déjà présent. Fonction pure : AJOUTE, ne retire jamais - les tags
  * déjà posés à la main peuvent porter une intention que le master ignore.
  */
 export function tagPreoccupationAAjouter(
@@ -456,23 +456,23 @@ export interface FicheReperee {
 export interface CompteRenduFiches {
   /** Fiches dont au moins un champ de contenu (les 8 du lot 7A + shortDescription + bullets) a changé. */
   misesAJour: FicheReperee[];
-  /** Fiches rapprochées, mais dont rien n'a changé — preuve d'idempotence. */
+  /** Fiches rapprochées, mais dont rien n'a changé - preuve d'idempotence. */
   inchangees: FicheReperee[];
-  /** Chaque prix modifié, avec l'ancienne et la nouvelle valeur — jamais en silence. */
+  /** Chaque prix modifié, avec l'ancienne et la nouvelle valeur - jamais en silence. */
   prixModifies: PrixModifie[];
   /** GTIN écrits, avec l'ancienne et la nouvelle valeur. */
   gtinModifies: GtinModifie[];
-  /** EAN_UPC présent mais dont la clé de contrôle ne passe pas `isValidGtin` — non écrit. */
+  /** EAN_UPC présent mais dont la clé de contrôle ne passe pas `isValidGtin` - non écrit. */
   gtinInvalides: { sku: string; ean: string }[];
-  /** SKU du master introuvable en base — SIGNALÉ, jamais créé. */
+  /** SKU du master introuvable en base - SIGNALÉ, jamais créé. */
   skusInconnus: { ligne: number; sku: string; nom: string }[];
-  /** SKU du master rapproché à PLUS D'UN produit en base — ambigu, aucune écriture. */
+  /** SKU du master rapproché à PLUS D'UN produit en base - ambigu, aucune écriture. */
   skusAmbigus: { sku: string; nombreDeProduits: number }[];
-  /** Produit en base dont le SKU n'apparaît dans aucune ligne du master — SIGNALÉ, jamais supprimé. */
+  /** Produit en base dont le SKU n'apparaît dans aucune ligne du master - SIGNALÉ, jamais supprimé. */
   produitsHorsMaster: FicheReperee[];
-  /** Catégorie du master différente de la catégorie du site pour ce SKU — jamais corrigée automatiquement. */
+  /** Catégorie du master différente de la catégorie du site pour ce SKU - jamais corrigée automatiquement. */
   categoriesDivergentes: DivergenceCategorie[];
-  /** Tags de préoccupation posés à partir de `Besoin_Principal` — chaque produit
+  /** Tags de préoccupation posés à partir de `Besoin_Principal` - chaque produit
    *  nouvellement tagué est nommé, avec le tag posé. Ne contient jamais un tag
    *  retiré : cette liste ne fait qu'ajouter (voir `tagPreoccupationAAjouter`). */
   preoccupationsAjoutees: PreoccupationAjoutee[];
@@ -511,7 +511,7 @@ function chargerProduitsActuels() {
 /**
  * Différence entre les huit champs de contenu du lot 7A + `shortDescription`
  * et `bullets`, et ce que porte la fiche du master. `costCents` n'apparaît
- * jamais ici — voir la remarque en tête de fichier : il vient des bons de
+ * jamais ici - voir la remarque en tête de fichier : il vient des bons de
  * commande, jamais du master.
  */
 export function champsContenuDifferents(actuel: ProduitActuel, fiche: FicheMaster): Record<string, string> {
@@ -538,7 +538,7 @@ export function champsContenuDifferents(actuel: ProduitActuel, fiche: FicheMaste
 
 /**
  * Rapproche les 71 fiches du master aux produits en base par SKU, met à jour
- * ce qui a changé, et NOMME chaque écriture — en particulier chaque prix
+ * ce qui a changé, et NOMME chaque écriture - en particulier chaque prix
  * modifié, avec son ancienne et sa nouvelle valeur (règle 5 des contraintes
  * globales). N'écrit jamais un SKU inconnu, ne supprime jamais un produit
  * absent du master, et ne déplace jamais un produit de catégorie.
@@ -590,7 +590,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
     const patch: Record<string, unknown> = champsContenuDifferents(actuel, fiche);
     const contenuChange = Object.keys(patch).length > 0;
 
-    // Prix : jamais réécrit sans le dire — chaque changement est nommé avec
+    // Prix : jamais réécrit sans le dire - chaque changement est nommé avec
     // l'ancienne ET la nouvelle valeur.
     if (fiche.prixFcfa !== actuel.priceCents) {
       compteRendu.prixModifies.push({
@@ -602,7 +602,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
       patch.priceCents = fiche.prixFcfa;
     }
 
-    // GTIN : un EAN_UPC vide ne détruit jamais une valeur déjà en base — le
+    // GTIN : un EAN_UPC vide ne détruit jamais une valeur déjà en base - le
     // master ne renseigne pas systématiquement cette colonne. Un EAN présent
     // mais dont la clé de contrôle échoue n'est jamais écrit non plus.
     const eanNettoye = fiche.ean.replace(/[\s-]/g, "");
@@ -617,7 +617,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
       }
     }
 
-    // Catégorie : signalement seul, jamais de réaffectation automatique — voir
+    // Catégorie : signalement seul, jamais de réaffectation automatique - voir
     // le commentaire de `CATEGORIE_MASTER_VERS_SLUG`.
     const slugAttendu = CATEGORIE_MASTER_VERS_SLUG[fiche.categorie];
     if (!slugAttendu || slugAttendu !== actuel.category.slug) {
@@ -630,7 +630,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
     }
 
     // Préoccupation issue de Besoin_Principal : AJOUTE un tag, n'en retire
-    // jamais — voir `tagPreoccupationAAjouter` et le commentaire de
+    // jamais - voir `tagPreoccupationAAjouter` et le commentaire de
     // `BESOIN_PRINCIPAL_VERS_TAG_PREOCCUPATION`. Les tags posés à la main
     // restent tous en place, y compris ceux qu'aucun Besoin_Principal ne
     // couvre.
@@ -656,7 +656,7 @@ export async function importerFichesMaster(lecture: LectureMaster): Promise<Comp
       // Le contenu éditorial a changé : la fiche apparaît dans cette
       // section. Si seuls le prix et/ou le GTIN ont bougé, ils restent
       // nommés dans leurs listes dédiées (`prixModifies`, `gtinModifies`)
-      // sans qu'il soit besoin de répéter le SKU ici — cette section ne
+      // sans qu'il soit besoin de répéter le SKU ici - cette section ne
       // décrit que le contenu éditorial.
       compteRendu.misesAJour.push({ sku: fiche.sku, nom: actuel.name });
     }
@@ -701,20 +701,20 @@ export interface CompteRenduRoutines {
   creees: RoutineReperee[];
   /** Routines rapprochées dont au moins un champ de contenu a changé. */
   misesAJour: RoutineReperee[];
-  /** Routines rapprochées, contenu ET gestes identiques — preuve d'idempotence. */
+  /** Routines rapprochées, contenu ET gestes identiques - preuve d'idempotence. */
   inchangees: RoutineReperee[];
   /** Le master fait foi sur la composition et l'ordre des gestes : ce bloc
    *  nomme chaque routine dont les gestes ont été remplacés, avec le nombre
-   *  de gestes avant et après — à lire attentivement quand `apres < avant`,
+   *  de gestes avant et après - à lire attentivement quand `apres < avant`,
    *  un geste a disparu. */
   gestesRemplaces: GestesRemplaces[];
   /** Une routine dont au moins un geste pointe vers un SKU introuvable, ambigu
    *  ou dupliqué : import annulé EN ENTIER pour cette routine, jamais amputé. */
   routinesAnnulees: RoutineAnnulee[];
-  /** Les 5 routines historiques, sans code du master — jamais touchées, à
+  /** Les 5 routines historiques, sans code du master - jamais touchées, à
    *  trancher par le client. */
   routinesHorsMaster: RoutineHorsMaster[];
-  /** Un code déjà en base ne figure plus dans le master actuel — signalé,
+  /** Un code déjà en base ne figure plus dans le master actuel - signalé,
    *  jamais supprimé. */
   routinesCodeesDisparuesDuMaster: RoutineReperee[];
   lignesIgnoreesRoutines: LigneIgnoree[];
@@ -749,7 +749,7 @@ type GesteResolu = {
  * Vrai si deux listes de gestes, DÉJÀ DANS L'ORDRE D'AFFICHAGE, décrivent
  * exactement la même routine : même nombre de gestes, mêmes SKU, mêmes rôles,
  * mêmes moments, dans le même ordre. Un ordre différent avec les mêmes
- * produits n'est PAS considéré comme identique — le master fait foi sur
+ * produits n'est PAS considéré comme identique - le master fait foi sur
  * l'ordre autant que sur la composition.
  */
 export function gestesIdentiques(
@@ -773,14 +773,14 @@ export function gestesIdentiques(
  * master : une routine nouvellement créée reçoit un slug dérivé du nom (rendu
  * unique) et les valeurs par défaut du schéma pour le reste (`tint: "acne"`,
  * `besoinTag`/`image` vides). Les inventer autrement serait une décision de
- * merchandising que ce module ne doit pas prendre à la place du commerçant —
+ * merchandising que ce module ne doit pas prendre à la place du commerçant -
  * le compte rendu le rappelle (`avertissements`).
  *
  * `RoutineStep.label` (le « Geste » affiché aujourd'hui sur la page routine)
  * n'a pas non plus de colonne dédiée : il reprend la valeur de `Role`, seule
  * colonne du master qui joue ce rôle (« Nettoyer », « Corriger »…). `why`
  * n'a aucune source dans le master ; il reste vide et NE SURVIT PAS à un
- * remplacement de gestes — une valeur saisie à la main via l'écran de
+ * remplacement de gestes - une valeur saisie à la main via l'écran de
  * traduction serait perdue si les gestes de sa routine changent au master.
  */
 export async function importerRoutinesMaster(lecture: LectureMaster): Promise<CompteRenduRoutines> {
@@ -844,7 +844,7 @@ export async function importerRoutinesMaster(lecture: LectureMaster): Promise<Co
     }
 
     // Résolution des SKU. Un SKU introuvable, ambigu (plusieurs produits du
-    // même SKU) ou dupliqué DANS la routine annule TOUTE la routine — une
+    // même SKU) ou dupliqué DANS la routine annule TOUTE la routine - une
     // routine amputée d'une étape est pire qu'une routine absente.
     const skusIntrouvablesOuAmbigus = new Set<string>();
     const skusEnDouble = new Set<string>();
@@ -982,7 +982,7 @@ export async function importerRoutinesMaster(lecture: LectureMaster): Promise<Co
   if (compteRendu.creees.length > 0) {
     compteRendu.avertissements.push(
       `${compteRendu.creees.length} routine(s) créée(s) avec la teinte par défaut (« acne ») et une ` +
-        "étiquette de besoin vide — le master ne fournit ni l'une ni l'autre. À régler manuellement.",
+        "étiquette de besoin vide - le master ne fournit ni l'une ni l'autre. À régler manuellement.",
     );
   }
 
@@ -1008,7 +1008,7 @@ export interface CompteRenduMaster {
 
 /**
  * Lit le master puis lance les deux imports (fiches, routines) l'un après
- * l'autre — les routines dépendent des produits déjà à jour pour résoudre
+ * l'autre - les routines dépendent des produits déjà à jour pour résoudre
  * leurs gestes par SKU. Point d'entrée unique appelé par la route du
  * back-office (`src/app/api/admin/master-import/route.ts`).
  */

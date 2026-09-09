@@ -16,7 +16,7 @@ import { useFavorites } from "@/lib/favorites";
 /**
  * Cœur du bandeau d'en-tête, à côté du panier.
  *
- * Il était masqué sous 640 px — donc sur TOUS les téléphones — parce que la
+ * Il était masqué sous 640 px - donc sur TOUS les téléphones - parce que la
  * barre d'onglets basse portait l'entrée « Favoris ». Cette barre a été
  * retirée : le cœur revient dans l'en-tête, avec son compteur, qui est le seul
  * rappel visible d'une envie mise de côté.

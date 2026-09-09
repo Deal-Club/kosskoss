@@ -14,8 +14,8 @@ import type { KKProductReviews, KKReviewView } from "@/server/kk/product-reviews
  * note moyenne, le nombre d'avis, et de quoi ouvrir le formulaire.
  *
  * `<details>` natif, sans état React : le repli fonctionne avant l'hydratation,
- * il est accessible au clavier d'origine, et le formulaire — qui est un
- * composant client — reste monté à l'intérieur, donc rien n'est perdu en
+ * il est accessible au clavier d'origine, et le formulaire - qui est un
+ * composant client - reste monté à l'intérieur, donc rien n'est perdu en
  * l'ouvrant ou en le refermant.
  *
  * ── La section s'affiche toujours ─────────────────────────────────────────
@@ -23,7 +23,7 @@ import type { KKProductReviews, KKReviewView } from "@/server/kk/product-reviews
  * premier avis publié ne pourrait, par construction, jamais recevoir ce
  * premier avis.
  *
- * Rien n'est inventé pour meubler — ni note moyenne fictive, ni avis de
+ * Rien n'est inventé pour meubler - ni note moyenne fictive, ni avis de
  * démonstration. Sur une clientèle dont le premier frein est la contrefaçon, un
  * faux témoignage repéré coûte plus cher que dix avis manquants.
  */
@@ -104,7 +104,7 @@ export async function ProductReviews({
         )}
       </div>
 
-      {/* Dépôt d'un avis — replié. `group` et `[&[open]]` font pivoter le
+      {/* Dépôt d'un avis - replié. `group` et `[&[open]]` font pivoter le
           chevron : sans repère visuel, un summary ne se lit pas comme un
           bouton. */}
       <details className="group mt-6 rounded-2xl border border-border/70 bg-card">

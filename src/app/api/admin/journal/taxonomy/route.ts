@@ -1,5 +1,5 @@
 /**
- * Catégories, tags et auteurs du Journal — création et modification.
+ * Catégories, tags et auteurs du Journal - création et modification.
  *
  * Une seule route pour les trois : ce sont trois formulaires très courts, gérés
  * depuis le même écran, et trois paires de fichiers quasi identiques auraient

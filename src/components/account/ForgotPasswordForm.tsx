@@ -10,7 +10,7 @@ import { ALERT_ERROR, ALERT_INFO, INPUT, LABEL, PRIMARY_BUTTON } from "@/compone
 /**
  * Demande de réinitialisation.
  *
- * L'écran de confirmation est le même dans tous les cas — c'est la formulation
+ * L'écran de confirmation est le même dans tous les cas - c'est la formulation
  * recommandée par l'OWASP : « si un compte existe pour cette adresse, nous vous
  * avons envoyé un lien ». Rien ne permet de savoir si l'envoi a réellement eu
  * lieu.

@@ -31,7 +31,7 @@ function markShown(): void {
   try {
     window.sessionStorage.setItem(SHOWN_ONCE_KEY, "1");
   } catch {
-    // Navigation privée : le popup pourra réapparaître une fois — sans gravité.
+    // Navigation privée : le popup pourra réapparaître une fois - sans gravité.
   }
 }
 
@@ -62,7 +62,7 @@ export function ExitIntentPopup() {
 
     function handleMouseOut(event: MouseEvent) {
       // relatedTarget reste nul uniquement quand le curseur quitte le
-      // document par un bord de la fenêtre — pas en survolant un élément.
+      // document par un bord de la fenêtre - pas en survolant un élément.
       if (!armed || event.relatedTarget !== null || event.clientY > 0) return;
       setOpen(true);
       markShown();

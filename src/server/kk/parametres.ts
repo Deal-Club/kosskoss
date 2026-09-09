@@ -7,7 +7,7 @@ import { getIntegration, setIntegrationSecret } from "@/server/integrations";
  * Réglages de la boutique, côté serveur.
  *
  * Les types, les valeurs par défaut et la normalisation vivent dans
- * `@/lib/kk/parametres`, que le back-office — composant client — peut importer.
+ * `@/lib/kk/parametres`, que le back-office - composant client - peut importer.
  * On les réexporte ici pour que les appelants serveur n'aient qu'un import.
  *
  * Seul ce dont un appelant serveur se sert est réexporté : les cinq
@@ -31,7 +31,7 @@ const CLE_REGLAGES = "boutique.parametres";
  * Réglages en base.
  *
  * Mémoïsé par requête : le numéro WhatsApp est lu par le pied de page ET le
- * bouton flottant du gabarit — donc deux fois sur chaque page de la boutique —
+ * bouton flottant du gabarit - donc deux fois sur chaque page de la boutique -
  * et une troisième fois par la page de confirmation de commande. Sans
  * `cache()`, ce serait autant de requêtes. L'en-tête, lui, ne le lit pas.
  */
@@ -83,7 +83,7 @@ export function numeroWhatsappEffectif(p: ParametresBoutique): string {
 /**
  * Le jeton CAPI, comme les clés des passerelles de paiement : chiffré dans
  * `Integration`, jamais dans la ligne `Setting` de `ParametresBoutique`. Ce
- * module s'assure que la ligne existe avant toute lecture ou écriture — sans
+ * module s'assure que la ligne existe avant toute lecture ou écriture - sans
  * quoi `setIntegrationSecret` (voir `@/server/integrations`) rendrait
  * silencieusement `undefined`, exactement comme `ensureGatewayIntegrations`
  * le fait déjà pour les passerelles de paiement.
@@ -103,7 +103,7 @@ async function ensureCapiIntegration(): Promise<void> {
 }
 
 /**
- * Le jeton CAPI est-il enregistré ? Ne rend JAMAIS la valeur — seulement
+ * Le jeton CAPI est-il enregistré ? Ne rend JAMAIS la valeur - seulement
  * « configuré » ou « non configuré », comme l'écran des passerelles de
  * paiement le fait déjà pour leurs clés.
  */
@@ -115,12 +115,12 @@ export async function jetonCapiConfigure(): Promise<boolean> {
 
 /**
  * Enregistre un nouveau jeton CAPI, chiffré. Lève si le format ne correspond
- * pas à `jetonCapiValide` — c'est à l'appelant de traduire ça en réponse 400.
+ * pas à `jetonCapiValide` - c'est à l'appelant de traduire ça en réponse 400.
  *
  * N'accepte jamais la chaîne vide : un champ vide dans le formulaire signifie
  * « ne pas toucher au jeton », pas « effacer le jeton ». C'est à l'appelant de
  * ne PAS invoquer cette fonction quand le champ est vide (voir la route
- * d'enregistrement) — la répéter ici serait une seconde source de vérité pour
+ * d'enregistrement) - la répéter ici serait une seconde source de vérité pour
  * la même règle.
  */
 export async function enregistrerJetonCapi(jeton: string, actor?: string): Promise<void> {

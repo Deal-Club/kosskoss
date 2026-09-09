@@ -23,11 +23,11 @@ import {
  * est une donnée typée, le texte porte trois marques (`**gras**`, `*italique*`,
  * `[texte](lien)`) et le rendu passe par des composants React. On échange un
  * peu de confort de saisie contre l'impossibilité structurelle d'injecter du
- * code — et contre un contenu qui reste lisible, diffable et réaffichable
+ * code - et contre un contenu qui reste lisible, diffable et réaffichable
  * autrement (fil RSS, application mobile) sans démêler du balisage.
  *
  * Ajouter un type de bloc coûte : une entrée dans `emptyBlock`, un cas dans
- * `BlockFields`. Le reste — ordre, suppression, repli — est générique.
+ * `BlockFields`. Le reste - ordre, suppression, repli - est générique.
  */
 
 const inputClass =
@@ -76,31 +76,31 @@ function summarize(block: JournalBlock): string {
     case "paragraph":
     case "quote":
     case "heading":
-      return block.text.slice(0, 70) || "—";
+      return block.text.slice(0, 70) || "-";
     case "list":
-      return block.items.filter(Boolean).join(" · ").slice(0, 70) || "—";
+      return block.items.filter(Boolean).join(" · ").slice(0, 70) || "-";
     case "image":
-      return block.alt || block.src || "—";
+      return block.alt || block.src || "-";
     case "gallery":
       return `${block.items.length} image${block.items.length > 1 ? "s" : ""}`;
     case "video":
-      return block.title || block.videoId || "—";
+      return block.title || block.videoId || "-";
     case "callout":
-      return block.title || block.text.slice(0, 70) || "—";
+      return block.title || block.text.slice(0, 70) || "-";
     case "stats":
-      return block.items.map((item) => item.value).filter(Boolean).join(" · ") || "—";
+      return block.items.map((item) => item.value).filter(Boolean).join(" · ") || "-";
     case "cta":
       return block.label || block.href;
     case "productCard":
-      return block.slugs.join(", ") || "—";
+      return block.slugs.join(", ") || "-";
     case "newsletter":
       return block.title || "Bloc newsletter";
     case "faq":
       return `${block.items.length} question${block.items.length > 1 ? "s" : ""}`;
     case "table":
-      return block.headers.filter(Boolean).join(" · ") || "—";
+      return block.headers.filter(Boolean).join(" · ") || "-";
     case "divider":
-      return "—";
+      return "-";
   }
 }
 

@@ -3,7 +3,7 @@
  *
  * Ce module est la frontière entre le navigateur et la base : tout ce qui
  * finira dans un article publié passe par lui. Les cas couverts sont donc ceux
- * qui font des dégâts — un `kind` inventé, une adresse hostile dans un lien,
+ * qui font des dégâts - un `kind` inventé, une adresse hostile dans un lien,
  * une URL libre glissée là où on n'attend qu'un identifiant de vidéo, un
  * copier-coller de plusieurs mégaoctets.
  *
@@ -29,7 +29,7 @@ function rejected(raw: unknown): string {
   return result.ok ? "" : result.error;
 }
 
-describe("normalizeBlocks — blocs valides", () => {
+describe("normalizeBlocks - blocs valides", () => {
   it("accepte un paragraphe et conserve son texte", () => {
     const blocks = accepted([{ kind: "paragraph", text: "Un **bon** nettoyant." }]);
     assert.deepEqual(blocks, [{ kind: "paragraph", text: "Un **bon** nettoyant." }]);
@@ -64,7 +64,7 @@ describe("normalizeBlocks — blocs valides", () => {
   });
 });
 
-describe("normalizeBlocks — refus", () => {
+describe("normalizeBlocks - refus", () => {
   it("refuse un tableau de blocs qui n'en est pas un", () => {
     assert.match(rejected({ kind: "paragraph" }), /liste/i);
   });
@@ -95,7 +95,7 @@ describe("normalizeBlocks — refus", () => {
   });
 });
 
-describe("normalizeBlocks — liens", () => {
+describe("normalizeBlocks - liens", () => {
   it("refuse un appel à l'action pointant vers javascript:", () => {
     assert.match(
       rejected([{ kind: "cta", title: "", text: "", href: "javascript:alert(1)", label: "Voir" }]),
@@ -116,7 +116,7 @@ describe("normalizeBlocks — liens", () => {
   });
 });
 
-describe("normalizeBlocks — vidéo", () => {
+describe("normalizeBlocks - vidéo", () => {
   it("refuse une URL complète en guise d'identifiant", () => {
     assert.match(
       rejected([{ kind: "video", provider: "youtube", videoId: "https://youtube.com/watch?v=abc", title: "" }]),
@@ -134,7 +134,7 @@ describe("normalizeBlocks — vidéo", () => {
   });
 });
 
-describe("normalizeBlocks — encadrés et produits", () => {
+describe("normalizeBlocks - encadrés et produits", () => {
   it("ramène une tonalité inconnue à « info »", () => {
     const blocks = accepted([{ kind: "callout", tone: "panique", title: "À savoir", text: "Testez le produit." }]);
     assert.equal(blocks[0].kind === "callout" && blocks[0].tone, "info");
@@ -152,7 +152,7 @@ describe("normalizeBlocks — encadrés et produits", () => {
   });
 });
 
-describe("parseStoredBlocks — tolérance à la lecture", () => {
+describe("parseStoredBlocks - tolérance à la lecture", () => {
   it("rend une liste vide sur un JSON illisible", () => {
     assert.deepEqual(parseStoredBlocks("{pas du json"), []);
   });

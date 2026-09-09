@@ -6,7 +6,7 @@
  * suffit : les deux scripts le prennent en compte au prochain passage.
  *
  * Ce registre ne décrit QUE des écrans accessibles sans connexion. Les écrans
- * de l'espace client connecté — compte, commandes, adresses, informations —
+ * de l'espace client connecté - compte, commandes, adresses, informations -
  * demandent un compte réel en base de production ; ils sont volontairement
  * hors de cette première version (voir « limites » dans le livrable).
  */
@@ -17,7 +17,7 @@ export const PARCOURS = [
     id: "vitrine",
     titre: "Vitrine",
     intro:
-      "L'entrée sur la boutique. L'ordre des blocs part du besoin — diagnostic, routines — avant d'arriver au produit.",
+      "L'entrée sur la boutique. L'ordre des blocs part du besoin - diagnostic, routines - avant d'arriver au produit.",
   },
   {
     id: "achat",
@@ -57,11 +57,11 @@ export const ECRANS = [
     titre: "Accueil",
     chemin: "/",
     intention:
-      "Faire entrer par le besoin et non par le catalogue. Les blocs « solution » — diagnostic, routines — passent devant les blocs « produit ».",
+      "Faire entrer par le besoin et non par le catalogue. Les blocs « solution » - diagnostic, routines - passent devant les blocs « produit ».",
     points: [
       "Les promesses arrivent en deuxième position, juste sous le hero : l'identité de marque désigne la peur de la contrefaçon comme le premier frein de la cible.",
       "Un seul rail de produits, contre deux auparavant. Deux rails faisaient de l'accueil un catalogue.",
-      "Douze maisons distribuées affichées nommément — sur ce marché, montrer vaut mieux qu'affirmer.",
+      "Douze maisons distribuées affichées nommément - sur ce marché, montrer vaut mieux qu'affirmer.",
     ],
     // `main` et non la page entière : les mêmes liens existent dans la
     // navigation collante, et une zone posée là-dessus renverrait le client vers
@@ -103,7 +103,7 @@ export const ECRANS = [
   {
     id: "groupe",
     parcours: "vitrine",
-    titre: "Rayon — Soins du visage",
+    titre: "Rayon - Soins du visage",
     chemin: "/soins-visage",
     intention: "Le niveau intermédiaire : présenter les catégories d'un rayon avant d'entrer dans une liste de produits.",
     points: ["Chaque catégorie annonce son nombre de références."],
@@ -112,7 +112,7 @@ export const ECRANS = [
   {
     id: "categorie",
     parcours: "vitrine",
-    titre: "Catégorie — Hydratants",
+    titre: "Catégorie - Hydratants",
     chemin: "/soins-visage/hydratants",
     intention: "La liste de produits avec ses filtres. C'est l'écran où se joue la comparaison entre références.",
     points: [
@@ -152,7 +152,7 @@ export const ECRANS = [
   {
     id: "routine-detail",
     parcours: "vitrine",
-    titre: "Routine — Acné",
+    titre: "Routine - Acné",
     chemin: "/routines/routine-acne",
     intention: "Détailler les étapes d'une routine, dans l'ordre d'application, et permettre de tout ajouter au panier.",
     points: ["Chaque étape renvoie au produit qui la remplit."],
@@ -160,12 +160,12 @@ export const ECRANS = [
   {
     id: "diagnostic",
     parcours: "vitrine",
-    titre: "Diagnostic — première question",
+    titre: "Diagnostic - première question",
     chemin: "/diagnostic",
     intention:
       "Recueillir ceux qui ne savent pas se situer. Cinq questions, une seule à l'écran, quatre réponses illustrées par un symptôme concret.",
     points: [
-      "Les réponses décrivent une sensation — « film gras, pores dilatés », « inconfort, peau qui tire » — et non un terme de dermatologie.",
+      "Les réponses décrivent une sensation - « film gras, pores dilatés », « inconfort, peau qui tire » - et non un terme de dermatologie.",
       "Aucun compte n'est demandé pour faire le diagnostic.",
     ],
     hotspots: [],
@@ -173,7 +173,7 @@ export const ECRANS = [
   {
     id: "diagnostic-analyse",
     parcours: "vitrine",
-    titre: "Diagnostic — analyse et résultat",
+    titre: "Diagnostic - analyse et résultat",
     chemin: "/diagnostic",
     etat: "diagnosticComplet",
     intention: "Rendre le résultat : le profil de peau déduit, et la routine qui y répond.",
@@ -182,7 +182,7 @@ export const ECRANS = [
   {
     id: "diagnostic-resultat",
     parcours: "vitrine",
-    titre: "Diagnostic — routine recommandée",
+    titre: "Diagnostic - routine recommandée",
     chemin: "/diagnostic",
     etat: "diagnosticResultat",
     intention:
@@ -209,7 +209,7 @@ export const ECRANS = [
   {
     id: "favoris",
     parcours: "vitrine",
-    titre: "Favoris — état vide",
+    titre: "Favoris - état vide",
     chemin: "/favoris",
     intention:
       "Montrer un état vide traité, et non une page blanche. C'est l'écran que voit le tout premier visiteur.",
@@ -284,7 +284,7 @@ export const ECRANS = [
     titre: "Questions fréquentes",
     chemin: "/faq",
     intention:
-      "Répondre aux freins avant l'achat. Les mêmes réponses alimentent le bloc FAQ de l'accueil — une seule source, deux affichages.",
+      "Répondre aux freins avant l'achat. Les mêmes réponses alimentent le bloc FAQ de l'accueil - une seule source, deux affichages.",
     points: ["Réponses en accordéon, balisées pour être reprises par les moteurs de réponse."],
   },
   {
@@ -316,7 +316,7 @@ export const ECRANS = [
     parcours: "information",
     titre: "Contact",
     chemin: "/contact",
-    intention: "Ouvrir un canal direct, WhatsApp en tête — c'est celui réellement en service.",
+    intention: "Ouvrir un canal direct, WhatsApp en tête - c'est celui réellement en service.",
     points: [],
   },
   {
@@ -326,15 +326,15 @@ export const ECRANS = [
     chemin: "/cgv",
     intention: "Le texte qui engage la société.",
     points: [
-      "Plusieurs mentions d'entreprise restent à compléter avant l'ouverture commerciale — voir docs/LEGAL.md.",
+      "Plusieurs mentions d'entreprise restent à compléter avant l'ouverture commerciale - voir docs/LEGAL.md.",
     ],
   },
 ];
 
 /** Les deux tailles capturées. `dsf` = densité de pixels du rendu. */
 export const APPAREILS = {
-  desktop: { largeur: 1440, hauteur: 900, dsf: 1, libelle: "Ordinateur — 1440 px" },
-  mobile: { largeur: 390, hauteur: 844, dsf: 2, libelle: "Mobile — 390 px" },
+  desktop: { largeur: 1440, hauteur: 900, dsf: 1, libelle: "Ordinateur - 1440 px" },
+  mobile: { largeur: 390, hauteur: 844, dsf: 2, libelle: "Mobile - 390 px" },
 };
 
 /** Comparatifs avec les maquettes fournies par le client. */

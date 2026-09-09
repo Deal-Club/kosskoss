@@ -78,7 +78,7 @@ export async function listEnabledPaymentMethods(): Promise<PaymentMethodRecord[]
 /**
  * Même liste, mais traduite pour la boutique : label, description et mention
  * de frais passent par pickText, comme partout ailleurs sur le site public.
- * Réservé à l'affichage côté vitrine — le back-office continue de lire
+ * Réservé à l'affichage côté vitrine - le back-office continue de lire
  * `listEnabledPaymentMethods`, en français, quelle que soit la langue de
  * l'administrateur connecté.
  */

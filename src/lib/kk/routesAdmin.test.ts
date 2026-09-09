@@ -1,5 +1,5 @@
 // Ce test lit le système de fichiers : c'est délibéré. Il est le seul garde-fou
-// qui survivra aux lots suivants — sans lui, une route ajoutée sans droit
+// qui survivra aux lots suivants - sans lui, une route ajoutée sans droit
 // déclaré s'ouvrirait en silence.
 //
 // Il ne s'arrête pas au premier niveau de dossier : la majorité des routes
@@ -39,7 +39,7 @@ function fichiers(racine: string, nomFichier: string, dossier: string = racine):
   return trouves;
 }
 
-/** Premier segment d'un chemin relatif — la famille, au sens de cette carte. */
+/** Premier segment d'un chemin relatif - la famille, au sens de cette carte. */
 function familleDe(cheminRelatif: string): string {
   return cheminRelatif.split("/")[0];
 }
@@ -48,7 +48,7 @@ function familleDe(cheminRelatif: string): string {
  * Compte les fonctions HTTP exportées (`GET`, `POST`, `PUT`, `PATCH`,
  * `DELETE`) d'un fichier `route.ts`.
  *
- * Une route.ts exporte souvent plusieurs de ces fonctions — `brands/[id]/route.ts`
+ * Une route.ts exporte souvent plusieurs de ces fonctions - `brands/[id]/route.ts`
  * en exporte deux, `PUT` et `DELETE`. Vérifier qu'UN appel du garde existe
  * quelque part dans le fichier ne prouve rien : ce seul appel peut vivre dans
  * `PUT` et laisser `DELETE` entièrement ouvert, et les tests resteraient verts.
@@ -96,7 +96,7 @@ describe("carte des capacités", () => {
 
   it("ne classe pas de famille qui n'existe plus", () => {
     // Une entrée orpheline laisse croire qu'un écran est protégé alors qu'il a
-    // disparu — et masque le jour où un écran du même nom réapparaît.
+    // disparu - et masque le jour où un écran du même nom réapparaît.
     const reelles = new Set([
       ...familles("src/app/api/admin"),
       ...familles("src/app/admin/(protected)"),
@@ -106,7 +106,7 @@ describe("carte des capacités", () => {
   });
 });
 
-describe("chaque fichier applique — et applique correctement — le garde de sa famille", () => {
+describe("chaque fichier applique - et applique correctement - le garde de sa famille", () => {
   const RACINE_API = "src/app/api/admin";
   const RACINE_PAGES = "src/app/admin/(protected)";
 
@@ -164,7 +164,7 @@ describe("chaque fichier applique — et applique correctement — le garde de s
       if (appels.length < attenduNombre) {
         problemes.push(
           `${racine}/${cheminRelatif} : ${appels.length} appel(s) à ${fonctionGarde}() trouvé(s), ` +
-            `mais ${attenduNombre} fonction(s) HTTP exportée(s) — chacune doit être gardée ` +
+            `mais ${attenduNombre} fonction(s) HTTP exportée(s) - chacune doit être gardée ` +
             `(trouvé ${appels.length}, attendu ${attenduNombre}).`,
         );
       }

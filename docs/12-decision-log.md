@@ -1,4 +1,4 @@
-# 12 — Journal des décisions
+# 12 - Journal des décisions
 
 Format : Décision · Raison · Statut · Réversibilité.
 
@@ -6,21 +6,21 @@ Format : Décision · Raison · Statut · Réversibilité.
 
 | # | Décision | Raison | Statut | Réversible |
 |---|---|---|---|---|
-| D1 | Traiter `mlcbois` comme **application e-commerce complète**, pas un simple back-office | l'inspection montre storefront + admin + API + DB fonctionnels | Actée | — |
+| D1 | Traiter `mlcbois` comme **application e-commerce complète**, pas un simple back-office | l'inspection montre storefront + admin + API + DB fonctionnels | Actée | - |
 | D2 | Documentation d'audit créée dans `kosskoss/docs/` (dossier de travail courant) | c'est le répertoire de travail ; cible `koss-koss` non encore créée | Actée | oui (déplaçable) |
-| D2b | **Projet initialisé dans `kosskoss`** (pas de nouveau `koss-koss`) — décision utilisateur du 2026-08-05 | le dossier de travail est déjà en place avec les docs | Actée | oui |
-| D2c | **Amorçage par fork de `mlcbois`** (Option A confirmée) — décision utilisateur | réutiliser le socle fonctionnel | Actée | oui |
-| D2d | **Figma fourni par l'utilisateur** (export manuel) — le quota MCP Starter étant épuisé | débloque l'inventaire visuel ; travail visuel (Lot 1+) en attente de cet export | Actée | — |
+| D2b | **Projet initialisé dans `kosskoss`** (pas de nouveau `koss-koss`) - décision utilisateur du 2026-08-05 | le dossier de travail est déjà en place avec les docs | Actée | oui |
+| D2c | **Amorçage par fork de `mlcbois`** (Option A confirmée) - décision utilisateur | réutiliser le socle fonctionnel | Actée | oui |
+| D2d | **Figma fourni par l'utilisateur** (export manuel) - le quota MCP Starter étant épuisé | débloque l'inventaire visuel ; travail visuel (Lot 1+) en attente de cet export | Actée | - |
 | D3 | **Ne rien modifier** dans `mlcbois` (audit seul) ; installation de deps + génération Prisma = artefacts gitignorés | respect du cahier des charges §2-3 ; arbre Git resté propre | Actée | oui |
 | D4 | Générer le client Prisma avec un `DATABASE_URL` **factice** pour obtenir un typecheck honnête | `prisma.config.ts` exige la variable même pour `generate` (qui ne se connecte pas) | Actée | oui (aucune base touchée) |
-| D5 | Ne **pas** exécuter de migration ni de connexion à une base réelle | interdiction migrations destructives / base prod | Actée | — |
+| D5 | Ne **pas** exécuter de migration ni de connexion à une base réelle | interdiction migrations destructives / base prod | Actée | - |
 
 ## Architecture cible (voir `07`)
 
 | # | Décision | Raison | Statut | Réversible |
 |---|---|---|---|---|
 | D6 | **Option A** : Koss Koss = fork adapté d'une **application Next.js unique** | app existante fonctionnelle ; monorepo/2-projets = réécriture coûteuse sans gain justifié | Recommandée (à valider) | oui |
-| D7 | Conserver les versions majeures (Next 16, React 19, Prisma 7, Node 22) | interdiction de changer les versions majeures ; socle sain | Actée | — |
+| D7 | Conserver les versions majeures (Next 16, React 19, Prisma 7, Node 22) | interdiction de changer les versions majeures ; socle sain | Actée | - |
 | D8 | Introduire **Zod** comme frontière de validation unique | validation actuelle manuelle et dispersée | Proposée | oui |
 | D9 | Centraliser l'identité dans `src/config/brand.ts` + secrets en env | valeurs marque aujourd'hui dispersées (`content/legal`, `merchant.ts`, `globals.css`) | Proposée | oui |
 | D10 | Introduire des groupes de routes `(shop)` / `(checkout)` | la maquette prévoit un header transactionnel minimal (nœud `14:4743`) | Proposée | oui |
@@ -66,7 +66,7 @@ Voir `06`. **Aucune incohérence corrigée en silence.** Table de décisions Fig
 | D32 | **Ne jamais lancer `npm audit fix --force`** sur ce dépôt | Il propose `prisma@6.12.0`, une **rétrogradation** depuis la 7.9.x. Le schéma utilise le générateur v7 `prisma-client`, le client est généré dans `src/generated/prisma`, et 15 migrations en dépendent. La commande casserait la génération, le client et l'historique de migrations d'un seul coup. | Actée |
 | D33 | Forcer `deepmerge-ts` en `^8.0.1` via `overrides` dans `package.json` | Voir ci-dessous. | Actée |
 
-### D33 — pourquoi cet `overrides` doit rester
+### D33 - pourquoi cet `overrides` doit rester
 
 `@prisma/config` épingle **exactement** `deepmerge-ts@7.1.5`, et toute la série `<8.0.0`
 est vulnérable (GHSA-ggr8-5vv4-36mx, épuisement de pile sur des objets récursifs).
@@ -75,7 +75,7 @@ corrigera : le seul remède que npm propose est la rétrogradation interdite par
 
 L'`overrides` impose donc la 8.0.1. Le saut de version majeure est sans danger ici :
 `@prisma/config` n'importe qu'un seul symbole, `deepmerge`, qu'il passe en `merger` à
-c12 — l'API la plus stable de la bibliothèque — et la 8.0.1 garde le même emballage
+c12 - l'API la plus stable de la bibliothèque - et la 8.0.1 garde le même emballage
 (double ESM/CJS) et le même prérequis Node que la 7.1.5. Vérifié après coup :
 `prisma generate`, `prisma validate` et `prisma --version` chargent bien
 `prisma.config.ts`, donc le chemin de code concerné est réellement emprunté.

@@ -1,4 +1,4 @@
-# Lot 4B — Les chaînes d'interface passent en bilingue — Plan
+# Lot 4B - Les chaînes d'interface passent en bilingue - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 
@@ -6,7 +6,7 @@
 Le lot 4A a traduit le CONTENU (produits, catégories, diagnostic) ; il reste
 l'INTERFACE (boutons, titres, compteurs, libellés).
 
-**L'ordre est dicté par l'effet, pas par la taille :** le socle d'abord — quarante
+**L'ordre est dicté par l'effet, pas par la taille :** le socle d'abord - quarante
 chaînes présentes sur 100 % des pages. Sans lui, même une page traduite à 100 %
 garde un menu et un pied de page français, donc aucune page n'est propre.
 
@@ -15,7 +15,7 @@ garde un menu et un pied de page français, donc aucune page n'est propre.
 1. **Toute clé ajoutée l'est dans `src/messages/fr.json` ET `src/messages/en.json`.**
    Une clé présente dans un seul des deux casse le rendu. Vérifie après chaque
    ajout que les deux fichiers ont exactement les mêmes clés.
-2. **Réutilise les espaces de noms existants** — `account`, `cart`, `catalog`,
+2. **Réutilise les espaces de noms existants** - `account`, `cart`, `catalog`,
    `checkout`, `common`, `diagnostic`, `footer`, `header`, `home`, `payment`,
    `product`, `recherche`, `reviews`, `wishlist`. **N'en crée un que si aucun ne
    convient**, et dis pourquoi. Certains servent l'ancienne boutique que les
@@ -26,7 +26,7 @@ garde un menu et un pied de page français, donc aucune page n'est propre.
    changement de comportement caché dans une vague de traduction est indétectable
    à la relecture.
 5. **Les textes français existants sont la source** : recopie-les mot pour mot dans
-   `fr.json`. Ne les « améliore » pas au passage — la comparaison avant/après doit
+   `fr.json`. Ne les « améliore » pas au passage - la comparaison avant/après doit
    rester possible.
 6. Français partout dans le code et les commentaires. Aucun nom de personne.
 7. **Avant chaque commit :** `tsc --noEmit`, `eslint`, `npm test`, et `npm run build`
@@ -35,7 +35,7 @@ garde un menu et un pied de page français, donc aucune page n'est propre.
 
 ---
 
-### Tâche 1 : Le socle — présent sur toutes les pages
+### Tâche 1 : Le socle - présent sur toutes les pages
 
 **Fichiers :** `src/components/kk/header-actions.tsx` (≈12), `src/components/kk/chrome.tsx` (≈9),
 `src/components/kk/cart-drawer.tsx` et `cart-suggestions.tsx` (≈8),
@@ -61,7 +61,7 @@ Ce sont les deux écrans qui vendent : l'accueil est la porte d'entrée, la fich
 produit est la page de décision.
 
 - [ ] Même méthode : recenser, traduire, contrôler dans les deux langues.
-- [ ] **`src/lib/kk/badges.ts`** — « Meilleure vente » et « Nouveauté », affichés sur
+- [ ] **`src/lib/kk/badges.ts`** - « Meilleure vente » et « Nouveauté », affichés sur
       chaque vignette ET chaque fiche, n'ont pas de champ anglais alors que leurs
       voisins `besoins.ts` et `orderStatus.ts` en ont un. Aligne-les sur la
       convention de ces voisins plutôt que d'inventer une troisième forme.
@@ -86,7 +86,7 @@ produit est la page de décision.
 ### Tâche 4 : Les métadonnées restées en dur
 
 **Fichiers :** `confirmation`, `routines`, `[group]`, `[group]/[category]`,
-`compte/connexion` — leurs `metadata`.
+`compte/connexion` - leurs `metadata`.
 
 Ces titres partent dans l'onglet, dans les favoris du visiteur et dans les moteurs
 de recherche. Une page traduite au titre français se référence en français.
@@ -115,5 +115,5 @@ de recherche. Une page traduite au titre français se référence en français.
 ## Vérification finale
 
 - [ ] `npm test` au vert, `npm run build` en succès.
-- [ ] `fr.json` et `en.json` ont exactement les mêmes clés — garanti par le test.
+- [ ] `fr.json` et `en.json` ont exactement les mêmes clés - garanti par le test.
 - [ ] Le chiffre des chaînes restantes est écrit au rapport.

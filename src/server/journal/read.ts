@@ -3,7 +3,7 @@
  *
  * Un seul `where` décide de ce qui est servi (`PUBLIC_WHERE`) : publié, daté
  * dans le passé, hors corbeille. Le filtre est appliqué ici et nulle part
- * ailleurs — un brouillon ne peut pas fuiter parce qu'un composant a oublié une
+ * ailleurs - un brouillon ne peut pas fuiter parce qu'un composant a oublié une
  * condition.
  *
  * La date est comparée en base plutôt qu'en mémoire : un article programmé sort
@@ -259,8 +259,8 @@ export const getPublishedArticle = cache(
  * Article tel qu'il sera rendu, quel que soit son statut.
  *
  * Réservé à l'aperçu du back-office, qui est protégé par le layout `(protected)`.
- * Le filtre public est volontairement contourné ici — c'est tout l'intérêt de
- * l'aperçu — et c'est aussi pourquoi cette fonction ne doit jamais être appelée
+ * Le filtre public est volontairement contourné ici - c'est tout l'intérêt de
+ * l'aperçu - et c'est aussi pourquoi cette fonction ne doit jamais être appelée
  * depuis une page de la boutique.
  */
 export async function getArticleForPreview(

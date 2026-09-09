@@ -4,7 +4,7 @@
  * La contrainte vient du rendu, pas du besoin : les pages de la boutique sont
  * générées statiquement (voir `next.config.ts`, quatre workers, base Neon
  * mise en veille). Compter une vue PENDANT le rendu rendrait chaque article
- * dynamique et coûterait une écriture en base à chaque visite — on paierait un
+ * dynamique et coûterait une écriture en base à chaque visite - on paierait un
  * chiffre indicatif au prix du cache de tout le Journal.
  *
  * D'où ce découpage :

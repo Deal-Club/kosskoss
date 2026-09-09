@@ -12,7 +12,7 @@ import { routing } from "@/i18n/routing";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mlc-bois.fr";
 
-/** Le français vit à la racine, l'anglais sous /en — voir src/i18n/routing.ts. */
+/** Le français vit à la racine, l'anglais sous /en - voir src/i18n/routing.ts. */
 function urlFor(path: string, locale: string): string {
   const prefix = locale === routing.defaultLocale ? "" : `/${locale}`;
   return `${SITE_URL}${prefix}${path === "/" ? "" : path}` || SITE_URL;
@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // ---- Marques ----
   //
-  // Une page de marque n'existe — au sens de `marqueVitrineParSlug` — que
+  // Une page de marque n'existe - au sens de `marqueVitrineParSlug` - que
   // pour une marque active ayant au moins un produit actif : la même règle
   // que pour les rubriques et auteurs du Journal ci-dessous. `brandSlugs` est
   // déjà filtré sur ce critère, donc chaque slug déclaré ici a réellement une

@@ -6,8 +6,8 @@ import { initialiserMesure } from "@/lib/kk/mesureNavigateur";
 /**
  * Monté une fois dans `src/app/[locale]/layout.tsx`, avec les identifiants
  * GA4 et Pixel lus en base par le layout (composant serveur). Ne rend rien :
- * tout son travail — poser `gtag.js`/`fbevents.js` si l'identifiant est
- * configuré ET le consentement donné — vit dans `@/lib/kk/mesureNavigateur`,
+ * tout son travail - poser `gtag.js`/`fbevents.js` si l'identifiant est
+ * configuré ET le consentement donné - vit dans `@/lib/kk/mesureNavigateur`,
  * où les deux conditions et le relevé de consentement à chaque événement sont
  * expliqués en détail.
  *

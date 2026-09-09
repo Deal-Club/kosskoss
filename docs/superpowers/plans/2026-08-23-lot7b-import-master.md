@@ -1,4 +1,4 @@
-# Lot 7B — L'import du master du client — Plan
+# Lot 7B - L'import du master du client - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 

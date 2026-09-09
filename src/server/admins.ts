@@ -17,7 +17,7 @@ export const SUPERADMIN_ROLE = "superadmin";
 /**
  * Étiquette portée par les lignes d'historique créées par un superadmin
  * (mouvements de stock, événements de commande, modération d'avis…).
- * Les opérations restent tracées — l'exigence comptable est préservée — mais
+ * Les opérations restent tracées - l'exigence comptable est préservée - mais
  * elles ne désignent aucun compte nommé.
  */
 export const SYSTEM_ACTOR = "System";
@@ -67,7 +67,7 @@ export async function listAdminUsers(
   return rows.map(toRecord);
 }
 
-/** Rôle réel du compte connecté, lu en base — la session ne le transporte pas. */
+/** Rôle réel du compte connecté, lu en base - la session ne le transporte pas. */
 export async function getSessionRole(session: AdminSession | null): Promise<string | null> {
   if (!session) return null;
 

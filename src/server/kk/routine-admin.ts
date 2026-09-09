@@ -1,7 +1,7 @@
 /**
  * Gestion des routines au back-office : lister, créer, éditer (nom, besoin,
  * niveau, code, accroche, description, état) et gérer leurs produits (les
- * « gestes »), dans l'ordre. C'est la brique qui manquait — jusqu'ici une
+ * « gestes »), dans l'ordre. C'est la brique qui manquait - jusqu'ici une
  * routine n'existait que par l'import du master.
  *
  * La sauvegarde des gestes préserve `why`/`role`/`moment` des gestes conservés
@@ -60,7 +60,7 @@ export type RoutineListe = {
 };
 
 function libelleBesoin(tag: string): string {
-  return (BESOIN_LABEL as Record<string, string>)[tag] ?? tag ?? "—";
+  return (BESOIN_LABEL as Record<string, string>)[tag] ?? tag ?? "-";
 }
 function libelleNiveau(niveau: string): string {
   return estNiveau(niveau) ? LIBELLES_NIVEAUX[niveau] : niveau;
@@ -111,7 +111,7 @@ export async function lireRoutineAdmin(id: string): Promise<RoutineAdmin | null>
     active: row.active,
     steps: row.steps.map((s) => ({
       productId: s.productId,
-      productLabel: `${s.product.brand} — ${s.product.name}`,
+      productLabel: `${s.product.brand} - ${s.product.name}`,
       label: s.label,
       servable: s.product.active && s.product.stock > 0,
     })),
@@ -133,7 +133,7 @@ export async function listerProduitsPourRoutine(): Promise<ProduitChoisissable[]
   });
   return rows.map((p) => ({
     id: p.id,
-    label: `${p.brand} — ${p.name}`,
+    label: `${p.brand} - ${p.name}`,
     categorie: p.category.label,
     servable: p.active && p.stock > 0,
   }));

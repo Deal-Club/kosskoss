@@ -41,7 +41,7 @@ export function toneAt(index: number): KKTone {
 /**
  * Badge affichable à partir de ce qui est stocké.
  *
- * La reconnaissance vit dans `lib/kk/badges` — clés, libellés et saisies
+ * La reconnaissance vit dans `lib/kk/badges` - clés, libellés et saisies
  * acceptées y sont réunis. Cette fonction n'est plus qu'un point d'entrée,
  * conservé parce que six appelants l'utilisent déjà.
  */
@@ -54,7 +54,7 @@ export function toBadge(value: string | null): KKBadge {
  * `variants` sert à la fois à savoir s'il en existe au moins une active, et à
  * lire le libellé de la première (triée par `position`) : c'est la « variante
  * de référence » déjà utilisée par la fiche produit (`referenceVariant` dans
- * `product-detail.tsx`) pour sa ligne Format — la vignette affiche désormais
+ * `product-detail.tsx`) pour sa ligne Format - la vignette affiche désormais
  * la même contenance, au lieu de renvoyer muette vers la fiche.
  */
 export const PRODUCT_VIEW_INCLUDE = {
@@ -91,7 +91,7 @@ export interface ProductViewRow {
    * `PRODUCT_VIEW_INCLUDE`) : la première est la variante de référence.
    */
   variants?: { id: string; label?: string }[];
-  /** JSON de chaînes (défaut "[]") — voir `parseStringArray`. */
+  /** JSON de chaînes (défaut "[]") - voir `parseStringArray`. */
   bullets?: string;
   bulletsEn?: string;
 }
@@ -99,7 +99,7 @@ export interface ProductViewRow {
 /**
  * Construit la vue produit dans la langue de la page qui l'affiche.
  *
- * `locale` est obligatoire — sans valeur par défaut — pour qu'un appelant qui
+ * `locale` est obligatoire - sans valeur par défaut - pour qu'un appelant qui
  * l'oublie échoue à la compilation plutôt qu'en silence sur la boutique
  * anglaise. Le repli passe uniquement par `pickText` (jamais un accès direct
  * à `nameEn`/`shortDescriptionEn`) et la marque n'est jamais traduite : voir
@@ -128,7 +128,7 @@ export function toProductView(row: ProductViewRow, locale: Locale, index = 0): K
     tone: toneAt(index),
     // Version détourée quand elle existe, visuel d'origine sinon. Fait ici plutôt
     // que dans chaque composant : la vue produit alimente les vignettes, le
-    // catalogue, le panier, les routines et le diagnostic — une seule des cinq
+    // catalogue, le panier, les routines et le diagnostic - une seule des cinq
     // qui oublierait la conversion réafficherait un fond de studio sur une
     // couleur de marque.
     image: packshot(row.image),

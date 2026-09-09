@@ -9,8 +9,8 @@
  * Deux traitements y sont appliqués.
  *
  * 1. **Détourage par luminance.** Les planches n'ont pas de couche alpha : le
- *    lettrage est posé sur un aplat. Plutôt que de seuiller — ce qui hacherait
- *    les empattements du Cinzel — on convertit la luminance en opacité. Le
+ *    lettrage est posé sur un aplat. Plutôt que de seuiller - ce qui hacherait
+ *    les empattements du Cinzel - on convertit la luminance en opacité. Le
  *    tracé garde son anticrénelage et se pose proprement sur n'importe quel
  *    fond.
  *
@@ -23,8 +23,8 @@
  *   src/app/icon.png                   favicon (Next.js lit ce nom de fichier)
  *   src/app/apple-icon.png             icône d'écran d'accueil iOS
  *   public/images/logo-icon.png        monogramme complet, fond transparent
- *   public/images/logo-full.png        lettrage foncé — facture PDF, SEO, e-mails
- *   public/images/logo-full-light.png  lettrage clair — pied de page, back-office
+ *   public/images/logo-full.png        lettrage foncé - facture PDF, SEO, e-mails
+ *   public/images/logo-full-light.png  lettrage clair - pied de page, back-office
  *
  * Usage : node scripts/generer-logos.mjs
  */
@@ -124,7 +124,7 @@ async function main() {
       .resize(taille, taille, { fit: "cover" })
       .png()
       .toFile(fichier);
-    console.log(`${fichier} — ${taille}×${taille}`);
+    console.log(`${fichier} - ${taille}×${taille}`);
   }
 
   // ---- Monogramme complet, double filet compris, fond transparent ----
@@ -149,7 +149,7 @@ async function main() {
     .resize(512, 512, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .png()
     .toFile("public/images/logo-icon.png");
-  console.log("public/images/logo-icon.png — 512×512");
+  console.log("public/images/logo-icon.png - 512×512");
 
   // ---- Lettrages détourés ----
   const fonce = await detourer(LETTRAGE_FONCE, { sombreSurClair: true, teinte: BLEU });

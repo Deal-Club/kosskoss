@@ -23,7 +23,7 @@ export type { GoogleCategory } from "@/lib/googleTaxonomy";
 // identifiants annoncés à Google sont rigoureusement identiques à ceux de la page,
 // première cause de refus ("mismatch prix/disponibilité entre le flux et la page").
 //
-// Référence : Product data specification — support.google.com/merchants/answer/7052112
+// Référence : Product data specification - support.google.com/merchants/answer/7052112
 
 // ---- Paramètres de la boutique ----
 
@@ -32,10 +32,10 @@ export const MERCHANT_COUNTRY = "CM";
 /**
  * Devise du flux (ISO 4217). Les prix stockés incluent déjà la TVA.
  *
- * XAF — franc CFA d'Afrique centrale, la devise du Cameroun. Le flux annonçait
+ * XAF - franc CFA d'Afrique centrale, la devise du Cameroun. Le flux annonçait
  * « EUR » et le pays « FR », tous deux hérités de mlcbois : un produit à
  * 16 500 FCFA partait chez Google en « 165.00 EUR », faux sur les trois plans
- * — montant, devise et pays de vente.
+ * - montant, devise et pays de vente.
  *
  * ⚠️ XAF EST SANS SOUS-UNITÉ. Les entiers stockés dans `priceCents` sont des
  * FCFA entiers ; on ne divise jamais par cent et on n'écrit pas de décimales.
@@ -45,7 +45,7 @@ export const MERCHANT_CURRENCY = "XAF";
 /** Langue du contenu du flux. */
 export const MERCHANT_LANGUAGE = "fr";
 /**
- * Taux de TVA servant à ventiler la taxe dans le flux — déjà compris dans
+ * Taux de TVA servant à ventiler la taxe dans le flux - déjà compris dans
  * priceCents (les prix sont affichés TTC).
  * PLACEHOLDER : le taux applicable aux produits cosmétiques au Cameroun est à
  * confirmer avec le comptable (TVA de droit commun ~19,25 %) avant la mise en
@@ -80,8 +80,8 @@ export function absoluteUrl(pathOrUrl: string): string {
  * alignées sur ce qui est écrit sur le site : Google compare le flux et la page.
  *
  * Le mode express (60 €, 24–48 h) n'est volontairement pas déclaré ici : le flux
- * ne porte qu'une offre de livraison par produit, et c'est le mode par défaut —
- * donc le standard — qui doit y figurer. L'express reste proposé au panier.
+ * ne porte qu'une offre de livraison par produit, et c'est le mode par défaut -
+ * donc le standard - qui doit y figurer. L'express reste proposé au panier.
  */
 export const MERCHANT_SHIPPING = {
   country: MERCHANT_COUNTRY,
@@ -209,7 +209,7 @@ export async function loadMerchantProducts(
   });
 }
 
-/** Charge un produit unique — utilisé par le balisage JSON-LD de la page produit. */
+/** Charge un produit unique - utilisé par le balisage JSON-LD de la page produit. */
 export async function getMerchantProductBySlug(
   slug: string,
 ): Promise<MerchantProduct | undefined> {
@@ -244,7 +244,7 @@ export function conditionFor(value: string): MerchantCondition {
  *
  * AUCUNE DÉCIMALE, AUCUNE DIVISION. Le XAF n'a pas de sous-unité : Google
  * attend « 16500 XAF », pas « 165.00 ». La version précédente divisait par cent
- * et forçait deux décimales — le prix annoncé au flux valait donc le centième
+ * et forçait deux décimales - le prix annoncé au flux valait donc le centième
  * du prix réel.
  */
 export function formatFeedPrice(amount: number): string {
@@ -271,8 +271,8 @@ export function merchantEffectivePriceCents(product: MerchantProduct): number {
 
 /**
  * Prix de référence, celui qui s'affiche barré. Pendant une campagne c'est le
- * prix figé à l'entrée du produit dans la campagne — celui annoncé dans le
- * message —, sinon l'ancien prix éditorial de la fiche. À défaut des deux, le
+ * prix figé à l'entrée du produit dans la campagne - celui annoncé dans le
+ * message -, sinon l'ancien prix éditorial de la fiche. À défaut des deux, le
  * prix courant : il n'y a alors pas de promotion à déclarer.
  */
 export function merchantReferencePriceCents(product: MerchantProduct): number {
@@ -310,7 +310,7 @@ function plainText(value: string): string {
  * les points d'émission de la mesure d'audience (GA4/Pixel/CAPI) : c'est CE
  * flux Merchant qui fait foi pour l'identifiant d'un produit, et la mesure
  * doit voir exactement la même chaîne pour que Meta et GA4 apparient un
- * événement au bon article du catalogue — voir l'en-tête de cette fonction
+ * événement au bon article du catalogue - voir l'en-tête de cette fonction
  * partagée.
  */
 export function merchantOfferId(product: MerchantProduct): string {
@@ -350,7 +350,7 @@ export function merchantAdditionalImageUrls(product: MerchantProduct): string[] 
   }
 }
 
-/** Titre du flux — doit correspondre au titre affiché sur la page produit. */
+/** Titre du flux - doit correspondre au titre affiché sur la page produit. */
 export function merchantTitle(product: MerchantProduct): string {
   return plainText(`${product.brand} ${product.name}`).slice(0, 150);
 }
@@ -366,7 +366,7 @@ export function merchantDescription(product: MerchantProduct): string {
 
   const bullets = parseBullets(product.bullets);
   const parts = [
-    `${product.brand} ${product.name} — ${product.category.label} par ${product.brand}.`,
+    `${product.brand} ${product.name} - ${product.category.label} par ${product.brand}.`,
     plainText(product.category.description),
     bullets.length > 0 ? `Caractéristiques : ${bullets.join(", ")}.` : "",
     conditionFor(product.condition) === "new" ? "État : neuf, jamais utilisé." : "",
@@ -432,7 +432,7 @@ export interface MerchantRecord {
   description: string;
   link: string;
   imageLink: string;
-  /** Vues complémentaires — attribut additional_image_link, 10 au maximum chez Google. */
+  /** Vues complémentaires - attribut additional_image_link, 10 au maximum chez Google. */
   additionalImageLinks: string[];
   availability: MerchantAvailability;
   /** Prix de référence ; en promotion, c'est l'ancien prix barré de la page. */
@@ -473,14 +473,14 @@ export interface MerchantRecord {
 
 /**
  * Date de validité du prix : un an, renouvelée à chaque génération du flux.
- * Une campagne la ramène à sa date de fin — au-delà, le prix annoncé n'est plus
+ * Une campagne la ramène à sa date de fin - au-delà, le prix annoncé n'est plus
  * celui de la boutique, et un `priceValidUntil` trop lointain sur un prix promo
  * est exactement le genre d'incohérence qui fait refuser une fiche.
  */
 /**
  * Fenêtre du prix promotionnel, au format d'intervalle ISO 8601 attendu par
  * Google : « début/fin ». Absente quand la remise ne vient pas d'une campagne
- * — un ancien prix saisi à la main dans la fiche produit n'a pas de terme
+ * - un ancien prix saisi à la main dans la fiche produit n'a pas de terme
  * connu, et inventer une date de fin serait pire que de n'en donner aucune.
  */
 function salePriceWindow(promotion?: ProductPromotion): string | undefined {
@@ -597,7 +597,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "error",
       attribute: "image_link",
-      message: "Aucune image produit ni image de catégorie enregistrée — Google refuse l'offre.",
+      message: "Aucune image produit ni image de catégorie enregistrée - Google refuse l'offre.",
     });
   } else if (!product.image?.trim()) {
     issues.push({
@@ -612,7 +612,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "warning",
       attribute: "title",
-      message: `Titre très court (${record.title.length} caractères) — ajouter l'essence, la longueur de bûche et le conditionnement.`,
+      message: `Titre très court (${record.title.length} caractères) - ajouter l'essence, la longueur de bûche et le conditionnement.`,
     });
   }
 
@@ -620,7 +620,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "warning",
       attribute: "description",
-      message: `Description trop courte (${record.description.length} caractères) — au moins ${MIN_DESCRIPTION_LENGTH} sont recommandés.`,
+      message: `Description trop courte (${record.description.length} caractères) - au moins ${MIN_DESCRIPTION_LENGTH} sont recommandés.`,
     });
   }
 
@@ -628,7 +628,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "error",
       attribute: "price",
-      message: "Prix manquant ou égal à 0 — l'offre est refusée.",
+      message: "Prix manquant ou égal à 0 - l'offre est refusée.",
     });
   }
 
@@ -654,7 +654,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "error",
       attribute: "brand",
-      message: "Marque manquante — c'est un attribut obligatoire pour les articles neufs.",
+      message: "Marque manquante - c'est un attribut obligatoire pour les articles neufs.",
     });
   }
 
@@ -662,7 +662,7 @@ export function auditMerchantProduct(
   //
   // Google accepte explicitement `identifier_exists=no` dans trois cas : produit
   // de marque de distributeur ou fabriqué par le seul vendeur, produit
-  // artisanal ou personnalisé, et **lot composé par le revendeur** — ce qu'est
+  // artisanal ou personnalisé, et **lot composé par le revendeur** - ce qu'est
   // une palette de 66 sacs assemblée en boutique. C'est le cas de tout ce
   // catalogue.
   // Voir support.google.com/merchants/answer/160161.
@@ -677,8 +677,8 @@ export function auditMerchantProduct(
       level: "warning",
       attribute: "gtin / mpn",
       message: marquePropre
-        ? "Ni GTIN ni MPN. Le flux part en identifier_exists=no, ce que Google admet pour une marque propre — mais attribuer une référence fabricant (un code interne stable de votre choix) élargit nettement la diffusion."
-        : "Ni GTIN ni MPN. Le flux part en identifier_exists=no, admis pour un lot composé en boutique. Demandez au fournisseur l'EAN de l'unité vendue — celui de la palette, pas celui du sac — pour gagner en portée. N'inventez jamais de code : un GTIN fabriqué fait suspendre le compte.",
+        ? "Ni GTIN ni MPN. Le flux part en identifier_exists=no, ce que Google admet pour une marque propre - mais attribuer une référence fabricant (un code interne stable de votre choix) élargit nettement la diffusion."
+        : "Ni GTIN ni MPN. Le flux part en identifier_exists=no, admis pour un lot composé en boutique. Demandez au fournisseur l'EAN de l'unité vendue - celui de la palette, pas celui du sac - pour gagner en portée. N'inventez jamais de code : un GTIN fabriqué fait suspendre le compte.",
     });
   } else if (!record.gtin) {
     issues.push({
@@ -714,7 +714,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "error",
       attribute: "id",
-      message: "L'identifiant d'offre est utilisé par un autre produit — les identifiants doivent être uniques.",
+      message: "L'identifiant d'offre est utilisé par un autre produit - les identifiants doivent être uniques.",
     });
   }
 
@@ -741,7 +741,7 @@ export function auditMerchantProduct(
     issues.push({
       level: "warning",
       attribute: "shipping_weight",
-      message: "Poids d'expédition manquant — sans poids, impossible d'utiliser des règles de livraison basées sur le poids.",
+      message: "Poids d'expédition manquant - sans poids, impossible d'utiliser des règles de livraison basées sur le poids.",
     });
   }
 
@@ -768,7 +768,7 @@ export function auditMerchantProduct(
   if (!product.active) {
     issues.push({
       level: "warning",
-      attribute: "—",
+      attribute: "-",
       message: "Le produit est désactivé et n'est pas repris dans le flux.",
     });
   }
@@ -794,7 +794,7 @@ export interface MerchantOverview {
   ready: number;
   blocked: number;
   withWarnings: number;
-  /** Nombre de produits sans GTIN — à compléter par le commerçant. */
+  /** Nombre de produits sans GTIN - à compléter par le commerçant. */
   missingGtin: number;
   missingMpn: number;
   missingOwnImage: number;

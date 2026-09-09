@@ -5,7 +5,7 @@
  *
  * ── DEUX ÉCRITURES ACCEPTÉES ────────────────────────────────────────────────
  *
- * 1. Camerounais sans indicatif — le cas courant, la boutique livre au
+ * 1. Camerounais sans indicatif - le cas courant, la boutique livre au
  *    Cameroun. Neuf chiffres : les mobiles commencent par 6 (MTN, Orange,
  *    Camtel), les fixes par 2. L'indicatif 237 est ajouté pour nous.
  * 2. N'importe quel numéro international, à condition de porter son indicatif
@@ -13,7 +13,7 @@
  *
  * Le fixe camerounais est accepté volontairement : ce numéro sert le contact
  * de livraison. Le téléphone qui portera le paiement Mobile Money est saisi
- * chez le prestataire, pas ici — exiger un mobile refuserait des clients sans
+ * chez le prestataire, pas ici - exiger un mobile refuserait des clients sans
  * rien garantir en échange.
  *
  * ── POURQUOI L'INDICATIF EST EXIGÉ HORS CAMEROUN ────────────────────────────
@@ -22,7 +22,7 @@
  * sur un numéro camerounais : « 6771234567 » est aussi bien un mobile local
  * avec un chiffre en trop qu'un numéro d'un autre plan de numérotation. Rendre
  * l'indicatif obligatoire dans ce cas lève l'ambiguïté sans rien refuser à
- * personne — celui qui appelle depuis l'étranger écrit déjà `+`.
+ * personne - celui qui appelle depuis l'étranger écrit déjà `+`.
  *
  * On ne valide donc PAS le plan de numérotation des autres pays : il y en a
  * deux cents, ils changent, et un client refusé à tort sur la dernière étape
@@ -81,12 +81,12 @@ export function normaliserTelephone(saisie: string): string | null {
   const camerounais = normaliserCameroun(chiffres);
   if (camerounais) return camerounais;
 
-  // Hors Cameroun, l'indicatif doit être écrit — voir l'en-tête.
+  // Hors Cameroun, l'indicatif doit être écrit - voir l'en-tête.
   const marqueInternational = saisie.trim().startsWith("+") || chiffres.startsWith("00");
   if (!marqueInternational) return null;
 
   const international = chiffres.startsWith("00") ? chiffres.slice(2) : chiffres;
-  // Indicatif 237 écrit en toutes lettres : c'est NOTRE plan, on le connaît —
+  // Indicatif 237 écrit en toutes lettres : c'est NOTRE plan, on le connaît -
   // neuf chiffres commençant par 6 ou 2, rien d'autre. Sans ce contrôle, un
   // numéro camerounais avec un chiffre en trop (« +237 677 55 010 02 »)
   // passait par la voie internationale, qui ne vérifie que la longueur E.164,

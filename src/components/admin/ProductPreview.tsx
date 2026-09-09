@@ -295,7 +295,7 @@ function StockNote({
     <div className="border-t border-border bg-muted px-3 py-2 text-[11px] text-muted-foreground">
       <span className="font-semibold text-foreground">Stock : </span>
       {stock === null ? "non renseigné" : `${stock} pièce${stock > 1 ? "s" : ""}`}
-      {lowStockThreshold !== null && ` — seuil d'alerte ${lowStockThreshold}`}
+      {lowStockThreshold !== null && ` - seuil d'alerte ${lowStockThreshold}`}
       {lowStock && (
         <span className="ml-2 rounded-sm bg-accent px-1.5 py-0.5 font-bold text-accent-foreground">
           Stock faible

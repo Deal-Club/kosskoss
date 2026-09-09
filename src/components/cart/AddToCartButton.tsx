@@ -9,7 +9,7 @@ import { MAX_QUANTITY_PER_LINE } from "@/lib/cart";
 import { cn } from "@/lib/utils";
 
 interface AddToCartButtonProps {
-  /** Identifiant en base — c'est la seule donnée dont le serveur se sert. */
+  /** Identifiant en base - c'est la seule donnée dont le serveur se sert. */
   productId: string;
   slug: string;
   brand: string;
@@ -84,7 +84,7 @@ export function AddToCartButton({
 
   /**
    * Achat direct : même ajout, puis la caisse, sans repasser par le panier.
-   * L'article y est bien déposé au passage — la caisse lit le panier, et une
+   * L'article y est bien déposé au passage - la caisse lit le panier, et une
    * commande sans ligne n'aurait aucun sens. Le tiroir ne s'ouvre pas ici : la
    * page suivante est déjà la confirmation la plus directe possible.
    */

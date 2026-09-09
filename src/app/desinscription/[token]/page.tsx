@@ -9,7 +9,7 @@
  * explicite sur le bouton. Les antivirus, les passerelles de sécurité et les
  * aperçus de Gmail et d'Outlook visitent les liens contenus dans les messages
  * pour les analyser. Une désinscription déclenchée par un simple GET
- * désabonnerait donc des clients qui n'ont jamais rien demandé — et
+ * désabonnerait donc des clients qui n'ont jamais rien demandé - et
  * silencieusement, puisque personne n'a vu la page.
  */
 

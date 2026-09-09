@@ -1,5 +1,5 @@
 /**
- * Codes promo — types et arithmétique pure.
+ * Codes promo - types et arithmétique pure.
  *
  * Comme pour le bandeau, ce module est neutre : le back-office et le tunnel de
  * commande sont des composants clients, et importer `src/server/coupons.ts`
@@ -78,7 +78,7 @@ export function estCouponKind(valeur: string): valeur is CouponKind {
 /**
  * Remise due pour un sous-total donné.
  *
- * Deux garde-fous : le plafond éventuel du code, et le sous-total lui-même —
+ * Deux garde-fous : le plafond éventuel du code, et le sous-total lui-même -
  * une remise ne peut pas dépasser ce que le client doit, sinon la boutique lui
  * devrait de l'argent.
  */

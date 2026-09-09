@@ -9,7 +9,7 @@
  * repli n'est pas seulement une commodité de démarrage : ces pages sont
  * obligatoires (mentions légales, droit de rétractation…). Si la base est
  * injoignable ou
- * si une ligne est illisible, elles doivent quand même s'afficher — d'où les
+ * si une ligne est illisible, elles doivent quand même s'afficher - d'où les
  * `try/catch` qui retombent sur le fichier au lieu de laisser remonter
  * l'erreur.
  *

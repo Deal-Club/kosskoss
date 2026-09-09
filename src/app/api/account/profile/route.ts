@@ -4,7 +4,7 @@ import { getCurrentCustomer } from "@/server/customerSession";
 import { accountErrorResponse } from "@/server/accountMessages";
 
 /**
- * Mise à jour des données personnelles — droit de rectification (art. 16 RGPD).
+ * Mise à jour des données personnelles - droit de rectification (art. 16 RGPD).
  *
  * L'adresse e-mail n'est volontairement pas modifiable ici : la changer sans
  * vérification permettrait de détourner un compte vers une boîte contrôlée par

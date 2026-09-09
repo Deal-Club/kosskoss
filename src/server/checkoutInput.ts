@@ -3,7 +3,7 @@
  *
  * Séparé de src/server/orders.ts, qui ouvre Prisma au chargement, pour la même
  * raison que legalPageInput.ts l'est de legalPages.ts : cette validation ne
- * touche pas la base, elle doit donc être testable — et réutilisable — sans
+ * touche pas la base, elle doit donc être testable - et réutilisable - sans
  * qu'une connexion PostgreSQL soit disponible.
  *
  * Rien ici ne fait confiance au navigateur : seuls les identifiants de produit,
@@ -138,7 +138,7 @@ export function parseCheckoutPayload(payload: unknown): {
   if (!paymentMethodKey) errors.push("invalid_payment_method");
 
   // Mode de livraison : seules les deux clés connues sont acceptées. Une valeur
-  // fantaisiste est refusée plutôt que ramenée au standard en silence — livrer
+  // fantaisiste est refusée plutôt que ramenée au standard en silence - livrer
   // en standard un client qui a demandé et cru payer l'express modifierait sa
   // commande. L'absence de champ, elle, reste tolérée : c'est le standard.
   const shippingMethodRaw = text(raw.shippingMethodKey, 20);

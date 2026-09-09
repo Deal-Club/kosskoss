@@ -67,7 +67,7 @@ describe("identifiantEvenement", () => {
 });
 
 describe("identifiantProduitCatalogue", () => {
-  it("rend le slug tel quel — c'est l'identifiant que le flux Merchant connaît déjà pour ce produit", () => {
+  it("rend le slug tel quel - c'est l'identifiant que le flux Merchant connaît déjà pour ce produit", () => {
     assert.equal(identifiantProduitCatalogue("buche-chene-stere", "cmid00000000000000000001"), "buche-chene-stere");
   });
 
@@ -75,7 +75,7 @@ describe("identifiantProduitCatalogue", () => {
     assert.equal(identifiantProduitCatalogue("", "cmid00000000000000000001"), "cmid00000000000000000001");
   });
 
-  it("tronque un slug de plus de 50 caractères et lui accole les 8 derniers caractères de l'identifiant — MÊME RÈGLE que merchantOfferId", () => {
+  it("tronque un slug de plus de 50 caractères et lui accole les 8 derniers caractères de l'identifiant - MÊME RÈGLE que merchantOfferId", () => {
     const slugLong = "a".repeat(60);
     const id = "cmid00000000000000000001";
     assert.equal(identifiantProduitCatalogue(slugLong, id), `${"a".repeat(41)}-00000001`);
@@ -206,7 +206,7 @@ describe("nomEvenementMeta", () => {
     assert.equal(nomEvenementMeta("purchase"), "Purchase");
   });
 
-  it("couvre les quatre événements de mesure, sans en oublier un — partagé par le Pixel et la CAPI", () => {
+  it("couvre les quatre événements de mesure, sans en oublier un - partagé par le Pixel et la CAPI", () => {
     for (const type of EVENEMENTS_MESURE) {
       assert.equal(typeof nomEvenementMeta(type), "string");
     }
@@ -214,7 +214,7 @@ describe("nomEvenementMeta", () => {
 });
 
 describe("déduplication GA4 / Pixel", () => {
-  it("les deux formes du même événement portent EXACTEMENT le même event_id — c'est ce que Meta et GA4 utilisent pour ne compter la vente qu'une fois", () => {
+  it("les deux formes du même événement portent EXACTEMENT le même event_id - c'est ce que Meta et GA4 utilisent pour ne compter la vente qu'une fois", () => {
     const e = evenement();
     assert.equal(versGa4(e).event_id, versPixel(e).event_id);
   });

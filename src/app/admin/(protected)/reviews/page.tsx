@@ -14,7 +14,7 @@ interface StatusTab {
 
 const EMPTY_MESSAGES: Record<ReviewStatus | "all", string> = {
   all: "Aucun avis pour le moment.",
-  pending: "Aucun avis en attente — tout est traité.",
+  pending: "Aucun avis en attente - tout est traité.",
   approved: "Aucun avis publié pour le moment.",
   rejected: "Aucun avis refusé jusqu'à présent.",
 };

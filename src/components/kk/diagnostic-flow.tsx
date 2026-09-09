@@ -51,7 +51,7 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  *     il tombait sur un écran qui affichait « Commencer le diagnostic ». Une
  *     étape entière pour zéro information nouvelle. La promesse (5 questions,
  *     1 minute, gratuit, sans engagement) est désormais tenue sur la page
- *     d'accueil, avant le clic — comme sur la maquette du client, qui liste les
+ *     d'accueil, avant le clic - comme sur la maquette du client, qui liste les
  *     cinq questions dans le module d'appel. On entre donc sur la question 1.
  *
  *  2. LE FAUX CHARGEMENT. Un `setTimeout` de 1,1 s retardait volontairement un
@@ -62,14 +62,14 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  * (Le passage automatique à la question suivante, un temps en vigueur pour
  * épargner un clic, a été REVENU à la demande du client : la sélection se
  * contente d'enregistrer, et deux boutons « Précédent » / « Suivant » mènent
- * le parcours. On y gagne la relecture — voir sa réponse avant de la valider,
- * et revenir dessus — au prix d'un clic par question.)
+ * le parcours. On y gagne la relecture - voir sa réponse avant de la valider,
+ * et revenir dessus - au prix d'un clic par question.)
  *
  * ── LE QUESTIONNAIRE REPART TOUJOURS DE ZÉRO ────────────────────────────────
  *
  * Les réponses ont un temps été conservées dans `sessionStorage` : quitter la
  * page ou l'actualiser ramenait le visiteur à la question où il s'était
- * arrêté. **Le client a demandé le contraire** — un retour sur le diagnostic
+ * arrêté. **Le client a demandé le contraire** - un retour sur le diagnostic
  * doit toujours recommencer à la question 1.
  *
  * Il n'y a donc plus aucune persistance côté navigateur, et c'est une absence
@@ -84,7 +84,7 @@ const ICONS: Record<DiagIcon, typeof Droplet> = {
  *
  * QUESTION CONDITIONNELLE (Q5 « pores » du quiz client, lot 7C) : elle ne
  * s'affiche que si la réponse à Q2 (« priorite ») vaut « Boutons /
- * Imperfections » ou « Glow / Éclat » — `questionVisible()`
+ * Imperfections » ou « Glow / Éclat » - `questionVisible()`
  * (src/lib/kk/diagnostic-conditions.ts) l'évalue à partir des CLÉS de réponse
  * déjà données, pas de leurs identifiants de base. `visibleQuestions`, dérivée
  * ci-dessous, est la liste qui compte réellement pour la navigation ET pour
@@ -104,15 +104,15 @@ export function DiagnosticFlow({
   questions: ClientQuestion[];
   /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
    *  `null` pour un visiteur sans session ou qui n'a jamais terminé le
-   *  questionnaire — dans ce cas la page se comporte comme avant. */
+   *  questionnaire - dans ce cas la page se comporte comme avant. */
   savedAnswerIds?: string[] | null;
   /** Langue de la page, transmise à la route de calcul de la routine et à
-   *  l'envoi de la routine par e-mail — même usage que sur `NewsletterBand`,
+   *  l'envoi de la routine par e-mail - même usage que sur `NewsletterBand`,
    *  qui ne s'en sert que pour l'appel réseau, jamais pour changer le texte
    *  affiché. */
   locale?: string;
   /** Numéro WhatsApp de la boutique (chiffres seuls), lu côté serveur comme
-   *  pour le bouton flottant — voir `numeroWhatsappEffectif`. Vide ou absent :
+   *  pour le bouton flottant - voir `numeroWhatsappEffectif`. Vide ou absent :
    *  le bouton « Envoyer mon bilan » ne se rend pas. */
   whatsappNumber?: string;
 }) {
@@ -136,7 +136,7 @@ export function DiagnosticFlow({
   // Deux consentements, deux actions : `routineEmail` sert aux deux appels,
   // mais leur issue est suivie séparément (`envoiStatut`/`inscriptionStatut`)
   // puisque l'un peut réussir quand l'autre échoue. `enCoursEnvoi` est le seul
-  // état qui pilote le bouton — un double clic ne doit pas partir même si un
+  // état qui pilote le bouton - un double clic ne doit pas partir même si un
   // des deux appels a déjà répondu et que l'autre traîne encore.
   const [routineEmail, setRoutineEmail] = useState("");
   const [inscrireLettre, setInscrireLettre] = useState(false);
@@ -148,7 +148,7 @@ export function DiagnosticFlow({
 
   // Clés (DiagAnswer.key) des réponses déjà données, dérivées de `answers`
   // (qui stocke des identifiants de base). C'est cet ensemble, pas `answers`
-  // lui-même, que `questionVisible()` attend — voir sa signature.
+  // lui-même, que `questionVisible()` attend - voir sa signature.
   const answerKeysDonnees = useMemo(() => {
     const cles = new Set<string>();
     for (const q of questions) {
@@ -220,7 +220,7 @@ export function DiagnosticFlow({
   /**
    * Envoie des identifiants de réponse au moteur et affiche le résultat.
    * Commun aux deux chemins qui y mènent : la fin du QCM, et « Revoir ma
-   * routine » sur le profil sauvegardé — dans les deux cas la routine est
+   * routine » sur le profil sauvegardé - dans les deux cas la routine est
    * recalculée sur le catalogue du jour, jamais rejouée depuis un résultat
    * figé.
    *
@@ -231,7 +231,7 @@ export function DiagnosticFlow({
     // Le résultat n'est affiché qu'une fois la séquence d'analyse arrivée à son
     // terme. Ce n'est pas un délai décoratif : la requête revient en quelques
     // dizaines de millisecondes, et un diagnostic qui répond avant qu'on ait vu
-    // l'écran ne passe pas pour rapide — il passe pour n'avoir rien regardé.
+    // l'écran ne passe pas pour rapide - il passe pour n'avoir rien regardé.
     //
     // L'attente est un PLANCHER, jamais un ajout : si la requête dure plus
     // longtemps que la séquence, rien n'est rallongé.
@@ -248,7 +248,7 @@ export function DiagnosticFlow({
         // distant), la requête ne revient jamais et l'écran d'analyse
         // tournerait à l'infini. Au-delà de 20 s on abandonne : le catch
         // ci-dessous rend la main avec le message d'échec et le visiteur
-        // peut réessayer — ses réponses sont conservées.
+        // peut réessayer - ses réponses sont conservées.
         signal: AbortSignal.timeout(20_000),
       });
       if (!res.ok) throw new Error(String(res.status));
@@ -317,7 +317,7 @@ export function DiagnosticFlow({
    * Les deux appels sont indépendants : chacun gère son propre échec sans
    * faire échouer l'autre, et sont lancés en parallèle plutôt qu'en série pour
    * ne pas faire attendre l'inscription derrière l'envoi. `Promise.all` reste
-   * sûr ici parce qu'aucune des deux fonctions internes ne rejette — chacune
+   * sûr ici parce qu'aucune des deux fonctions internes ne rejette - chacune
    * capture son erreur et la range dans son propre message.
    */
   async function envoyerRoutineParEmail(e: React.FormEvent) {
@@ -438,13 +438,13 @@ export function DiagnosticFlow({
   /* ----------------------------------------------------------- Result -- */
   if (phase === "result" && result) {
     // Chips du profil déclaré : type de peau, préoccupation déclarée (celle
-    // dite à Q2, CONSERVÉE même quand la bascule de sécurité l'a emportée —
+    // dite à Q2, CONSERVÉE même quand la bascule de sécurité l'a emportée -
     // c'est elle qui permet au bandeau de sécurité, plus bas, de dire « avant
     // votre préoccupation » plutôt que d'avoir l'air de s'être trompé), et
     // réactivité déclarée. L'environnement (Q4) entre au profil depuis TK-02 :
     // « Climat Chaud & Humide » ou « Espaces Climatisés » disent le quotidien
     // de la peau autant que son type. Les quatre passent par les étiquettes
-    // valorisantes du serveur (voir lib/kk/profil-etiquettes.ts) — jamais la
+    // valorisantes du serveur (voir lib/kk/profil-etiquettes.ts) - jamais la
     // réponse brute du QCM.
     const profil = [
       result.peauLabel,
@@ -454,7 +454,7 @@ export function DiagnosticFlow({
     ].filter(Boolean);
 
     // Routine à proposer au formulaire d'envoi par e-mail : l'Essentielle en
-    // priorité, la Premium en repli — voir la route qui applique la même
+    // priorité, la Premium en repli - voir la route qui applique la même
     // règle côté serveur.
     const routinePourEmail = result.essentielle ?? result.premium;
     const niveauPourEmail = result.essentielle ? t("resultEssentialBadge") : t("resultPremiumBadge");
@@ -805,7 +805,7 @@ export function DiagnosticFlow({
  *
  * Volontairement sans visuel : le composant serveur `RoutineCard`
  * (src/components/kk/routine-card.tsx) importe `next-intl/server`, incompatible
- * avec un rendu client — dupliquer sa mise en page ici sans cette dépendance
+ * avec un rendu client - dupliquer sa mise en page ici sans cette dépendance
  * reste plus sûr qu'un import qui casserait le paquet client.
  */
 function ResultRoutineCard({
@@ -868,7 +868,7 @@ function ResultRoutineCard({
  * on lui demandait d'acheter une routine sans lui montrer un seul produit.
  *
  * Ce n'était pas une donnée manquante. Aucune des 14 routines n'a d'image
- * propre — le client ne les a pas encore fournies — mais CHAQUE geste porte
+ * propre - le client ne les a pas encore fournies - mais CHAQUE geste porte
  * son produit, et chaque produit sa vignette. La matière était là ; la carte
  * ne s'en servait pas.
  *
@@ -879,8 +879,8 @@ function ResultRoutineCard({
  * sans vignette sont sautés plutôt que remplacés par un cadre gris, qui
  * suggérerait un produit manquant là où il n'en manque aucun.
  *
- * Le libellé sous les vignettes réutilise `buyNote` — « Les N produits en une
- * seule commande » — déjà traduit, et exact ici : le bouton d'achat juste en
+ * Le libellé sous les vignettes réutilise `buyNote` - « Les N produits en une
+ * seule commande » - déjà traduit, et exact ici : le bouton d'achat juste en
  * dessous les met tous au panier d'un coup.
  */
 function ApercuProduits({

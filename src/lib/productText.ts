@@ -18,12 +18,12 @@ export function productShortText(
 
   if (locale === "en") {
     return highlights
-      ? `${categoryLabel} by ${product.brand} — ${highlights}.`
+      ? `${categoryLabel} by ${product.brand} - ${highlights}.`
       : `${categoryLabel} by ${product.brand}.`;
   }
 
   return highlights
-    ? `${categoryLabel} von ${product.brand} — ${highlights}.`
+    ? `${categoryLabel} von ${product.brand} - ${highlights}.`
     : `${categoryLabel} von ${product.brand}.`;
 }
 

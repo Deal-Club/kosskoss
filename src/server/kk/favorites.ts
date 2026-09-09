@@ -8,7 +8,7 @@ import type { KKFavoriteView } from "@/types/kk";
  * (client, produit). Le prix, la photo et le stock sont relus à chaque
  * affichage, donc un produit dont le tarif a changé apparaît au tarif du jour,
  * et un produit désactivé disparaît de la liste au lieu de traîner un prix
- * périmé — mémoriser un article n'est pas le réserver.
+ * périmé - mémoriser un article n'est pas le réserver.
  */
 
 /** Nombre maximal de favoris par compte. Au-delà, l'ajout est refusé. */
@@ -78,7 +78,7 @@ export async function listFavorites(customerId: string): Promise<KKFavoriteView[
 }
 
 /**
- * Ajoute un produit aux favoris. Sans effet s'il y figure déjà — le geste est
+ * Ajoute un produit aux favoris. Sans effet s'il y figure déjà - le geste est
  * idempotent, deux onglets ne créent pas deux lignes (contrainte d'unicité).
  * Renvoie `false` si le produit n'existe pas, n'est plus actif, ou si le compte
  * a atteint le plafond.
@@ -117,7 +117,7 @@ export async function clearFavorites(customerId: string): Promise<void> {
  *
  * Fusion, jamais remplacement : ce que le client avait déjà sur son compte est
  * conservé. `skipDuplicates` laisse la base arbitrer les doublons, et les
- * identifiants inconnus ou inactifs sont filtrés avant l'écriture — la liste
+ * identifiants inconnus ou inactifs sont filtrés avant l'écriture - la liste
  * arrive du navigateur, elle n'est donc pas digne de confiance.
  */
 export async function mergeFavorites(customerId: string, productIds: string[]): Promise<void> {

@@ -42,14 +42,14 @@ function FacebookIcon({ className }: { className?: string }) {
  * Pages d'aide et pages légales du pied de page.
  *
  * Écrites ici plutôt qu'en base : ce sont des routes du code, pas du contenu
- * éditorial. Chaque entrée pointe vers une page qui existe — un lien mort dans
+ * éditorial. Chaque entrée pointe vers une page qui existe - un lien mort dans
  * le pied de page d'une boutique en ligne coûte la confiance du visiteur, et
  * les mentions légales doivent rester atteignables depuis toutes les pages.
  *
  * La navigation principale, elle, n'est plus une liste écrite ici : elle est
  * lue en base (`getShopNavigation`) et rendue par `DesktopNav`. C'est ce qui
- * évite qu'un changement d'univers dans le catalogue — « Corps & Cheveux »
- * devenu « Corps & Hygiène », ajout de « Homme » — laisse des entrées de menu
+ * évite qu'un changement d'univers dans le catalogue - « Corps & Cheveux »
+ * devenu « Corps & Hygiène », ajout de « Homme » - laisse des entrées de menu
  * pointant vers des pages qui n'existent plus.
  */
 /**
@@ -67,12 +67,12 @@ function FacebookIcon({ className }: { className?: string }) {
  * d'achat.
  *
  * Ne restent ici que trois catégories :
- *   — les pages EXIGÉES par la vente à distance, qui doivent rester
+ *   - les pages EXIGÉES par la vente à distance, qui doivent rester
  *     atteignables depuis n'importe quelle page (mentions, CGV, données
  *     personnelles, rétractation) ;
- *   — les pages qui LÈVENT une objection au moment de payer : les frais et
+ *   - les pages qui LÈVENT une objection au moment de payer : les frais et
  *     délais de livraison, les moyens de paiement acceptés, le renvoi ;
- *   — « À propos », qui dit qui vend. Elle n'est due à aucun texte, mais sur un
+ *   - « À propos », qui dit qui vend. Elle n'est due à aucun texte, mais sur un
  *     marché où la contrefaçon est le premier frein, savoir à qui l'on achète
  *     en est un autre : c'est la seule page de cette liste qu'on ouvre par
  *     confiance et non par obligation. Elle vient donc en tête.
@@ -107,7 +107,7 @@ const FOOTER_LEGAL = [
  * d'environnement), sinon le téléphone de la société. Vide, le bloc ne
  * s'affiche pas plutôt que de proposer un lien creux.
  *
- * Calculé dans `SiteFooter` — composant serveur — plutôt qu'au niveau du
+ * Calculé dans `SiteFooter` - composant serveur - plutôt qu'au niveau du
  * module : la valeur dépend désormais de la base, elle ne peut plus être une
  * constante figée à l'import.
  *
@@ -122,7 +122,7 @@ function lienWhatsapp(numero: string, message: string): string {
 /**
  * Bandeau d'annonce, lu en base.
  *
- * Le message était écrit en dur ; il se règle désormais au back-office —
+ * Le message était écrit en dur ; il se règle désormais au back-office -
  * contenu, ordre, couleurs, vitesse et défilement. La lecture se fait ici
  * plutôt que dans les seize pages qui montent ce bandeau : aucune n'a eu à
  * changer.
@@ -140,11 +140,11 @@ export async function AnnouncementBar() {
 }
 
 /**
- * Logotype de la marque — le fichier officiel, pas une reconstitution.
+ * Logotype de la marque - le fichier officiel, pas une reconstitution.
  *
  * Le lettrage était jusqu'ici recomposé en CSS : monogramme SVG + « KossKoss »
  * en Cinzel + « Select » en interlettrage large. L'approximation tenait de
- * loin, mais aucune fonte web ne redonne le dessin exact du logotype fourni —
+ * loin, mais aucune fonte web ne redonne le dessin exact du logotype fourni -
  * empattements, chasse des deux K, position de la ligne « SELECT ». On sert
  * donc l'image de marque elle-même (`public/images/logo-full.png`).
  *
@@ -181,7 +181,7 @@ function Wordmark({ className = "", aligne = false }: { className?: string; alig
 }
 
 /**
- * En-tête boutique — sticky, transparent sur crème avec léger flou.
+ * En-tête boutique - sticky, transparent sur crème avec léger flou.
  *
  * Composant serveur : il lit la navigation en base et la passe aux quelques
  * éléments interactifs (recherche, menu mobile, lien actif), qui sont les seuls
@@ -209,18 +209,18 @@ export async function SiteHeader() {
      * `backdrop-filter` sur un élément collant est le défaut le plus répandu
      * des en-têtes de boutique sur iOS : Safari recalcule le flou à chaque
      * image du défilement inertiel, la barre scintille, se fige à mi-course ou
-     * disparaît le temps de quelques images — exactement l'impression d'un
+     * disparaît le temps de quelques images - exactement l'impression d'un
      * en-tête « qui ne tient pas ». Un aplat coûte zéro composition, et sur un
      * téléphone rien ne dépasse assez sous l'en-tête pour qu'on regrette la
      * transparence.
      *
      * `z-50` : au-dessus du bouton WhatsApp flottant (z-40) et de tout élément
-     * collant des pages de catalogue. Les panneaux modaux — menu, recherche,
-     * panier — montent eux à z-60, portés dans <body>.
+     * collant des pages de catalogue. Les panneaux modaux - menu, recherche,
+     * panier - montent eux à z-60, portés dans <body>.
      */
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background lg:bg-background/85 lg:backdrop-blur-md">
       {/* Une seule rangée : logo à gauche, navigation au centre, actions à
-          droite — la composition de la maquette du client.
+          droite - la composition de la maquette du client.
           L'en-tête précédent centrait le logotype et repoussait la navigation
           sur une seconde ligne : il occupait deux fois la hauteur pour la même
           information, et le nom de la maison se retrouvait au milieu de nulle
@@ -258,14 +258,14 @@ export async function SiteHeader() {
  * En-tête minimal des pages transactionnelles (panier → paiement).
  *
  * La mention « Paiement sécurisé » y était grise, en 12 px, et masquée sous
- * 640 px — c'est-à-dire absente sur la majorité des visites. C'est pourtant la
+ * 640 px - c'est-à-dire absente sur la majorité des visites. C'est pourtant la
  * seule preuve de sûreté visible au moment où le client hésite. Elle devient
  * une pastille verte, présente à toutes les tailles : sur mobile le mot
  * « Sécurisé » suffit, la mention complète revient dès qu'il y a la place.
  *
  * `back` distingue les deux pages qui la portent. Sur /commande, le lien doit
  * ramener à la page d'où le visiteur vient (panier, ou fiche produit pour un
- * achat direct) — un simple retour, pas une sortie du tunnel vers l'accueil ;
+ * achat direct) - un simple retour, pas une sortie du tunnel vers l'accueil ;
  * voir `CheckoutBackLink`. Sur la confirmation, la commande est passée : «
  * Continuer mes achats » garde son sens propre et reste un lien fixe vers
  * l'accueil.
@@ -306,35 +306,35 @@ export async function CheckoutHeader({ back = false }: { back?: boolean } = {}) 
 }
 
 /*
- * `MobileTabBar` — RETIRÉE.
+ * `MobileTabBar` - RETIRÉE.
  * ---------------------------------------------------------------------------
  * Une barre de cinq onglets fixée en bas de l'écran, doublant une navigation
  * déjà entièrement présente dans l'en-tête et son menu. Elle coûtait :
- *   — 64 px de hauteur utile en permanence, plus la zone sûre de l'écran, sur
+ *   - 64 px de hauteur utile en permanence, plus la zone sûre de l'écran, sur
  *     l'appareil où la hauteur est la ressource la plus rare ;
- *   — un retrait `pb-16` sur chaque page pour compenser, à maintenir partout ;
- *   — un empilement à trois étages en bas d'écran, avec le bouton WhatsApp et
+ *   - un retrait `pb-16` sur chaque page pour compenser, à maintenir partout ;
+ *   - un empilement à trois étages en bas d'écran, avec le bouton WhatsApp et
  *     la barre d'achat des pages produit qui devaient tous s'éviter ;
- *   — un troisième chemin vers « Favoris » et « Compte », déjà atteignables
+ *   - un troisième chemin vers « Favoris » et « Compte », déjà atteignables
  *     depuis l'en-tête et le menu.
  *
- * Tout ce qu'elle donnait se retrouve dans le menu du burger — routines,
- * diagnostic, univers, compte, favoris, commandes — et l'en-tête reste collé
+ * Tout ce qu'elle donnait se retrouve dans le menu du burger - routines,
+ * diagnostic, univers, compte, favoris, commandes - et l'en-tête reste collé
  * en haut à toutes les tailles (voir SiteHeader).
  */
 
 /**
- * Pied de page — compact, orienté conversion.
+ * Pied de page - compact, orienté conversion.
  *
  * ── Ce qu'il n'est plus ───────────────────────────────────────────────────
  * Il portait quatre colonnes et vingt-deux liens : les univers du catalogue,
  * le diagnostic, la maison, huit pages d'aide, les réseaux, les mentions. Sur
  * une boutique dont tout le parcours pousse à commander, un tel pied de page
- * est une sortie de secours géante placée juste après le bouton d'achat — et
+ * est une sortie de secours géante placée juste après le bouton d'achat - et
  * il occupait plus de hauteur que certaines pages qu'il concluait.
  *
  * ── Ce qu'il garde, et pourquoi ───────────────────────────────────────────
- *   1. WHATSAPP. C'est le canal réellement en service — celui par lequel les
+ *   1. WHATSAPP. C'est le canal réellement en service - celui par lequel les
  *      commandes sont confirmées. Une question sans réponse, c'est un panier
  *      abandonné ; il reste donc en évidence, pas en petits caractères.
  *   2. LES MOYENS DE PAIEMENT. Dernière objection levée au dernier moment :
@@ -367,12 +367,12 @@ export async function SiteFooter() {
       {/* Motif de marque en fond. Le pied de page est bien plus court qu'avant
           et ne porte plus de colonnes de liens en petit corps : la trame y
           respire au lieu de courir sous du texte. 12 % d'opacité tout de même,
-          contre 18 % ailleurs — il figure sur toutes les pages du site, c'est
+          contre 18 % ailleurs - il figure sur toutes les pages du site, c'est
           l'endroit le plus répété du parcours. */}
       <PatternBackdrop align="footer" opacity="opacity-[0.12]" />
 
       <div className="relative mx-auto max-w-7xl px-6 py-8">
-        {/* RANGÉE 1 — tout ce qui sert à acheter : l'identité, le contact
+        {/* RANGÉE 1 - tout ce qui sert à acheter : l'identité, le contact
             direct, et les moyens de paiement.
 
             Les logos de paiement tenaient une rangée à eux seuls, sous un
@@ -448,7 +448,7 @@ export async function SiteFooter() {
               {/* Les trois marques correspondent aux moyens réellement actifs en base :
                 Orange Money, MTN Mobile Money et la carte. Le pied de page
                 affichait « Moov Money », qui n'opère pas au Cameroun, et
-                omettait MTN — pourtant le second opérateur du pays. Annoncer un
+                omettait MTN - pourtant le second opérateur du pays. Annoncer un
                 moyen de paiement qu'on n'accepte pas est le meilleur moyen de
                 perdre celui qui l'utilise. */}
               {[VisaMark, OrangeMoneyMark, MtnMoneyMark].map((Mark, i) => (
@@ -460,7 +460,7 @@ export async function SiteFooter() {
           </div>
         </div>
 
-        {/* RANGÉE 2 — mentions. Une seule ligne, en petit corps : obligatoire,
+        {/* RANGÉE 2 - mentions. Une seule ligne, en petit corps : obligatoire,
             donc présent ; jamais une invitation à quitter la page. */}
         <div className="mt-7 flex flex-col items-center gap-3 border-t border-footer-foreground/15 pt-6 sm:flex-row sm:justify-between">
           <p className="text-xs text-footer-foreground">
@@ -479,7 +479,7 @@ export async function SiteFooter() {
             ))}
             {/* Rouvre le bandeau de consentement. C'est le chemin de retour
                 que le bandeau lui-même annonce : les deux doivent rester
-                d'accord — d'où la même condition qu'au layout. Sans traceur
+                d'accord - d'où la même condition qu'au layout. Sans traceur
                 actif, le bandeau n'est pas monté et ce lien n'ouvrirait rien. */}
             {tracage && (
               <li>

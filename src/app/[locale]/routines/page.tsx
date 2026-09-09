@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 /**
  * Toutes les routines prêtes à l'emploi.
  *
- * Cette page est la destination de l'entrée « Routines » du menu — la deuxième
+ * Cette page est la destination de l'entrée « Routines » du menu - la deuxième
  * du plan fourni par le client, avant « Marques » et « Conseils ». Elle
  * n'existait pas : le seul chemin vers une routine passait par le diagnostic,
  * et n'aboutissait qu'à un écran éphémère.

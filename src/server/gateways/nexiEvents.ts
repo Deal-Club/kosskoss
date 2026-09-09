@@ -1,5 +1,5 @@
 /**
- * Lecture des notifications Nexi — partie pure, sans appel réseau ni base.
+ * Lecture des notifications Nexi - partie pure, sans appel réseau ni base.
  *
  * Isolée pour être testable : c'est la logique la plus incertaine du lot, faute
  * d'avoir pu être confrontée à un vrai compte Nexi. Les tests figent le
@@ -36,7 +36,7 @@ const FAILED_RESULTS = new Set(["DECLINED", "DENIED_BY_RISK", "FAILED", "CANCELE
  *
  * Volontairement prudent : seule une opération réellement exécutée vaut
  * paiement, et une autorisation ne compte que si elle porte sur une capture.
- * Tout le reste laisse la commande en attente — mieux vaut une commande payée
+ * Tout le reste laisse la commande en attente - mieux vaut une commande payée
  * qui reste à confirmer à la main qu'une commande impayée marquée « payée ».
  */
 export function nexiPaymentStatus(
@@ -51,7 +51,7 @@ export function nexiPaymentStatus(
 
 /**
  * Relit une notification. Rend null si le corps est illisible ou s'il manque de
- * quoi l'authentifier — sans numéro de commande ni jeton, il n'y a rien à
+ * quoi l'authentifier - sans numéro de commande ni jeton, il n'y a rien à
  * vérifier et donc rien à appliquer.
  */
 export function readNexiNotification(

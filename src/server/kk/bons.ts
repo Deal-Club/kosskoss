@@ -8,14 +8,14 @@ import {
   type StatutBon,
 } from "@/lib/kk/approvisionnement";
 
-// Réexporté pour les appelants côté serveur qui importent déjà ce module —
+// Réexporté pour les appelants côté serveur qui importent déjà ce module -
 // la source reste `src/lib/kk/approvisionnement.ts`, un module pur qu'un
 // composant client peut importer directement sans tirer Prisma.
 export { STATUT_BON_LABELS };
 import { DELAI_TRANSACTION_STOCK_MS, type StockReason } from "@/server/stock";
 
 /**
- * Bons de commande fournisseur, et la réception — le cœur du lot.
+ * Bons de commande fournisseur, et la réception - le cœur du lot.
  *
  * ── LE STATUT NE SE SAISIT JAMAIS ────────────────────────────────────────────
  *
@@ -30,17 +30,17 @@ import { DELAI_TRANSACTION_STOCK_MS, type StockReason } from "@/server/stock";
  * l'intérieur de la transaction de `recevoirLignes` lancerait une DEUXIÈME
  * transaction, indépendante de la première : si une ligne plus loin dans la
  * boucle échoue et fait annuler la transaction de `recevoirLignes`, les
- * écritures déjà commises par les appels à `adjustStock` resteraient, elles —
+ * écritures déjà commises par les appels à `adjustStock` resteraient, elles -
  * exactement le défaut que « tout dans une seule transaction » interdit.
  * `recevoirLignes` réécrit donc elle-même, avec le client `tx` reçu du
  * `prisma.$transaction` englobant, les deux écritures qu'`adjustStock` aurait
  * faites (le stock du produit, le mouvement de stock), avec le même motif
- * `"wareneingang"` — le vocabulaire existant, pas un septième.
+ * `"wareneingang"` - le vocabulaire existant, pas un septième.
  */
 
 export const PREFIXE_BON = "BC-";
 
-/** Motif de mouvement de stock pour une réception — celui que connaît déjà `src/server/stock.ts`. */
+/** Motif de mouvement de stock pour une réception - celui que connaît déjà `src/server/stock.ts`. */
 const MOTIF_RECEPTION: StockReason = "wareneingang";
 
 /** Nombre de reprises sur collision de numéro, comme pour les factures. */
@@ -71,7 +71,7 @@ export interface BonRecord {
   createdAt: string;
   updatedAt: string;
   items: LigneBonRecord[];
-  /** Cumuls dérivés des lignes — voir `totauxBon`. */
+  /** Cumuls dérivés des lignes - voir `totauxBon`. */
   engageCents: number;
   recuCents: number;
   restantCents: number;
@@ -316,7 +316,7 @@ export async function annulerBon(bonId: string): Promise<BonRecord> {
   return versBonRecord(annule);
 }
 
-// ---- La réception — le cœur du lot ----
+// ---- La réception - le cœur du lot ----
 
 export interface ReceptionLigneInput {
   ligneId: string;
@@ -348,7 +348,7 @@ export interface ReceptionLigneResultat {
   /**
    * Valeur effectivement écrite sur `product.costCents` quand `coutMisAJour`
    * est vrai. Un coût à zéro est une valeur licite (échantillon, dotation
-   * fournisseur) — voir `coutZeroAVerifier` — pas une absence de coût.
+   * fournisseur) - voir `coutZeroAVerifier` - pas une absence de coût.
    */
   coutEcritCents?: number;
   /**
@@ -372,8 +372,8 @@ export interface ResultatReception {
  * Reçoit une ou plusieurs lignes d'un bon, dans UNE SEULE transaction Prisma.
  *
  * Pour chaque ligne reçue : la quantité reçue de la ligne avance, un mouvement
- * de stock `"wareneingang"` est créé, le stock du produit augmente, et — si
- * `majCoutProduit` — le coût d'achat du produit devient le coût unitaire de la
+ * de stock `"wareneingang"` est créé, le stock du produit augmente, et - si
+ * `majCoutProduit` - le coût d'achat du produit devient le coût unitaire de la
  * ligne. Puis le statut du bon est recalculé par `statutApresReception`, à
  * partir de TOUTES ses lignes (pas seulement celles reçues cette fois).
  *
@@ -382,9 +382,9 @@ export interface ResultatReception {
  * 1. Une quantité reçue nulle ou négative est refusée : une réception
  *    négative réécrirait l'histoire. Une correction passe par un ajustement
  *    de stock tracé (`src/server/stock.ts`), pas par ici.
- * 2. Une ligne sans produit rattaché (`productId` nul — jamais rattaché, ou
+ * 2. Une ligne sans produit rattaché (`productId` nul - jamais rattaché, ou
  *    produit supprimé depuis : `onDelete: SetNull`) est reçue au sens du bon
- *    — sa quantité reçue avance — mais ne touche ni le stock ni le coût,
+ *    - sa quantité reçue avance - mais ne touche ni le stock ni le coût,
  *    faute de produit à créditer. Le résultat le signale explicitement : le
  *    taire ferait croire à l'administrateur que son stock est à jour.
  * 3. La sur-livraison est acceptée sans plafond : le fournisseur livre ce
@@ -393,12 +393,12 @@ export interface ResultatReception {
  *    `annule` (la décision est prise) est refusé, avec un message qui dit
  *    lequel des deux bloque.
  * 5. Si une seule écriture échoue, AUCUNE des trois (quantité de la ligne,
- *    stock + coût du produit — un seul `update`, mouvement de stock) ne doit
+ *    stock + coût du produit - un seul `update`, mouvement de stock) ne doit
  *    rester : tout passe par le `tx` de la transaction englobante, jamais par
  *    le client `prisma` global.
  * 6. Un même `ligneId` reçu plusieurs fois dans UN SEUL appel est refusé
  *    avant même d'ouvrir la transaction : ce n'est pas un doublon à absorber
- *    silencieusement, mais une saisie incohérente — l'écran n'envoie jamais un
+ *    silencieusement, mais une saisie incohérente - l'écran n'envoie jamais un
  *    tel appel, mais la route est une surface publique. Et pour que même un
  *    doublon qui passerait outre ce refus ne fausse pas les chiffres, la
  *    quantité reçue et le stock s'écrivent tous deux en `{ increment }`,
@@ -409,7 +409,7 @@ export interface ResultatReception {
  *    croissant de `productId`, jamais dans l'ordre où l'appelant les a
  *    envoyées. Sans cet ordre total, deux réceptions concurrentes portant sur
  *    les deux mêmes produits, dans des ordres opposés, peuvent s'attendre
- *    mutuellement — le seul inter-blocage possible de cette fonction. Trier
+ *    mutuellement - le seul inter-blocage possible de cette fonction. Trier
  *    avant d'écrire ne change ni les produits crédités ni les quantités,
  *    seul l'ordre des écritures change ; le résultat rendu à l'appelant, lui,
  *    respecte toujours l'ordre de SA requête.
@@ -419,7 +419,7 @@ export async function recevoirLignes(
   receptions: ReceptionLigneInput[],
   options: ReceptionOptions,
 ): Promise<ResultatReception> {
-  // Règle 1 — vérifiée avant d'ouvrir la transaction : une entrée invalide ne
+  // Règle 1 - vérifiée avant d'ouvrir la transaction : une entrée invalide ne
   // doit même pas déclencher une écriture qu'il faudrait ensuite annuler.
   for (const reception of receptions) {
     if (!Number.isInteger(reception.quantite) || reception.quantite <= 0) {
@@ -432,7 +432,7 @@ export async function recevoirLignes(
     throw new Error("Aucune ligne à recevoir.");
   }
 
-  // Règle 6 — également vérifiée avant d'ouvrir la transaction : un `ligneId`
+  // Règle 6 - également vérifiée avant d'ouvrir la transaction : un `ligneId`
   // répété dans le même appel est une saisie incohérente, pas un cas à
   // absorber silencieusement (voir l'en-tête du fichier).
   const ligneIdsVus = new Set<string>();
@@ -462,7 +462,7 @@ export async function recevoirLignes(
   // redéfini à côté : `adjustStock`/`setStock` peuvent attendre le verrou
   // qu'une réception retient sur un produit, et leur donner un délai plus
   // court ferait échouer CE client-là avant que la réception ne cède la
-  // main — un échec qui coûte plus cher (un panier perdu) que celui,
+  // main - un échec qui coûte plus cher (un panier perdu) que celui,
   // relançable, d'une réception qui expire.
   const DELAI_TRANSACTION_MS = DELAI_TRANSACTION_STOCK_MS;
 
@@ -470,7 +470,7 @@ export async function recevoirLignes(
     const bon = await tx.purchaseOrder.findUnique({ where: { id: bonId }, include: { items: true } });
     if (!bon) throw new Error("Bon de commande introuvable.");
 
-    // Règle 4 — le message dit lequel des deux statuts bloque.
+    // Règle 4 - le message dit lequel des deux statuts bloque.
     if (bon.status === "brouillon" || bon.status === "annule") {
       throw new Error(
         bon.status === "brouillon"
@@ -479,7 +479,7 @@ export async function recevoirLignes(
       );
     }
 
-    // Règle 7 — traite les lignes dans l'ordre croissant de `productId`,
+    // Règle 7 - traite les lignes dans l'ordre croissant de `productId`,
     // jamais dans l'ordre reçu de l'appelant : un ordre total sur les
     // verrous supprime le seul inter-blocage possible ici (deux réceptions
     // concurrentes sur les deux mêmes produits, dans des ordres opposés,
@@ -498,7 +498,7 @@ export async function recevoirLignes(
     });
 
     // Les écritures suivent l'ordre de verrouillage ci-dessus, mais le
-    // résultat rendu à l'appelant respecte l'ordre de SA requête — on
+    // résultat rendu à l'appelant respecte l'ordre de SA requête - on
     // réordonne à la sortie de la boucle, pas pendant.
     const resultatsParLigneId = new Map<string, ReceptionLigneResultat>();
 
@@ -506,7 +506,7 @@ export async function recevoirLignes(
       const ligne = bon.items.find((item) => item.id === reception.ligneId);
       if (!ligne) throw new Error(`Ligne ${reception.ligneId} introuvable sur ce bon.`);
 
-      // Règle 3 — aucun plafond : la sur-livraison est acceptée.
+      // Règle 3 - aucun plafond : la sur-livraison est acceptée.
       // Écrit en `{ increment }`, pas en valeur absolue recalculée depuis
       // `bon.items` chargé avant la boucle (règle 6) : même si un doublon de
       // `ligneId` passait outre le refus ci-dessus, les deux écritures
@@ -524,7 +524,7 @@ export async function recevoirLignes(
       let coutZeroAVerifier: boolean | undefined;
       let message: string | undefined;
 
-      // Règle 2 — pas de produit rattaché : reçue au sens du bon, stock et
+      // Règle 2 - pas de produit rattaché : reçue au sens du bon, stock et
       // coût non touchés, et le résultat le dit.
       if (!ligne.productId) {
         message = "Aucun produit rattaché à cette ligne : le stock et le coût n'ont pas été modifiés.";
@@ -544,7 +544,7 @@ export async function recevoirLignes(
         } else {
           // Stock et coût en un seul `update` (au lieu de deux successifs) :
           // le stock en `{ increment }`, jamais en valeur absolue relue avant
-          // la boucle — voir `src/server/stock.ts`, l'invariant que ce module
+          // la boucle - voir `src/server/stock.ts`, l'invariant que ce module
           // partage désormais avec `adjustStock`/`setStock`. Deux réceptions
           // simultanées du même produit s'additionnent alors correctement au
           // lieu de s'écraser.
@@ -558,7 +558,7 @@ export async function recevoirLignes(
           });
 
           // Réécriture directe des écritures qu'aurait faites `adjustStock`
-          // (src/server/stock.ts) — voir le commentaire d'en-tête du fichier :
+          // (src/server/stock.ts) - voir le commentaire d'en-tête du fichier :
           // `adjustStock` ouvre sa propre transaction, elle ne peut pas être
           // appelée depuis celle-ci sans briser l'atomicité.
           await tx.stockMovement.create({
@@ -567,7 +567,7 @@ export async function recevoirLignes(
               delta: reception.quantite,
               reason: MOTIF_RECEPTION,
               note: options.note?.trim()
-                ? `Réception ${bon.reference} — ${options.note.trim()}`
+                ? `Réception ${bon.reference} - ${options.note.trim()}`
                 : `Réception ${bon.reference}`,
               createdBy: options.par ?? null,
             },
@@ -576,7 +576,7 @@ export async function recevoirLignes(
 
           if (options.majCoutProduit) {
             coutMisAJour = true;
-            // La valeur EFFECTIVEMENT écrite, lue dans le retour de l'update —
+            // La valeur EFFECTIVEMENT écrite, lue dans le retour de l'update -
             // pas `ligne.unitCostCents` recopié en aveugle. Un coût à 0 est une
             // saisie licite (échantillon, dotation fournisseur) qu'on ne
             // refuse pas, mais qui doit se voir : `src/lib/kk/marge.ts`
@@ -602,7 +602,7 @@ export async function recevoirLignes(
       });
     }
 
-    // Reconstruit dans l'ordre de la requête d'origine — voir règle 7.
+    // Reconstruit dans l'ordre de la requête d'origine - voir règle 7.
     const lignesResultat = receptions.map(
       (reception) => resultatsParLigneId.get(reception.ligneId) as ReceptionLigneResultat,
     );
@@ -622,7 +622,7 @@ export async function recevoirLignes(
 
 /**
  * Quantités restant à recevoir, par produit, sur les bons `envoye` et
- * `recu_partiel` — la colonne « en commande » de l'écran du stock. Elle
+ * `recu_partiel` - la colonne « en commande » de l'écran du stock. Elle
  * répond à la seule question qu'on se pose devant une rupture : est-ce que ça
  * arrive ?
  */

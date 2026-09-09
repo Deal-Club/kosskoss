@@ -14,13 +14,13 @@ import { BrandLoader } from "@/components/kk/brand-loader";
  * La phrase d'attente dit le positionnement, pas l'attente.
  *
  * « Nous préparons votre sélection » décrivait ce que la machine était en
- * train de faire — une information dont personne n'a l'usage. Ces deux ou
+ * train de faire - une information dont personne n'a l'usage. Ces deux ou
  * trois secondes sont le seul moment où le visiteur n'a rien d'autre à
  * regarder : autant qu'elles disent ce que la maison propose.
  *
  * « À chaque peau, sa solution » tient la promesse en quatre mots : un besoin
- * particulier, une réponse qui lui correspond. C'est la démarche du site —
- * on part du problème, on remonte vers le soin — et non une promesse de
+ * particulier, une réponse qui lui correspond. C'est la démarche du site -
+ * on part du problème, on remonte vers le soin - et non une promesse de
  * résultat, qui n'aurait rien à faire ici.
  */
 const MESSAGES: Record<string, string> = {

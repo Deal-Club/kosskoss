@@ -7,7 +7,7 @@ import "./globals.css";
 //
 // Cinzel ne sert plus qu'au logotype. C'est une capitale romaine sans vraie
 // bas-de-casse : ses minuscules sont des petites capitales, ce qui rend
-// exactement le « KossKoss » du logo officiel — mais rend un titre de section
+// exactement le « KossKoss » du logo officiel - mais rend un titre de section
 // pénible à lire, et un paragraphe impossible.
 const cinzel = Cinzel({
   subsets: ["latin"],
@@ -16,12 +16,12 @@ const cinzel = Cinzel({
   display: "swap",
 });
 
-// Cormorant Garamond porte les titres et les slogans — c'est la police
+// Cormorant Garamond porte les titres et les slogans - c'est la police
 // secondaire imposée par la charte de marque (planche A-8). Elle remplace
 // Playfair Display, qui n'y figurait pas.
 //
 // La charte demande Regular pour les titres, Medium/Bold pour les mises en
-// avant : d'où 400, 500 et 600. Attention en la maniant — son œil est
+// avant : d'où 400, 500 et 600. Attention en la maniant - son œil est
 // nettement plus petit que celui de Playfair, un titre y paraît donc plus
 // menu à corps égal (compensation mesurée dans globals.css).
 const cormorant = Cormorant_Garamond({
@@ -33,7 +33,7 @@ const cormorant = Cormorant_Garamond({
 
 // Montserrat porte le texte courant, l'interface et les descriptions : c'est
 // la police PRINCIPALE de la charte (planche A-8), en remplacement de Manrope.
-// Light et Regular pour le contenu, Medium pour les sous-titres — les graisses
+// Light et Regular pour le contenu, Medium pour les sous-titres - les graisses
 // 600 et 700 restent chargées pour les boutons et les étiquettes.
 const montserrat = Montserrat({
   subsets: ["latin", "latin-ext"],

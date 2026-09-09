@@ -49,7 +49,7 @@ export interface CampaignLanding {
  * Une campagne terminée ne rend pas sa page : elle afficherait des prix qui ne
  * sont plus appliqués au panier, ce qui est la définition d'une publicité
  * trompeuse. Les visiteurs qui reviennent par un vieux lien tombent donc sur
- * une page introuvable — le catalogue reste accessible par la navigation.
+ * une page introuvable - le catalogue reste accessible par la navigation.
  */
 export async function getCampaignLanding(
   slug: string,
@@ -96,7 +96,7 @@ export async function getCampaignLanding(
   if (products.length === 0) return undefined;
 
   // Repli sur le français quand la traduction anglaise est vide, règle appliquée
-  // partout dans la boutique — via `pickText`, jamais un accès direct au champ
+  // partout dans la boutique - via `pickText`, jamais un accès direct au champ
   // `*En`.
   const english = locale === "en";
   const kind = row.discountKind as DiscountKind;
@@ -150,7 +150,7 @@ function discountLabel(kind: DiscountKind, value: number, english: boolean): str
  * à rebours.
  *
  * Corrigé au passage : ce résidu de l'allemand du site d'origine (« Stunden »,
- * « Tage ») s'affichait encore sur la boutique française — l'allemand a été
+ * « Tage ») s'affichait encore sur la boutique française - l'allemand a été
  * entièrement retiré du projet (voir TARGET.md), cette fonction l'avait
  * oublié.
  */

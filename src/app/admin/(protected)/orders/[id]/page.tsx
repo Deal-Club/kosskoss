@@ -119,7 +119,7 @@ export default async function AdminOrderDetailPage({
                           </span>
                         )}
                       </td>
-                      <td className="py-3 pr-3 text-muted-foreground">{item.sku || "—"}</td>
+                      <td className="py-3 pr-3 text-muted-foreground">{item.sku || "-"}</td>
                       <td className="py-3 pr-3 text-right text-muted-foreground">
                         {formatPrice(item.unitPriceCents)}
                       </td>
@@ -145,8 +145,8 @@ export default async function AdminOrderDetailPage({
                       60 € de port sur une commande. */}
                   <span className="mt-0.5 block text-xs">
                     {order.shippingMethodKey === "express"
-                      ? "Express — 24 à 48 h"
-                      : "Standard — 3 à 5 jours"}
+                      ? "Express - 24 à 48 h"
+                      : "Standard - 3 à 5 jours"}
                   </span>
                 </dt>
                 <dd className="font-semibold text-foreground">
@@ -262,13 +262,13 @@ export default async function AdminOrderDetailPage({
             <h2 className="mb-3 text-sm font-black text-foreground">Consentements</h2>
             <p className="text-xs text-muted-foreground">
               CGV acceptées :{" "}
-              {order.termsAcceptedAt ? dateFormatter.format(new Date(order.termsAcceptedAt)) : "—"}
+              {order.termsAcceptedAt ? dateFormatter.format(new Date(order.termsAcceptedAt)) : "-"}
             </p>
             <p className="text-xs text-muted-foreground">
               Droit de rétractation confirmé :{" "}
               {order.withdrawalAcknowledgedAt
                 ? dateFormatter.format(new Date(order.withdrawalAcknowledgedAt))
-                : "—"}
+                : "-"}
             </p>
           </section>
         </div>

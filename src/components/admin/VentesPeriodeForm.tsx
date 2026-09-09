@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-// `periode` est un module pur — vérifié : aucun import. Rien de serveur
+// `periode` est un module pur - vérifié : aucun import. Rien de serveur
 // n'entre donc dans le paquet du navigateur par cette porte.
 import type { Raccourci } from "@/lib/kk/periode";
 

@@ -15,7 +15,7 @@
  *
  * L'expéditeur doit rester une adresse de la boîte authentifiée. Écrire au nom
  * d'un autre domaine ferait échouer SPF et DKIM, et le message partirait droit
- * en indésirable — quand le serveur ne le refuse pas d'emblée.
+ * en indésirable - quand le serveur ne le refuse pas d'emblée.
  */
 import nodemailer, { type Transporter } from "nodemailer";
 

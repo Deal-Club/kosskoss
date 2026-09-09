@@ -23,8 +23,8 @@ import {
  *
  * Le layout ne le monte que lorsqu'un fragment de mesure ou de publicité est
  * réellement actif au back-office (voir `tracageActif`). Sans traceur, la
- * boutique ne pose que le panier, la session et la langue — dispensés de
- * consentement par l'article 82 — et le bandeau ne paraît pas du tout.
+ * boutique ne pose que le panier, la session et la langue - dispensés de
+ * consentement par l'article 82 - et le bandeau ne paraît pas du tout.
  *
  * ── UNE PETITE CARTE, EN BAS À GAUCHE ────────────────────────────────────────
  *
@@ -32,8 +32,8 @@ import {
  * logo, trois paragraphes et un lien avant d'arriver aux boutons. Beaucoup de
  * cérémonie pour une question à deux issues.
  *
- * Il garde sa POSITION d'origine — coin bas gauche, hors du chemin du bouton
- * WhatsApp qui occupe le coin droit — mais tient désormais dans une vignette de
+ * Il garde sa POSITION d'origine - coin bas gauche, hors du chemin du bouton
+ * WhatsApp qui occupe le coin droit - mais tient désormais dans une vignette de
  * 21 rem : une phrase, deux boutons, un lien. Une barre pleine largeur avait
  * été essayée entre-temps ; elle barrait le hero de bout en bout, ce qui est
  * plus envahissant qu'une carte qu'on peut ignorer du coin de l'œil.
@@ -46,7 +46,7 @@ import {
  * accepter » mis en avant face à un refus caché derrière un second écran est
  * précisément ce que la CNIL sanctionne. Un bandeau à bouton unique, si
  * tentant soit-il pour ne plus déranger personne, serait un vice de
- * consentement — le refus doit rester aussi simple que l'accord.
+ * consentement - le refus doit rester aussi simple que l'accord.
  *
  * Le réglage fin passe en LIEN et non en troisième bouton : ceux qui veulent
  * trier catégorie par catégorie sont rares, et leur donner un bouton de même
@@ -62,7 +62,7 @@ import {
  * `<script>` réinjecté plus tard par React ne s'exécute pas : le navigateur
  * n'exécute que ce qui vient du flux HTML initial. Un simple `router.refresh()`
  * afficherait donc un consentement accepté sans que la moindre balise démarre.
- * D'où le rechargement complet — le seul moyen honnête de faire correspondre
+ * D'où le rechargement complet - le seul moyen honnête de faire correspondre
  * l'état affiché et l'état réel.
  *
  * Le rechargement n'a lieu QUE si le choix change ce qui est chargé : refuser
@@ -151,7 +151,7 @@ function readConsentCookie(): Consent | null {
  * `instantaneServeur` répond « rien à demander » : le HTML livré ne contient
  * donc jamais le bandeau, aucune hydratation ne diverge, et React réconcilie
  * ensuite avec la valeur réelle. Un état posé dans un effet aurait fait la même
- * chose au prix d'un rendu en cascade — ce que le compilateur React refuse.
+ * chose au prix d'un rendu en cascade - ce que le compilateur React refuse.
  */
 function souscrireCookie(): () => void {
   // Personne d'autre ne modifie ce cookie pendant la vie de la page : après un
@@ -265,8 +265,8 @@ export function CookieConsent({ locale = "fr" }: { locale?: string }) {
 
     // Le rechargement n'existe que pour laisser DÉMARRER des balises qui
     // n'étaient pas dans le flux HTML. Si le choix n'ouvre aucune catégorie qui
-    // n'était pas déjà ouverte — un refus, ou un simple resserrement des
-    // réglages — il n'y a rien à faire partir, et recharger la page ne ferait
+    // n'était pas déjà ouverte - un refus, ou un simple resserrement des
+    // réglages - il n'y a rien à faire partir, et recharger la page ne ferait
     // que punir le visiteur d'avoir répondu.
     const ouvreQuelqueChose =
       (consent.mesure && !avant?.mesure) || (consent.marketing && !avant?.marketing);

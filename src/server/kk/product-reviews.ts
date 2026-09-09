@@ -4,7 +4,7 @@ import { prisma } from "@/server/prisma";
  * Avis PUBLIÉS d'un produit, tels que la fiche les montre.
  *
  * Distinct de `server/reviews.ts`, qui sert la modération et manipule des
- * enregistrements complets — adresse e-mail de l'auteur, note du modérateur,
+ * enregistrements complets - adresse e-mail de l'auteur, note du modérateur,
  * statut. Rien de tout cela ne doit traverser la frontière serveur/client :
  * cette lecture ne renvoie que ce qui s'affiche.
  *
@@ -15,7 +15,7 @@ import { prisma } from "@/server/prisma";
  * À la différence de l'accueil, qui ne montre que les avis de 4 et 5 étoiles
  * parce que c'est une vitrine, la fiche produit porte TOUTES les notes
  * publiées. Une page qui ne montrerait que des éloges ne se lit plus comme une
- * page d'avis, et la clientèle visée — qui redoute d'abord la contrefaçon — est
+ * page d'avis, et la clientèle visée - qui redoute d'abord la contrefaçon - est
  * précisément celle qui vérifie.
  */
 
@@ -35,7 +35,7 @@ export interface KKProductReviews {
   count: number;
   /** Moyenne sur 5, arrondie au dixième. 0 si aucun avis publié. */
   average: number;
-  /** Nombre d'avis par note, de 1 à 5 étoiles — index 0 = 1 étoile. */
+  /** Nombre d'avis par note, de 1 à 5 étoiles - index 0 = 1 étoile. */
   distribution: [number, number, number, number, number];
 }
 

@@ -35,7 +35,7 @@ import { COMPANY } from "@/content/legal/company";
  * Identification du fournisseur, en pied des e-mails de campagne.
  *
  * Elle était RECOPIÉE ici, au motif que ce module ne devait dépendre d'aucun
- * contenu de page — le vrai coût étant le poids : les coordonnées vivaient au
+ * contenu de page - le vrai coût étant le poids : les coordonnées vivaient au
  * milieu de 34 Ko de texte juridique. La copie avait déjà divergé : elle gardait
  * ses propres « À compléter » quand la source ne les avait plus.
  *
@@ -148,7 +148,7 @@ function clickUrl(token: string, path?: string): string {
   const base = `${siteUrl()}/c/${token}`;
   // La destination voulue voyage en paramètre : la route /c sait ainsi vers
   // quelle fiche renvoyer quand la campagne porte plusieurs produits. Si elle
-  // l'ignore, le client atterrit simplement sur la page d'action — le clic
+  // l'ignore, le client atterrit simplement sur la page d'action - le clic
   // reste compté dans les deux cas.
   if (!path) return base;
   return `${base}?ziel=${encodeURIComponent(path)}`;
@@ -461,7 +461,7 @@ function renderText(input: RenderInput & { bodyText: string }): string {
   if (input.products.length > 0) {
     lines.push("");
     for (const product of input.products) {
-      lines.push(`- ${product.brand} ${product.name} — ${priceText(product, input.locale)}`);
+      lines.push(`- ${product.brand} ${product.name} - ${priceText(product, input.locale)}`);
     }
   }
 
@@ -470,8 +470,8 @@ function renderText(input: RenderInput & { bodyText: string }): string {
     "---",
     `${IMPRESSUM.name}, ${IMPRESSUM.street}, ${IMPRESSUM.city}, ${IMPRESSUM.country}`,
     isEnglish
-      ? `Managing director: ${IMPRESSUM.managingDirector} — ${IMPRESSUM.register} — VAT ID: ${IMPRESSUM.vatId}`
-      : `Président : ${IMPRESSUM.managingDirector} — ${IMPRESSUM.register} — TVA intracommunautaire : ${IMPRESSUM.vatId}`,
+      ? `Managing director: ${IMPRESSUM.managingDirector} - ${IMPRESSUM.register} - VAT ID: ${IMPRESSUM.vatId}`
+      : `Président : ${IMPRESSUM.managingDirector} - ${IMPRESSUM.register} - TVA intracommunautaire : ${IMPRESSUM.vatId}`,
     `${isEnglish ? "Legal notice" : "Mentions légales"} : ${input.legalUrl}`,
     `${isEnglish ? "Privacy policy" : "Politique de confidentialité"} : ${input.privacyUrl}`,
     "",

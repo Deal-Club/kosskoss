@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { Monogram } from "@/components/kk/motifs";
 
 /**
- * Marque KossKoss Select — logotype en Cinzel (aucune image : recolorable
+ * Marque KossKoss Select - logotype en Cinzel (aucune image : recolorable
  * selon le fond). `tone="light"` sur fond sombre (back-office), `dark` sur clair.
  */
 
@@ -23,7 +23,7 @@ const LOGO_WIDTH = 1070;
 const LOGO_HEIGHT = 306;
 
 /**
- * Logo OFFICIEL, le fichier fourni par la marque — à préférer partout où le
+ * Logo OFFICIEL, le fichier fourni par la marque - à préférer partout où le
  * rendu doit être le logo lui-même et non son approximation typographique.
  *
  * C'est ce composant qu'utilise le back-office. La différence avec `Logo`

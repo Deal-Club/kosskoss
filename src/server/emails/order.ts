@@ -201,7 +201,7 @@ function itemsTable(
     order.shippingCents === 0 ? labels.freeShipping : formatCents(order.shippingCents);
   // Le mode de livraison est nommé sur la ligne des frais : « 60,00 € » seul
   // laisserait le client chercher d'où vient la somme.
-  const shippingLabel = `${labels.shipping} — ${labels.shippingMethod}`;
+  const shippingLabel = `${labels.shipping} - ${labels.shippingMethod}`;
 
   const summaryRow = (label: string, value: string, strong = false) =>
     `<tr>
@@ -259,7 +259,7 @@ function addressLines(address: OrderAddress): string[] {
   ];
 }
 
-/** Version texte brut d'une adresse — les clients sans HTML la voient. */
+/** Version texte brut d'une adresse - les clients sans HTML la voient. */
 function addressText(address: OrderAddress): string {
   return [
     address.company,
@@ -276,7 +276,7 @@ function itemsText(order: OrderRecord): string {
   return order.items
     .map((item) => {
       const label = item.variantLabel ? ` (${item.variantLabel})` : "";
-      return `- ${item.quantity} × ${`${item.brand} ${item.name}`.trim()}${label} — ${formatCents(item.lineTotalCents)}`;
+      return `- ${item.quantity} × ${`${item.brand} ${item.name}`.trim()}${label} - ${formatCents(item.lineTotalCents)}`;
     })
     .join("\n");
 }
@@ -356,7 +356,7 @@ export function buildOrderConfirmationEmail(
 
   // Coordonnées du virement : mêmes champs que la page de confirmation, dans le
   // même ordre. Chaque ligne n'apparaît que si elle est renseignée, sauf la
-  // référence — toujours le numéro de commande.
+  // référence - toujours le numéro de commande.
   const bankPanel = bankOrder
     ? panel(fr ? "Coordonnées bancaires" : "Bank details", [
         bankOrder.holder
@@ -390,16 +390,16 @@ export function buildOrderConfirmationEmail(
   const html = layout({
     lang,
     preheader: fr
-      ? `Commande ${order.orderNumber} — ${formatCents(order.totalCents)}`
-      : `Order ${order.orderNumber} — ${formatCents(order.totalCents)}`,
+      ? `Commande ${order.orderNumber} - ${formatCents(order.totalCents)}`
+      : `Order ${order.orderNumber} - ${formatCents(order.totalCents)}`,
     heading,
     intro,
     blocks: [bankPanel, table, payment, shippingPanel, billingPanel, notePanel].filter(Boolean),
     action: { label: fr ? "Voir ma commande" : "View order", url: orderUrl },
     footnote: escapeHtml(footnote),
     footer: fr
-      ? "KossKoss Select — message automatique relatif à votre commande."
-      : "KossKoss Select — automated message about your order.",
+      ? "KossKoss Select - message automatique relatif à votre commande."
+      : "KossKoss Select - automated message about your order.",
   });
 
   const bankText = bankOrder
@@ -434,7 +434,7 @@ export function buildOrderConfirmationEmail(
     itemsText(order),
     "",
     `${fr ? "Sous-total" : "Subtotal"} : ${formatCents(order.subtotalCents)}`,
-    `${fr ? "Livraison" : "Shipping"} — ${shippingMethod} : ${order.shippingCents === 0 ? (fr ? "offerte" : "free") : formatCents(order.shippingCents)}`,
+    `${fr ? "Livraison" : "Shipping"} - ${shippingMethod} : ${order.shippingCents === 0 ? (fr ? "offerte" : "free") : formatCents(order.shippingCents)}`,
     `${fr ? "Total" : "Total"} : ${formatCents(order.totalCents)}`,
     "",
     `${fr ? "Paiement" : "Payment"} : ${order.paymentMethodLabel}`,
@@ -473,9 +473,9 @@ export function buildOrderNotificationEmail(order: OrderRecord): Omit<MailMessag
 
   const intro = [
     `Commande <strong>${escapeHtml(order.orderNumber)}</strong> reçue le ${escapeHtml(placed)}.`,
-    `Montant : <strong>${escapeHtml(formatCents(order.totalCents))}</strong> — paiement : ${escapeHtml(order.paymentMethodLabel)}${order.paymentMethodFee ? ` (${escapeHtml(order.paymentMethodFee)})` : ""}.`,
+    `Montant : <strong>${escapeHtml(formatCents(order.totalCents))}</strong> - paiement : ${escapeHtml(order.paymentMethodLabel)}${order.paymentMethodFee ? ` (${escapeHtml(order.paymentMethodFee)})` : ""}.`,
     express
-      ? `<strong>${escapeHtml(shippingMethod)}</strong> — à préparer en priorité.`
+      ? `<strong>${escapeHtml(shippingMethod)}</strong> - à préparer en priorité.`
       : `Livraison : ${escapeHtml(shippingMethod)}.`,
   ];
 
@@ -509,14 +509,14 @@ export function buildOrderNotificationEmail(order: OrderRecord): Omit<MailMessag
 
   const html = layout({
     lang: "fr",
-    preheader: `${order.orderNumber} — ${formatCents(order.totalCents)} — ${order.paymentMethodLabel}`,
+    preheader: `${order.orderNumber} - ${formatCents(order.totalCents)} - ${order.paymentMethodLabel}`,
     heading,
     intro,
     blocks: [table, customer, shippingPanel, billingPanel, notePanel].filter(Boolean),
     action: { label: "Ouvrir dans le back-office", url: adminUrl },
     footnote:
       "Le stock a déjà été réservé à l'enregistrement de la commande. Le paiement est encore en attente : à confirmer dans le back-office dès réception.",
-    footer: "KossKoss Select — notification automatique du back-office.",
+    footer: "KossKoss Select - notification automatique du back-office.",
   });
 
   const text = [
@@ -551,7 +551,7 @@ export function buildOrderNotificationEmail(order: OrderRecord): Omit<MailMessag
     .join("\n");
 
   return {
-    subject: `Nouvelle commande ${order.orderNumber} — ${formatCents(order.totalCents)}`,
+    subject: `Nouvelle commande ${order.orderNumber} - ${formatCents(order.totalCents)}`,
     html,
     text,
   };

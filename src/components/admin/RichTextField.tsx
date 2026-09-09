@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  * La barre d'outils insère des marques dans le texte (`**gras**`, `*italique*`,
  * `[libellé](lien)`) plutôt que de manipuler du HTML : ce qui est enregistré
  * reste du texte, lisible et diffable, et le rendu public passe par le même
- * composant `RichText` que l'aperçu affiché ici — ce que voit l'administrateur
+ * composant `RichText` que l'aperçu affiché ici - ce que voit l'administrateur
  * est donc exactement ce que verra un client.
  *
  * L'aperçu n'apparaît que si le texte contient une marque. Sur un champ sans

@@ -10,7 +10,7 @@ import type { KKRoutineView } from "@/types/kk";
  * C'est le bloc 5 de la structure fournie par le client (colonne « STRUCTURE DU
  * SITE » de la maquette « Toutes pages ») : routines prêtes · par préoccupation
  * · ajout direct au panier. Il se place avant les catégories et les
- * best-sellers, conformément au plan — les modules « solution » passent devant
+ * best-sellers, conformément au plan - les modules « solution » passent devant
  * les modules « produit ».
  *
  * Défilement horizontal jusqu'à `lg`, où les cinq cartes tiennent en ligne.
@@ -45,7 +45,7 @@ export async function RoutinesRail({ routines }: { routines: KKRoutineView[] }) 
 
           `snap-x` cale chaque carte sur le bord gauche : on ne s'arrête jamais
           entre deux cartes. Les marges négatives font courir la piste jusqu'aux
-          bords de l'écran alors que la section reste dans sa gouttière — sans
+          bords de l'écran alors que la section reste dans sa gouttière - sans
           quoi la carte suivante semble coupée par une marge et non par le bord,
           et rien n'indique qu'on peut faire défiler.
 

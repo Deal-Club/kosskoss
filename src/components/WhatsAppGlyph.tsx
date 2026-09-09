@@ -3,20 +3,20 @@
  *
  * Extrait de `WhatsAppButton.tsx` dans un fichier à part : ce dernier importe
  * désormais `@/server/kk/parametres` (donc Prisma) pour lire le numéro en
- * base, et `share-buttons.tsx` — un composant CLIENT — n'a besoin que du
+ * base, et `share-buttons.tsx` - un composant CLIENT - n'a besoin que du
  * tracé, pas de la lecture serveur. Importer le glyphe depuis
  * `WhatsAppButton.tsx` aurait entraîné tout son graphe d'imports, Prisma
  * compris, dans le bundle navigateur (échec de build : Prisma dépend de
  * modules Node comme `tls`, absents côté client).
  *
  * Celui d'avant était redessiné à la main : la bulle et le combiné y étaient
- * approximés, et à 28 px l'écart se voyait — combiné trop épais, bulle trop
+ * approximés, et à 28 px l'écart se voyait - combiné trop épais, bulle trop
  * fine, queue mal raccordée. Un logo de marque ne se redessine pas de mémoire ;
  * on sert le tracé de référence (simple-icons, identique au mark officiel), qui
  * est un chemin unique conçu pour être rempli d'une seule couleur.
  *
  * lucide-react v1 a retiré ses icônes de marque pour des raisons d'usage des
- * marques déposées — d'où ce tracé posé ici plutôt qu'un import.
+ * marques déposées - d'où ce tracé posé ici plutôt qu'un import.
  */
 export function WhatsAppGlyph({ className }: { className?: string }) {
   return (

@@ -4,7 +4,7 @@
  * Toutes les routes de webhook vivent sous /api/payments/webhook/<prestataire>.
  * Cette URL est à déclarer telle quelle chez le prestataire ; certains (Square)
  * la font même entrer dans le calcul de la signature, donc la moindre
- * différence — barre oblique finale, `www.` en trop — rejette toutes les
+ * différence - barre oblique finale, `www.` en trop - rejette toutes les
  * notifications. Les tests de connexion l'affichent pour qu'elle soit recopiée
  * plutôt que retapée.
  */

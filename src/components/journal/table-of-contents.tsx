@@ -6,7 +6,7 @@ import type { TocEntry } from "@/types/journal";
  *
  * Les ancres viennent de `tableOfContents()`, la même fonction qui pose les
  * `id` sur les titres rendus : les deux ne peuvent pas diverger. Rien ici n'est
- * en JavaScript — ce sont des liens d'ancrage, ils fonctionnent au clavier, se
+ * en JavaScript - ce sont des liens d'ancrage, ils fonctionnent au clavier, se
  * partagent, et survivent à une page dont le script n'a pas chargé.
  *
  * Le sommaire n'apparaît qu'à partir de trois titres : au-dessous, il occupe

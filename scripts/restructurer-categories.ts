@@ -14,7 +14,7 @@
  *
  * Aucun produit n'est supprimé : ils changent de rattachement, ils conservent
  * leur slug, leurs visuels, leur stock et leurs avis. Les commandes déjà
- * passées ne bougent pas non plus — chaque ligne de commande recopie le
+ * passées ne bougent pas non plus - chaque ligne de commande recopie le
  * libellé du produit au moment de l'achat.
  *
  * Relançable : tout passe par des upserts sur le slug.
@@ -145,9 +145,9 @@ const UNIVERS: UniversCible[] = [
         label: "Granulés de bois",
         labelEn: "Wood pellets",
         description:
-          "Certifiés ENplus A1, fabriqués à partir de sciure non traitée. Pour poêles et chaudières à granulés — un taux de cendres sous 0,7 % pour que le brûleur reste propre.",
+          "Certifiés ENplus A1, fabriqués à partir de sciure non traitée. Pour poêles et chaudières à granulés - un taux de cendres sous 0,7 % pour que le brûleur reste propre.",
         descriptionEn:
-          "ENplus A1 certified, made from untreated sawdust. For pellet stoves and boilers — an ash content below 0.7% keeps the burner clean.",
+          "ENplus A1 certified, made from untreated sawdust. For pellet stoves and boilers - an ash content below 0.7% keeps the burner clean.",
         image: `${IMG}/pellets.jpg`,
         guideIntro:
           "La certification ENplus A1 est le seul repère qui compte au moment d'acheter des granulés : elle garantit un taux d'humidité sous 10 %, un taux de cendres sous 0,7 % et une tenue mécanique qui évite que le sac se transforme en sciure pendant le transport.",
@@ -192,9 +192,9 @@ const UNIVERS: UniversCible[] = [
         guideIntroEn:
           "Compressed logs do not replace split firewood, they complement it: less storage space, longer burn, and a cleanliness split logs will never match. Many customers burn split wood by day and keep compressed logs for the night.",
         guideClosing:
-          "Attention à la puissance : le bois compressé chauffe fort. Dans un petit poêle, une bûche suffit là où il en faudrait trois en feuillu — surcharger fait monter la température au-delà de ce que l'appareil supporte.",
+          "Attention à la puissance : le bois compressé chauffe fort. Dans un petit poêle, une bûche suffit là où il en faudrait trois en feuillu - surcharger fait monter la température au-delà de ce que l'appareil supporte.",
         guideClosingEn:
-          "Mind the output: compressed logs burn hot. In a small stove one log does the work of three split logs — overloading pushes temperatures beyond what the appliance can take.",
+          "Mind the output: compressed logs burn hot. In a small stove one log does the work of three split logs - overloading pushes temperatures beyond what the appliance can take.",
         sections: [
           {
             heading: "Un tiers de la place",
@@ -281,8 +281,8 @@ const CATEGORIES_ESSENCE = new Set(["buche", "eiche", "birke", "esche", "harthol
 const BASCULE_EN_BLOC = new Map([
   ["holzpellets", "granules"],
   ["holzbriketts", "bois-compresse"],
-  // « Allumage » n'est plus une catégorie : ses produits — petit bois
-  // résineux et allume-feux — rejoignent le bois compressé, le rayon le plus
+  // « Allumage » n'est plus une catégorie : ses produits - petit bois
+  // résineux et allume-feux - rejoignent le bois compressé, le rayon le plus
   // proche par l'usage. Les deux slugs sont listés car la base a pu s'arrêter
   // à l'un ou à l'autre selon qu'elle a déjà connu la première restructuration.
   ["anzuendholz", "bois-compresse"],
@@ -408,7 +408,7 @@ async function main() {
   if (orphelins.length > 0) {
     // On s'arrête avant toute suppression : un produit sans destination
     // disparaîtrait avec sa catégorie d'origine.
-    console.error("\nProduits sans catégorie cible — RIEN N'A ÉTÉ SUPPRIMÉ :");
+    console.error("\nProduits sans catégorie cible - RIEN N'A ÉTÉ SUPPRIMÉ :");
     for (const orphelin of orphelins) console.error(`  - ${orphelin}`);
     throw new Error("Reclassement incomplet, la suppression des anciennes catégories est annulée.");
   }
@@ -444,7 +444,7 @@ async function main() {
     console.log(`\n${univers.label}  (/${univers.slug})`);
     for (const categorie of univers.categories) {
       console.log(
-        `  ${categorie.label.padEnd(30)} /${univers.slug}/${categorie.slug}  — ${categorie._count.products} produits`,
+        `  ${categorie.label.padEnd(30)} /${univers.slug}/${categorie.slug}  - ${categorie._count.products} produits`,
       );
     }
   }

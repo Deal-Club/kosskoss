@@ -36,15 +36,15 @@ export async function generateMetadata({ params }: { params: HomeParams }): Prom
  * client (colonne « STRUCTURE DU SITE » de la maquette « Toutes pages », voir
  * docs/design-references/kks/).
  *
- * Le principe qui commande l'ordre : les modules « solution » — diagnostic,
- * routines — passent avant les modules « produit » — catégories, best-sellers.
+ * Le principe qui commande l'ordre : les modules « solution » - diagnostic,
+ * routines - passent avant les modules « produit » - catégories, best-sellers.
  * C'est l'approche « Besoins / solution » demandée, et c'est l'inverse de
  * l'accueil précédent, qui plaçait trois blocs produit devant le diagnostic et
  * ne proposait aucune routine.
  *
  * Les blocs 6+7 et 8+9+10 sont composés EN COLONNES et non en bandes pleine
  * largeur : c'est ce qui permet de tenir treize blocs sans allonger la page,
- * et c'est aussi ce qui autorise des titres plus petits — une bande pleine
+ * et c'est aussi ce qui autorise des titres plus petits - une bande pleine
  * largeur appelle un gros titre pour ne pas paraître vide.
  */
 export default async function Home({ params }: { params: HomeParams }) {
@@ -80,7 +80,7 @@ export default async function Home({ params }: { params: HomeParams }) {
   //
   // Douze références et non quatre : le rail défile en boucle, et une liste
   // trop courte fait repasser les mêmes produits toutes les quelques secondes
-  // — la boucle devient alors visible, ce qui est exactement ce qu'elle doit
+  // - la boucle devient alors visible, ce qui est exactement ce qu'elle doit
   // éviter. `getHomeProducts` alterne les marques, donc les douze ne viennent
   // pas de la même maison.
   const bestsellers = products.slice(0, 12);
@@ -103,10 +103,10 @@ export default async function Home({ params }: { params: HomeParams }) {
       />
 
       <main className="flex-1">
-        {/* 1 — Hero */}
+        {/* 1 - Hero */}
         <Hero />
 
-        {/* 2 — Promesses clés. En deuxième position et non en onzième :
+        {/* 2 - Promesses clés. En deuxième position et non en onzième :
             l'identité de marque désigne la peur de la contrefaçon comme le
             premier frein de la cible. */}
         <PromisesRow />
@@ -116,7 +116,7 @@ export default async function Home({ params }: { params: HomeParams }) {
             entièrement, et le cœur de la promesse de marque. */}
         <RoutinesRail routines={routines} />
 
-        {/* Notre raison d'être — trois obstacles, trois réponses chiffrées,
+        {/* Notre raison d'être - trois obstacles, trois réponses chiffrées,
             puis l'anatomie d'une routine réelle.
 
             Elle remplace un comparateur à curseur sur un visage, refusé par le
@@ -135,7 +135,7 @@ export default async function Home({ params }: { params: HomeParams }) {
             contraignait tout le reste : le rail de produits tenait dans les deux
             tiers restants, les deux cartes devaient s'égaliser en hauteur, et la
             colonne des catégories doublait une navigation déjà complète dans
-            l'en-tête — méga-menu compris. Le rayon se parcourt maintenant d'un
+            l'en-tête - méga-menu compris. Le rayon se parcourt maintenant d'un
             bord à l'autre de la section, ce qu'un carrousel demande : plus de
             produits visibles d'un coup d'œil, et une piste assez longue pour que
             le défilement ait un intérêt.
@@ -147,7 +147,7 @@ export default async function Home({ params }: { params: HomeParams }) {
           {/* `grid-cols-[minmax(0,1fr)]` : SANS LUI, TOUTE LA PAGE DÉBORDE.
               Le rail est un carrousel : sa piste, les douze cartes mises bout à
               bout, mesure plusieurs milliers de pixels. Dans une colonne `auto`
-              — ce que le navigateur choisit faute de déclaration — cette piste
+              - ce que le navigateur choisit faute de déclaration - cette piste
               dicte la largeur, et c'est la PAGE entière qui part en défilement
               horizontal, en emportant l'en-tête et le hero (mesuré à 6 118 px de
               large sur un écran de 390). `minmax(0, 1fr)` borne la colonne au
@@ -176,7 +176,7 @@ export default async function Home({ params }: { params: HomeParams }) {
             restent dans le dépôt mais n'ont plus aucun appelant : à supprimer
             si la décision se confirme. */}
 
-        {/* « Un problème, une réponse » — les préoccupations nommées, chacune
+        {/* « Un problème, une réponse » - les préoccupations nommées, chacune
             ouvrant son rayon filtré.
 
             Elle précède immédiatement « Vous ne savez pas par où commencer ? »,
@@ -187,9 +187,9 @@ export default async function Home({ params }: { params: HomeParams }) {
         <GammeSection focus={focus} />
 
 
-        {/* 8 + 9 — Conseils et avant/après, MAINTENANT AVANT LES AVIS.
-            L'ordre était inverse. Les questions qu'on se pose — comment on
-            choisit, en combien de temps ça agit, ce que ça donne en photo — sont
+        {/* 8 + 9 - Conseils et avant/après, MAINTENANT AVANT LES AVIS.
+            L'ordre était inverse. Les questions qu'on se pose - comment on
+            choisit, en combien de temps ça agit, ce que ça donne en photo - sont
             les dernières objections avant l'achat ; la parole des clientes vient
             les confirmer, pas les précéder. La FAQ ferme donc l'argumentaire et
             les avis le scellent, juste avant le pied de page.
@@ -198,14 +198,14 @@ export default async function Home({ params }: { params: HomeParams }) {
             tout seul. */}
         <InsightsSection entries={faq} cases={AVANT_APRES} />
 
-        {/* Les avis en dernier mot, juste avant le pied de page — la position
+        {/* Les avis en dernier mot, juste avant le pied de page - la position
             qu'occupe la preuve sociale quand tout le reste a été dit. La section
             disparaît d'elle-même tant qu'aucun avis n'est publié en base. */}
         <AvisClients avis={testimonials} resume={avisResume} />
 
       </main>
 
-      {/* 13 — Footer */}
+      {/* 13 - Footer */}
       <SiteFooter />
     </div>
   );

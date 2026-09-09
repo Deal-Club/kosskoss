@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
  * Le routage multilingue RÉÉCRIT l'adresse demandée (« /truc » devient
  * « /fr/truc ») avant que Next ne cherche la route. Une adresse inconnue
  * n'échoue donc pas au routage : elle est résolue, puis rendue à l'intérieur du
- * gabarit de langue — et la réponse repart avec un code **200**.
+ * gabarit de langue - et la réponse repart avec un code **200**.
  *
  * C'est un « faux 404 » : le visiteur voit bien la page d'erreur, mais les
  * moteurs de recherche reçoivent « cette page existe » et l'indexent. Une
@@ -18,7 +18,7 @@ import { notFound } from "next/navigation";
  * main à `not-found.tsx` AVEC le code 404. Elle n'a volontairement aucun
  * contenu : tout ce que le visiteur lit vient de la page d'erreur voisine.
  *
- * Elle est la moins prioritaire du routage — toute route réelle, statique ou
+ * Elle est la moins prioritaire du routage - toute route réelle, statique ou
  * dynamique, passe avant elle. Ajouter une page n'a donc jamais à la modifier.
  */
 export default function Introuvable(): never {

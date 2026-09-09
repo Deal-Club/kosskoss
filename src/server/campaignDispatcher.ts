@@ -13,7 +13,7 @@
  * Deuxième principe : rien ne doit pouvoir figer une campagne. Le verrou est
  * pris par une écriture conditionnelle, il expire tout seul au bout de dix
  * minutes si le serveur tombe en plein lot, et il est relâché dans un `finally`.
- * Un échec d'envoi, lui, n'interrompt jamais le lot — une seule adresse morte
+ * Un échec d'envoi, lui, n'interrompt jamais le lot - une seule adresse morte
  * bloquerait sinon toute la file derrière elle.
  *
  * Le module est appelé par une tâche planifiée ou par une route d'entretien ;
@@ -103,7 +103,7 @@ export async function dispatchCampaign(campaignId: string): Promise<DispatchRepo
   }
 
   // Prise du verrou : écriture conditionnelle, donc atomique. Si aucune ligne
-  // n'est touchée, un autre passage travaille déjà sur cette campagne — ou le
+  // n'est touchée, un autre passage travaille déjà sur cette campagne - ou le
   // statut vient de changer entre la lecture ci-dessus et maintenant.
   const now = new Date();
   const staleBefore = new Date(now.getTime() - LOCK_TIMEOUT_MS);
@@ -223,8 +223,8 @@ async function runBatch(campaign: CampaignDetail): Promise<DispatchReport> {
 /**
  * Les trois fonctions ci-dessous avalent leurs propres erreurs.
  *
- * Une écriture qui échoue après un envoi réussi est ennuyeuse — le message
- * repartira au prochain lot — mais elle ne doit surtout pas faire tomber la
+ * Une écriture qui échoue après un envoi réussi est ennuyeuse - le message
+ * repartira au prochain lot - mais elle ne doit surtout pas faire tomber la
  * boucle : le reste du lot, lui, partirait alors deux fois.
  */
 async function markSent(campaignId: string, recipientId: string): Promise<void> {

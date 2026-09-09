@@ -8,8 +8,8 @@
  * s'authentifier. Mais l'absence d'outil ne justifie pas l'absence de trace :
  * aujourd'hui, une erreur survenue chez un client ne laisse RIEN nulle part.
  *
- * Ce module est la couture. Il journalise côté serveur — donc dans les journaux
- * de l'hébergeur, consultables dès maintenant — et concentre en un seul endroit
+ * Ce module est la couture. Il journalise côté serveur - donc dans les journaux
+ * de l'hébergeur, consultables dès maintenant - et concentre en un seul endroit
  * l'appel qu'il faudra remplacer le jour où un collecteur existe. Brancher
  * Sentry consistera alors à changer le corps d'UNE fonction, pas à parcourir
  * l'application à la recherche des endroits où poser un appel.

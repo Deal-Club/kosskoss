@@ -3,7 +3,7 @@
  *
  * Même parti pris que `productListing.ts` : le découpage se fait en mémoire,
  * les volumes concernés ne justifient pas encore un LIMIT/OFFSET. Ce qui est
- * verrouillé ici, c'est la recherche insensible aux accents — « hydratation »
+ * verrouillé ici, c'est la recherche insensible aux accents - « hydratation »
  * doit trouver « Hydratation », et « ete » doit trouver « été ».
  *
  * Lancer avec : npm test
@@ -66,7 +66,7 @@ describe("isJournalSort", () => {
   });
 });
 
-describe("filterAndSortArticles — recherche", () => {
+describe("filterAndSortArticles - recherche", () => {
   it("rend tout le corpus sans critère", () => {
     assert.equal(filterAndSortArticles(CORPUS, {}).length, 3);
   });
@@ -96,7 +96,7 @@ describe("filterAndSortArticles — recherche", () => {
   });
 });
 
-describe("filterAndSortArticles — filtres", () => {
+describe("filterAndSortArticles - filtres", () => {
   it("filtre par statut", () => {
     const found = filterAndSortArticles(CORPUS, { status: "draft" });
     assert.deepEqual(found.map((a) => a.slug), ["routine-brouillon"]);
@@ -117,7 +117,7 @@ describe("filterAndSortArticles — filtres", () => {
   });
 });
 
-describe("filterAndSortArticles — tri", () => {
+describe("filterAndSortArticles - tri", () => {
   it("classe du plus récent au plus ancien par défaut", () => {
     const sorted = filterAndSortArticles(CORPUS, {});
     assert.deepEqual(sorted.map((a) => a.slug), [

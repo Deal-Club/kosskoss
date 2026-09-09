@@ -1,4 +1,4 @@
-# Déploiement Vercel — KossKoss Select
+# Déploiement Vercel - KossKoss Select
 
 Le projet est un Next.js standard : Vercel le construit directement (`next build`).
 Le `server.js` (hébergement Hostinger historique) est **ignoré** par Vercel.
@@ -44,7 +44,7 @@ Copier les valeurs des secrets depuis ton `.env.local` (elles ne sont **pas** da
 
 ## 4. Déployer
 Cliquer **Deploy**. Le build lance `prisma generate` (postinstall) puis `next build`
-(qui interroge la base pour pré-générer les pages — d'où l'importance de
+(qui interroge la base pour pré-générer les pages - d'où l'importance de
 `DATABASE_URL`).
 
 ## 5. Après le premier déploiement

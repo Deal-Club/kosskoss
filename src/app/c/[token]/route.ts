@@ -4,7 +4,7 @@
  * Trois choses arrivent en une seule requête : le clic est enregistré, le
  * cookie d'attribution est posé, et le visiteur repart vers la page voulue.
  * Faire pointer les messages directement sur la fiche produit ferait gagner une
- * redirection et perdrait toute la mesure — c'est le compromis assumé.
+ * redirection et perdrait toute la mesure - c'est le compromis assumé.
  */
 
 import { NextResponse } from "next/server";

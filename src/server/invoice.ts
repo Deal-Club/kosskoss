@@ -12,7 +12,7 @@
  *
  * La TVA a été retirée du système : la facture ne présente ni taux, ni montant
  * de taxe, ni numéro de TVA. L'encadré « TVA intracommunautaire » de l'ancienne
- * activité française n'a pas été repris — cette notion est propre à l'Union
+ * activité française n'a pas été repris - cette notion est propre à l'Union
  * européenne et n'a pas d'équivalent camerounais (voir le pied de page).
  *
  * pdf-lib n'embarque que les polices WinAnsi : tout caractère hors de ce jeu
@@ -72,19 +72,19 @@ const PIED_RESERVE = 128;
  * lettres accentuées appartiennent à WinAnsi et sont gardées. Le signe euro a
  * été retiré de la liste autorisée : plus aucune chaîne imprimée sur la facture
  * n'en contient depuis le passage au FCFA. Attention, ce filtre ne SIGNALE
- * rien — un « € » qui réapparaîtrait serait effacé sans bruit, laissant un
+ * rien - un « € » qui réapparaîtrait serait effacé sans bruit, laissant un
  * montant nu. C'est délibéré : cette fonction s'exécute sur le chemin d'un
  * paiement déjà encaissé, où lever ferait redélivrer le webhook. Le garde-fou
  * qui, lui, doit alerter est le test de formatage (lib/kk/format.test.ts).
  */
 function winAnsi(valeur: string): string {
   return (valeur ?? "")
-    .replace(/[—–]/g, "-")
+    .replace(/[-–]/g, "-")
     .replace(/[“”„]/g, '"')
     .replace(/[‘’‚]/g, "'")
     .replace(/…/g, "...")
     // Espaces fines et insécables : celle qu'Intl place entre les milliers est
-    // une U+202F, absente de WinAnsi — sans cette conversion, « 1 845,00 » se
+    // une U+202F, absente de WinAnsi - sans cette conversion, « 1 845,00 » se
     // serait écrit « 1845,00 ».
     .replace(/[    ]/g, " ")
     .replace(/[^\x20-\x7E¡-ÿ]/g, "");
@@ -95,7 +95,7 @@ function winAnsi(valeur: string): string {
  *
  * Le franc CFA n'a PAS de sous-unité : l'entier stocké est un montant de francs
  * entiers, jamais des centimes. L'ancienne version divisait par 100 et
- * imprimait « € » — héritage de l'activité précédente. Une commande de 31 000 F
+ * imprimait « € » - héritage de l'activité précédente. Une commande de 31 000 F
  * en sortait à « 310,00 € ».
  */
 function montant(francs: number): string {
@@ -135,7 +135,7 @@ function nomPays(code: string): string {
  * l'identique dans `billingStreet` ET `billingCity`, avec un code postal vide
  * (voir server/kk/checkout.ts) : sans déduplication, la facture imprimait deux
  * fois de suite la même ligne. On écarte donc toute ligne identique à la
- * précédente plutôt que de coder en dur la forme camerounaise — l'ancien modèle
+ * précédente plutôt que de coder en dur la forme camerounaise - l'ancien modèle
  * d'adresse, où rue et ville diffèrent, continue de s'imprimer entièrement.
  */
 function lignesAdresse(adresse: OrderAddress): string[] {
@@ -370,7 +370,7 @@ function decouper(
  * `dateEmission` est l'`issuedAt` de la ligne `Invoice`, jamais la date de la
  * commande : les deux se séparent dès que l'encaissement est différé (paiement
  * à la livraison). Une commande passée le 30/12 et payée le 04/01 reçoit un
- * numéro « FAC-2027-000001 » — le dater du 30/12/2026 ferait dire à la facture
+ * numéro « FAC-2027-000001 » - le dater du 30/12/2026 ferait dire à la facture
  * une année et à son numéro une autre, exactement la rupture de chronologie que
  * la séquence dédiée existe pour empêcher.
  */
@@ -632,7 +632,7 @@ export async function buildInvoicePdf(
   // facture le dit.
   //
   // Une page légale peut porter un long avertissement en tête ; une facture,
-  // non — et elle QUITTE le système pour arriver chez un client, qui la
+  // non - et elle QUITTE le système pour arriver chez un client, qui la
   // conserve. Sans cette ligne, un document portant un RCCM et un NIU
   // fabriqués circulerait comme s'il était authentique.
   //
@@ -648,7 +648,7 @@ export async function buildInvoicePdf(
 
   // L'encadré « TVA intracommunautaire » qui occupait cet espace venait lui
   // aussi de l'activité française précédente : la TVA intracommunautaire est
-  // une notion propre à l'Union européenne, sans équivalent au Cameroun — et
+  // une notion propre à l'Union européenne, sans équivalent au Cameroun - et
   // le système n'affiche de toute façon plus de TVA (voir l'en-tête du
   // fichier). Retiré plutôt que traduit, en attendant que le comptable
   // arrête les mentions obligatoires camerounaises.

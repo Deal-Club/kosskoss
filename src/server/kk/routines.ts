@@ -36,11 +36,11 @@ function lireRoutines(where: { slug?: string; code?: string; besoinTag?: string 
 
 function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
   // Repli identique à `toProductView` : `pickText`, jamais un accès direct à
-  // un champ `*En` — c'est la seule règle de repli du projet
+  // un champ `*En` - c'est la seule règle de repli du projet
   // (`src/server/localizedContent.ts`).
   const traduire = needsTranslation(locale);
   // Filtré une fois, réutilisé pour les gestes ET pour les tags agrégés
-  // ci-dessous — un produit retiré du catalogue ou en rupture ne doit
+  // ci-dessous - un produit retiré du catalogue ou en rupture ne doit
   // alimenter ni l'un ni l'autre.
   const gestesServables = row.steps.filter((s) => s.product.active && s.product.stock > 0);
   const steps = gestesServables.map((s, i) => ({
@@ -50,7 +50,7 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     // `role` n'a pas de contrepartie *En sur les routines historiques (le
     // champ y est vide) ; sur les routines du master, elle existe. Même
     // règle de repli que partout ailleurs. `moment` n'a pas de contrepartie
-    // *En du tout — voir traductions.ts.
+    // *En du tout - voir traductions.ts.
     role: pickText(s.role, traduire ? s.roleEn : undefined),
     moment: s.moment,
     product: toProductView(s.product, locale, i),
@@ -72,7 +72,7 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     // Le prix ne se lit JAMAIS en base (voir l'en-tête du fichier) : c'est la
     // somme des gestes réellement servables, recalculée à chaque rendu. Sert
     // à la fois la « valeur des produits » et le « prix de la routine » de la
-    // fiche (lot 7D, tâche 2) — aucun mécanisme de remise n'existe côté
+    // fiche (lot 7D, tâche 2) - aucun mécanisme de remise n'existe côté
     // schéma, les deux se lisent donc sur ce même total.
     totalFcfa: steps.reduce((sum, s) => sum + s.product.priceFcfa, 0),
     niveau: row.niveau,
@@ -83,7 +83,7 @@ function toView(row: RoutineRow, locale: Locale): KKRoutineView | null {
     noteKossKoss: pickText(row.noteKossKoss, traduire ? row.noteKossKossEn : undefined),
     badge: pickText(row.badge, traduire ? row.badgeEn : undefined),
     // Union des tags des produits encore servables, dans l'ordre où ces
-    // produits apparaissent dans la routine — pas de tri alphabétique qui
+    // produits apparaissent dans la routine - pas de tri alphabétique qui
     // désynchroniserait l'ordre d'affichage d'une locale à l'autre.
     tags: Array.from(new Set(gestesServables.flatMap((s) => parseStringArray(s.product.tags)))),
   };
@@ -106,11 +106,11 @@ export async function getRoutine(slug: string, locale: Locale): Promise<KKRoutin
 }
 
 /**
- * Une routine par son code du master (`Routine.code`, ex. « TAC-ECO ») —
+ * Une routine par son code du master (`Routine.code`, ex. « TAC-ECO ») -
  * c'est ce que rend la matrice de décision du Diagnostic Beauté
  * (src/lib/kk/diagnostic-matrice.ts), qui ne connaît que des codes, jamais de
  * slugs. `null` si elle n'existe pas, plus n'est active, ou n'est plus
- * servable (moins de deux gestes disponibles — voir `toView`).
+ * servable (moins de deux gestes disponibles - voir `toView`).
  */
 export async function getRoutineByCode(code: string, locale: Locale): Promise<KKRoutineView | null> {
   const [row] = await lireRoutines({ code });
@@ -120,7 +120,7 @@ export async function getRoutineByCode(code: string, locale: Locale): Promise<KK
 /**
  * Les routines d'un besoin (`Routine.besoinTag`, ex. « homme »), dans l'ordre
  * d'affichage habituel. Sert le bloc de mise en avant des rayons qui portent
- * une gamme dédiée — l'univers Homme et ses deux routines HOM-* (TK-05).
+ * une gamme dédiée - l'univers Homme et ses deux routines HOM-* (TK-05).
  * Mêmes règles de servabilité que partout : une routine sous deux gestes
  * disponibles n'est pas rendue.
  */
@@ -136,7 +136,7 @@ export async function getRoutinesByBesoin(besoinTag: string, locale: Locale): Pr
  *
  * Un produit peut appartenir à plusieurs routines (par exemple un nettoyant
  * repris dans une routine Éco et sa version Premium) : elles sont TOUTES
- * rendues, plutôt qu'une seule choisie arbitrairement — voir le rapport du
+ * rendues, plutôt qu'une seule choisie arbitrairement - voir le rapport du
  * lot 7D pour la décision. La liste peut être vide (produit d'appoint hors
  * de toute routine), ce qui est un état normal : la section correspondante
  * ne s'affiche alors pas.

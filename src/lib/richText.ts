@@ -9,7 +9,7 @@
  * Le résultat de l'analyse est un arbre de nœuds, jamais une chaîne de HTML :
  * le rendu passe par des éléments React (voir `components/RichText.tsx`) et
  * jamais par `dangerouslySetInnerHTML`. Un administrateur qui colle du HTML
- * dans un champ verra donc ses balises affichées telles quelles — l'injection
+ * dans un champ verra donc ses balises affichées telles quelles - l'injection
  * est impossible par construction, pas par filtrage.
  *
  * Une marque non refermée n'est pas une erreur : elle s'affiche littéralement.
@@ -30,8 +30,8 @@ const ESCAPABLE = new Set(["*", "[", "]", "(", ")", "\\"]);
 /**
  * Adresses acceptées dans un lien.
  *
- * L'allowlist est volontaire : tout ce qui n'y figure pas — à commencer par
- * `javascript:` et `data:` — n'est pas « nettoyé » mais refusé, et le lien
+ * L'allowlist est volontaire : tout ce qui n'y figure pas - à commencer par
+ * `javascript:` et `data:` - n'est pas « nettoyé » mais refusé, et le lien
  * retombe alors en texte simple.
  */
 export function isSafeHref(href: string): boolean {

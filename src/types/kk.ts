@@ -25,7 +25,7 @@ export type KKTestimonialView = {
   title?: string;
   /** Fiche du produit concerné, pour que l'avis y renvoie. */
   href?: string;
-  /** Date de publication, au format ISO — mise en forme à l'affichage. */
+  /** Date de publication, au format ISO - mise en forme à l'affichage. */
   publishedAt?: string;
 };
 
@@ -34,7 +34,7 @@ export type KKTestimonialView = {
  *
  * Il ne sort de la base que des avis MODÉRÉS : afficher une moyenne calculée
  * sur des avis en attente reviendrait à publier ce qui n'a pas été relu.
- * `total` vaut 0 tant qu'aucun avis n'est approuvé, et la section se masque —
+ * `total` vaut 0 tant qu'aucun avis n'est approuvé, et la section se masque -
  * une note moyenne inventée est une allégation commerciale trompeuse au sens
  * de l'article L121-2 du Code de la consommation.
  */
@@ -43,7 +43,7 @@ export type KKReviewsSummary = {
   average: number;
   /** Nombre d'avis publiés retenus dans la moyenne. */
   total: number;
-  /** Nombre d'avis par note, de 5 à 1 — pour la répartition. */
+  /** Nombre d'avis par note, de 5 à 1 - pour la répartition. */
   distribution: { rating: number; count: number }[];
 };
 
@@ -77,26 +77,26 @@ export type KKProductView = {
    * depuis une vignette renvoie alors vers la fiche : la ligne de panier
    * exige une variante, et choisir à la place du client reviendrait à
    * facturer un montant qu'il n'a pas vu. C'est un drapeau de MÉCANIQUE
-   * panier — pas « plusieurs contenances », voir `multipleVariants`.
+   * panier - pas « plusieurs contenances », voir `multipleVariants`.
    */
   hasVariants?: boolean;
   /**
    * Vrai seulement si le produit se décline en PLUSIEURS contenances actives.
    * Seul lui autorise l'étiquette « Plusieurs contenances » du panneau de
    * survol : avec `hasVariants`, elle s'affichait sur les 70 produits du
-   * catalogue à contenance unique — fausse partout (TK, mention retirée).
+   * catalogue à contenance unique - fausse partout (TK, mention retirée).
    */
   multipleVariants?: boolean;
   /**
    * Contenance de la variante de référence (« 50 ml »…), copiée telle quelle
-   * depuis `ProductVariant.label` — même valeur que la ligne « Format » de la
+   * depuis `ProductVariant.label` - même valeur que la ligne « Format » de la
    * fiche produit (`referenceVariant` dans `product-detail.tsx`). Absente si
    * le produit ne porte aucune variante active : il n'y a alors simplement
    * pas de contenance à afficher.
    */
   sizeLabel?: string;
   /**
-   * Les « pourquoi on l'aime » du produit (master client, colonne Bullets) —
+   * Les « pourquoi on l'aime » du produit (master client, colonne Bullets) -
    * mêmes textes que la section homonyme de la fiche produit. Absent/vide si
    * le produit n'en porte aucun ; à l'appelant de décider combien il en montre
    * (la carte de geste d'une routine n'en reprend que les deux premiers).
@@ -135,7 +135,7 @@ export type KKRoutineStepView = {
   /** Pourquoi ce geste dans CETTE routine. Peut être vide. */
   why: string;
   /**
-   * Rôle du geste (master, colonne Role) — peut différer de `label` en
+   * Rôle du geste (master, colonne Role) - peut différer de `label` en
    * formulation. Vide sur les 5 routines historiques, non couvertes par le
    * master : l'affichage retombe alors sur `label`.
    */
@@ -160,7 +160,7 @@ export type KKRoutineView = {
   description: string;
   /**
    * Étiquette de besoin correspondante (`src/lib/kk/besoins.ts`). Elle ouvre le
-   * rayon filtré pour qui veut choisir lui-même — en second recours, la routine
+   * rayon filtré pour qui veut choisir lui-même - en second recours, la routine
    * restant la porte principale.
    */
   besoinTag: string;
@@ -172,7 +172,7 @@ export type KKRoutineView = {
   steps: KKRoutineStepView[];
   totalFcfa: number;
   /**
-   * « eco » ou « premium » — texte brut du champ `Routine.niveau`, jamais
+   * « eco » ou « premium » - texte brut du champ `Routine.niveau`, jamais
    * affiché tel quel : le libellé se lit par `libelleNiveau` (module pur
    * `src/lib/kk/routines-niveau.ts`), jamais écrit en dur.
    */
@@ -188,12 +188,12 @@ export type KKRoutineView = {
   noteKossKoss: string;
   /**
    * Accroche courte du master (« Meilleur rapport efficacité/prix »…), champ
-   * `Routine.badge` — texte libre, SANS RAPPORT avec `KKBadge` (qui distingue
+   * `Routine.badge` - texte libre, SANS RAPPORT avec `KKBadge` (qui distingue
    * « bestseller »/« nouveau » sur les produits). Peut être vide.
    */
   badge: string;
   /**
-   * Union des `Product.tags` des produits encore servables de la routine —
+   * Union des `Product.tags` des produits encore servables de la routine -
    * pour la ligne de préoccupations de la fiche routine (lot 7D), au même
    * registre que la fiche produit (`src/lib/kk/besoins.ts`, `PREOCCUPATIONS`).
    * Aucun champ dédié n'existe côté master pour une routine : ce sont les

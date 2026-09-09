@@ -4,7 +4,7 @@ import { getProductsForTagging } from "@/server/kk/product-tags";
 import { lireVocabulaireAdmin } from "@/server/kk/vocabulaire-tags";
 import { ProductTagsAdmin } from "@/components/admin/ProductTagsAdmin";
 
-export const metadata: Metadata = { title: "Tags produits — Administration" };
+export const metadata: Metadata = { title: "Tags produits - Administration" };
 
 export default async function AdminProductTagsPage() {
   await requireCapacitePage("reglages");

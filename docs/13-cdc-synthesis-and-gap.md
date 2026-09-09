@@ -1,4 +1,4 @@
-# 13 — Synthèse du cahier des charges KossKoss Select + analyse d'écart avec `mlcbois`
+# 13 - Synthèse du cahier des charges KossKoss Select + analyse d'écart avec `mlcbois`
 
 Sources : `KOSSKOSS SELECT_Synthèse.pdf` (charte) + `CDC_KossKoss_Select v2.2 (13 juillet 2026)`. Ce document **prime** sur les hypothèses des docs 05/06/10/11 antérieurs à sa réception.
 
@@ -9,7 +9,7 @@ Sources : `KOSSKOSS SELECT_Synthèse.pdf` (charte) + `CDC_KossKoss_Select v2.2 (
 | Produit | Concept-store **cosmétique** multimarque, 100 % en ligne |
 | Marché | **Cameroun** (national) |
 | Langues | **FR + EN** (sélecteur), contenus traduisibles depuis l'admin |
-| Devise | **Franc CFA (FCFA / XAF)** — ⚠️ **sans sous-unité** (pas de centimes) |
+| Devise | **Franc CFA (FCFA / XAF)** - ⚠️ **sans sous-unité** (pas de centimes) |
 | Usage | **Mobile-first** |
 | Paiement | Agrégateur local **Mobile Money** (Orange Money + MTN) + carte ; reco **CinetPay** (alt. Maviance, ElyonPay) |
 | Modèle | Mono-vendeur multimarques |
@@ -17,9 +17,9 @@ Sources : `KOSSKOSS SELECT_Synthèse.pdf` (charte) + `CDC_KossKoss_Select v2.2 (
 | Livraison du projet | **En une seule fois, sans phasage**, avant mise en ligne |
 | Perf cible | **PageSpeed mobile > 80** |
 
-### Charte graphique (charte PDF — appliquée strictement)
+### Charte graphique (charte PDF - appliquée strictement)
 - **Couleurs** : Primaire **Bleu Profond `#0F3B46`**, Secondaire **Beige Sable `#F3E8DD`**.
-- **Typo** : Titres/logo **Cinzel** ; Texte courant **Gilroy** (⚠️ police **payante** → licence webfont à acquérir **ou** substitut libre proche : Manrope / Sora / Poppins — à trancher avant démarrage).
+- **Typo** : Titres/logo **Cinzel** ; Texte courant **Gilroy** (⚠️ police **payante** → licence webfont à acquérir **ou** substitut libre proche : Manrope / Sora / Poppins - à trancher avant démarrage).
 - **Logo** : monogramme **KK** encadré + logotype `KOSSKOSS SELECT` (versions fond clair `#F3E8DD`/blanc et fond sombre `#0F3B46`/noir).
 - **Slogan** : « La Sélection beauté qui vous choisit. » · **Ton** : « Merci, votre peau mérite le meilleur. »
 - **Contact** : `+237 658 01 36 46` · réseaux `kosskoss_select` (Facebook/Instagram).
@@ -68,14 +68,14 @@ Légende : ✅ réutilisable · 🔁 à adapter · ➕ à créer.
 | Dashboard : Traductions FR/EN dédiées, Paramètres (WhatsApp, Google Form, Pixel/CAPI/GA4, paiement), **rôles Admin/Gestionnaire commandes**, **journal d'activité** | admin riche, rôles superadmin/owner/admin, events | 🔁 ajouter écrans réglages/traductions ; adapter rôles |
 | `PaymentTransaction` + `WebhookEvent` (tables dédiées) | état paiement porté par `Order` | ➕ tables dédiées (traçabilité/idempotence) |
 | **Consentement cookies** | absent (n'était pas nécessaire pour MLC) | ➕ bandeau conditionnant les tags |
-| Option WhatsApp **automatisé** (BSP 360dialog/Wati) | — | ➕ **option** (hors périmètre de base) |
+| Option WhatsApp **automatisé** (BSP 360dialog/Wati) | - | ➕ **option** (hors périmètre de base) |
 
 ## 4. Réutilisation directe (peu ou pas de changement)
 Auth admin OTP (concept), comptes clients + sessions (scrypt), avis+modération, upload Cloudinary, catalogue CRUD, Order/OrderItem (archivage), StockMovement, LegalContent/pages, SEO (sitemap/robots/JSON-LD/hreflang), i18n next-intl FR/EN, dashboard/charts, import/export produits, PDF pdf-lib.
 
 ## 5. Points de vigilance spécifiques KossKoss
 
-1. **FCFA sans sous-unité** : revoir toute la chaîne monétaire (`*Cents`) — stockage entier = FCFA entier, formatage `15 000 FCFA` (locale fr-CM), aucune division par 100. JSON-LD/tracking en `XAF`.
+1. **FCFA sans sous-unité** : revoir toute la chaîne monétaire (`*Cents`) - stockage entier = FCFA entier, formatage `15 000 FCFA` (locale fr-CM), aucune division par 100. JSON-LD/tracking en `XAF`.
 2. **Mobile Money** : flux de redirection + webhook signé + idempotence ; « Payée » **jamais** depuis le retour navigateur seul.
 3. **WhatsApp manuel** : le site **trace** le processus, ne gère pas le transport ; bouton `wa.me` avec message pré-rempli (n° commande, articles, total, nom, tél, lieu).
 4. **Diagnostic** = cœur de conversion : à concevoir proprement (moteur par tags pondérés, priorité au stock, exclusions allergènes).

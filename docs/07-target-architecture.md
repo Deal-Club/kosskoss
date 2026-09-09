@@ -1,17 +1,17 @@
-# 07 — Architecture cible
+# 07 - Architecture cible
 
 ## 1. Options comparées
 
-### Option A — Une seule application Next.js (boutique + `/admin` + API partagée)
+### Option A - Une seule application Next.js (boutique + `/admin` + API partagée)
 C'est **l'architecture actuelle de `mlcbois`**, qui fonctionne.
 - **+** Aucune réécriture ; logique métier et types partagés en direct ; un seul déploiement ; SEO/SSR déjà en place ; le back-office existant est immédiatement réutilisable.
 - **−** Couplage vitrine/admin dans un même déploiement ; bundle admin et boutique dans le même projet (mais séparés par segments de route).
 
-### Option B — Monorepo (`apps/storefront`, `apps/admin`, `packages/*`)
+### Option B - Monorepo (`apps/storefront`, `apps/admin`, `packages/*`)
 - **+** Frontière nette public/admin ; packages `ui/types/api-client` réutilisables.
 - **−** **Réécriture importante** : il faudrait éclater une app monolithique fonctionnelle, dupliquer la config, gérer un outil de monorepo, réintroduire une frontière API entre admin et domaine aujourd'hui appelés en direct. Coût et risque de régression élevés pour un bénéfice surtout esthétique. Le cahier des charges interdit explicitement de « transformer en monorepo uniquement parce que ça paraît plus moderne ».
 
-### Option C — Deux projets séparés (ancien admin conservé + nouvelle boutique, communication par API typée)
+### Option C - Deux projets séparés (ancien admin conservé + nouvelle boutique, communication par API typée)
 - **+** Isole la refonte visuelle du back-office.
 - **−** Duplication des types et du domaine ; il faudrait exposer une API publique stable là où tout est aujourd'hui interne ; deux déploiements, deux jeux de dépendances ; latence et surface d'attaque accrues.
 
@@ -21,11 +21,11 @@ C'est **l'architecture actuelle de `mlcbois`**, qui fonctionne.
 
 Justification appuyée sur le dépôt :
 1. `mlcbois` est **déjà** une application unique complète et fonctionnelle (auth, catalogue, commandes, paiement, SEO, i18n). Le travail restant est majoritairement **configuration + contenu + thème**, pas architecture.
-2. La logique sensible (recalcul prix/stock/total, sessions, crypto, webhooks vérifiés) est saine et **directement réutilisable** — la réécrire introduirait un risque de régression sans gain.
+2. La logique sensible (recalcul prix/stock/total, sessions, crypto, webhooks vérifiés) est saine et **directement réutilisable** - la réécrire introduirait un risque de régression sans gain.
 3. Le back-office est riche et couvre les besoins ; le reconstruire serait du gaspillage (interdit par le cahier des charges §2).
 4. Versions verrouillées (Next 16, React 19, Prisma 7, Node 22) : on ne change pas les versions majeures.
 
-Ce que l'Option A ne coûte pas mais qu'on met en place quand même : une **frontière de validation typée (Zod)** et une **configuration marque centralisée** — bénéfices de la B/C sans leur coût.
+Ce que l'Option A ne coûte pas mais qu'on met en place quand même : une **frontière de validation typée (Zod)** et une **configuration marque centralisée** - bénéfices de la B/C sans leur coût.
 
 ## 3. Organisation cible dans le fork
 
@@ -59,8 +59,8 @@ koss-koss/  (fork de mlcbois, historique Git réinitialisé, secrets purgés)
 | Statuts/rôles/devises | Constantes typées, **une seule source de vérité** (migrer les valeurs allemandes) |
 | i18n | next-intl FR/EN (conservé) |
 | Base | PostgreSQL/Prisma 7 (conservé) ; migrations **additives** uniquement |
-| Paiement | Interface `PaymentProvider` conservée ; prestataire à décider (voir `11`) — **aucune clé côté navigateur** |
-| Déploiement | à confirmer (Hostinger existant vs Vercel) — voir `11` |
+| Paiement | Interface `PaymentProvider` conservée ; prestataire à décider (voir `11`) - **aucune clé côté navigateur** |
+| Déploiement | à confirmer (Hostinger existant vs Vercel) - voir `11` |
 
 ## 5. Limites claires à préserver
 

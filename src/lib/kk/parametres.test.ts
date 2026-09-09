@@ -98,7 +98,7 @@ describe("jetonCapiValide", () => {
     assert.equal(jetonCapiValide("EAAG" + "x".repeat(40)), true);
   });
 
-  it("refuse le vide — contrairement aux autres validateurs, le vide n'est pas une valeur légitime ici", () => {
+  it("refuse le vide - contrairement aux autres validateurs, le vide n'est pas une valeur légitime ici", () => {
     // Le vide signale « champ non touché » à l'appelant (voir la route
     // d'enregistrement) ; il ne doit jamais être accepté comme jeton lui-même,
     // sans quoi un bogue de l'appelant pourrait écraser un jeton par du vide.
@@ -115,7 +115,7 @@ describe("jetonCapiValide", () => {
 });
 
 describe("CLE_JETON_CAPI", () => {
-  it("est une clé stable — l'écran et la route doivent pointer vers le même enregistrement", () => {
+  it("est une clé stable - l'écran et la route doivent pointer vers le même enregistrement", () => {
     assert.equal(CLE_JETON_CAPI, "meta_capi_token");
   });
 });

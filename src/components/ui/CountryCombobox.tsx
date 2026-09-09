@@ -11,7 +11,7 @@ import { countryOptions, type CountryOption } from "@/lib/countries";
 // La liste et son tri viennent de `countryOptions(locale)` : les noms sont
 // traduits par l'Intl du navigateur, donc la langue de la boutique suffit à
 // changer l'affichage. Le filtrage est assuré par Base UI, qui compare avec
-// Intl.Collator — « ethiopie » retrouve donc « Éthiopie », et « espagne »
+// Intl.Collator - « ethiopie » retrouve donc « Éthiopie », et « espagne »
 // retrouve « Espagne ».
 
 const FIELD =

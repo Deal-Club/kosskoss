@@ -2,7 +2,7 @@
 //
 // Toutes les routes répondent sur le même modèle : soit « ok », soit un « code »
 // d'erreur que l'interface traduit elle-même via le namespace « account ». Le
-// texte français renvoyé par le serveur n'est jamais affiché tel quel — sinon
+// texte français renvoyé par le serveur n'est jamais affiché tel quel - sinon
 // la version anglaise de la boutique montrerait du français.
 
 export interface AccountApiResult {

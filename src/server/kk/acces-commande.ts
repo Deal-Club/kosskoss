@@ -36,8 +36,8 @@ function nomCookie(orderNumber: string): string {
 /**
  * Durée de vie : deux heures.
  *
- * Assez pour couvrir un paiement Mobile Money interrompu — recherche du
- * téléphone, code reçu en retard, reprise — et assez court pour qu'un poste
+ * Assez pour couvrir un paiement Mobile Money interrompu - recherche du
+ * téléphone, code reçu en retard, reprise - et assez court pour qu'un poste
  * partagé ne garde pas la commande consultable toute la journée. Au-delà, le
  * client passe par son espace client ou par le lien reçu par e-mail.
  */
@@ -52,7 +52,7 @@ export async function poserAccesCommande(orderNumber: string, accessToken: strin
     httpOnly: true,
     // `lax` et non `strict` : le retour depuis la page de paiement est une
     // navigation de premier niveau venue d'un autre domaine. En `strict`, le
-    // cookie ne serait pas envoyé et la confirmation resterait vide — le bogue
+    // cookie ne serait pas envoyé et la confirmation resterait vide - le bogue
     // qu'on vient précisément de corriger.
     sameSite: "lax",
     // En clair seulement en développement local, où il n'y a pas de TLS.

@@ -3,7 +3,7 @@
  *
  * Ce module ne connaît ni la base ni Next : il transforme ce que le navigateur
  * envoie en contenu valide, ou explique pourquoi il refuse. Le contrôle est
- * refait ici même si l'éditeur l'a déjà fait — une requête peut arriver sans
+ * refait ici même si l'éditeur l'a déjà fait - une requête peut arriver sans
  * passer par l'éditeur. C'est le même parti pris que `normalizeLegalPage()` et
  * `parseProductInput()`.
  *
@@ -84,7 +84,7 @@ function tooLong(value: string, limit: number, what: string): string | null {
 
 /**
  * Source d'image acceptée : un chemin interne (« /images/… », « /uploads/… »)
- * ou une URL https. Tout le reste — `javascript:`, `data:`, protocole relatif —
+ * ou une URL https. Tout le reste - `javascript:`, `data:`, protocole relatif -
  * est refusé, comme pour les liens.
  */
 export function isSafeImageSource(value: string): boolean {
@@ -351,8 +351,8 @@ export function normalizeBlocks(raw: unknown): NormalizeBlocksResult {
 /**
  * Lecture tolérante de ce qui est déjà en base.
  *
- * Un bloc devenu inconnu — type retiré dans une version ultérieure, ligne
- * abîmée — est ignoré au lieu de faire échouer la page. Un article publié doit
+ * Un bloc devenu inconnu - type retiré dans une version ultérieure, ligne
+ * abîmée - est ignoré au lieu de faire échouer la page. Un article publié doit
  * survivre au retrait d'un type de bloc ; perdre un encadré est acceptable,
  * rendre une page blanche ne l'est pas.
  */

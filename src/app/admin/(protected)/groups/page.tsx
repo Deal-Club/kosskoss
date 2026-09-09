@@ -29,7 +29,7 @@ export default async function AdminGroupsPage({
         <div>
           <h1 className="text-2xl font-black text-foreground">Univers produits</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Niveau le plus haut du catalogue — chaque univers regroupe plusieurs catégories.
+            Niveau le plus haut du catalogue - chaque univers regroupe plusieurs catégories.
           </p>
         </div>
         <Link

@@ -1,7 +1,7 @@
 /**
  * Statut déduit et totaux d'un bon de commande fournisseur.
  *
- * Module pur — zéro import. Le statut d'un bon ne se saisit jamais : il se
+ * Module pur - zéro import. Le statut d'un bon ne se saisit jamais : il se
  * déduit des quantités commandées et reçues sur ses lignes, recalculé à
  * chaque réception.
  *
@@ -11,7 +11,7 @@
  *   pourraient défaire, et on ne reçoit pas ce qui n'a pas encore été
  *   envoyé au fournisseur ;
  * - « tout reçu » veut dire *au moins* la quantité commandée sur **chaque**
- *   ligne — une sur-livraison solde le bon, elle ne le laisse pas « partiel » ;
+ *   ligne - une sur-livraison solde le bon, elle ne le laisse pas « partiel » ;
  * - un bon sans ligne n'est pas « reçu » : zéro ligne toutes reçues serait
  *   vrai au sens strict, et absurde ;
  * - le restant est borné à zéro : une sur-livraison ne crée pas de restant
@@ -23,7 +23,7 @@ export type StatutBon = "brouillon" | "envoye" | "recu_partiel" | "recu" | "annu
 /**
  * Libellés français, pour les écrans du back-office.
  *
- * Posés ici — module pur, sans import — pour rester importables depuis un
+ * Posés ici - module pur, sans import - pour rester importables depuis un
  * composant client sans tirer `src/server/kk/bons.ts` (et donc Prisma) dans le
  * paquet du navigateur.
  */

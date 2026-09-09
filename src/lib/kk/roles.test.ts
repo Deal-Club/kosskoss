@@ -26,8 +26,8 @@ describe("peut", () => {
   });
 
   it("refuse tout à un rôle inconnu", () => {
-    // Une valeur inattendue en base — faute de frappe, rôle d'une version
-    // future — ne doit pas ouvrir les portes. Le refus est la position sûre.
+    // Une valeur inattendue en base - faute de frappe, rôle d'une version
+    // future - ne doit pas ouvrir les portes. Le refus est la position sûre.
     for (const capacite of CAPACITES) {
       assert.equal(peut("directeur" as never, capacite), false, capacite);
       assert.equal(peut("" as never, capacite), false, capacite);

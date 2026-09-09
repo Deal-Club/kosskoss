@@ -12,7 +12,7 @@ type CatalogT = Awaited<ReturnType<typeof getTranslations>>;
  * Composant de facettes du catalogue : panneau de filtres (catégorie, marque,
  * type de peau, préoccupation, prix, tri) et résumé des filtres actifs.
  *
- * Extrait de `catalog.tsx` — quatre blocs de facettes plus la barre de filtres
+ * Extrait de `catalog.tsx` - quatre blocs de facettes plus la barre de filtres
  * actifs auraient rendu ce fichier illisible mêlés au reste de la mise en page
  * du rayon (hero, grille, pagination).
  */
@@ -27,7 +27,7 @@ export type CatalogFilterState = {
   sort: CatalogSort;
 };
 
-/** Ajoute ou retire une clé d'une liste — la case à cocher en union. */
+/** Ajoute ou retire une clé d'une liste - la case à cocher en union. */
 export function toggled(list: string[], key: string): string[] {
   return list.includes(key) ? list.filter((k) => k !== key) : [...list, key];
 }
@@ -42,7 +42,7 @@ export function toggled(list: string[], key: string): string[] {
  *
  * Un `?besoin=` hérité n'est jamais reconstruit ici : une fois la sélection
  * lue (voir `parseFacettes`), elle vit dans `peau`/`preoccupation` comme
- * n'importe quelle autre facette. C'est la migration voulue — un ancien lien
+ * n'importe quelle autre facette. C'est la migration voulue - un ancien lien
  * continue de filtrer correctement, mais tout nouveau lien généré depuis
  * l'écran s'exprime dans le vocabulaire actuel.
  */
@@ -61,7 +61,7 @@ export function withParams(basePath: string, state: CatalogFilterState, page?: n
   return qs ? `${basePath}?${qs}` : basePath;
 }
 
-/** Nombre de filtres actifs — le prix compte pour un, quelle que soit la borne posée. */
+/** Nombre de filtres actifs - le prix compte pour un, quelle que soit la borne posée. */
 export function activeFilterCount(state: CatalogFilterState): number {
   return (
     state.brands.length +
@@ -88,10 +88,10 @@ const SORT_KEYS: { key: CatalogSort; labelKey: "sortRelevance" | "sortNewest" | 
  *
  * Une option à zéro DISPARAÎT (TK-05) : elle se contentait d'être grisée, et
  * sur les petits rayons la colonne alignait plus de « (0) » que d'options
- * réelles — un mur de choix impossibles. EXCEPTION : une option déjà cochée
+ * réelles - un mur de choix impossibles. EXCEPTION : une option déjà cochée
  * reste toujours affichée et cliquable pour pouvoir la décocher, même si son
- * décompte marginal — qui ignore volontairement toute sa famille, voir
- * `getCatalog` — tombe à zéro : sans quoi la retirer serait impossible.
+ * décompte marginal - qui ignore volontairement toute sa famille, voir
+ * `getCatalog` - tombe à zéro : sans quoi la retirer serait impossible.
  */
 function FacetOptionRow({
   label,
@@ -146,7 +146,7 @@ export function FiltersPanel({
   t: CatalogT;
   /**
    * Préfixe des identifiants de champ. Le panneau est rendu deux fois sur
-   * la même page — repliable au mobile, fixe au bureau — et un même `id`
+   * la même page - repliable au mobile, fixe au bureau - et un même `id`
    * posé deux fois casse l'association `<label for>` : le clic sur une
    * étiquette de prix visait alors toujours le PREMIER champ du DOM, jamais
    * celui réellement affiché à l'écran. `groupSlug`/`currentCategory`
@@ -156,7 +156,7 @@ export function FiltersPanel({
    */
   idPrefix: string;
 }) {
-  // Options à zéro écartées AVANT le rendu (TK-05) — et non masquées une à
+  // Options à zéro écartées AVANT le rendu (TK-05) - et non masquées une à
   // une dans FacetOptionRow : un `<li>` vide garderait sa part de `space-y`
   // et la liste s'aérerait de trous. Une option cochée reste toujours servie,
   // décompte nul ou pas (voir FacetOptionRow).
@@ -319,7 +319,7 @@ export function FiltersPanel({
               // Ceinture ET bretelles : ce plafond n'empêche pas à lui seul une
               // borne absurde (contournable en DevTools ou par requête directe),
               // c'est `parseBorne` qui la tient réellement (voir
-              // catalog-params.ts) — mais il évite déjà, pour un visiteur qui
+              // catalog-params.ts) - mais il évite déjà, pour un visiteur qui
               // tape dans le champ, de viser un prix qu'aucun produit du rayon
               // n'atteint.
               max={view.prixMax}
@@ -393,7 +393,7 @@ function humaniser(cle: string): string {
   return mots.charAt(0).toUpperCase() + mots.slice(1);
 }
 
-/** Libellé d'une clé de facette — repli humanisé si le vocabulaire ne la porte plus. */
+/** Libellé d'une clé de facette - repli humanisé si le vocabulaire ne la porte plus. */
 function labelFor(vocabulaire: OptionFacette[], key: string): string {
   return vocabulaire.find((o) => o.key === key)?.label ?? humaniser(key);
 }
@@ -408,7 +408,7 @@ function priceChipLabel(t: CatalogT, prixMin?: number, prixMax?: number): string
 }
 
 /**
- * Résumé des filtres actifs — marque, type de peau, préoccupation, prix —
+ * Résumé des filtres actifs - marque, type de peau, préoccupation, prix -
  * chacun retirable individuellement, plus un « tout effacer ». Le tri n'y
  * figure pas : ce n'est pas un filtre, il ne restreint aucun produit.
  */

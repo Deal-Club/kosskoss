@@ -17,7 +17,7 @@ import { parseStoredBlocks } from "@/lib/journal/blocks";
  *
  * PAS D'ACCÈS INDEXÉ SUR LE CLIENT PRISMA (`(prisma as never)[cle]`), même si
  * le résultat tiendrait en dix lignes : cet écran écrit dans dix-neuf tables,
- * et un accès dynamique ne se vérifie qu'à l'exécution — il échouerait le
+ * et un accès dynamique ne se vérifie qu'à l'exécution - il échouerait le
  * jour d'un renommage de champ, et pourrait écrire dans le mauvais champ
  * avant qu'on s'en aperçoive. Une traduction fautive n'est visible que de
  * quelqu'un qui lit l'anglais ; la répétition ci-dessous est une garantie,
@@ -26,14 +26,14 @@ import { parseStoredBlocks } from "@/lib/journal/blocks";
 
 export interface LigneTraduction {
   id: string;
-  /** Libellé lisible de l'enregistrement — le nom du produit, le titre de
-   * l'article — pour que la liste soit navigable sans afficher d'identifiants. */
+  /** Libellé lisible de l'enregistrement - le nom du produit, le titre de
+   * l'article - pour que la liste soit navigable sans afficher d'identifiants. */
   libelle: string;
   /** Valeurs françaises et anglaises, indexées par nom de champ Prisma. */
   valeurs: Record<string, string>;
   etat: EtatTraduction;
   /**
-   * Corps de l'article (`blocks` / `blocksEn`) traduit ou non — `undefined`
+   * Corps de l'article (`blocks` / `blocksEn`) traduit ou non - `undefined`
    * pour tout modèle sans notion de corps. Ce champ n'entre pas dans `etat`
    * (qui ne compte que le registre) mais EST déjà répercuté sur
    * `etat.complet` : un article au corps non traduit ne doit jamais se
@@ -87,8 +87,8 @@ function parseBullets(raw: string): string[] {
 }
 
 /**
- * Une ligne par puce — comme le formulaire produit (src/components/admin/ProductForm.tsx,
- * `bulletsText.split("\n")...`) et l'import CSV (src/server/productInput.ts) — vers le
+ * Une ligne par puce - comme le formulaire produit (src/components/admin/ProductForm.tsx,
+ * `bulletsText.split("\n")...`) et l'import CSV (src/server/productInput.ts) - vers le
  * même format JSON que `bullets`. Même format des deux côtés : ne pas en inventer un second.
  */
 function formatBulletsEn(lignes: string): string {
@@ -181,7 +181,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
       });
       return lignes.map((s) => ({
         id: s.id,
-        libelle: `${s.category.label} — ${s.heading || "(sans titre)"}`,
+        libelle: `${s.category.label} - ${s.heading || "(sans titre)"}`,
         valeurs: { heading: s.heading, headingEn: s.headingEn, body: s.body, bodyEn: s.bodyEn },
       }));
     },
@@ -322,7 +322,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
       });
       return lignes.map((s) => ({
         id: s.id,
-        libelle: `${s.routine.name} — ${s.product.name}`,
+        libelle: `${s.routine.name} - ${s.product.name}`,
         valeurs: { label: s.label, labelEn: s.labelEn, why: s.why, whyEn: s.whyEn },
       }));
     },
@@ -343,7 +343,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
       });
       return lignes.map((v) => ({
         id: v.id,
-        libelle: `${v.product.name} — ${v.label}`,
+        libelle: `${v.product.name} - ${v.label}`,
         valeurs: { label: v.label, labelEn: v.labelEn },
       }));
     },
@@ -396,7 +396,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
       });
       return lignes.map((a) => ({
         id: a.id,
-        libelle: `${a.question.title} — ${a.label}`,
+        libelle: `${a.question.title} - ${a.label}`,
         valeurs: {
           label: a.label,
           labelEn: a.labelEn,
@@ -506,7 +506,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
   Article: {
     champs: registreDe("Article"),
     async lister() {
-      // deletedAt: null — comme toute autre lecture d'article (voir
+      // deletedAt: null - comme toute autre lecture d'article (voir
       // src/server/journal/read.ts et store.ts) : un article à la corbeille
       // ne doit ni se lister, ni compter, ni s'ouvrir en édition ici.
       const lignes = await prisma.article.findMany({
@@ -517,7 +517,7 @@ const CARTE_MODELES: Record<string, EntreeModele> = {
           titleEn: true,
           excerpt: true,
           excerptEn: true,
-          // Lus pour dire si le corps est traduit — jamais renvoyés dans
+          // Lus pour dire si le corps est traduit - jamais renvoyés dans
           // `valeurs`, jamais éditables ici. Voir le commentaire d'en-tête de
           // src/lib/kk/traductions.ts : ce n'est pas un champ de texte.
           blocks: true,
@@ -711,7 +711,7 @@ function entreeDe(cleModele: string): EntreeModele {
  * État « complet » d'un enregistrement : les champs du registre ET, quand
  * elle existe, la traduction du corps (`corpsTraduit`, Article seulement).
  * Ne pas se fier à `etatTraduction(...).complet` seul ailleurs dans ce
- * fichier — il ignorerait le corps et ferait passer un article au corps
+ * fichier - il ignorerait le corps et ferait passer un article au corps
  * français pour un article traduit.
  */
 function estComplet(ligne: EnregistrementBrut, champs: ChampTraduisible[]): boolean {
@@ -749,7 +749,7 @@ export async function listerEnregistrements(
         valeurs: ligne.valeurs,
         corpsTraduit: ligne.corpsTraduit,
         // `complet` reflète le corps quand il existe ; `traduits`/`total`
-        // restent la mesure du registre seul — c'est ce que la pastille
+        // restent la mesure du registre seul - c'est ce que la pastille
         // « x / y traduits » affiche à l'écran.
         etat: { ...etatChamps, complet },
       };
@@ -781,7 +781,7 @@ export async function enregistrerTraduction(
   }
 
   // Rien à écrire : sortir avant d'appeler `ecrire`, qui déclencherait sinon
-  // une mise à jour vide — et avec elle, sur les modèles à `updatedAt`
+  // une mise à jour vide - et avec elle, sur les modèles à `updatedAt`
   // automatique, une date de modification qui bouge pour rien.
   if (Object.keys(donnees).length === 0) return;
 

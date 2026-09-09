@@ -6,8 +6,8 @@ import { useEffect } from "react";
  * Verrou de défilement pour les panneaux modaux (tiroir du panier, menu
  * mobile, recherche).
  *
- * `document.body.style.overflow = "hidden"` — ce que faisaient jusqu'ici le
- * tiroir et le menu — ne tient pas sur mobile : Safari iOS et les Chrome
+ * `document.body.style.overflow = "hidden"` - ce que faisaient jusqu'ici le
+ * tiroir et le menu - ne tient pas sur mobile : Safari iOS et les Chrome
  * Android récents continuent de faire glisser la page SOUS le panneau ouvert.
  * Le visiteur croit faire défiler son panier, c'est l'accueil qui bouge
  * derrière, et il retrouve à la fermeture une page qui n'est plus là où il
@@ -18,9 +18,9 @@ import { useEffect } from "react";
  * au défilement en cours, puis restitution exacte à la fermeture.
  *
  * Deux compensations vont avec :
- *   — la largeur de la barre de défilement sur ordinateur, qui disparaît avec
+ *   - la largeur de la barre de défilement sur ordinateur, qui disparaît avec
  *     le passage en `fixed` et décalerait toute la page de ~15 px ;
- *   — la position de défilement, restaurée sans animation (`scroll-behavior`
+ *   - la position de défilement, restaurée sans animation (`scroll-behavior`
  *     est en `smooth` sur `<html>`, ce qui ferait remonter la page en douceur
  *     sous les yeux du visiteur au lieu de la remettre en place).
  */

@@ -6,7 +6,7 @@ import type { Locale } from "@/i18n/routing";
 /**
  * Moyens de paiement proposés au tunnel de commande.
  *
- * Ils étaient jusqu'ici écrits en dur dans le formulaire — trois entrées, alors
+ * Ils étaient jusqu'ici écrits en dur dans le formulaire - trois entrées, alors
  * que le back-office en gère quatre. Le paiement à la livraison, activé en base
  * et déterminant sur ce marché, n'était donc jamais proposé au client, et
  * désactiver une option depuis l'administration n'avait aucun effet sur la
@@ -58,7 +58,7 @@ export const getEnabledPaymentMethods = cache(async (locale: Locale): Promise<Pa
     description: pickText(row.description, english ? row.descriptionEn : undefined),
     // Le sigle vient de la clé, jamais du libellé traduit : "OM"/"MTN" ne
     // varient pas avec la langue, seul le repli sur les initiales dépendrait
-    // du texte affiché — on le calcule donc sur le libellé français.
+    // du texte affiché - on le calcule donc sur le libellé français.
     badge: badgeFor(row.key, row.label),
   }));
 });
@@ -68,7 +68,7 @@ export const getEnabledPaymentMethods = cache(async (locale: Locale): Promise<Pa
  * un moyen de paiement activé. Le libellé est figé sur la commande : le
  * renommer plus tard au back-office ne doit pas réécrire l'historique.
  *
- * Il est figé DANS LA LANGUE DE L'ACHETEUR — même règle que les lignes de
+ * Il est figé DANS LA LANGUE DE L'ACHETEUR - même règle que les lignes de
  * commande (voir server/kk/checkout.ts) : c'est ce qui a été présenté au
  * client à la caisse qui fait foi, pas la version française du back-office.
  */

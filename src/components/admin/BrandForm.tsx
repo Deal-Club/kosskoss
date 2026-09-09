@@ -163,7 +163,7 @@ export function BrandForm({ mode, initialData }: BrandFormProps) {
       </div>
 
       <p className="mb-4 rounded-sm bg-muted px-3 py-2 text-xs text-muted-foreground">
-        Une marque inactive quitte la vitrine sans qu&apos;on touche à ses produits — ils gardent
+        Une marque inactive quitte la vitrine sans qu&apos;on touche à ses produits - ils gardent
         leur libellé de marque.
       </p>
 

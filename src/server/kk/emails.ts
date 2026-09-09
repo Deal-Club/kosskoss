@@ -50,7 +50,7 @@ export interface SellerOrderEmailInput {
   orderNumber: string;
   fullName: string;
   email: string;
-  /** Déjà normalisé en E.164 — voir lib/kk/telephone.ts. */
+  /** Déjà normalisé en E.164 - voir lib/kk/telephone.ts. */
   telephone: string;
   ville: string;
   /** Quartier, repère : la saisie libre du tunnel. */
@@ -66,7 +66,7 @@ export interface SellerOrderEmailInput {
  * Toujours en français, quelle que soit la langue du client : le destinataire
  * est la boutique, pas l'acheteur.
  *
- * Best-effort, comme tous les envois de ce fichier — l'appelant doit pouvoir
+ * Best-effort, comme tous les envois de ce fichier - l'appelant doit pouvoir
  * répondre « commande enregistrée » même si le serveur SMTP est tombé. Un
  * échec ici ne doit jamais coûter une vente déjà encaissée et déjà décomptée
  * du stock.
@@ -74,7 +74,7 @@ export interface SellerOrderEmailInput {
  * Envoyé à la CRÉATION de la commande, pas à l'encaissement : sur un marché où
  * l'essentiel passe par Mobile Money et où le rendez-vous de livraison se cale
  * à la main sur WhatsApp, la boutique a besoin de savoir qu'un panier est parti
- * au paiement — y compris, et surtout, quand il n'aboutit pas.
+ * au paiement - y compris, et surtout, quand il n'aboutit pas.
  */
 export async function sendSellerOrderNotification(
   destinataires: string[],
@@ -106,7 +106,7 @@ export async function sendSellerOrderNotification(
       <strong>${esc(input.fullName)}</strong><br>
       <a href="tel:${esc(input.telephone)}" style="color:${DEEP}">${esc(input.telephone)}</a><br>
       <a href="mailto:${esc(input.email)}" style="color:${DEEP}">${esc(input.email)}</a><br>
-      ${esc(input.ville)} — ${esc(input.location)}<br>
+      ${esc(input.ville)} - ${esc(input.location)}<br>
       Paiement : ${esc(input.moyenPaiement)}
     </div>`;
 
@@ -115,7 +115,7 @@ export async function sendSellerOrderNotification(
     "",
     ...input.items.map(
       (i) =>
-        `${i.brand} ${i.name}${i.variantLabel ? ` · ${i.variantLabel}` : ""} × ${i.quantity} — ${formatFcfa(
+        `${i.brand} ${i.name}${i.variantLabel ? ` · ${i.variantLabel}` : ""} × ${i.quantity} - ${formatFcfa(
           i.lineTotalCents,
         )}`,
     ),
@@ -124,20 +124,20 @@ export async function sendSellerOrderNotification(
     input.fullName,
     input.telephone,
     input.email,
-    `${input.ville} — ${input.location}`,
+    `${input.ville} - ${input.location}`,
     `Paiement : ${input.moyenPaiement}`,
   ].join("\n");
 
   // Un envoi par destinataire, et chacun isolé : une adresse morte dans la
   // liste ne doit pas emporter les autres. Ils ne sont pas mis en copie les uns
-  // des autres — ce sont des boîtes internes, mais rien n'oblige à les
+  // des autres - ce sont des boîtes internes, mais rien n'oblige à les
   // exposer entre elles.
   await Promise.all(
     destinataires.map(async (to) => {
       try {
         await sendMail({
           to,
-          subject: `Commande ${input.orderNumber} — ${formatFcfa(input.totalFcfa)}`,
+          subject: `Commande ${input.orderNumber} - ${formatFcfa(input.totalFcfa)}`,
           html: shell("Nouvelle commande", inner),
           text,
         });
@@ -198,8 +198,8 @@ export async function sendOrderConfirmationEmail(input: OrderEmailInput): Promis
     await sendMail({
       to: input.to,
       subject: fr
-        ? `Votre commande ${input.orderNumber} — ${BRAND.name}`
-        : `Your order ${input.orderNumber} — ${BRAND.name}`,
+        ? `Votre commande ${input.orderNumber} - ${BRAND.name}`
+        : `Your order ${input.orderNumber} - ${BRAND.name}`,
       html: shell(fr ? "Merci pour votre commande !" : "Thank you for your order!", inner),
       text,
     });
@@ -264,8 +264,8 @@ export async function sendPaymentReceivedEmail(input: PaymentReceivedInput): Pro
     await sendMail({
       to: input.to,
       subject: fr
-        ? `Paiement reçu — facture ${input.numeroFacture}`
-        : `Payment received — invoice ${input.numeroFacture}`,
+        ? `Paiement reçu - facture ${input.numeroFacture}`
+        : `Payment received - invoice ${input.numeroFacture}`,
       html: shell(fr ? "Paiement bien reçu" : "Payment received", inner),
       text,
       attachments: [
@@ -304,12 +304,12 @@ export async function sendAccountAccessEmail(
     </table>
     <p style="margin:0;color:#6a7a7d;font-size:13px">Remember to change this password from your customer account.</p>`;
   const text = fr
-    ? `Votre espace client KossKoss Select. E-mail : ${to} — Mot de passe : ${tempPassword}. Changez-le après connexion.`
-    : `Your KossKoss Select customer account. Email: ${to} — Password: ${tempPassword}. Change it after logging in.`;
+    ? `Votre espace client KossKoss Select. E-mail : ${to} - Mot de passe : ${tempPassword}. Changez-le après connexion.`
+    : `Your KossKoss Select customer account. Email: ${to} - Password: ${tempPassword}. Change it after logging in.`;
   try {
     await sendMail({
       to,
-      subject: fr ? `Votre espace client — ${BRAND.name}` : `Your customer account — ${BRAND.name}`,
+      subject: fr ? `Votre espace client - ${BRAND.name}` : `Your customer account - ${BRAND.name}`,
       html: shell(fr ? "Bienvenue chez KossKoss Select" : "Welcome to KossKoss Select", inner),
       text,
     });
@@ -330,7 +330,7 @@ export interface RoutineEmailInput {
  * Routine personnalisée envoyée par e-mail.
  *
  * Transactionnel : le visiteur l'a demandée. L'inscription à la lettre
- * d'information est un consentement séparé, traité ailleurs — cette fonction
+ * d'information est un consentement séparé, traité ailleurs - cette fonction
  * n'inscrit personne.
  *
  * Best-effort, comme les autres : une panne SMTP ne doit pas faire échouer
@@ -343,7 +343,7 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
   const lignes = input.etapes
     .map(
       (e) =>
-        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(e.label)} — ${esc(
+        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(e.label)} - ${esc(
           e.brand,
         )} ${esc(e.name)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${esc(
           formatFcfa(e.prixFcfa),
@@ -376,7 +376,7 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
   // recevait « Cleanse : Marque Produit ».
   const deuxPoints = en ? ": " : " : ";
   const text = input.etapes
-    .map((e) => `${e.label}${deuxPoints}${e.brand} ${e.name} — ${formatFcfa(e.prixFcfa)}`)
+    .map((e) => `${e.label}${deuxPoints}${e.brand} ${e.name} - ${formatFcfa(e.prixFcfa)}`)
     .join("\n");
 
   try {

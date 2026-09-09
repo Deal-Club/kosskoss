@@ -1,7 +1,7 @@
 /**
- * Frais de livraison — module pur, sans accès base de données.
+ * Frais de livraison - module pur, sans accès base de données.
  *
- * VALEURS PAR DÉFAUT, POSÉES EN DUR POUR LE MOMENT — à la demande du client,
+ * VALEURS PAR DÉFAUT, POSÉES EN DUR POUR LE MOMENT - à la demande du client,
  * en attendant qu'elles deviennent administrables depuis le back-office
  * (comme les moyens de paiement, voir `src/server/kk/payments.ts`). Douala et
  * Yaoundé sont desservies en direct (24 à 72 h, voir les pages légales
@@ -10,9 +10,9 @@
  *
  * Le montant EST facturé : `createKossOrder` (src/server/kk/checkout.ts)
  * l'ajoute à `totalCents`, qui est le montant réellement transmis à la
- * passerelle de paiement (voir `src/server/kk/paiement.ts`) — ce n'est donc
+ * passerelle de paiement (voir `src/server/kk/paiement.ts`) - ce n'est donc
  * pas un affichage indicatif. Recalculé ICI SEULEMENT, jamais reçu du
- * navigateur tel quel — même règle que le prix des produits.
+ * navigateur tel quel - même règle que le prix des produits.
  */
 
 export const VILLES_LIVRAISON = ["douala", "yaounde", "autre"] as const;
@@ -22,7 +22,7 @@ const FRAIS_PAR_VILLE: Record<VilleLivraison, number> = {
   douala: 2000,
   yaounde: 2000,
   // Tarif transporteur, faute de connaître la destination précise : c'est un
-  // plancher, pas une estimation fine — la livraison reste ensuite coordonnée
+  // plancher, pas une estimation fine - la livraison reste ensuite coordonnée
   // (et ajustée si besoin) par WhatsApp.
   autre: 3500,
 };

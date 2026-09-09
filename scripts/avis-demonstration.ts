@@ -1,14 +1,14 @@
 /**
  * Avis de démonstration, pour juger du rendu d'un catalogue vivant.
  *
- * ATTENTION — ces avis ne sont pas des avis de clients. Publier de faux avis,
+ * ATTENTION - ces avis ne sont pas des avis de clients. Publier de faux avis,
  * ou présenter comme authentiques des avis qui ne le sont pas, est une
  * pratique commerciale trompeuse réputée telle en toutes circonstances
  * (article L121-4, 21° et 22° du Code de la consommation) : ils doivent
  * disparaître avant l'ouverture de la boutique.
  *
  * La référence était auparavant le § 3 Abs. 3 UWG allemand, comme tout le
- * corpus de ce fichier — un reste du clone quelle.de dont ce projet est parti.
+ * corpus de ce fichier - un reste du clone quelle.de dont ce projet est parti.
  * L'allemand a été retiré du projet (voir TARGET.md) et la boutique vend au
  * Cameroun : le droit applicable et les textes sont français.
  *
@@ -24,7 +24,7 @@
 import { prisma } from "../src/server/prisma";
 
 /** Marque de reconnaissance. Ne jamais la changer sans adapter la purge. */
-const MARQUE = "[DEMO] Avis de démonstration — à supprimer avant l'ouverture";
+const MARQUE = "[DEMO] Avis de démonstration - à supprimer avant l'ouverture";
 
 /** Part des produits qui reçoivent des avis : un catalogue neuf en a rarement partout. */
 const PART_AVEC_AVIS = 0.62;
@@ -63,7 +63,7 @@ const piocher = <T>(liste: readonly T[]): T => liste[Math.floor(alea() * liste.l
 //
 // Prénoms et villes du Cameroun et de la diaspora francophone : la boutique
 // livre « partout au Cameroun » et règle en Mobile Money. Le corpus précédent
-// était allemand — Thomas, Sabine, Düsseldorf, Saarbrücken — hérité du clone
+// était allemand - Thomas, Sabine, Düsseldorf, Saarbrücken - hérité du clone
 // quelle.de dont ce projet est parti, et l'allemand a depuis été retiré du
 // projet entier (voir TARGET.md).
 // ---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ const VILLES = [
   "Ebolowa", "Nkongsamba", "Sangmélima", "Mbalmayo", "Bafang", "Melong",
   "Loum", "Tiko", "Guider", "Kousséri", "Meiganga", "Batouri", "Mbouda",
   "Bandjoun", "Obala", "Akonolinga", "Yagoua", "Wum", "Kumbo", "Mora",
-  "Douala — Bonapriso", "Douala — Akwa", "Yaoundé — Bastos", "Yaoundé — Mvog-Ada",
+  "Douala - Bonapriso", "Douala - Akwa", "Yaoundé - Bastos", "Yaoundé - Mvog-Ada",
   "Paris", "Bruxelles",
 ];
 
@@ -99,8 +99,8 @@ const VILLES = [
 // trahit un catalogue artificiel comme deux fiches au même commentaire.
 //
 // Le vocabulaire est celui du soin, pas celui de l'électroménager. Les
-// familles précédentes — téléviseurs, lave-linge, aspirateurs, machines à
-// café — faisaient dire à un sérum visage que « le montage a été rapide ».
+// familles précédentes - téléviseurs, lave-linge, aspirateurs, machines à
+// café - faisaient dire à un sérum visage que « le montage a été rapide ».
 // ---------------------------------------------------------------------------
 
 /** Familles de produits, reconnues au slug de la catégorie. */
@@ -377,7 +377,7 @@ function redigerTexte(famille: Famille, note: number): { titre: string; corps: s
 
 /**
  * Notes d'une fiche : une large majorité de bonnes, quelques moyennes, et deux
- * à trois mauvaises — jamais plus, jamais zéro dès que la fiche est un peu
+ * à trois mauvaises - jamais plus, jamais zéro dès que la fiche est un peu
  * fournie. Une fiche qui n'aurait que des cinq étoiles se lit comme un faux.
  */
 function tirerNotes(total: number): number[] {
@@ -404,7 +404,7 @@ function repartir(notes: number[]): { rating: number; createdAt: Date }[] {
   const total = notes.length;
   const mauvaises = notes.filter((n) => n < 3);
 
-  // Les notes sont tirées par groupes — les cinq et quatre d'abord, les trois
+  // Les notes sont tirées par groupes - les cinq et quatre d'abord, les trois
   // ensuite. Consommées dans cet ordre, toutes les notes moyennes se
   // retrouveraient en fin de liste chronologique, donc en tête d'affichage :
   // une fiche qui s'ouvre sur sept avis à trois étoiles se voit immédiatement.

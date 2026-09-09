@@ -177,8 +177,8 @@ export default async function AdminStockPage({
                     <td className="px-4 py-3 text-muted-foreground">
                       {reasonLabel(movement.reason)}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{movement.note ?? "—"}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{movement.createdBy ?? "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{movement.note ?? "-"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{movement.createdBy ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>

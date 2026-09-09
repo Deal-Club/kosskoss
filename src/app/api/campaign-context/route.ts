@@ -3,7 +3,7 @@
  *
  * Le panier est rendu dans le navigateur : il ne peut pas interroger la base.
  * Il pourrait lire le cookie tout seul, mais celui-ci ne contient qu'un jeton,
- * et surtout un cookie se modifie à la main — laisser le navigateur décider
+ * et surtout un cookie se modifie à la main - laisser le navigateur décider
  * seul de la gratuité du port reviendrait à laisser le client fixer son prix.
  *
  * Cette route est donc la seule autorité sur ce que la campagne accorde.

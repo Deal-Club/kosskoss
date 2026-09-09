@@ -4,8 +4,8 @@
  * La boutique n'a pas de table « contact » et n'en aura pas. Les adresses
  * existent déjà, dans les comptes clients d'un côté et dans les commandes
  * invité de l'autre ; les recopier dans une troisième table créerait un fichier
- * qui vieillit mal — une adresse corrigée dans le compte resterait fausse dans
- * la liste d'envoi — et un traitement de plus à porter au registre. Les deux
+ * qui vieillit mal - une adresse corrigée dans le compte resterait fausse dans
+ * la liste d'envoi - et un traitement de plus à porter au registre. Les deux
  * sources sont donc lues à la volée et réunies ici.
  *
  * Le compte prime sur la commande invité pour une même adresse : ses données
@@ -59,7 +59,7 @@ interface OrderStats {
  * Toutes les adresses connues de la boutique, dédoublonnées.
  *
  * Trois requêtes, quelle que soit la taille de la liste : les comptes, les
- * commandes, la liste de blocage. Le reste est de l'agrégation en mémoire — une
+ * commandes, la liste de blocage. Le reste est de l'agrégation en mémoire - une
  * requête par contact rendrait l'écran des destinataires inutilisable dès
  * quelques centaines d'adresses.
  */
@@ -187,8 +187,8 @@ export async function isSuppressed(email: string): Promise<boolean> {
  *
  * L'écriture est idempotente : un client qui clique deux fois sur le lien de
  * désinscription ne doit pas voir d'erreur. La date de première inscription est
- * conservée telle quelle — c'est elle qui prouve à quel moment la demande a été
- * honorée — mais le motif est rafraîchi : une plainte pour spam arrivée après
+ * conservée telle quelle - c'est elle qui prouve à quel moment la demande a été
+ * honorée - mais le motif est rafraîchi : une plainte pour spam arrivée après
  * une simple désinscription est l'information qui compte pour la réputation du
  * domaine.
  */

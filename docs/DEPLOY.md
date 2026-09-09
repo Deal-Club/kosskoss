@@ -1,4 +1,4 @@
-# Mise en ligne — Hostinger
+# Mise en ligne - Hostinger
 
 Procédure de déploiement de MLC Bois sur Hostinger, en Node.js.
 
@@ -15,14 +15,14 @@ déploient pas de la même façon :
 Le VPS est la voie la plus sûre : le site est une application rendue côté
 serveur avec base de données, envoi d'e-mails et tâche planifiée à la minute.
 L'hébergement mutualisé fonctionne, mais la mémoire allouée à la compilation y
-est limitée — voir « Build sur une machine limitée » plus bas.
+est limitée - voir « Build sur une machine limitée » plus bas.
 
 ---
 
 ## 1. Ce qu'il faut avoir sous la main
 
 - **Node 22 recommandé**, et surtout pas n'importe quelle version 20. Prisma 7
-  n'accepte que `20.19+`, `22.12+` ou `24+` — et refuse de s'installer sur les
+  n'accepte que `20.19+`, `22.12+` ou `24+` - et refuse de s'installer sur les
   autres, l'installation entière échoue :
 
   ```
@@ -36,7 +36,7 @@ est limitée — voir « Build sur une machine limitée » plus bas.
   Node.js version → 22**, puis relancer le déploiement. Le `.nvmrc` du dépôt
   demande la même version pour les outils qui savent le lire.
 - L'URL de la base **PostgreSQL Neon** (chaîne « pooled », avec `sslmode=require`).
-- Les trois clés **Cloudinary** — sans elles, l'envoi d'images est refusé en
+- Les trois clés **Cloudinary** - sans elles, l'envoi d'images est refusé en
   production, et c'est par là que passeront toutes les photos produits.
 - Les identifiants **SMTP Hostinger** de `contact@mlc-bois.fr`.
   Sans eux, plus personne n'entre dans le back-office : le code de connexion à
@@ -46,7 +46,7 @@ est limitée — voir « Build sur une machine limitée » plus bas.
 ## 2. Variables d'environnement
 
 La liste complète et commentée est dans [`.env.example`](../.env.example).
-Elles vivent dans un fichier `.env.local` déposé à la racine sur le serveur —
+Elles vivent dans un fichier `.env.local` déposé à la racine sur le serveur -
 jamais dans le dépôt Git, qui est public.
 
 Générer chaque secret séparément :
@@ -58,9 +58,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 Trois secrets doivent être **régénérés pour la production**, différents de ceux
 utilisés en développement :
 
-- `ADMIN_SESSION_SECRET` — signature des sessions du back-office
-- `CUSTOMER_SESSION_SECRET` — signature des sessions clients
-- `INTEGRATION_ENCRYPTION_KEY` — chiffrement des clés de paiement en base
+- `ADMIN_SESSION_SECRET` - signature des sessions du back-office
+- `CUSTOMER_SESSION_SECRET` - signature des sessions clients
+- `INTEGRATION_ENCRYPTION_KEY` - chiffrement des clés de paiement en base
 
 Attention à `INTEGRATION_ENCRYPTION_KEY` : la changer après coup rend
 illisibles les clés d'intégration déjà enregistrées en base. Elle se fixe
@@ -68,12 +68,12 @@ illisibles les clés d'intégration déjà enregistrées en base. Elle se fixe
 
 Ne pas oublier non plus :
 
-- `NEXT_PUBLIC_SITE_URL=https://mlc-bois.fr` — sans barre finale. Cette
+- `NEXT_PUBLIC_SITE_URL=https://mlc-bois.fr` - sans barre finale. Cette
   variable est lue **au moment du build**, pas au démarrage : la changer impose
   de reconstruire. Elle alimente les URL canoniques, le sitemap, le flux Google
   Merchant et tous les liens contenus dans les e-mails.
 - `NODE_ENV=production`
-- `CRON_SECRET` — sinon la route d'envoi des campagnes reste fermée.
+- `CRON_SECRET` - sinon la route d'envoi des campagnes reste fermée.
 
 ## 3. Déploiement sur VPS Hostinger
 
@@ -93,8 +93,8 @@ Créer `/var/www/mlc-bois/.env.local` avec les variables de l'étape 2, puis :
 ```bash
 npm ci                 # installe et lance `prisma generate` (postinstall)
 npx prisma migrate deploy   # applique les migrations à la base Neon
-npm run db:seed:gestes      # OBLIGATOIRE — voir § 5, sans quoi le diagnostic ne propose rien
-npm run db:seed:tags        # OBLIGATOIRE — voir § 5, sans quoi les facettes du catalogue sont vides
+npm run db:seed:gestes      # OBLIGATOIRE - voir § 5, sans quoi le diagnostic ne propose rien
+npm run db:seed:tags        # OBLIGATOIRE - voir § 5, sans quoi les facettes du catalogue sont vides
 npm run build
 pm2 start npm --name mlc-bois -- start
 pm2 save && pm2 startup     # relance automatique au redémarrage du serveur
@@ -133,13 +133,13 @@ sudo certbot --nginx -d mlc-bois.fr -d www.mlc-bois.fr
 ```
 
 `X-Forwarded-Proto` n'est pas décoratif : sans lui, l'application se croit en
-HTTP et les cookies de session, marqués `Secure`, ne sont jamais posés — la
+HTTP et les cookies de session, marqués `Secure`, ne sont jamais posés - la
 connexion au back-office tourne alors en boucle.
 
 ## 4. Déploiement sur hébergement web Node.js (hPanel)
 
 1. hPanel → **Avancé → Node.js** → créer l'application.
-   - Version de Node : **22** (voir l'étape 1 — une version 20 antérieure à
+   - Version de Node : **22** (voir l'étape 1 - une version 20 antérieure à
      20.19 fait échouer l'installation de Prisma)
    - Racine de l'application : le dossier du site
    - Fichier de démarrage : **`server.js`** (fourni à la racine du dépôt)
@@ -149,7 +149,7 @@ connexion au back-office tourne alors en boucle.
    l'étape 2.
 
    Les variables saisies dans l'onglet « Variables d'environnement » de hPanel
-   sont posées dans le processus démarré par Passenger — pas dans la session
+   sont posées dans le processus démarré par Passenger - pas dans la session
    SSH où l'on construit. Le build ne les verrait pas, échouerait faute de
    `DATABASE_URL`, et figerait `NEXT_PUBLIC_SITE_URL` sur `localhost` dans tous
    les liens des e-mails. Un `.env.local` sur le serveur couvre les deux : Next
@@ -161,9 +161,9 @@ connexion au back-office tourne alors en boucle.
 ```bash
 npm ci                        # installe et génère le client Prisma
 npx prisma migrate deploy     # applique les migrations à la base Neon
-npm run db:seed:gestes        # OBLIGATOIRE — voir § 5
-npm run db:seed:tags          # OBLIGATOIRE — voir § 5
-npm run build                 # base réveillée au préalable — voir plus bas
+npm run db:seed:gestes        # OBLIGATOIRE - voir § 5
+npm run db:seed:tags          # OBLIGATOIRE - voir § 5
+npm run build                 # base réveillée au préalable - voir plus bas
 ```
 
 5. **Restart** de l'application depuis hPanel.
@@ -212,7 +212,7 @@ Failed to collect page data for /[locale]/[group]/[category]
 
 La cause n'est pas une base injoignable mais un **épuisement des connexions**.
 Next dimensionne ses processus de build sur `os.cpus()`, qui sur un hébergement
-mutualisé renvoie les cœurs de la machine hôte — soixante-trois workers observés
+mutualisé renvoie les cœurs de la machine hôte - soixante-trois workers observés
 sur Hostinger. Chacun ouvre son propre client Prisma, jusqu'à dix connexions :
 plusieurs centaines de connexions simultanées sur un endpoint direct qui plafonne
 bien plus bas. Le pooler (PgBouncer) les absorbe.
@@ -224,12 +224,12 @@ cause, le plafond limite la pression.
 **La latence compte aussi.** Une base Neon en `us-east-2` (Ohio) servie depuis un
 serveur européen fait payer l'aller-retour transatlantique à chaque connexion, ce
 qui rapproche d'autant du délai d'attente. Un projet Neon en région européenne
-supprime ce facteur — c'est une migration de base, pas un réglage.
+supprime ce facteur - c'est une migration de base, pas un réglage.
 
 ### Build sur une machine limitée
 
-Si `npm run build` s'interrompt sans message — le processus est tué faute de
-mémoire —, construire en local et n'envoyer que le dossier `.next/`.
+Si `npm run build` s'interrompt sans message - le processus est tué faute de
+mémoire -, construire en local et n'envoyer que le dossier `.next/`.
 
 Ne **jamais** transférer `node_modules/` depuis un poste de développement :
 Prisma y installe un moteur de requête compilé pour le système du poste. Un
@@ -270,7 +270,7 @@ se fait une seule fois :
 npm run db:seed
 ```
 
-À sauter si la base Neon contient déjà le catalogue — c'est le cas ici, la même
+À sauter si la base Neon contient déjà le catalogue - c'est le cas ici, la même
 base sert le développement et la production (voir [`DATABASE.md`](DATABASE.md)).
 
 ### Deux tables que `migrate deploy` crée VIDES
@@ -294,8 +294,8 @@ idempotents (`upsert` sur la clé). On peut les relancer sans rien casser.
 
 Une réserve tout de même une fois le site en service : relancés, ils
 **réécrivent les libellés** (`labelFr`, `labelEn`). L'ordre, la famille, la
-catégorie source et l'activation sont préservés — ce sont des réglages du
-client —, mais un libellé retouché depuis le back-office reviendrait à sa
+catégorie source et l'activation sont préservés - ce sont des réglages du
+client -, mais un libellé retouché depuis le back-office reviendrait à sa
 valeur d'origine. À lancer au premier déploiement, puis seulement en
 connaissance de cause.
 
@@ -306,7 +306,7 @@ nuit calme peut prendre une à deux secondes. C'est normal.
 
 **En production, la boutique est fermée par défaut.** Rien à faire pour cela :
 un déploiement neuf sert la page d'attente, et il faut demander explicitement
-l'ouverture. C'est le sens sûr de l'erreur — un oubli laisse le site fermé
+l'ouverture. C'est le sens sûr de l'erreur - un oubli laisse le site fermé
 plutôt que d'exposer un catalogue inachevé.
 
 Ce qui se passe tant qu'elle est fermée :
@@ -315,12 +315,12 @@ Ce qui se passe tant qu'elle est fermée :
 |---|---|
 | Toute la boutique | page d'attente en français, **503** |
 | `/api/...` (panier, commande, compte) | JSON d'erreur, **503** |
-| `/admin` et `/api/admin/...` | **ouverts** — c'est par là qu'on entre |
+| `/admin` et `/api/admin/...` | **ouverts** - c'est par là qu'on entre |
 | `/api/cron/...` | ouvert, déjà protégé par `CRON_SECRET` |
 | La boutique, **connecté en administrateur** | site complet et normal |
 
 Cette dernière ligne est tout l'intérêt du dispositif : on se connecte sur
-`/admin`, et la boutique se comporte comme si elle était ouverte — on peut la
+`/admin`, et la boutique se comporte comme si elle était ouverte - on peut la
 parcourir, tester le tunnel d'achat, vérifier chaque fiche, pendant que les
 visiteurs ne voient que la page d'attente. La session admin est reconnue sur la
 seule signature de son jeton, sans requête en base : le jeton est signé et
@@ -339,7 +339,7 @@ MAINTENANCE_MODE=0
 ```
 
 puis redémarrer l'application depuis hPanel (la variable est lue au
-démarrage). Rien d'autre à changer. Supprimer la variable ne suffit pas —
+démarrage). Rien d'autre à changer. Supprimer la variable ne suffit pas -
 c'est voulu : seule une décision écrite ouvre la boutique.
 
 L'interrupteur est une variable d'environnement et non un réglage du
@@ -351,7 +351,7 @@ pas ce jour-là. Contrepartie assumée : il faut un redémarrage.
 
 En navigation privée, sinon le test est faussé : si votre navigateur porte
 encore un cookie de session administrateur, le site vous répondra normalement
-— et c'est exactement ce qui est demandé, mais ce n'est pas ce que voit un
+- et c'est exactement ce qui est demandé, mais ce n'est pas ce que voit un
 visiteur.
 
 ```bash
@@ -391,14 +391,14 @@ Puis, dans le navigateur :
 
 ## 9. Ce qui reste à traiter avant d'ouvrir la boutique
 
-Repris de [`HANDOVER.md`](HANDOVER.md) — ces points ne bloquent pas le
+Repris de [`HANDOVER.md`](HANDOVER.md) - ces points ne bloquent pas le
 déploiement mais bloquent la vente réelle :
 
 0. **Supprimer les avis de démonstration.** La base en contient plusieurs
    milliers, générés pour juger du rendu d'un catalogue fourni. Ce ne sont pas
    des avis de clients : les laisser en ligne constituerait une pratique
    commerciale trompeuse en toutes circonstances (art. L121-4, 23° du Code de
-   la consommation — donner de fausses indications sur les avis de
+   la consommation - donner de fausses indications sur les avis de
    consommateurs), et exposerait la boutique à une mise en demeure autant qu'à
    une pénalité Google sur les étoiles affichées en résultat de recherche.
 
@@ -419,9 +419,9 @@ déploiement mais bloquent la vente réelle :
    contacter pour se rétracter ; l'information légale est en place (page
    « Droit de rétractation ») mais rien n'automatise la démarche depuis son
    compte. Ce n'est pas une obligation du droit français comparable au
-   « bouton de rétractation » allemand — plutôt un gain d'expérience client à
+   « bouton de rétractation » allemand - plutôt un gain d'expérience client à
    évaluer, pas un blocage légal.
 3. IBAN de démonstration sur la page de confirmation, déjà signalé comme tel.
-4. Informations d'entreprise fictives dans les mentions légales — voir
+4. Informations d'entreprise fictives dans les mentions légales - voir
    [`LEGAL.md`](LEGAL.md) § 3, à faire relire par un juriste avant publication.
 5. Supprimer les commandes et avis de test restés en base.

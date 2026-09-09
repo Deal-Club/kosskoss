@@ -1,9 +1,9 @@
 /**
- * Bandeau d'annonce — types et logique pure.
+ * Bandeau d'annonce - types et logique pure.
  *
  * Séparé de `src/server/announcements.ts` parce que le back-office est un
  * composant client : lui faire importer le module serveur y tirerait Prisma,
- * donc le driver `pg`, donc `tls` et `util/types` — que le navigateur n'a pas.
+ * donc le driver `pg`, donc `tls` et `util/types` - que le navigateur n'a pas.
  * Ici, aucune dépendance : ce fichier traverse la frontière sans rien emporter.
  */
 
@@ -38,7 +38,7 @@ export interface AnnouncementConfig {
 /**
  * Repli : la charte KossKoss, vert profond et crème.
  *
- * Les deux valeurs étaient restées sur l'ANCIENNE palette — #0F3B46, le canard
+ * Les deux valeurs étaient restées sur l'ANCIENNE palette - #0F3B46, le canard
  * tirant au bleu qui a été abandonné, et #F3E8DD, le crème d'avant. Le bandeau
  * affichait donc un vert qui n'existe plus nulle part ailleurs sur le site, ce
  * qui ne se voyait pas tant qu'il surplombait un hero clair. Depuis que le hero
@@ -66,7 +66,7 @@ const HEX = /^#[0-9a-fA-F]{6}$/;
 /**
  * Relit les réglages en tolérant tout : une valeur absente, mal typée ou hors
  * bornes retombe sur le défaut. Le bandeau est la première chose que voit un
- * visiteur — il ne doit jamais casser la page parce qu'une couleur a été mal
+ * visiteur - il ne doit jamais casser la page parce qu'une couleur a été mal
  * saisie.
  */
 export function normaliserReglages(brut: unknown): AnnouncementConfig {

@@ -6,7 +6,7 @@
  * ont été réécrites depuis le back-office EN FRANÇAIS SEULEMENT : la table
  * `LegalContent` ne portait que des lignes `locale = 'fr'`. Les visiteurs de
  * `/en/...` voyaient donc encore le contenu d'origine du dépôt
- * (`src/content/legal/en.ts`), qui décrit une autre boutique — d'autres zones de
+ * (`src/content/legal/en.ts`), qui décrit une autre boutique - d'autres zones de
  * livraison, d'autres tarifs, d'autres coordonnées.
  *
  * Ce script pose les lignes `locale = 'en'` manquantes à partir des traductions
@@ -113,12 +113,12 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
         body:
           "Under articles L612-1 et seq. of the French Consumer Code, every consumer is entitled to free recourse to a consumer ombudsman with a view to the amicable settlement of a dispute with a trader.\n\n" +
           "Before referring the matter to the ombudsman, please first send a written complaint to our customer service: we find a solution in the vast majority of cases.\n\n" +
-          "Competent ombudsman: name and contact details of the mediation scheme the company subscribes to (placeholder — subscribing to a mediation scheme is mandatory and must be arranged before going live).\n\n" +
+          "Competent ombudsman: name and contact details of the mediation scheme the company subscribes to (placeholder - subscribing to a mediation scheme is mandatory and must be arranged before going live).\n\n" +
           "The European online dispute resolution platform ceased operating permanently on 20 July 2025. No link to that platform may therefore appear on the site.",
       },
       {
         heading: "Liability for content",
-        body: "We take the greatest care over the accuracy of the information published on this site. Errors or omissions may nonetheless remain, in particular regarding product characteristics and stated lead times. Such information is indicative and subject to change; it cannot engage our liability beyond what mandatory legal provisions — in particular those of the French Consumer Code — require.",
+        body: "We take the greatest care over the accuracy of the information published on this site. Errors or omissions may nonetheless remain, in particular regarding product characteristics and stated lead times. Such information is indicative and subject to change; it cannot engage our liability beyond what mandatory legal provisions - in particular those of the French Consumer Code - require.",
       },
       {
         heading: "Links to third-party sites",
@@ -126,7 +126,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
       },
       {
         heading: "Intellectual property",
-        body: "The content of this site — text, photographs, illustrations, graphic elements, structure and code — is protected by the French Intellectual Property Code. Any reproduction, representation, adaptation or exploitation, in whole or in part, without prior written authorisation is prohibited, save for uses expressly permitted by law (private copying, short quotation). Manufacturers' trade marks and logos remain the property of their respective owners.",
+        body: "The content of this site - text, photographs, illustrations, graphic elements, structure and code - is protected by the French Intellectual Property Code. Any reproduction, representation, adaptation or exploitation, in whole or in part, without prior written authorisation is prohibited, save for uses expressly permitted by law (private copying, short quotation). Manufacturers' trade marks and logos remain the property of their respective owners.",
       },
     ],
   },
@@ -140,7 +140,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
         heading: "1. Scope",
         body:
           "These terms and conditions of sale apply to every order placed on www.mlc-bois.fr with MLC BOIS. They are binding on the customer, who acknowledges having read and accepted them before confirming the order.\n\n" +
-          "They address consumers, within the meaning of the preliminary article of the French Consumer Code, as well as business customers. Provisions expressly reserved for consumers — in particular the right of withdrawal — do not benefit professionals acting in the course of their business, subject to the exceptions provided by law.\n\n" +
+          "They address consumers, within the meaning of the preliminary article of the French Consumer Code, as well as business customers. Provisions expressly reserved for consumers - in particular the right of withdrawal - do not benefit professionals acting in the course of their business, subject to the exceptions provided by law.\n\n" +
           "Any conflicting condition put forward by the customer is unenforceable unless we accept it in writing.",
       },
       {
@@ -245,10 +245,10 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
         heading: "Purposes and legal bases",
         body: "Each processing operation rests on an identified legal basis:",
         list: [
-          "Performance of the sale and delivery contract — article 6(1)(b) GDPR",
-          "Compliance with legal obligations, in particular accounting and tax — article 6(1)(c)",
-          "Fraud prevention and site security — legitimate interest, article 6(1)(f)",
-          "Sending marketing communications — consent, article 6(1)(a), which may be withdrawn at any time",
+          "Performance of the sale and delivery contract - article 6(1)(b) GDPR",
+          "Compliance with legal obligations, in particular accounting and tax - article 6(1)(c)",
+          "Fraud prevention and site security - legitimate interest, article 6(1)(f)",
+          "Sending marketing communications - consent, article 6(1)(a), which may be withdrawn at any time",
         ],
       },
       {
@@ -288,12 +288,12 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
         heading: "Your rights",
         body: "Under the conditions laid down by the GDPR, you have the following rights:",
         list: [
-          "Right of access to your data — article 15",
-          "Right to rectification — article 16",
-          "Right to erasure — article 17",
-          "Right to restriction of processing — article 18",
-          "Right to data portability — article 20",
-          "Right to object — article 21",
+          "Right of access to your data - article 15",
+          "Right to rectification - article 16",
+          "Right to erasure - article 17",
+          "Right to restriction of processing - article 18",
+          "Right to data portability - article 20",
+          "Right to object - article 21",
           "Right to withdraw your consent at any time, without retroactive effect",
         ],
       },
@@ -309,7 +309,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
       },
       {
         heading: "Complaint to the CNIL",
-        body: "If you consider that the processing of your data breaches the GDPR, you may lodge a complaint with the French data protection authority — Commission nationale de l'informatique et des libertés, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, www.cnil.fr.",
+        body: "If you consider that the processing of your data breaches the GDPR, you may lodge a complaint with the French data protection authority - Commission nationale de l'informatique et des libertés, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, www.cnil.fr.",
       },
       {
         heading: "Security",
@@ -321,7 +321,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
   retractation: {
     title: "Right of withdrawal",
     intro:
-      "Notice: this text is a carefully drafted template for the MLC Bois online shop. The company identity, address, registration and VAT number are those on the public register. Still to be filled in before publication: the share capital, the president's name, the phone number, the insurer and the consumer ombudsman. Have the text reviewed by a lawyer afterwards — only then is it fit for use.\n\n" +
+      "Notice: this text is a carefully drafted template for the MLC Bois online shop. The company identity, address, registration and VAT number are those on the public register. Still to be filled in before publication: the share capital, the president's name, the phone number, the insurer and the consumer ombudsman. Have the text reviewed by a lawyer afterwards - only then is it fit for use.\n\n" +
       "Pre-contractual information on the right of withdrawal, in accordance with articles L221-18 to L221-28 of the French Consumer Code and with the model form annexed to article R221-1.",
     sections: [
       {
@@ -334,14 +334,14 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
       {
         heading: "How to exercise this right",
         body:
-          "To exercise the right of withdrawal, you must inform us of your decision by an unambiguous statement — a letter sent by post or an email. You may use the model form below, though you are not obliged to.\n\n" +
+          "To exercise the right of withdrawal, you must inform us of your decision by an unambiguous statement - a letter sent by post or an email. You may use the model form below, though you are not obliged to.\n\n" +
           "Send your notification to:\n\nMLC BOIS\n27 Grande Rue\n21700 Villebichot\nFrance\nEmail: contact@mlc-bois.fr\nPhone: +33 6 35 01 35 57\n\n" +
           "To meet the withdrawal deadline, it is enough that your notification is sent before the fourteen-day period has expired.",
       },
       {
         heading: "Effects of withdrawal",
         body:
-          "If you withdraw, we will reimburse all payments received from you, including delivery costs — except for the supplementary costs arising from your choosing a type of delivery other than the least expensive type of standard delivery we offer.\n\n" +
+          "If you withdraw, we will reimburse all payments received from you, including delivery costs - except for the supplementary costs arising from your choosing a type of delivery other than the least expensive type of standard delivery we offer.\n\n" +
           "We will make the reimbursement without undue delay and, in any event, no later than fourteen days from the day on which we are informed of your decision. We may withhold reimbursement until we have received the goods back or until you have supplied evidence of having sent them back, whichever is the earliest.\n\n" +
           "We will make the reimbursement using the same means of payment as you used for the initial transaction, unless you have expressly agreed otherwise; in any event, this reimbursement will not cost you anything.",
       },
@@ -357,8 +357,8 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
         heading: "Exceptions to the right of withdrawal",
         body: "The right of withdrawal does not apply, in accordance with article L221-28 of the French Consumer Code, in particular to contracts:",
         list: [
-          "For the supply of goods made to your specifications or clearly personalised — a custom log length, for instance",
-          "For the supply of goods which, after delivery and by their nature, are inseparably mixed with other items — a loose load tipped onto an existing stock, for instance",
+          "For the supply of goods made to your specifications or clearly personalised - a custom log length, for instance",
+          "For the supply of goods which, after delivery and by their nature, are inseparably mixed with other items - a loose load tipped onto an existing stock, for instance",
           "For the supply of goods liable to deteriorate or expire rapidly",
           "Concluded by a professional acting in the course of their business, withdrawal being reserved for consumers",
         ],
@@ -546,7 +546,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
       {
         heading: "How should I store the wood after delivery?",
         body:
-          "Under cover, away from the wall so air can circulate, and never straight on the ground — a pallet underneath is enough. Kiln-dried wood no longer needs to dry, but it takes moisture back up if it is left exposed.\n\n" +
+          "Under cover, away from the wall so air can circulate, and never straight on the ground - a pallet underneath is enough. Kiln-dried wood no longer needs to dry, but it takes moisture back up if it is left exposed.\n\n" +
           "In a closed, unventilated cellar, wood climbs back above 20 % within a year.",
       },
       {
@@ -582,7 +582,7 @@ const TRADUCTIONS: Readonly<Record<LegalSlug, Traduction>> = {
       {
         heading: "Why kiln drying",
         body:
-          "Air-dried wood takes two summers to fall below 20 % moisture on a wet basis — and even then, only if it is stored properly. The kiln does the same job in 72 hours, under controlled and verifiable conditions.\n\n" +
+          "Air-dried wood takes two summers to fall below 20 % moisture on a wet basis - and even then, only if it is stored properly. The kiln does the same job in 72 hours, under controlled and verifiable conditions.\n\n" +
           "The difference is not cosmetic: the water held in the wood has to evaporate before combustion releases any useful heat. Wood at 30 % moisture loses nearly half its calorific value to that evaporation, fouls the flue and blackens the glass.",
       },
       {
@@ -756,7 +756,7 @@ async function main(): Promise<void> {
 
     for (const { slug, page } of pages) {
       console.log(
-        `${simuler ? "[simulation] " : ""}${slug}/en — ${page.sections.length} sections, révision ${page.updatedAt}`,
+        `${simuler ? "[simulation] " : ""}${slug}/en - ${page.sections.length} sections, révision ${page.updatedAt}`,
       );
       if (simuler) continue;
 

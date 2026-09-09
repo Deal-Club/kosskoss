@@ -2,7 +2,7 @@ import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
 
 // Palette validée pour les daltonismes courants (vert / ambre / rouge).
 // L'ambre passe sous 3:1 de contraste : chaque part porte donc une étiquette
-// chiffrée et une icône — la couleur n'est jamais la seule information.
+// chiffrée et une icône - la couleur n'est jamais la seule information.
 const STATUS_COLORS = {
   ok: "#16a34a",
   low: "#e3a008",

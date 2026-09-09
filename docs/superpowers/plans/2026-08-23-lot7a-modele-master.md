@@ -1,4 +1,4 @@
-# Lot 7A — Le modèle accueille le master du client — Plan
+# Lot 7A - Le modèle accueille le master du client - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 

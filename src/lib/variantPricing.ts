@@ -21,7 +21,7 @@ export interface VariantInput {
 
 /**
  * Prix « à partir de » : plus petit prix parmi les variations actives.
- * `undefined` si aucune variation active — l'appelant garde alors le prix
+ * `undefined` si aucune variation active - l'appelant garde alors le prix
  * simple du produit.
  */
 export function minActivePriceCents(

@@ -37,23 +37,23 @@ export async function serverAllows(category: ConsentCategory): Promise<boolean> 
  *
  * Tant qu'aucun fragment de mesure ou de publicité n'est actif ET qu'aucun
  * identifiant GA4/Pixel n'est renseigné, le site ne pose que le panier, la
- * session et la langue — et l'article 82 de la loi Informatique et Libertés
+ * session et la langue - et l'article 82 de la loi Informatique et Libertés
  * dispense expressément ces cookies-là de consentement. Demander quand même,
  * c'est déranger chaque visiteur pour une question sans objet.
  *
  * Le contrôle est dynamique et non un interrupteur : le jour où quelqu'un
  * active une balise OU enregistre un identifiant GA4/Pixel au back-office, le
- * bandeau revient de lui-même. Personne n'a à se souvenir de le rallumer —
+ * bandeau revient de lui-même. Personne n'a à se souvenir de le rallumer -
  * c'est justement le genre d'oubli qui coûte une mise en demeure.
  *
  * ── LES IDENTIFIANTS DE MESURE COMPTENT AUTANT QU'UN FRAGMENT ───────────────
  *
  * `MesureAudience` (voir `src/app/[locale]/layout.tsx`) charge GA4/Pixel dès
- * qu'un identifiant est enregistré ET le consentement donné — exactement le
+ * qu'un identifiant est enregistré ET le consentement donné - exactement le
  * même schéma que `CodeSnippets`. Ignorer ces deux réglages ici referait
  * précisément l'erreur que ce module existe pour éviter : un traceur actif
  * sans bandeau pour le demander. Une revue de ce chantier a trouvé ce défaut
- * de conception avant qu'il n'atteigne la production — voir le rapport de la
+ * de conception avant qu'il n'atteigne la production - voir le rapport de la
  * tâche 3.
  *
  * ── SI LA BASE NE RÉPOND PAS ─────────────────────────────────────────────────
@@ -67,7 +67,7 @@ export async function serverAllows(category: ConsentCategory): Promise<boolean> 
  * La raison tient en une phrase : `CodeSnippets` et `MesureAudience` lisent
  * les MÊMES fonctions, dans le MÊME rendu (mémorisées par `cache()`). Si la
  * lecture échoue, aucun fragment n'est injecté et aucune balise ne se charge
- * non plus — rien ne part, donc il n'y a rien à faire consentir. Les
+ * non plus - rien ne part, donc il n'y a rien à faire consentir. Les
  * décisions dérivent de la même donnée et ne peuvent pas diverger.
  *
  * Le cas se produit réellement : la base Neon se met en veille et la première

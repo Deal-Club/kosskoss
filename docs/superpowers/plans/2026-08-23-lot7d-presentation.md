@@ -1,11 +1,11 @@
-# Lot 7D — Les modèles de présentation du client — Plan
+# Lot 7D - Les modèles de présentation du client - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 
 **But :** donner à la fiche produit et à la fiche routine la présentation que le
 client a dessinée, en s'appuyant sur les champs importés du master.
 
-**Sources :** `assets/corrections/Fiche Produit KossKoss Select — Version courte.docx`
+**Sources :** `assets/corrections/Fiche Produit KossKoss Select - Version courte.docx`
 et `assets/corrections/MODELE FICHE ROUTINE.docx`.
 
 ## Ce que les modèles décrivent

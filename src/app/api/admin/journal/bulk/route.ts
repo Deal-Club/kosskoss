@@ -2,8 +2,8 @@
  * Actions groupées sur les articles.
  *
  * Une seule action est réservée : la suppression définitive, qui exige le rôle
- * `superadmin`. Toutes les autres sont réversibles — un article archivé se
- * republie, un article à la corbeille se restaure — et n'ont donc pas à être
+ * `superadmin`. Toutes les autres sont réversibles - un article archivé se
+ * republie, un article à la corbeille se restaure - et n'ont donc pas à être
  * bridées dans un back-office où chaque compte est déjà protégé par un second
  * facteur.
  */

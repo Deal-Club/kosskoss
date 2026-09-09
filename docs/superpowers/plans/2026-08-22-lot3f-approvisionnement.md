@@ -1,6 +1,6 @@
-# Lot 3F — Approvisionnement — Plan d'implémentation
+# Lot 3F - Approvisionnement - Plan d'implémentation
 
-> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE —
+> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE -
 > superpowers:subagent-driven-development.
 
 **But :** relier le coût d'achat à des achats réels, et savoir ce qui est commandé
@@ -26,8 +26,8 @@ mais pas encore arrivé.
 5. **`null` veut dire « on ne sait pas », jamais « zéro ».**
 6. **Le FCFA n'a pas de sous-unité** : les entiers `*Cents` sont des francs entiers,
    aucune division par 100.
-7. **Toute route et tout écran d'administration nomment leur capacité** —
-   `catalogue` ici — et les familles `suppliers` et `purchase-orders` doivent être
+7. **Toute route et tout écran d'administration nomment leur capacité** -
+   `catalogue` ici - et les familles `suppliers` et `purchase-orders` doivent être
    ajoutées à `CAPACITE_PAR_FAMILLE` **avant** d'écrire les routes. Un test ouvre
    chaque fichier et exige autant de gardes que de fonctions exportées.
 8. **Les modules de `src/lib/kk/` n'importent que des modules purs.**
@@ -104,7 +104,7 @@ describe("numeroSuivant", () => {
  * repli sur 1 quand le dernier numéro est illisible.
  *
  * Deux copies d'une règle de numérotation divergent, et un numéro qui se répète
- * est un incident comptable — pas un défaut d'affichage.
+ * est un incident comptable - pas un défaut d'affichage.
  */
 
 /** Six chiffres : de quoi tenir un million de documents par an. */
@@ -239,7 +239,7 @@ describe("totauxBon", () => {
 
 - [ ] **Étape 2 : écrire le module, puis vérifier et commiter**
 
-Le module est pur — zéro import. Règles à respecter, écrites en commentaire :
+Le module est pur - zéro import. Règles à respecter, écrites en commentaire :
 - un bon `annule` ou `brouillon` ne change jamais de statut par une réception ;
 - « tout reçu » veut dire *au moins* la quantité commandée sur **chaque** ligne ;
 - un bon sans ligne n'est pas « reçu » ;
@@ -279,7 +279,7 @@ model PurchaseOrder {
   id         String   @id @default(cuid())
   reference  String   @unique
   supplierId String
-  /// brouillon | envoye | recu_partiel | recu | annule — déduit des quantités,
+  /// brouillon | envoye | recu_partiel | recu | annule - déduit des quantités,
   /// jamais saisi à la main.
   status     String   @default("brouillon")
   note       String   @default("")
@@ -316,9 +316,9 @@ model PurchaseOrderItem {
 
 `Product` gagne `purchaseItems PurchaseOrderItem[]`.
 
-**Deux choix à ne pas confondre :** le fournisseur est `Restrict` — on ne supprime
+**Deux choix à ne pas confondre :** le fournisseur est `Restrict` - on ne supprime
 pas un fournisseur qui a des bons, parce qu'un bon sans fournisseur n'est plus un
-document. Le produit est `SetNull` — le catalogue vit, le bon reste lisible grâce à
+document. Le produit est `SetNull` - le catalogue vit, le bon reste lisible grâce à
 son libellé recopié. Les lignes sont `Cascade` : elles n'existent que par leur bon.
 
 - [ ] **Étape 2 : lire le SQL, écrire la migration, l'appliquer**
@@ -345,14 +345,14 @@ git commit -m "Fournisseurs, bons de commande et leurs lignes"
 
 ---
 
-### Tâche 4 : Le serveur — fournisseurs, bons, et la réception
+### Tâche 4 : Le serveur - fournisseurs, bons, et la réception
 
 **Fichiers :** créer `src/server/kk/fournisseurs.ts` et `src/server/kk/bons.ts`.
 
 - [ ] **Étape 1 : les fournisseurs**
 
 Lecture, création, modification, désactivation. La suppression n'est possible que
-sans bon rattaché — sinon un message qui dit combien de bons l'empêchent. Un refus
+sans bon rattaché - sinon un message qui dit combien de bons l'empêchent. Un refus
 qui ne dit pas contre quoi on bute est un refus qu'on ne comprend pas.
 
 - [ ] **Étape 2 : les bons**
@@ -364,7 +364,7 @@ le bon est en `brouillon`, envoi (pose `sentAt` et passe à `envoye`), annulatio
 engagement : le réécrire après coup ferait diverger ce qu'on a commandé et ce que le
 fournisseur a lu.
 
-- [ ] **Étape 3 : LA RÉCEPTION — le cœur du lot**
+- [ ] **Étape 3 : LA RÉCEPTION - le cœur du lot**
 
 ```ts
 export async function recevoirLignes(
@@ -377,8 +377,8 @@ export async function recevoirLignes(
 **Tout se passe dans UNE transaction Prisma.** Pour chaque ligne reçue :
 
 1. incrémenter `quantityReceived` ;
-2. créer un `StockMovement` de motif `"wareneingang"` — le motif existe déjà, ne
-   crée pas de septième vocabulaire — avec une note portant la référence du bon ;
+2. créer un `StockMovement` de motif `"wareneingang"` - le motif existe déjà, ne
+   crée pas de septième vocabulaire - avec une note portant la référence du bon ;
 3. incrémenter `Product.stock` ;
 4. si `majCoutProduit`, poser `Product.costCents = coutUnitaireCents` de la ligne.
 
@@ -389,7 +389,7 @@ Puis recalculer le statut du bon avec `statutApresReception`.
 - une quantité reçue **nulle ou négative** est refusée : une réception négative
   réécrirait l'histoire, et la correction passe par un ajustement de stock tracé ;
 - une ligne **sans produit rattaché** (`productId` nul, produit supprimé) est reçue
-  au sens du bon, mais ne touche ni stock ni coût — et le résultat le signale, sans
+  au sens du bon, mais ne touche ni stock ni coût - et le résultat le signale, sans
   quoi l'administrateur croirait son stock à jour ;
 - **la sur-livraison est acceptée** : le fournisseur livre ce qu'il livre, et le
   refuser ne ferait pas rentrer la marchandise ;
@@ -412,11 +412,11 @@ git commit src/server/kk/fournisseurs.ts src/server/kk/bons.ts -m "Fournisseurs,
 ### Tâche 5 : Les routes et les écrans
 
 **Fichiers :**
-- `src/lib/kk/routesAdmin.ts` — `suppliers: "catalogue"` et `"purchase-orders": "catalogue"`, **d'abord**
+- `src/lib/kk/routesAdmin.ts` - `suppliers: "catalogue"` et `"purchase-orders": "catalogue"`, **d'abord**
 - `src/app/api/admin/suppliers/` et `src/app/api/admin/purchase-orders/`
 - `src/app/admin/(protected)/suppliers/` et `.../purchase-orders/`
-- `src/components/admin/AdminSidebar.tsx` — deux entrées dans la section Catalogue
-- `src/app/admin/(protected)/stock/page.tsx` — colonne « en commande »
+- `src/components/admin/AdminSidebar.tsx` - deux entrées dans la section Catalogue
+- `src/app/admin/(protected)/stock/page.tsx` - colonne « en commande »
 
 - [ ] **Étape 1 : la carte des capacités d'abord.** Le test d'arborescence échouera
       sinon, et c'est son rôle.
@@ -424,8 +424,8 @@ git commit src/server/kk/fournisseurs.ts src/server/kk/bons.ts -m "Fournisseurs,
 - [ ] **Étape 2 : les routes.** Chaque fonction exportée appelle
       `requireCapaciteApi("catalogue")`. Le test en exige autant que de fonctions.
 
-- [ ] **Étape 3 : les écrans.** Suis le patron d'une famille existante — regarde
-      `coupons` ou `brands` — plutôt que d'inventer une mise en page.
+- [ ] **Étape 3 : les écrans.** Suis le patron d'une famille existante - regarde
+      `coupons` ou `brands` - plutôt que d'inventer une mise en page.
 
       La fiche d'un bon montre les lignes, ce qui reste à recevoir, et le formulaire
       de réception. **La case « mettre à jour le coût d'achat des produits » est
@@ -433,7 +433,7 @@ git commit src/server/kk/fournisseurs.ts src/server/kk/bons.ts -m "Fournisseurs,
       devient le coût payé sur cette réception. La décocher sert aux achats
       exceptionnels, qui ne doivent pas s'imposer comme référence.
 
-      Après réception, l'écran affiche le compte rendu ligne par ligne — dont les
+      Après réception, l'écran affiche le compte rendu ligne par ligne - dont les
       lignes qui n'ont pas touché le stock faute de produit rattaché.
 
 - [ ] **Étape 4 : la colonne « en commande » sur l'écran du stock.** Elle somme les
@@ -450,12 +450,12 @@ npm run dev
 Déroule un cycle complet et rapporte chaque étape :
 1. créer un fournisseur ;
 2. créer un bon, y mettre deux lignes, l'envoyer ;
-3. recevoir une seule ligne partiellement — vérifier que le statut passe à
+3. recevoir une seule ligne partiellement - vérifier que le statut passe à
    `recu_partiel`, que le stock du produit a augmenté de la bonne quantité, et que
    son coût d'achat a changé ;
-4. recevoir le reste — vérifier le passage à `recu` ;
+4. recevoir le reste - vérifier le passage à `recu` ;
 5. vérifier la colonne « en commande » avant et après ;
-6. essayer de recevoir sur un bon annulé — le refus doit être lisible.
+6. essayer de recevoir sur un bon annulé - le refus doit être lisible.
 
 **Supprime les données d'essai que tu as créées**, et dis-le dans ton rapport.
 
@@ -465,6 +465,6 @@ Déroule un cycle complet et rapporte chaque étape :
 
 - [ ] `npm test` au vert, `npm run build` en succès.
 - [ ] Le `migrate diff` rend une migration vide.
-- [ ] Aucune route ni écran sans capacité — le test d'arborescence le garantit.
+- [ ] Aucune route ni écran sans capacité - le test d'arborescence le garantit.
 - [ ] Les tests de facturation existants passent toujours : la numérotation a été
       mutualisée sans changer leur comportement.

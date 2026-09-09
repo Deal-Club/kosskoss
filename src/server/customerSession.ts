@@ -41,7 +41,7 @@ export const getCurrentCustomer = cache(async (): Promise<CustomerRecord | null>
 
 /**
  * Exige un client connecté, sinon renvoie vers la page de connexion.
- * `returnTo` est le chemin — sans préfixe de langue — vers lequel revenir après
+ * `returnTo` est le chemin - sans préfixe de langue - vers lequel revenir après
  * la connexion, par exemple « /compte/commandes ».
  */
 export async function requireCustomer(locale: string, returnTo?: string): Promise<CustomerRecord> {

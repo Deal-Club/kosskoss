@@ -3,8 +3,8 @@
  *
  * L'enjeu : ces deux messages sont la seule preuve que le client et le vendeur
  * reçoivent de la commande. On vérifie donc qu'ils contiennent réellement les
- * montants, les adresses et les liens attendus — un gabarit qui « compile »
- * mais oublie le total serait une confirmation sans valeur —, que la langue
+ * montants, les adresses et les liens attendus - un gabarit qui « compile »
+ * mais oublie le total serait une confirmation sans valeur -, que la langue
  * suit celle de la commande, et qu'aucun texte saisi par le client ne peut
  * injecter de HTML.
  *
@@ -70,7 +70,7 @@ function order(overrides: Partial<OrderRecord> = {}): OrderRecord {
       {
         id: "item_1",
         brand: "MLC Bois",
-        name: "Hêtre 33 cm — palette 2 MAP",
+        name: "Hêtre 33 cm - palette 2 MAP",
         variantLabel: "",
         sku: "HET-33-P2",
         slug: "hetre-33-palette-2map",
@@ -166,7 +166,7 @@ describe("Confirmation à l'acheteur", () => {
     assert.match(en.html, /Express delivery \(24–48 hours\)/);
     // Le supplément doit apparaître comme un montant, jamais comme « free ».
     assert.match(en.html, /7\u202f000 FCFA/);
-    assert.doesNotMatch(en.text, /Shipping — Express delivery \(24–48 hours\) : free/);
+    assert.doesNotMatch(en.text, /Shipping - Express delivery \(24–48 hours\) : free/);
   });
 
   it("échappe la remarque saisie par le client", () => {

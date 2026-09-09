@@ -32,7 +32,7 @@ import type { Periode } from "@/lib/kk/periode";
  * Un code promo réduit `Order.totalCents`, jamais les `lineTotalCents` des
  * lignes qui le composent : sommer les lignes brutes surévaluerait le chiffre
  * d'affaires et la marge du montant exact des remises accordées. Chaque ligne
- * reçoit donc sa part, calculée par `repartirRemise` — voir ce module pour le
+ * reçoit donc sa part, calculée par `repartirRemise` - voir ce module pour le
  * détail de l'arrondi.
  */
 
@@ -81,7 +81,7 @@ export async function lireVentes(periode: Periode): Promise<LigneVente[]> {
     // référence est un COALESCE des deux, que Prisma ne sait pas exprimer) :
     // le tri définitif reste donc le tri en mémoire ci-dessous, sur la date
     // effective. Comme `Array.prototype.sort` est stable, deux lignes de même
-    // date gardent l'ordre que cet `orderBy` leur a donné — ce qui est
+    // date gardent l'ordre que cet `orderBy` leur a donné - ce qui est
     // exactement ce qui rend deux exports de la même période identiques.
     orderBy: [{ order: { paidAt: "asc" } }, { order: { createdAt: "asc" } }, { id: "asc" }],
   });
@@ -132,7 +132,7 @@ export async function lireVentes(periode: Periode): Promise<LigneVente[]> {
  * `Order.totalCents` est déjà net de remise (`subtotalCents − discountCents`,
  * voir `createKossOrder`) et ne porte pas de livraison : cette assiette est
  * donc la même que le chiffre d'affaires net de `lireVentes` ci-dessus, ce qui
- * rend les deux montants directement comparables — pour les commandes issues
+ * rend les deux montants directement comparables - pour les commandes issues
  * du tunnel `kk`, seul chemin atteignable depuis une page en ligne. L'autre
  * chemin de création de commande (`src/server/orders.ts::createOrder`, mort
  * côté navigation mais dont la route HTTP existe toujours) calcule

@@ -5,7 +5,7 @@ import { CLE_JETON_CAPI } from "@/lib/kk/parametres";
 import { versPixel, nomEvenementMeta, type ArticleMesure, type EvenementDetail } from "@/lib/kk/mesure";
 
 /**
- * API de conversions Meta (CAPI), côté serveur — l'événement `purchase`,
+ * API de conversions Meta (CAPI), côté serveur - l'événement `purchase`,
  * envoyé au moment où l'ENCAISSEMENT est confirmé (voir l'appelant unique,
  * `appliquerEvenement` dans `src/server/kk/paiement.ts`), jamais à la
  * commande : c'est l'argent reçu qui est la conversion, pas l'intention
@@ -17,24 +17,24 @@ import { versPixel, nomEvenementMeta, type ArticleMesure, type EvenementDetail }
  * transmise à un tiers (Meta) : l'article 82 de la loi Informatique et
  * Libertés s'applique exactement comme au Pixel navigateur. `marketingConsent`
  * est le consentement lu à la COMMANDE (voir la colonne du même nom sur
- * `Order`, et le commentaire dans `src/server/kk/checkout.ts`) — la seule
+ * `Order`, et le commentaire dans `src/server/kk/checkout.ts`) - la seule
  * valeur disponible ici : ce module tourne depuis un webhook du prestataire de
  * paiement, sans cookie de navigateur à relire.
  *
  * ── LA DÉDUPLICATION AVEC LE PIXEL ────────────────────────────────────────────
  *
- * `versPixel` — le MÊME formatage que celui utilisé par le Pixel navigateur,
- * voir `@/lib/kk/mesure` — calcule `event_id = identifiantEvenement("purchase",
+ * `versPixel` - le MÊME formatage que celui utilisé par le Pixel navigateur,
+ * voir `@/lib/kk/mesure` - calcule `event_id = identifiantEvenement("purchase",
  * orderNumber)`. Navigateur et serveur ne se parlent pas au moment de l'envoi,
  * mais calculent la même chaîne à partir de la même donnée (le numéro de
  * commande) : Meta rapproche les deux et ne compte la vente qu'une fois.
  *
  * ── CE QUI PART, ET POURQUOI ──────────────────────────────────────────────────
  *
- * `custom_data` : les mêmes value/currency/content_ids/contents que le Pixel —
+ * `custom_data` : les mêmes value/currency/content_ids/contents que le Pixel -
  * aucune donnée personnelle, seulement des références produit et des montants.
  *
- * `user_data` : SEULEMENT l'e-mail et le téléphone, et JAMAIS en clair — Meta
+ * `user_data` : SEULEMENT l'e-mail et le téléphone, et JAMAIS en clair - Meta
  * exige un hachage SHA-256 pour rapprocher un événement d'un compte
  * publicitaire (`em`/`ph`, les seuls champs `user_data` utilisés ici). Ni nom
  * ni adresse : ces champs existent dans les specs Meta (`fn`, `ln`, `ct`,
@@ -44,7 +44,7 @@ import { versPixel, nomEvenementMeta, type ArticleMesure, type EvenementDetail }
  * ── LE JETON NE VOYAGE JAMAIS DANS UNE ADRESSE ────────────────────────────────
  *
  * `access_token` part dans le CORPS JSON de la requête, jamais en paramètre de
- * l'URL — Meta accepte les deux, mais une adresse peut se retrouver
+ * l'URL - Meta accepte les deux, mais une adresse peut se retrouver
  * journalisée par un outillage qu'on ne maîtrise pas (mandataire,
  * instrumentation, redirection avec `Referer`), alors qu'un corps de requête
  * POST ne l'est jamais par construction. Tout texte journalisé par ce module
@@ -57,7 +57,7 @@ import { versPixel, nomEvenementMeta, type ArticleMesure, type EvenementDetail }
  * L'appel réseau porte un `AbortSignal.timeout` : sans lui, un Meta qui ne
  * répond jamais laisserait la fonction bloquée jusqu'au délai maximal de la
  * plateforme d'exécution (jusqu'à cinq minutes). Aucune commande n'est perdue
- * dans ce cas — les écritures précèdent cet appel — mais le webhook qui nous a
+ * dans ce cas - les écritures précèdent cet appel - mais le webhook qui nous a
  * appelés serait tué avant de marquer l'événement comme traité, et resterait
  * indéfiniment au statut « reçu » pour une commande pourtant encaissée.
  *
@@ -72,14 +72,14 @@ import { versPixel, nomEvenementMeta, type ArticleMesure, type EvenementDetail }
  * ── POURQUOI LES DÉPENDANCES SONT INJECTABLES ────────────────────────────────
  *
  * `getParametres`/`getIntegrationSecret` tirent Prisma ; en test, sans
- * `DATABASE_URL`, ils LÈVENT — et le `catch` englobant de cette fonction avale
+ * `DATABASE_URL`, ils LÈVENT - et le `catch` englobant de cette fonction avale
  * cette erreur avant même d'atteindre `fetch`. Un test qui se contente
  * d'espionner `fetch` global et vérifie qu'il n'a jamais été appelé « passe »
  * alors dans TOUS les cas, y compris si la garde de consentement disparaît :
  * ce n'est plus elle qui empêche l'appel, c'est l'absence de base. Recevoir
  * ces trois dépendances en paramètre (avec les implémentations réelles en
  * valeur par défaut) permet aux tests de fournir des dépendances FICTIVES MAIS
- * VALIDES — dataset et jeton renseignés, réseau qui répondrait 200 — de sorte
+ * VALIDES - dataset et jeton renseignés, réseau qui répondrait 200 - de sorte
  * que la SEULE chose encore capable d'empêcher l'appel à `fetch` soit la garde
  * de consentement elle-même. Voir `capi.test.ts`.
  */
@@ -90,7 +90,7 @@ export interface AchatCapi {
   phone: string;
   articles: ArticleMesure[];
   totalCents: number;
-  /** Consentement « marketing », figé à la commande — voir l'en-tête. */
+  /** Consentement « marketing », figé à la commande - voir l'en-tête. */
   marketingConsent: boolean;
 }
 
@@ -101,7 +101,7 @@ export function hacherSha256(valeur: string): string {
 
 /**
  * `user_data` minimal : seulement ce que Meta accepte pour rapprocher
- * l'événement d'un compte publicitaire, et seulement haché — voir l'en-tête
+ * l'événement d'un compte publicitaire, et seulement haché - voir l'en-tête
  * du fichier. Un champ vide (client sans e-mail renseigné, improbable mais
  * possible) est omis plutôt que haché à vide, ce qui produirait une empreinte
  * bidon que Meta ne rapprocherait jamais de rien.
@@ -121,11 +121,11 @@ export function donneesUtilisateur(email: string, phone: string): { em?: string[
 
 const VERSION_GRAPH = "v21.0";
 
-/** Meta qui ne répond jamais ne doit pas retenir l'appelant au-delà de ce délai — voir l'en-tête. */
+/** Meta qui ne répond jamais ne doit pas retenir l'appelant au-delà de ce délai - voir l'en-tête. */
 export const DELAI_CAPI_MS = 3000;
 
 /**
- * Dépendances de `envoyerAchatCapi`, injectables pour les tests — voir
+ * Dépendances de `envoyerAchatCapi`, injectables pour les tests - voir
  * l'en-tête du fichier. Les valeurs par défaut (plus bas) sont les
  * implémentations réelles ; seuls les tests fournissent autre chose.
  */
@@ -175,7 +175,7 @@ export async function envoyerAchatCapi(
   let jeton: string | null = null;
   try {
     // Deux conditions, comme au navigateur (voir mesureNavigateur.ts) :
-    // consentement ET configuration. Le consentement d'abord — inutile de lire
+    // consentement ET configuration. Le consentement d'abord - inutile de lire
     // le jeton chiffré pour un envoi qui ne partira de toute façon pas.
     if (!achat.marketingConsent) return;
 
@@ -199,7 +199,7 @@ export async function envoyerAchatCapi(
     const { event_id, ...customData } = versPixel(detail);
 
     const corps = {
-      // Dans le corps, jamais dans l'adresse — voir l'en-tête du fichier.
+      // Dans le corps, jamais dans l'adresse - voir l'en-tête du fichier.
       access_token: jeton,
       data: [
         {
@@ -238,7 +238,7 @@ export async function envoyerAchatCapi(
     } else {
       // Un HTTP 200 n'est PAS une preuve que l'événement a été reçu : Meta
       // répond parfois 200 avec `events_received: 0` (corps mal formé,
-      // événement rejeté après coup) — un succès HTTP qui masquerait une perte
+      // événement rejeté après coup) - un succès HTTP qui masquerait une perte
       // silencieuse si on s'y arrêtait. `events_received` absent ou non
       // numérique compte comme une réponse qu'on ne sait pas interpréter : on
       // le signale plutôt que de le supposer réussi.

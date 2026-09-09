@@ -6,7 +6,7 @@ import { findLegalPage } from "@/server/legalPages";
  * Elles ne sont pas recopiées ici : elles sont lues dans la page /faq, qui est
  * la source unique et reste modifiable depuis le back-office. Une réponse
  * corrigée là-bas l'est aussi sur l'accueil, et les deux pages ne peuvent pas
- * se contredire — ce qui arriverait immanquablement avec deux textes parallèles.
+ * se contredire - ce qui arriverait immanquablement avec deux textes parallèles.
  */
 
 export interface HomeFaqEntry {

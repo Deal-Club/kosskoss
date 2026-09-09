@@ -11,7 +11,7 @@ import {
 //
 // Un endpoint par prestataire : /api/payments/webhook/stripe, …/mollie, etc.
 // C'est ici, et nulle part ailleurs, que l'état de paiement d'une commande
-// bascule automatiquement — la redirection de retour du client, elle, ne prouve
+// bascule automatiquement - la redirection de retour du client, elle, ne prouve
 // rien (il peut fermer l'onglet). L'adaptateur valide la signature ; sans elle,
 // on répond 400 et le prestataire réessaiera.
 //
@@ -62,7 +62,7 @@ export async function POST(request: Request, { params }: { params: Params }) {
   // porte sur la bonne somme. Un écart signale une anomalie qu'aucune signature
   // ne détecte : session rattachée au mauvais numéro de commande, paiement
   // partiel accepté, montant retouché dans le tableau de bord du prestataire.
-  // Dans ce cas la commande reste en attente et un événement le consigne —
+  // Dans ce cas la commande reste en attente et un événement le consigne -
   // mieux vaut un règlement à vérifier à la main qu'une commande de 500 €
   // expédiée pour 5 € encaissés.
   //
@@ -80,7 +80,7 @@ export async function POST(request: Request, { params }: { params: Params }) {
       const attendu = `${order.totalCents} ${order.currency.toUpperCase()}`;
       const recu = `${montantAnnonce ?? "?"} ${deviseAnnoncee ?? "?"}`;
       console.error(
-        `[webhook:${provider}] montant discordant sur ${order.orderNumber} — attendu ${attendu}, reçu ${recu}`,
+        `[webhook:${provider}] montant discordant sur ${order.orderNumber} - attendu ${attendu}, reçu ${recu}`,
       );
       // La commande reste dans l'état où elle est ; l'anomalie est consignée
       // dans son historique pour que le commerçant la voie dans le back-office

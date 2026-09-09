@@ -37,16 +37,16 @@ const VIDE: CodeSnippetInput = {
  */
 const AIDE_CATEGORIE: Readonly<Record<ConsentCategory, string>> = {
   necessaire:
-    "Part immédiatement, sans consentement. À réserver à ce qui casse la boutique en son absence — une balise de vérification de propriété, par exemple. Un gestionnaire de balises ou un pixel n'entre PAS dans cette catégorie.",
+    "Part immédiatement, sans consentement. À réserver à ce qui casse la boutique en son absence - une balise de vérification de propriété, par exemple. Un gestionnaire de balises ou un pixel n'entre PAS dans cette catégorie.",
   mesure:
     "Ne part que si le visiteur a accepté la mesure d'audience. C'est la catégorie des outils de statistiques.",
   marketing:
-    "Ne part que si le visiteur a accepté la publicité. C'est la catégorie des pixels publicitaires, du remarketing et des boutons de réseaux sociaux — et le choix par défaut, volontairement le plus restrictif.",
+    "Ne part que si le visiteur a accepté la publicité. C'est la catégorie des pixels publicitaires, du remarketing et des boutons de réseaux sociaux - et le choix par défaut, volontairement le plus restrictif.",
 };
 
 /** Explication affichée sous le choix d'emplacement. */
 const AIDE_EMPLACEMENT: Readonly<Record<SnippetPlacement, string>> = {
-  head: "Balises de vérification, préconnexions, gestionnaires de balises. Les <meta> et <link> sont remontés dans le <head> de la page ; un script en ligne, lui, s'exécute en tête du corps de page — ce qui convient à Google Tag Manager.",
+  head: "Balises de vérification, préconnexions, gestionnaires de balises. Les <meta> et <link> sont remontés dans le <head> de la page ; un script en ligne, lui, s'exécute en tête du corps de page - ce qui convient à Google Tag Manager.",
   bodyStart:
     "Juste après l'ouverture du corps de page. C'est là que va le <noscript> d'un gestionnaire de balises.",
   bodyEnd: "En fin de page, après tout le contenu. Le meilleur choix par défaut pour un script de mesure : il ne retarde pas l'affichage.",

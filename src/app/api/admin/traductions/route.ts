@@ -35,7 +35,7 @@ export async function GET(request: Request) {
   }
 
   // Le filtre par défaut est « à traduire » : cet écran s'ouvre pour combler,
-  // pas pour admirer un pourcentage — voir la spécification du lot.
+  // pas pour admirer un pourcentage - voir la spécification du lot.
   const filtreBrut = searchParams.get("filtre");
   const filtre: Filtre = estFiltre(filtreBrut) ? filtreBrut : "a-traduire";
 
@@ -69,7 +69,7 @@ export async function PUT(request: Request) {
   }
 
   // Champs filtrés par le registre : tout ce qui n'y figure pas est écarté,
-  // ici comme dans enregistrerTraduction — deux filtres valent mieux qu'un
+  // ici comme dans enregistrerTraduction - deux filtres valent mieux qu'un
   // pour une route qui écrit dans dix-sept tables.
   const valeurs: Record<string, string> = {};
   for (const [cle, valeur] of Object.entries(valeursBrutes as Record<string, unknown>)) {

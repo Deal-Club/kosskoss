@@ -22,8 +22,8 @@ function tronquerMots(texte: string, max: number): string {
  *
  * C'est ce dispositif qui répond au « design global un peu trop monochrome » du
  * retour client : sur la maquette, les cinq routines portent cinq fonds pastel
- * distincts. La couleur y est fonctionnelle — elle identifie la routine, sur
- * l'accueil comme sur sa page — et non décorative.
+ * distincts. La couleur y est fonctionnelle - elle identifie la routine, sur
+ * l'accueil comme sur sa page - et non décorative.
  */
 const TINTS: Record<string, string> = {
   acne: "bg-tint-acne",
@@ -41,7 +41,7 @@ export function tintClass(tint: string): string {
 const TINT_KEYS = new Set(Object.keys(TINTS));
 
 /**
- * La couleur de la teinte, comme valeur CSS brute plutôt que classe Tailwind —
+ * La couleur de la teinte, comme valeur CSS brute plutôt que classe Tailwind -
  * pour un dégradé en style inline (`background: linear-gradient(…, var(...))`),
  * où une classe `bg-tint-*` ne peut pas s'employer.
  */
@@ -55,7 +55,7 @@ export function tintCssVar(tint: string): string {
  * La version précédente alignait les trois ou quatre packshots de la routine
  * côte à côte. À 270 px de large, chaque flacon tombait sous les 90 px : on ne
  * reconnaissait plus aucun produit et la vignette se lisait comme un
- * encombrement. Retour client explicite là-dessus — un seul produit, présenté
+ * encombrement. Retour client explicite là-dessus - un seul produit, présenté
  * en grand. La composition de la routine reste dite juste en dessous, par la
  * suite des gestes (« Nettoyer · Traiter · Protéger »), qui est de toute façon
  * l'information utile : c'est un ordre qu'on achète, pas un lot de flacons.
@@ -69,7 +69,7 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
         // la carte. Le cadre est en `overflow-hidden`, rien ne déborde ; la
         // durée est plus longue que celle du soulèvement (600 ms contre 400)
         // pour que l'image continue son mouvement après que la carte s'est
-        // posée — c'est ce décalage qui donne l'impression de profondeur.
+        // posée - c'est ce décalage qui donne l'impression de profondeur.
         <Image
           src={routine.image}
           alt=""
@@ -80,8 +80,8 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
         />
       ) : (
         // Nature morte vectorielle propre à la routine (retour client) : elle
-        // montre un ENSEMBLE de contenants — une routine est une suite de
-        // gestes, pas un produit — et se décline par la couleur d'une carte à
+        // montre un ENSEMBLE de contenants - une routine est une suite de
+        // gestes, pas un produit - et se décline par la couleur d'une carte à
         // l'autre. Elle s'efface dès qu'une vraie image de coffret est
         // renseignée sur `Routine.image`.
         // Elle suit le même mouvement que le visuel éditorial : sans lui, les
@@ -97,7 +97,7 @@ function RoutineVisual({ routine }: { routine: KKRoutineView }) {
 }
 
 /**
- * Carte de routine — l'unité de l'« achat rapide » du bloc 5 de la maquette.
+ * Carte de routine - l'unité de l'« achat rapide » du bloc 5 de la maquette.
  *
  * Elle porte tout ce qu'il faut pour décider : le besoin traité, la suite des
  * gestes, le prix d'entrée, et l'ajout au panier sans passer par une page
@@ -146,8 +146,8 @@ export async function RoutineCard({ routine }: { routine: KKRoutineView }) {
         </p>
 
         {/* LA SUITE DES GESTES ET LE PRIX D'ENTRÉE ONT ÉTÉ RETIRÉS DE LA CARTE.
-            Ils y tenaient deux lignes — « Nettoyer · Traiter · Hydrater », puis
-            « À partir de 51 500 FCFA » — au-dessus des commandes. La vignette
+            Ils y tenaient deux lignes - « Nettoyer · Traiter · Hydrater », puis
+            « À partir de 51 500 FCFA » - au-dessus des commandes. La vignette
             portait ainsi cinq niveaux d'information pour un objet qu'on
             parcourt du regard ; le nom et l'accroche disent le besoin traité,
             c'est ce sur quoi le clic se décide. Le détail des gestes et le prix

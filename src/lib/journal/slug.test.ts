@@ -51,7 +51,7 @@ describe("uniqueSlug", () => {
   });
 });
 
-describe("resolveSlug — article jamais publié", () => {
+describe("resolveSlug - article jamais publié", () => {
   it("suit le titre", () => {
     const result = resolveSlug({
       title: "Choisir son nettoyant",
@@ -86,7 +86,7 @@ describe("resolveSlug — article jamais publié", () => {
   });
 });
 
-describe("resolveSlug — article déjà publié", () => {
+describe("resolveSlug - article déjà publié", () => {
   it("gèle le slug quand seul le titre change", () => {
     const result = resolveSlug({
       title: "Choisir son nettoyant en 2026",
@@ -123,7 +123,7 @@ describe("resolveSlug — article déjà publié", () => {
   });
 });
 
-describe("resolveSlug — collisions", () => {
+describe("resolveSlug - collisions", () => {
   it("ne se heurte pas à son propre slug actuel", () => {
     const result = resolveSlug({
       title: "Routine",

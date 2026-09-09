@@ -9,7 +9,7 @@
  * Un fragment est du HTML brut, inséré par `dangerouslySetInnerHTML`. Rendu par
  * le serveur, il est analysé par le navigateur comme le reste du document : les
  * `<script>` qu'il contient s'exécutent normalement. Mais il est inséré LÀ OÙ
- * le composant est monté — dans le `<body>`, puisque le layout de la boutique
+ * le composant est monté - dans le `<body>`, puisque le layout de la boutique
  * est imbriqué sous le layout racine.
  *
  * Pour les scripts, c'est sans conséquence : un conteneur Google Tag Manager
@@ -20,12 +20,12 @@
  *
  * D'où le découpage opéré ici : les balises `<meta>` et `<link>` du fragment
  * sont extraites et rendues comme de vrais éléments React, que React 19 remonte
- * de lui-même dans le `<head>` — comportement vérifié sur ce projet. Le reste
+ * de lui-même dans le `<head>` - comportement vérifié sur ce projet. Le reste
  * du fragment part en HTML brut, à sa place.
  *
  * L'analyse est volontairement étroite : elle ne reconnaît que des balises
  * `<meta>` et `<link>` autonomes, aux attributs simples. Tout ce qui sort de ce
- * cadre — guillemets manquants, attribut sans valeur, balise imbriquée — n'est
+ * cadre - guillemets manquants, attribut sans valeur, balise imbriquée - n'est
  * pas « réparé » : il reste dans le HTML brut, où il s'affichera tel quel.
  * Mieux vaut une balise au mauvais endroit qu'une balise silencieusement
  * déformée.
@@ -48,7 +48,7 @@ export const PLACEMENT_LABELS: Readonly<Record<SnippetPlacement, string>> = {
 export interface CodeSnippetInput {
   name: string;
   placement: SnippetPlacement;
-  /** Catégorie de consentement — voir src/lib/consent.ts. */
+  /** Catégorie de consentement - voir src/lib/consent.ts. */
   category: ConsentCategory;
   content: string;
   enabled: boolean;

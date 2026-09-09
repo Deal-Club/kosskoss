@@ -125,7 +125,7 @@ export default function AdminLoginPage() {
     // le code envoie chercher le problème là où il n'est pas.
     if (response.status >= 500) {
       setError(
-        "Erreur du serveur. Votre code n'est pas en cause — vérifiez la configuration du site.",
+        "Erreur du serveur. Votre code n'est pas en cause - vérifiez la configuration du site.",
       );
       return;
     }
@@ -299,7 +299,7 @@ export default function AdminLoginPage() {
         </div>
 
         <p className="mt-4 text-center text-xs text-muted-foreground">
-          KossKoss Select — administration
+          KossKoss Select - administration
         </p>
       </div>
     </div>

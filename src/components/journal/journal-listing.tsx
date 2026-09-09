@@ -7,8 +7,8 @@ import type { CategoryView } from "@/server/journal/taxonomy";
 
 /**
  * Ossature commune aux pages de liste du Journal : accueil, catégorie, tag,
- * auteur. Les quatre affichent la même chose — un en-tête, une grille, une
- * pagination — et n'avaient aucune raison d'être écrites quatre fois.
+ * auteur. Les quatre affichent la même chose - un en-tête, une grille, une
+ * pagination - et n'avaient aucune raison d'être écrites quatre fois.
  */
 
 export const JOURNAL_PAGE_SIZE = 9;
@@ -95,7 +95,7 @@ export function CategoryPills({
  *
  * Des liens, pas des boutons : chaque page a sa propre adresse, partageable et
  * explorable par un robot. Les pages au-delà de la première portent un
- * `noindex` — voir `generateMetadata` des pages concernées.
+ * `noindex` - voir `generateMetadata` des pages concernées.
  */
 export function JournalPagination({
   page,
@@ -156,7 +156,7 @@ export function PopularArticles({
   locale: string;
 }) {
   // Tant qu'aucun article n'a été lu, ce bloc ne ferait que réafficher les
-  // trois derniers — un doublon de la grille juste au-dessus. Il n'apparaît
+  // trois derniers - un doublon de la grille juste au-dessus. Il n'apparaît
   // donc qu'à partir du moment où le compteur dit quelque chose.
   if (articles.length === 0 || articles.every((article) => article.viewCount === 0)) return null;
 

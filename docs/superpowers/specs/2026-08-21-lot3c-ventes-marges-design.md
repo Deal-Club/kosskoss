@@ -1,4 +1,4 @@
-# Lot 3C — Tableau de bord des ventes et export comptable
+# Lot 3C - Tableau de bord des ventes et export comptable
 
 **Critères visés :** 14 (tableau de bord des ventes) et 15 (export CSV des ventes
 avec coûts et marges).
@@ -11,7 +11,7 @@ c'est pour cela que 3B précédait 3C.
 
 ## 1. Le problème que ce lot résout
 
-Le back-office sait tout dire du catalogue — stock, ruptures, catégories vides — et
+Le back-office sait tout dire du catalogue - stock, ruptures, catégories vides - et
 rien des ventes. Le tableau de bord d'accueil (`/admin`) compte des produits, jamais
 un franc encaissé. Pour savoir ce que la boutique a vendu, il faut aujourd'hui ouvrir
 la liste des commandes et additionner de tête.
@@ -33,12 +33,12 @@ C'est déjà la doctrine du schéma. `OrderItem` recopie la marque, le nom, le S
 chemin et le prix unitaire au moment de la vente ; le code promo est figé sur la
 commande ; les libellés de paiement et de livraison aussi. La raison est chaque fois
 la même : renommer ou reprixer un produit au back-office ne doit pas réécrire une
-commande déjà passée. Le coût d'achat obéit à la même règle — une marge de mars
+commande déjà passée. Le coût d'achat obéit à la même règle - une marge de mars
 calculée au prix d'achat de septembre n'est pas une marge de mars.
 
 La colonne est **nullable**, et le null veut dire « on ne savait pas » :
 
-- toutes les commandes antérieures à ce lot n'ont pas de coût — elles n'en auront
+- toutes les commandes antérieures à ce lot n'ont pas de coût - elles n'en auront
   jamais, et leur en inventer un serait pire que la case vide ;
 - un produit dont le coût n'était pas renseigné le jour de la vente laisse la ligne
   vide, exactement comme le lot 3B l'a établi pour la fiche produit.
@@ -60,10 +60,10 @@ Deux chiffres distincts, jamais additionnés :
 | **En cours** | commandes ni payées ni annulées ni remboursées | le paiement à la livraison n'a pas encore de webhook ; ce montant existe mais n'est pas acquis |
 
 **Annulée sort, remboursée reste.** Une commande payée puis annulée remet la
-marchandise en stock — elle n'est jamais partie — et doit donc sortir du chiffre
+marchandise en stock - elle n'est jamais partie - et doit donc sortir du chiffre
 d'affaires. Une commande remboursée, elle, a bien été encaissée puis rendue : les
 avoirs comptables sont hors périmètre de ce lot, et la retirer de l'historique
-serait un trou que rien ne signalerait. C'est un choix, pas un oubli — et c'est
+serait un trou que rien ne signalerait. C'est un choix, pas un oubli - et c'est
 pour cela que `lireVentes` filtre `status: { not: "annulee" }` quand `lireEnCours`
 filtre plus largement `status: { notIn: ["annulee", "remboursee"] }` : les deux
 listes ne répondent pas à la même question.
@@ -81,8 +81,8 @@ OR: [
 ```
 
 **Ce qui n'entre pas dans le chiffre d'affaires produit :** la livraison, et les
-remises accordées. Le CA de l'écran est la somme NETTE des lignes — le `lineTotalCents`
-de chacune, moins sa part de remise — jamais le `totalCents` de commande, sans quoi
+remises accordées. Le CA de l'écran est la somme NETTE des lignes - le `lineTotalCents`
+de chacune, moins sa part de remise - jamais le `totalCents` de commande, sans quoi
 la marge se comparerait à une assiette qui contient la livraison. Cette boutique ne
 décompose pas ses prix en hors taxe et taxe : le montant affiché est celui réglé, tel
 quel, pas un sous-total qu'il faudrait encore taxer.
@@ -97,8 +97,8 @@ chaque ligne sa part, proportionnelle à son total brut :
 part brute = discountCents × lineTotalCents / subtotalCents
 ```
 
-Chaque part est arrondie à l'entier inférieur, et le reste — la différence entre la
-remise réelle et la somme des parts arrondies — va entièrement à la **dernière ligne**
+Chaque part est arrondie à l'entier inférieur, et le reste - la différence entre la
+remise réelle et la somme des parts arrondies - va entièrement à la **dernière ligne**
 de la commande, pour que la somme des parts vaille EXACTEMENT `discountCents` : un
 écart d'un franc en comptabilité se cherche pendant une heure. `subtotalCents` à 0 rend
 une remise nulle sur chaque ligne (jamais de division par zéro), et la part d'une ligne
@@ -112,15 +112,15 @@ Le découpage suit celui des lots précédents : le calcul est pur et testable s
 base, la base ne fait que lire, l'écran ne fait qu'afficher.
 
 ```
-src/lib/kk/periode.ts      pur — bornes de dates depuis l'URL, raccourcis, défaut
-src/lib/kk/ventes.ts       pur — totaux, classement produits, série par jour
-src/lib/kk/csv.ts          pur — échappement et assemblage CSV (aujourd'hui recopié)
+src/lib/kk/periode.ts      pur - bornes de dates depuis l'URL, raccourcis, défaut
+src/lib/kk/ventes.ts       pur - totaux, classement produits, série par jour
+src/lib/kk/csv.ts          pur - échappement et assemblage CSV (aujourd'hui recopié)
 src/server/kk/ventes.ts    lecture Prisma → lignes plates
 src/app/admin/(protected)/ventes/page.tsx      l'écran
 src/app/api/admin/ventes/export/route.ts       le CSV
 ```
 
-### 4.1 `src/lib/kk/periode.ts` — pur, zéro import
+### 4.1 `src/lib/kk/periode.ts` - pur, zéro import
 
 ```ts
 export type Raccourci = "7j" | "30j" | "mois" | "annee";
@@ -133,7 +133,7 @@ Règles : défaut **30 jours glissants** ; `au` est porté à la fin de journée
 sans quoi une période « du 1er au 31 » perdrait le 31 ; des dates illisibles ou
 inversées retombent sur le défaut plutôt que de rendre un écran vide.
 
-### 4.2 `src/lib/kk/ventes.ts` — pur, zéro import
+### 4.2 `src/lib/kk/ventes.ts` - pur, zéro import
 
 ```ts
 export interface LigneVente {
@@ -141,7 +141,7 @@ export interface LigneVente {
   brand: string; name: string; variantLabel: string; sku: string;
   quantity: number; unitPriceCents: number;
   lineTotalCents: number;        // BRUT : prix unitaire × quantité
-  remiseCents: number;           // part de la remise de commande, au prorata — voir repartirRemise
+  remiseCents: number;           // part de la remise de commande, au prorata - voir repartirRemise
   unitCostCents: number | null;
 }
 
@@ -150,15 +150,15 @@ export interface TotauxVentes {
   remisesCents: number;           // remises accordées sur la période, déjà déduites ci-dessus
   quantite: number;
   nombreCommandes: number;        // commandes distinctes, pas lignes
-  panierMoyenCents: number | null; // null si aucune commande — pas 0, sur le CA net
-  margeCents: number | null;      // null si aucune ligne n'a de coût — calculée sur le NET
+  panierMoyenCents: number | null; // null si aucune commande - pas 0, sur le CA net
+  margeCents: number | null;      // null si aucune ligne n'a de coût - calculée sur le NET
   tauxMarge: number | null;
   lignesAvecCout: number;
   lignesTotal: number;
 }
 
 export interface VenteProduit {
-  cle: string;                    // marque + nom + variante — le produit peut avoir disparu
+  cle: string;                    // marque + nom + variante - le produit peut avoir disparu
   brand: string; name: string; variantLabel: string;
   quantite: number;
   chiffreAffairesCents: number;   // NET
@@ -178,12 +178,12 @@ export function classerParProduit(lignes: LigneVente[], limite: number): VentePr
 export function ventesParJour(lignes: LigneVente[], du: Date, au: Date): PointJour[]
 ```
 
-Le classement se fait sur la **clé recopiée** — marque, nom, variante — et non sur
+Le classement se fait sur la **clé recopiée** - marque, nom, variante - et non sur
 `productId` : une ligne dont le produit a été supprimé du catalogue porte `productId`
 à `null`, et grouper là-dessus fondrait tous les produits disparus en un seul.
 
 Point délicat : `margeCents` ne totalise que les lignes qui ont un coût, et
-`tauxMarge` rapporte cette marge **au CA NET de ces mêmes lignes** — pas au CA total,
+`tauxMarge` rapporte cette marge **au CA NET de ces mêmes lignes** - pas au CA total,
 et pas au brut.
 Rapporter une marge partielle à une assiette complète produirait un taux
 mécaniquement sous-évalué, et d'autant plus faux que le catalogue est peu renseigné.
@@ -191,7 +191,7 @@ mécaniquement sous-évalué, et d'autant plus faux que le catalogue est peu ren
 `ventesParJour` rend un point par jour de la période, y compris les jours sans vente :
 un histogramme qui saute les jours creux ment sur le rythme.
 
-### 4.3 `src/lib/kk/csv.ts` — pur, zéro import
+### 4.3 `src/lib/kk/csv.ts` - pur, zéro import
 
 `csvCell` et `buildCsv` existent aujourd'hui recopiés dans `products/export`. Le
 lot les extrait, avec leurs deux conventions et leurs raisons : séparateur
@@ -215,7 +215,7 @@ Une seule requête `orderItem.findMany` avec le filtre porté sur la commande li
 de référence reste un choix TypeScript (`paidAt ?? createdAt`, un COALESCE que Prisma
 ne sait pas exprimer dans un `orderBy`) : le tri final se fait donc en mémoire sur
 cette date, et la stabilité de `Array.prototype.sort` préserve, pour deux lignes de
-même date, l'ordre déterministe que l'`orderBy` SQL leur a donné — deux exports de la
+même date, l'ordre déterministe que l'`orderBy` SQL leur a donné - deux exports de la
 même période rendent ainsi toujours le même fichier.
 
 Les lignes sont regroupées par commande pour répartir la remise (`repartirRemise`,
@@ -224,22 +224,22 @@ en mémoire, et le calcul en TypeScript est celui que les tests couvrent.
 
 ### 4.5 L'écran `/admin/ventes`
 
-Composant serveur, état dans l'URL (`?p=30j` ou `?du=…&au=…`) — même patron que le
+Composant serveur, état dans l'URL (`?p=30j` ou `?du=…&au=…`) - même patron que le
 reste du back-office. Contenu :
 
-1. **Barre de période** — quatre raccourcis et deux champs de dates.
-2. **Quatre cartes** — encaissé (net des remises, hors port), marge, commandes, panier
+1. **Barre de période** - quatre raccourcis et deux champs de dates.
+2. **Quatre cartes** - encaissé (net des remises, hors port), marge, commandes, panier
    moyen. La carte encaissé porte le montant des remises accordées quand il n'est pas
    nul ; la carte marge porte sa propre mention : « calculée sur 42 lignes sur 57 ».
-3. **Bloc « en cours »** — nombre et montant des commandes non payées, avec un lien
+3. **Bloc « en cours »** - nombre et montant des commandes non payées, avec un lien
    vers *toutes* les commandes en attente : la liste des commandes ne filtre pas par
    période, et le libellé le dit plutôt que de laisser croire à un même comptage.
    Séparé visuellement, jamais additionné à l'encaissé.
-4. **Histogramme par jour** — SVG à la main, dans le style des graphiques existants
+4. **Histogramme par jour** - SVG à la main, dans le style des graphiques existants
    (`DashboardCharts.tsx`) ; le projet n'a pas de bibliothèque de graphiques et n'en
    gagne pas une pour ce lot.
-5. **Top 10 produits** — CA, quantité, marge, avec la mention du coût manquant.
-6. **Bouton d'export** — reprend la période affichée.
+5. **Top 10 produits** - CA, quantité, marge, avec la mention du coût manquant.
+6. **Bouton d'export** - reprend la période affichée.
 
 Une entrée « Ventes » s'ajoute à la section *Boutique* de `AdminSidebar`, sous
 « Commandes ».
@@ -254,23 +254,23 @@ Marge · Taux de marge
 
 « Total ligne » reste le BRUT (prix unitaire × quantité) ; « Remise » est la part de
 la remise de commande attribuée à cette ligne (§3) ; « Total ligne net » est leur
-différence, et c'est sur lui — jamais sur le brut — que se calculent la marge et le
+différence, et c'est sur lui - jamais sur le brut - que se calculent la marge et le
 taux de marge.
 
 Les montants sortent en **entiers FCFA sans séparateur ni symbole** : un tableur doit
 pouvoir les additionner, et « 12 000 FCFA » n'est pas un nombre. La devise est dite
 une fois, dans l'en-tête de colonne. Les colonnes de coût et de marge restent
-**vides** — jamais zéro — quand le coût est inconnu ; un zéro s'y additionnerait et
+**vides** - jamais zéro - quand le coût est inconnu ; un zéro s'y additionnerait et
 fausserait le total du comptable.
 
 **Ce que le fichier ne porte pas, et pourquoi.** Ni le statut de paiement, qui vaut
-« payée » sur toutes les lignes puisque l'export ne retient que l'encaissé — une
+« payée » sur toutes les lignes puisque l'export ne retient que l'encaissé - une
 colonne constante n'apprend rien. Ni l'identité du client : c'est un export de
 ventes et de marges, pas un fichier de clients, et faire sortir des adresses
 e-mail vers un tableur qui circule par courriel ne se justifie pas par le besoin
 comptable. La liste des commandes garde ces informations, avec ses propres règles.
 
-Nom du fichier : `ventes-AAAA-MM-JJ_AAAA-MM-JJ.csv`, les deux bornes de la période —
+Nom du fichier : `ventes-AAAA-MM-JJ_AAAA-MM-JJ.csv`, les deux bornes de la période -
 un export sans sa période ne se relit pas six mois plus tard.
 
 ---
@@ -279,7 +279,7 @@ un export sans sa période ne se relit pas six mois plus tard.
 
 Rappel qui vaut pour tout le lot : les entiers des champs `*Cents` **sont** des francs
 entiers. Le suffixe est hérité d'une activité précédente et ment. Aucune division par
-100, nulle part — ni à l'écran, ni dans le CSV, ni dans les tests.
+100, nulle part - ni à l'écran, ni dans le CSV, ni dans les tests.
 
 ---
 
@@ -287,16 +287,16 @@ entiers. Le suffixe est hérité d'une activité précédente et ment. Aucune di
 
 Modules purs, couverts sans base :
 
-- **periode** — défaut 30 jours ; chaque raccourci ; fin de journée incluse ; dates
+- **periode** - défaut 30 jours ; chaque raccourci ; fin de journée incluse ; dates
   illisibles ; dates inversées.
-- **ventes** — totaux ; marge partielle et son assiette ; aucune ligne avec coût
+- **ventes** - totaux ; marge partielle et son assiette ; aucune ligne avec coût
   (marge `null`, pas `0`) ; commandes distinctes comptées une fois ; panier moyen
   `null` (pas `0`) sans commande ; jours creux présents dans la série ; classement par
   CA ; répartition d'une remise sur deux lignes et CA net qui en résulte ; marge
   calculée sur le net et non le brut ; remise nulle sans effet ; arrondi de répartition
   qui ne tombe pas juste, avec vérification que la somme des parts vaut exactement la
   remise.
-- **csv** — cellule contenant un point-virgule, un guillemet, un retour à la ligne ;
+- **csv** - cellule contenant un point-virgule, un guillemet, un retour à la ligne ;
   BOM présent ; fins de ligne CRLF.
 
 L'écran et la route sont vérifiés par la construction et à la main : le projet ne
@@ -306,9 +306,9 @@ teste pas ses composants serveur, et ce lot n'introduit pas cette pratique.
 
 ## 7. Hors périmètre
 
-- **Avoirs et remboursements** — le CDC les rattache à la facturation ; ils viendront
+- **Avoirs et remboursements** - le CDC les rattache à la facturation ; ils viendront
   avec leur propre lot, et un remboursement mal modélisé fausserait le CA.
-- **Marge par catégorie ou par marque** — les marques deviennent une entité au lot 3E ;
+- **Marge par catégorie ou par marque** - les marques deviennent une entité au lot 3E ;
   agréger dessus avant serait à refaire.
-- **Comparaison à la période précédente** — utile, mais elle double la surface de
+- **Comparaison à la période précédente** - utile, mais elle double la surface de
   calcul et de test pour un lot dont l'objet est d'abord de donner le chiffre.

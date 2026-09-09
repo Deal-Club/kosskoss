@@ -5,7 +5,7 @@
  * déjà écrite (voir @/server/orders.createOrder) et rend une URL de redirection,
  * puis interprète les webhooks entrants. Ajouter un prestataire, c'est écrire un
  * fichier qui satisfait `PaymentGateway` et l'inscrire dans le registre
- * (@/server/gateways/index.ts) — rien d'autre dans le tunnel ne change.
+ * (@/server/gateways/index.ts) - rien d'autre dans le tunnel ne change.
  */
 
 import type { PaymentStatus } from "@/lib/orderStatus";
@@ -53,8 +53,8 @@ export interface GatewayWebhookResult {
    * Montant réellement encaissé, en centimes, tel que l'annonce le prestataire.
    *
    * La route de webhook le compare au total de la commande avant de la passer en
-   * « payée ». Ce contrôle ne protège pas d'un attaquant extérieur — sans la clé
-   * secrète du marchand, personne ne peut fabriquer d'événement signé — mais
+   * « payée ». Ce contrôle ne protège pas d'un attaquant extérieur - sans la clé
+   * secrète du marchand, personne ne peut fabriquer d'événement signé - mais
    * d'une erreur qui, elle, arrive : session rattachée au mauvais numéro de
    * commande, paiement partiel accepté par le prestataire, montant modifié dans
    * son tableau de bord. Sans cette vérification, une commande de 500 € réglée
@@ -87,12 +87,12 @@ export interface GatewayKeyField {
  *
  * Sert à vérifier des clés fraîchement saisies sans passer une vraie commande :
  * on interroge le prestataire en lecture seule et on rend de quoi corriger la
- * configuration — y compris les valeurs à recopier (identifiants
+ * configuration - y compris les valeurs à recopier (identifiants
  * d'établissement, URL de webhook à déclarer).
  */
 export interface GatewayConnectionCheck {
   ok: boolean;
-  /** Phrase de synthèse, ex. « Compte KossKoss Select — Cameroun, FCFA ». */
+  /** Phrase de synthèse, ex. « Compte KossKoss Select - Cameroun, FCFA ». */
   summary: string;
   /** Ce qui manque ou ne colle pas ; vide quand tout est bon. */
   issues: string[];

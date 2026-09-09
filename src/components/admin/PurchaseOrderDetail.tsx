@@ -213,7 +213,7 @@ export function PurchaseOrderDetail({
               Envoyé le
             </span>
             <span className="font-black text-foreground">
-              {bon.sentAt ? new Date(bon.sentAt).toLocaleDateString("fr-FR") : "—"}
+              {bon.sentAt ? new Date(bon.sentAt).toLocaleDateString("fr-FR") : "-"}
             </span>
           </div>
         </div>
@@ -406,7 +406,7 @@ export function PurchaseOrderDetail({
                   Mettre à jour le coût d&apos;achat des produits
                 </span>
                 <span className="block text-xs text-muted-foreground">
-                  Le coût du produit devient le coût payé sur cette réception — pour chaque produit
+                  Le coût du produit devient le coût payé sur cette réception - pour chaque produit
                   rattaché à une ligne où une quantité reçue est saisie ci-dessus, dans tout le
                   catalogue, et pour toutes les ventes à venir, pas seulement pour ce bon. À décocher
                   pour un achat exceptionnel, qui ne doit pas s&apos;imposer comme référence.
@@ -473,11 +473,11 @@ export function PurchaseOrderDetail({
                       {ligne.coutMisAJour ? (
                         <div className="flex flex-col items-start gap-1">
                           <span className="rounded-sm bg-[#16a34a]/10 px-2 py-1 text-xs font-bold text-[#16a34a]">
-                            Mis à jour — {formatCents(ligne.coutEcritCents ?? 0)}
+                            Mis à jour - {formatCents(ligne.coutEcritCents ?? 0)}
                           </span>
                           {ligne.coutZeroAVerifier && (
                             <span className="rounded-sm bg-[#b45309]/10 px-2 py-1 text-xs font-bold text-[#b45309]">
-                              Coût écrit à 0 — à vérifier
+                              Coût écrit à 0 - à vérifier
                             </span>
                           )}
                         </div>
@@ -487,7 +487,7 @@ export function PurchaseOrderDetail({
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">{ligne.message ?? "—"}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{ligne.message ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>

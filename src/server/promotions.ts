@@ -5,7 +5,7 @@
  * période et une remise ; ce module en déduit, à chaque affichage, ce que le
  * client voit et ce qu'il paiera. Passé `endsAt`, plus aucune ligne ne
  * ressort d'ici et le catalogue reprend son prix de base sans qu'aucune tâche
- * de fond n'ait eu à intervenir — c'est tout l'intérêt d'un calcul à la lecture.
+ * de fond n'ait eu à intervenir - c'est tout l'intérêt d'un calcul à la lecture.
  *
  * Tous les calculs monétaires viennent de src/lib/campaigns.ts. Aucune remise
  * n'est recalculée ici : l'aperçu du back-office, le message envoyé, la fiche
@@ -156,7 +156,7 @@ function toPromotion(row: CampaignProductRow): ProductPromotion | undefined {
     priceCents,
     savingCents: saving,
     percent,
-    // Une remise en euros s'annonce en pourcentage — c'est ce qui parle au
+    // Une remise en euros s'annonce en pourcentage - c'est ce qui parle au
     // client dans une grille de produits. Le plancher à 1 % évite la pastille
     // « -0 % » d'une remise symbolique sur un article cher.
     badge: freeShipping ? FREE_SHIPPING_BADGE : `-${Math.max(1, percent)} %`,
@@ -173,8 +173,8 @@ function toPromotion(row: CampaignProductRow): ProductPromotion | undefined {
  *
  * C'est l'économie la plus forte qui gagne, pas la plus récente ni la mieux
  * remplie : le client qui a reçu deux messages ne doit jamais découvrir qu'il
- * aurait mieux fait de cliquer sur l'autre. À économie égale — le cas d'une
- * livraison offerte face à une autre livraison offerte — c'est l'offre qui se
+ * aurait mieux fait de cliquer sur l'autre. À économie égale - le cas d'une
+ * livraison offerte face à une autre livraison offerte - c'est l'offre qui se
  * termine le plus tôt qui l'emporte, puis l'identifiant, pour que deux rendus
  * successifs de la même page affichent toujours la même chose.
  */
@@ -243,7 +243,7 @@ export async function getActivePromotionForProduct(
  * `basePriceCents` est le prix catalogue relu en base par l'appelant, jamais
  * celui annoncé par le navigateur. Le minimum des deux est retenu : le prix de
  * référence de la campagne est figé, et une campagne ne doit en aucun cas
- * servir à facturer plus cher que le catalogue du jour — c'est notamment le cas
+ * servir à facturer plus cher que le catalogue du jour - c'est notamment le cas
  * d'une campagne « livraison offerte », qui ne touche pas au prix de l'article
  * et dont le prix figé peut avoir été dépassé par une baisse de tarif.
  */

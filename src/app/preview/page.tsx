@@ -76,10 +76,10 @@ const PREVIEW_RESUME: KKReviewsSummary = {
   ],
 };
 
-// Page de prévisualisation du design system KossKoss Select — données de
+// Page de prévisualisation du design system KossKoss Select - données de
 // démonstration, non branchée sur la base. Jamais indexée.
 export const metadata: Metadata = {
-  title: "Aperçu design — KossKoss Select",
+  title: "Aperçu design - KossKoss Select",
   robots: { index: false, follow: false },
 };
 
@@ -92,7 +92,7 @@ export default async function PreviewHomePage() {
   const messages = await getMessages({ locale: LOCALE });
 
   // `CartProvider` est indispensable ici : cette page vit hors du segment
-  // [locale], donc hors du layout de la boutique qui le fournit — or l'en-tête
+  // [locale], donc hors du layout de la boutique qui le fournit - or l'en-tête
   // (compteur du panier) et les vignettes (ajout rapide) appellent `useCart`.
   // Sans lui, la page entière échoue au rendu.
   return (
@@ -102,8 +102,8 @@ export default async function PreviewHomePage() {
           <AnnouncementBar />
           <SiteHeader />
 
-          {/* Les blocs branchés sur la base — focus marque, routines, catégories
-              — ne figurent pas ici : cette page n'a pas de connexion et sert à
+          {/* Les blocs branchés sur la base - focus marque, routines, catégories
+              - ne figurent pas ici : cette page n'a pas de connexion et sert à
               caler le rendu, pas à répéter l'accueil. */}
           <main className="flex-1">
             <Hero />

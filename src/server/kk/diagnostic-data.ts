@@ -4,7 +4,7 @@ import type { Locale } from "@/i18n/routing";
 
 export type ClientAnswer = {
   id: string;
-  /** DiagAnswer.key — stable, indépendante de la langue. C'est elle que lit
+  /** DiagAnswer.key - stable, indépendante de la langue. C'est elle que lit
    *  `questionVisible()` (src/lib/kk/diagnostic-conditions.ts) pour évaluer la
    *  condition d'affichage de Q5, et c'est elle que le moteur (tâche 3, voir
    *  src/server/kk/diagnostic.ts) route vers la matrice de décision. */
@@ -15,7 +15,7 @@ export type ClientAnswer = {
 };
 export type ClientQuestion = {
   id: string;
-  /** DiagQuestion.key — voir ClientAnswer.key ci-dessus. */
+  /** DiagQuestion.key - voir ClientAnswer.key ci-dessus. */
   key: string;
   title: string;
   subtitle: string;
@@ -30,7 +30,7 @@ export type ClientQuestion = {
  * Questionnaire actif, pour le parcours front (ordre par position).
  *
  * Rend TOUTES les questions actives, y compris la question conditionnelle
- * (Q5 « pores » du quiz client) — c'est au parcours (DiagnosticFlow), qui
+ * (Q5 « pores » du quiz client) - c'est au parcours (DiagnosticFlow), qui
  * connaît les réponses déjà données, de filtrer dynamiquement cette liste
  * avec `questionVisible()` avant d'en tirer la navigation et le total affiché
  * (« Question X sur Y ») : une question conditionnelle non encore déclenchée

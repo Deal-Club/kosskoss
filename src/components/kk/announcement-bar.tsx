@@ -5,7 +5,7 @@ import type { AnnouncementConfig, AnnouncementItem } from "@/lib/kk/announcement
 /**
  * Bandeau d'annonce défilant.
  *
- * Le défilement est en CSS pur — une translation de −50 % sur une piste dont
+ * Le défilement est en CSS pur - une translation de −50 % sur une piste dont
  * le contenu est dupliqué exactement une fois. La copie repasse donc à
  * l'endroit précis où l'original s'arrête : la boucle est invisible, sans
  * JavaScript, sans mesure de largeur, et sans dépendre du nombre de messages.

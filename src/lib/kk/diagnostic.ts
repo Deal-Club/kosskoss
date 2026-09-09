@@ -1,5 +1,5 @@
 /**
- * Diagnostic Beauté KossKoss — questionnaire et agrégation de profil.
+ * Diagnostic Beauté KossKoss - questionnaire et agrégation de profil.
  * Module partagé client (parcours) / serveur (moteur de recommandation).
  *
  * Chaque réponse attribue des tags pondérés au profil. Le moteur

@@ -17,7 +17,7 @@ const TEL_HREF = `tel:+${COMPANY.phone.replace(/\D/g, "")}`;
 /**
  * En-tête de la boutique.
  *
- * Fond clair — aubier, pas écorce — pour que la coupure avec le hero sombre
+ * Fond clair - aubier, pas écorce - pour que la coupure avec le hero sombre
  * soit nette au lieu de noyer trois bandeaux bruns les uns sous les autres.
  * La braise ne sert plus qu'aux accents qui doivent vraiment attirer l'œil :
  * le bouton de recherche, le prix, le nom de marque.
@@ -111,7 +111,7 @@ export async function Header() {
                   le tableau de bord au client connecté et renvoie les autres vers
                   « /compte/connexion » (requireCustomer). Lire le cookie de session
                   ici forcerait le rendu dynamique de tout le catalogue, qui est
-                  prérendu — le lien resterait juste, mais les fiches produits
+                  prérendu - le lien resterait juste, mais les fiches produits
                   perdraient leur rendu statique. */}
               <Link
                 href="/compte"
@@ -166,7 +166,7 @@ export async function Header() {
 
 /**
  * Champ de recherche : même balisage aux deux emplacements, un seul endroit à
- * corriger. Un <form> qui pointe vers /recherche en GET — la recherche
+ * corriger. Un <form> qui pointe vers /recherche en GET - la recherche
  * fonctionne donc sans JavaScript, y compris au clavier (Entrée soumet).
  */
 function SearchField({

@@ -73,7 +73,7 @@ interface CampaignStepMessageProps {
  * L'aperçu de droite reproduit le gabarit de src/server/emails/campaign.ts, qui
  * ne peut pas être importé ici : il compose des URL absolues à partir de
  * variables d'environnement, donc il ne quitte jamais le serveur. Les valeurs
- * d'exemple suivent en revanche exactement les mêmes règles — premier produit
+ * d'exemple suivent en revanche exactement les mêmes règles - premier produit
  * sélectionné, date de fin de la campagne, remise réelle.
  */
 export function CampaignStepMessage({ draft, products, onChange }: CampaignStepMessageProps) {
@@ -221,7 +221,7 @@ export function CampaignStepMessage({ draft, products, onChange }: CampaignStepM
             <div className="border-b border-border bg-muted px-3 py-2">
               <p className="text-[11px] text-muted-foreground">Objet</p>
               <p className="truncate text-sm font-bold text-foreground">
-                {preview.subject || "— objet vide —"}
+                {preview.subject || "- objet vide -"}
               </p>
             </div>
 
@@ -230,7 +230,7 @@ export function CampaignStepMessage({ draft, products, onChange }: CampaignStepM
                 <div className="h-1 bg-primary" />
                 <div className="p-5">
                   <p className="mb-3 text-base font-black text-foreground">
-                    {preview.headline || "— titre vide —"}
+                    {preview.headline || "- titre vide -"}
                   </p>
 
                   {preview.paragraphs.map((paragraph, index) => (
@@ -244,7 +244,7 @@ export function CampaignStepMessage({ draft, products, onChange }: CampaignStepM
 
                   <p className="my-4">
                     <span className="inline-block rounded-sm bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground">
-                      {preview.ctaLabel || "— bouton sans libellé —"}
+                      {preview.ctaLabel || "- bouton sans libellé -"}
                     </span>
                   </p>
 

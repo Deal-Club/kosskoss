@@ -85,7 +85,7 @@ function Gallery({
   return (
     <div className="grid gap-4">
       {/* Le zoom au survol vit dans son propre composant client (ProductZoom) :
-          il suit le pointeur, ce que la fiche — rendue sur le serveur — ne peut
+          il suit le pointeur, ce que la fiche - rendue sur le serveur - ne peut
           pas faire. `data-visuel-produit` reste porté par ce cadre : c'est le
           point de départ du vol vers le panier (lib/kk/fly-to-cart).
           Sans image, on garde le motif et aucun zoom : il n'y a rien à
@@ -114,7 +114,7 @@ function Gallery({
       {/* LES VUES COMPLÉMENTAIRES, ET RIEN SI LE PRODUIT N'EN A PAS.
           Deux carrés étaient posés ici EN DUR sur toutes les fiches : un aplat
           vert d'eau portant un flacon dessiné, un aplat rose portant le
-          monogramme. Ce n'étaient pas des photos du produit — c'étaient des
+          monogramme. Ce n'étaient pas des photos du produit - c'étaient des
           images inventées, identiques sur les soixante-onze fiches, et elles
           promettaient au visiteur des vues supplémentaires qui n'existaient
           pas. Sur une boutique dont le premier frein est la contrefaçon, un
@@ -147,13 +147,13 @@ function Gallery({
 }
 
 /**
- * Ligne d'une grappe d'information — « Est-ce pour ma peau ? », « Comment
+ * Ligne d'une grappe d'information - « Est-ce pour ma peau ? », « Comment
  * l'utiliser ? », « Le Choix KossKoss Select ? », « En bref » regroupées sous
  * UN SEUL panneau plutôt qu'en quatre bandes plein écran empilées.
  *
  * ── POURQUOI CE REGROUPEMENT ─────────────────────────────────────────────
  * Quatre bandes successives, chacune son titre-pastille et sa largeur
- * max-w-7xl, se lisaient comme quatre répétitions du même gabarit — un
+ * max-w-7xl, se lisaient comme quatre répétitions du même gabarit - un
  * défilement long où rien ne distinguait « ce qu'il faut savoir » de la
  * suite. Rassemblées dans un seul cadre à accordéon, elles deviennent UNE
  * réponse structurée à « qu'est-ce que j'ai besoin de savoir ? », que le
@@ -163,7 +163,7 @@ function Gallery({
  *
  * Reste HORS de cette grappe : « Pourquoi vous allez l'aimer » (l'accroche,
  * elle doit rester visible sans clic) et « Complétez votre routine » (des
- * cartes produit, pas du texte — un autre registre visuel).
+ * cartes produit, pas du texte - un autre registre visuel).
  */
 function DetailRow({
   icon: Icon,
@@ -183,8 +183,8 @@ function DetailRow({
     >
       {/* Trois signaux d'état ouvert, pas un seul : le fond de ligne
           (`open:bg-sand/50` ci-dessus), la pastille d'icône qui passe au vert
-          profond plein — même bascule que les boutons de variante actifs
-          (`add-to-cart.tsx`) —, et le chevron qui prend la même teinte. Un
+          profond plein - même bascule que les boutons de variante actifs
+          (`add-to-cart.tsx`) -, et le chevron qui prend la même teinte. Un
           survol au clavier/tactile qui manquerait le fond (contraste faible
           en plein soleil, p. ex.) retrouve l'état par l'icône ou la rotation. */}
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-deep marker:content-none">
@@ -207,8 +207,8 @@ function DetailRow({
  * site (chapitre 1 du document de structure) : aucune taille posée en dur ici.
  *
  * L'icône est décorative (`aria-hidden`) : le titre se suffit. Elle est
- * dessinée au trait dans une pastille sable — le registre d'accents de la
- * charte —, jamais un emoji : les emoji changent de dessin d'un appareil à
+ * dessinée au trait dans une pastille sable - le registre d'accents de la
+ * charte -, jamais un emoji : les emoji changent de dessin d'un appareil à
  * l'autre et sortent du ton de la marque.
  */
 function SectionTitle({ icon: Icon, children }: { icon?: LucideIcon; children: React.ReactNode }) {
@@ -241,7 +241,7 @@ export async function ProductDetail({
   const tCommon = await getTranslations("common");
 
   // Ligne de préoccupations (haut de fiche) et tableau « en bref » puisent
-  // dans les MÊMES tags — voir `lib/kk/besoins.ts`. Un produit dont le master
+  // dans les MÊMES tags - voir `lib/kk/besoins.ts`. Un produit dont le master
   // n'a posé aucun tag de préoccupation/peau reconnu rend un tableau vide :
   // c'est un état normal (voir la garde plus bas), pas une erreur.
   const besoinLabels = libellesPourTags(product.tags, PREOCCUPATIONS, locale);
@@ -257,11 +257,11 @@ export async function ProductDetail({
 
   // Le format affiché au tableau « en bref » suit la même contenance de
   // référence que le bloc d'achat au premier rendu (la première variante
-  // active, triée par position) — voir `AddToCart`, qui la préselectionne à
+  // active, triée par position) - voir `AddToCart`, qui la préselectionne à
   // l'identique. Un produit sans variante n'a simplement pas de ligne Format :
   // aucune valeur n'existe pour lui en base, en inventer une serait mentir.
   const referenceVariant = product.variants[0];
-  // « Utilisation » résume Matin/Soir en une valeur — mêmes libellés que la
+  // « Utilisation » résume Matin/Soir en une valeur - mêmes libellés que la
   // section « Comment l'utiliser ? » juste au-dessus (`morningLabel` /
   // `eveningLabel`), jamais une troisième formulation inventée ici.
   const usageSummary = [product.usageMatin && t("morningLabel"), product.usageSoir && t("eveningLabel")]
@@ -281,13 +281,13 @@ export async function ProductDetail({
     { label: t("briefPriceLabel"), value: formatFcfa(referenceVariant?.priceFcfa ?? product.priceFcfa) },
   ].filter((row): row is { label: string; value: string } => Boolean(row));
 
-  // Grappe « En savoir plus » — voir le commentaire de `DetailRow` : quatre
+  // Grappe « En savoir plus » - voir le commentaire de `DetailRow` : quatre
   // sections plein écran (« Est-ce pour ma peau ? », « Comment l'utiliser ? »,
   // « Le Choix KossKoss Select ? », « En bref ») rassemblées sous un seul
   // panneau à accordéon, plutôt que quatre bandes empilées qui se lisaient
   // comme une répétition du même gabarit. Un tableau, pas quatre `&&` en
   // JSX : c'est lui qui décide laquelle s'ouvre par défaut (`i === 0`) et si
-  // le panneau existe du tout — un produit sans aucun des quatre champs
+  // le panneau existe du tout - un produit sans aucun des quatre champs
   // (encore non enrichi par le master) n'affiche pas de panneau vide.
   type DetailRowSpec = { key: string; icon: LucideIcon; title: string; content: React.ReactNode };
   const detailRows = [
@@ -334,7 +334,7 @@ export async function ProductDetail({
               <span className="font-semibold text-deep">{t("kosskossAdviceLabel")}</span> {product.conseilKossKoss}
             </p>
           )}
-          {/* Précautions — modèle client. Le champ existe en base depuis le
+          {/* Précautions - modèle client. Le champ existe en base depuis le
               lot 7A mais n'était encore ni sélectionné ni affiché : donnée
               dormante, pas nouvelle. */}
           {product.precautions && (
@@ -345,9 +345,9 @@ export async function ProductDetail({
         </>
       ),
     },
-    // « Le Choix KossKoss Select ? » — pourquoi L'ÉQUIPE l'a choisi, distinct
+    // « Le Choix KossKoss Select ? » - pourquoi L'ÉQUIPE l'a choisi, distinct
     // d'« Est-ce pour ma peau ? » (à qui il s'adresse). `product.pourquoiKossKoss`
-    // — voir la note du champ dans prisma/schema.prisma. Vide tant que le
+    // - voir la note du champ dans prisma/schema.prisma. Vide tant que le
     // master ne l'a pas renseigné.
     product.pourquoiKossKoss && {
       key: "chosen",
@@ -355,7 +355,7 @@ export async function ProductDetail({
       title: t("chosenTitle"),
       content: <>{product.pourquoiKossKoss}</>,
     },
-    // « En bref » — même contenu que `briefRows`, en tableau serré : reprend
+    // « En bref » - même contenu que `briefRows`, en tableau serré : reprend
     // ici ce qui est dit en prose dans les lignes précédentes (besoin, peau,
     // zone, actifs, usage, fréquence, cible, format, référence, EAN, prix),
     // jamais redemandé au client. `-mx`/`-mt` neutralisent le padding de
@@ -395,7 +395,7 @@ export async function ProductDetail({
 
           <div className="lg:sticky lg:top-24 lg:pt-4">
             <div className="rounded-[1.75rem] border border-border/70 bg-card p-5 sm:p-7 lg:p-9">
-              {/* Mêmes couleurs que sur la vignette — vert profond pour la
+              {/* Mêmes couleurs que sur la vignette - vert profond pour la
                   meilleure vente, laiton pour la nouveauté. Le badge était ici
                   en `bg-sand` quel que soit son sens : un client qui reconnaît
                   une pastille verte dans la grille ne devait pas la retrouver
@@ -414,7 +414,7 @@ export async function ProductDetail({
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {product.brand}
               </p>
-              {/* Le h1 global démarre à 2,5 rem (40 px) — une taille pensée
+              {/* Le h1 global démarre à 2,5 rem (40 px) - une taille pensée
                   pour un titre de page court, pas pour un nom de produit.
                   « Crème solaire au riz et probiotiques » dans les 286 px
                   utiles d'un téléphone y tenait sur cinq lignes et occupait à
@@ -424,14 +424,14 @@ export async function ProductDetail({
                   sa taille : le nom reste la tête de série de la fiche, il
                   cesse d'en être le contenu principal. */}
               {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande
-                  client — voir `formatProductTitle`. Même variante de
+                  client - voir `formatProductTitle`. Même variante de
                   référence que la ligne Format du tableau « en bref »
                   ci-dessous et que la présélection du bloc d'achat. */}
               <h1 className="mt-2 text-[1.6rem] leading-tight text-deep sm:text-[1.9rem] lg:text-[2.15rem]">
                 {formatProductTitle(product.name, referenceVariant?.label)}
               </h1>
 
-              {/* Ligne de préoccupations — modèle client : « Boutons •
+              {/* Ligne de préoccupations - modèle client : « Boutons •
                   Excès de sébum • Peaux mixtes à grasses » (besoin ET type de
                   peau sur la même ligne). Puise dans les mêmes tags que le
                   tableau « en bref » plus bas (`besoinLabels`/`peauLabels`) :
@@ -442,11 +442,11 @@ export async function ProductDetail({
                 </p>
               )}
 
-              {/* Puce de traçabilité — modèle client : n'affirme « EAN
+              {/* Puce de traçabilité - modèle client : n'affirme « EAN
                   traçable » que lorsqu'un EAN validé existe réellement (voir
                   `isValidGtin`, src/server/kk/master.ts) ; l'annoncer sans
                   donnée serait une allégation trompeuse (Code de la
-                  consommation, comme pour la note moyenne — voir
+                  consommation, comme pour la note moyenne - voir
                   `KKReviewsSummary` dans src/types/kk.ts). */}
               {product.gtin && (
                 <p className="mt-2 flex items-center gap-1.5 text-[0.72rem] font-medium text-muted-foreground">
@@ -455,7 +455,7 @@ export async function ProductDetail({
                 </p>
               )}
 
-              {/* Question d'accroche — le problème que le visiteur se pose
+              {/* Question d'accroche - le problème que le visiteur se pose
                   avant de lire la solution juste en dessous. */}
               {product.problemeAccroche && (
                 <p className="mt-3 font-display text-lg leading-snug text-deep">
@@ -472,7 +472,7 @@ export async function ProductDetail({
                 <AddToCart product={product} />
               </div>
 
-              {/* Mentions de livraison et de paiement — factuelles et
+              {/* Mentions de livraison et de paiement - factuelles et
                   communes à tout le catalogue (voir TARGET.md : la livraison
                   est coordonnée par WhatsApp, sans zone ni délai calculé), pas
                   un champ du master. Les moyens de paiement viennent du
@@ -490,7 +490,7 @@ export async function ProductDetail({
               </p>
 
               {/* La description longue est descendue tout en bas de la fiche
-                  (dernier bloc, après avis et produits associés) — retour
+                  (dernier bloc, après avis et produits associés) - retour
                   client : elle encombrait le bloc d'achat, qui doit rester
                   court (prix, CTA, livraison) plutôt que porter le premier
                   pavé de texte de la page. */}
@@ -507,11 +507,11 @@ export async function ProductDetail({
          sélection, identique sur les soixante-onze fiches, illustré par un
          aplat dégradé et le monogramme. Retirée à la demande du client. Elle
          séparait la fiche de ses produits associés par un écran de texte qui
-         n'apprenait rien sur le produit qu'on est en train de regarder — le
+         n'apprenait rien sur le produit qu'on est en train de regarder - le
          même propos est tenu à sa place sur l'accueil et sur /marques. */}
 
       {/* --- Description ------------------------------------------------------
-          Juste avant « Pourquoi vous allez l'aimer » — retour client : elle
+          Juste avant « Pourquoi vous allez l'aimer » - retour client : elle
           encombrait le bloc d'achat en haut de page, qui doit rester court
           (prix, CTA, livraison), mais reste la première chose lue une fois
           qu'on passe au corps de la fiche, avant les bénéfices. */}
@@ -548,7 +548,7 @@ export async function ProductDetail({
       {/* --- En savoir plus ---------------------------------------------------
           « Est-ce pour ma peau ? », « Comment l'utiliser ? », « Le Choix
           KossKoss Select ? » et « En bref » : quatre bandes plein écran
-          rassemblées en UN SEUL panneau à accordéon — voir `DetailRow` et le
+          rassemblées en UN SEUL panneau à accordéon - voir `DetailRow` et le
           tableau `detailRows` plus haut pour le raisonnement complet. Placé
           juste après « Pourquoi vous allez l'aimer » (l'accroche, qui reste
           seule visible sans clic) et avant « Complétez votre routine » (des
@@ -571,11 +571,11 @@ export async function ProductDetail({
       {/* --- Complétez votre routine ---------------------------------------
           Un produit peut appartenir à plusieurs routines (par exemple un
           nettoyant repris en version Éco et en version Premium) : elles sont
-          TOUTES montrées, plutôt qu'une seule choisie arbitrairement — voir
+          TOUTES montrées, plutôt qu'une seule choisie arbitrairement - voir
           le rapport du lot 7D.
 
           Fond CLAIR : la section précédente (« En savoir plus ») est déjà sur
-          sable — deux bandes sable consécutives fusionnent en un seul aplat
+          sable - deux bandes sable consécutives fusionnent en un seul aplat
           sans coupure visible, le filet du haut ne suffit pas à les
           distinguer. L'alternance clair/sable reprend ici. */}
       {routines.length > 0 && (
@@ -584,7 +584,7 @@ export async function ProductDetail({
             <SectionTitle icon={Layers}>{t("completeRoutineTitle")}</SectionTitle>
             {/* Grille à deux colonnes dès `sm` : un produit dans deux
                 routines (version Éco + Premium, par exemple) les montre côte
-                à côte plutôt qu'empilées. `items-start` — sans lui, la grille
+                à côte plutôt qu'empilées. `items-start` - sans lui, la grille
                 étire la carte la plus courte à la hauteur de l'autre. */}
             <div className="mt-6 grid items-start gap-6 sm:grid-cols-2">
               {/* Teinte de la routine (`routine.tint`), pas `bg-card` neutre :
@@ -641,7 +641,7 @@ export async function ProductDetail({
           suivi de [Faire le quiz beauté] et [Ajouter au panier] côte à côte.
           Le rappel juste en dessous ACHÈTE DIRECTEMENT (retour client : un
           simple ancrage vers le bloc d'achat plus haut retardait un achat
-          déjà décidé) — voir `BuyNowReminder`, dont le commentaire explique
+          déjà décidé) - voir `BuyNowReminder`, dont le commentaire explique
           pourquoi ce n'est pas un second `AddToCart` monté sur la page (donc
           aucun doublon de mesure `view_item`/`add_to_cart`). */}
       <section className="mx-auto max-w-7xl px-6 pb-4 text-center">

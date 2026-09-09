@@ -10,7 +10,7 @@ export type AccountSection = "dashboard" | "orders" | "addresses" | "data";
 /**
  * Ossature des pages protégées de l'espace client : en-tête de boutique, fil
  * d'Ariane, menu latéral et contenu. La page appelante indique seulement quelle
- * entrée du menu est active — pas besoin de `usePathname`, donc pas de
+ * entrée du menu est active - pas besoin de `usePathname`, donc pas de
  * composant client pour la navigation.
  */
 export async function AccountShell({
@@ -99,7 +99,7 @@ export async function AccountShell({
 
 /**
  * Ossature des pages ouvertes à tous : connexion, inscription, mot de passe
- * oublié. Une carte centrée, sans menu de compte — le visiteur n'en a pas encore.
+ * oublié. Une carte centrée, sans menu de compte - le visiteur n'en a pas encore.
  */
 export async function AccountAuthShell({
   locale,

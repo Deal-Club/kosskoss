@@ -17,7 +17,7 @@
  * séparant partie entière et décimales, le résultat est exact quel que soit le
  * montant.
  *
- * Rend `null` si la valeur est absente ou illisible — le contrôle de montant est
+ * Rend `null` si la valeur est absente ou illisible - le contrôle de montant est
  * alors sauté plutôt que de rejeter un paiement légitime sur un format
  * inattendu.
  */

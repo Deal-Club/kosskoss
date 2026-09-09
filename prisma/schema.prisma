@@ -1,6 +1,6 @@
 // Modèle de données de la boutique KossKoss Select.
 // Base de production et de développement : PostgreSQL (Neon), via la seule
-// variable DATABASE_URL — voir docs/DATABASE.md.
+// variable DATABASE_URL - voir docs/DATABASE.md.
 // Contrainte volontaire : ni enum Prisma ni liste scalaire, pour que le même
 // schéma reste portable d'un moteur SQL à l'autre.
 // Sous Postgres, un `String` est un `text` sans limite de longueur : aucune
@@ -69,8 +69,8 @@ model GuideSection {
 }
 
 /// Marque du catalogue. Le libellé reste recopié sur `Product.brand` : la
-/// relation apporte ce que la chaîne ne peut pas porter — logo, description,
-/// ordre, état — sans obliger à réécrire tout ce qui lit la chaîne.
+/// relation apporte ce que la chaîne ne peut pas porter - logo, description,
+/// ordre, état - sans obliger à réécrire tout ce qui lit la chaîne.
 model Brand {
   id            String    @id @default(cuid())
   slug          String    @unique
@@ -126,7 +126,7 @@ model Product {
   actifsCles            String   @default("")
   // Ajoutés pour aligner la fiche produit sur MODELE FICHE PRODUIT_V2 (docs/) :
   // « Le Choix KossKoss Select ? » (bloc dédié, distinct d'Idéal_Pour), Zone
-  // d'application et Cible — trois colonnes du classeur FICHES_PRODUITS
+  // d'application et Cible - trois colonnes du classeur FICHES_PRODUITS
   // encore sans contrepartie en base. Vides tant que le master ne les a pas
   // renseignées ; la section/ligne correspondante se masque alors, comme le
   // reste des champs du master.
@@ -136,7 +136,7 @@ model Product {
   // Colonnes internes du master (Statut_Publication, Donnees_A_Confirmer) :
   // des informations de production à l'usage de l'équipe, jamais affichées à
   // un visiteur. Volontairement SANS contrepartie `*En` ni entrée au
-  // registre des traductions — voir traductions.ts et traductions.test.ts.
+  // registre des traductions - voir traductions.ts et traductions.test.ts.
   statutPublication     String   @default("")
   donneesAConfirmer     String   @default("")
   // Traductions anglaises ; vides = repli sur le français
@@ -176,7 +176,7 @@ model Product {
   // NULLABLE ET SANS VALEUR PAR DÉFAUT, délibérément : un coût non renseigné
   // n'est pas un coût nul. Avec `@default(0)`, le tableau de bord annoncerait
   // 100 % de marge sur tout le catalogue existant, dont aucun produit ne porte
-  // encore de coût — un chiffre faux, et plus nuisible qu'une case vide.
+  // encore de coût - un chiffre faux, et plus nuisible qu'une case vide.
   //
   // Le calcul de marge vit dans `src/lib/kk/marge.ts` et retient le taux sur
   // PRIX DE VENTE, convention du commerce de détail.
@@ -246,7 +246,7 @@ model PaymentTransaction {
 
   /** URL vers laquelle le client a été envoyé pour payer. */
   checkoutUrl String @default("")
-  /** sandbox | live — pour ne jamais confondre un test et un encaissement. */
+  /** sandbox | live - pour ne jamais confondre un test et un encaissement. */
   environment String @default("sandbox")
 
   /** Dernière réponse brute du prestataire, en JSON. Sert au diagnostic. */
@@ -266,7 +266,7 @@ model PaymentTransaction {
  * Journal des webhooks reçus.
  *
  * C'est le support de l'IDEMPOTENCE, et ce n'est pas une précaution théorique :
- * GeniusPay réessaie cinq fois en cas d'échec — immédiatement, puis à 5 min,
+ * GeniusPay réessaie cinq fois en cas d'échec - immédiatement, puis à 5 min,
  * 30 min, 2 h et 6 h. Sans ce journal, un traitement lent renvoyant 500 après
  * avoir travaillé ferait encaisser la même commande plusieurs fois.
  *
@@ -304,7 +304,7 @@ model WebhookEvent {
 //
 // Bloc 12 de la structure fournie par le client. Un formulaire de newsletter
 // existait autrefois dans le pied de page ; il avait été retiré parce qu'il
-// n'envoyait rien nulle part — une adresse saisie disparaissait. Le bloc
+// n'envoyait rien nulle part - une adresse saisie disparaissait. Le bloc
 // revient donc avec sa table : mieux vaut pas de formulaire du tout qu'un
 // formulaire qui ment.
 //
@@ -326,7 +326,7 @@ model NewsletterSubscriber {
 //
 // La routine est l'objet central de la marque, et il manquait.
 //
-// L'identité KossKoss Select l'écrit noir sur blanc — mission : « des ROUTINES
+// L'identité KossKoss Select l'écrit noir sur blanc - mission : « des ROUTINES
 // simples, efficaces et adaptées » ; promesse : « une sélection de produits
 // sûrs et adaptés pour DES ROUTINES QUI FONCTIONNENT ». Le retour client la
 // redemande : « la mise en avant prioritairement des routines (prêtes ou
@@ -334,7 +334,7 @@ model NewsletterSubscriber {
 //
 // Jusqu'ici une routine n'existait que le temps d'un écran, en mémoire, à la
 // sortie du diagnostic : pas d'URL, pas de sauvegarde, pas de partage, et
-// surtout aucune routine PRÊTE — la moitié de ce que la marque promet. On ne
+// surtout aucune routine PRÊTE - la moitié de ce que la marque promet. On ne
 // peut pas mettre en avant ce qui n'existe pas en base.
 //
 // Le prix n'est pas stocké : il est la somme des gestes, calculée au rendu.
@@ -354,7 +354,7 @@ model Routine {
   // relie la routine au rayon filtré correspondant : le visiteur qui veut
   // choisir lui-même y accède depuis la routine, en second recours.
   besoinTag     String  @default("")
-  // Jeton de teinte — l'un des --tint-* de globals.css. C'est le mécanisme qui
+  // Jeton de teinte - l'un des --tint-* de globals.css. C'est le mécanisme qui
   // casse la monochromie relevée par le client : chaque routine porte sa
   // couleur, sur l'accueil comme sur sa page. Fonctionnel avant d'être
   // décoratif : la teinte sert de repère.
@@ -368,17 +368,17 @@ model Routine {
   // NULLABLE, à la différence de la colonne demandée par le plan (String
   // @unique) : les 5 routines déjà en production n'ont aucun code du master,
   // et ADD COLUMN ... TEXT NOT NULL échoue sur une table non vide sans valeur
-  // de repli — Postgres refuse la colonne tant qu'elle contiendrait des NULL.
+  // de repli - Postgres refuse la colonne tant qu'elle contiendrait des NULL.
   // Choisir un code au hasard pour ces 5 lignes serait une décision de
   // rapprochement de données, hors du périmètre de cette tâche (schéma
   // seulement). NULL reste distinct pour l'unicité en PostgreSQL : plusieurs
   // routines sans code coexistent donc sans violer `@unique`. Un futur import
   // pourra soit rattacher ces 5 lignes à leur code réel, soit les laisser
-  // de côté et n'écrire de code que sur les routines importées du master —
+  // de côté et n'écrire de code que sur les routines importées du master -
   // exactement le même choix que `Product.brandId`, nullable pour la même
   // raison.
   code          String? @unique
-  // « eco » ou « premium » — texte libre validé par src/lib/kk/routines-niveau.ts,
+  // « eco » ou « premium » - texte libre validé par src/lib/kk/routines-niveau.ts,
   // pas un enum Prisma (le schéma s'interdit les enums, voir l'en-tête du
   // fichier). Sept besoins x deux niveaux = les 14 routines du master, contre
   // 5 routines sans niveau aujourd'hui.
@@ -417,7 +417,7 @@ model RoutineStep {
   why       String @default("")
   whyEn     String @default("")
   // Rôle du geste dans CETTE routine (master : PRODUITS_ROUTINES, colonne
-  // Role) — texte libre à dessein : le master en porte vingt formulations
+  // Role) - texte libre à dessein : le master en porte vingt formulations
   // distinctes (Nettoyer, Corriger, Booster l'éclat, Grooming…), une
   // énumération en rejetterait la moitié.
   role      String @default("")
@@ -468,7 +468,7 @@ model Review {
   rating        Int
   title         String    @default("")
   body          String
-  // pending | approved | rejected — en texte, pour rester portable
+  // pending | approved | rejected - en texte, pour rester portable
   status        String    @default("pending")
   moderatorNote String?
   moderatedAt   DateTime?
@@ -531,7 +531,7 @@ model Order {
   orderNumber String @unique
 
   // Rattachement FACULTATIF à un compte client. La commande en tant qu'invité
-  // reste possible — l'obliger à créer un compte serait contraire au principe
+  // reste possible - l'obliger à créer un compte serait contraire au principe
   // de minimisation (art. 5 § 1 c RGPD) rappelé par la DSK en mars 2022.
   customerId String?
 
@@ -561,7 +561,7 @@ model Order {
   billingCity       String
   billingCountry    String @default("DE")
 
-  // Adresse de livraison — recopiée depuis la facturation si identique
+  // Adresse de livraison - recopiée depuis la facturation si identique
   shippingSameAsBilling Boolean @default(true)
   shippingSalutation    String  @default("")
   shippingFirstName     String  @default("")
@@ -597,7 +597,7 @@ model Order {
   gatewaySecurityToken String?
 
   // recue | en_traitement | expediee | livree | annulee
-  // Statuts du CDC KossKoss — voir src/lib/orderStatus.ts.
+  // Statuts du CDC KossKoss - voir src/lib/orderStatus.ts.
   // Le défaut était « recue », hérité de mlcbois, alors que le tunnel écrivait
   // déjà « en_attente_paiement » : les deux valeurs coexistaient.
   status        String @default("en_attente_paiement")
@@ -628,11 +628,11 @@ model Order {
   withdrawalAcknowledgedAt DateTime?
 
   // Consentement « marketing » (voir src/lib/consent.ts), lu au moment de la
-  // COMMANDE — pas relu plus tard. La CAPI (src/server/kk/capi.ts) part au
+  // COMMANDE - pas relu plus tard. La CAPI (src/server/kk/capi.ts) part au
   // moment de l'ENCAISSEMENT, potentiellement des heures après, depuis un
   // webhook qui ne porte aucun cookie de navigateur : impossible d'y relire
   // un consentement en direct. Cette valeur est donc figée ici à la commande,
-  // comme le moyen de paiement ou le prix des lignes — un visiteur qui retire
+  // comme le moyen de paiement ou le prix des lignes - un visiteur qui retire
   // son consentement APRÈS avoir commandé ne change pas rétroactivement ce
   // qu'il avait accepté au moment de l'achat.
   marketingConsent Boolean @default(false)
@@ -642,7 +642,7 @@ model Order {
   stockRestored Boolean @default(false)
 
   // Attribution marketing. Renseignés quand la commande suit un clic sur le
-  // lien d'une campagne — le cookie posé par /c/<jeton> vit trente jours. Une
+  // lien d'une campagne - le cookie posé par /c/<jeton> vit trente jours. Une
   // commande sans clic préalable n'est attribuée à personne, c'est ce qui rend
   // le chiffre exploitable.
   campaignId           String?
@@ -677,7 +677,7 @@ model Order {
 //
 // Elle porte sa PROPRE séquence, distincte du numéro de commande : la facture
 // n'existant qu'après paiement, réutiliser le numéro de commande laisserait un
-// trou dans la numérotation à chaque panier abandonné — ce qu'un comptable
+// trou dans la numérotation à chaque panier abandonné - ce qu'un comptable
 // refuse. Voir docs/superpowers/specs/2026-08-20-lot1-facturation-telephone-facettes-design.md.
 //
 // Le montant est RECOPIÉ et non lu sur la commande : une correction ultérieure
@@ -691,7 +691,7 @@ model Invoice {
   // Restrict, pas Cascade : une facture est une pièce comptable, sa séquence
   // doit rester chronologique et sans rupture. Supprimer une commande déjà
   // facturée effacerait la facture en silence et ouvrirait un trou dans la
-  // numérotation — précisément ce que la séquence dédiée existe pour
+  // numérotation - précisément ce que la séquence dédiée existe pour
   // empêcher. La base refuse donc la suppression tant qu'une facture existe ;
   // deleteOrder() ne cible que des commandes de test, non payées, donc
   // jamais facturées.
@@ -782,7 +782,7 @@ model DiagQuestion {
   // l'affichage.
   conditionQuestion String @default("")
   // `conditionReponses` : clés (DiagAnswer.key) qui déclenchent l'affichage,
-  // encodées en JSON — même convention que DiagAnswer.tags.
+  // encodées en JSON - même convention que DiagAnswer.tags.
   conditionReponses String @default("[]")
   position   Int     @default(0)
   active     Boolean @default(true)
@@ -892,7 +892,7 @@ model Customer {
   // Toujours haché en scrypt (src/lib/password.ts). Ne sort jamais du serveur.
   passwordHash String
 
-  // Identité — « salutation » reste un texte libre court (m | mme | divers),
+  // Identité - « salutation » reste un texte libre court (m | mme | divers),
   // pas un enum Prisma, pour rester compatible SQLite et PostgreSQL.
   salutation String @default("")
   firstName  String
@@ -906,7 +906,7 @@ model Customer {
   billingCity       String @default("")
   billingCountry    String @default("DE")
 
-  // Adresse de livraison — ignorée tant que shippingSameAsBilling est vrai
+  // Adresse de livraison - ignorée tant que shippingSameAsBilling est vrai
   shippingSameAsBilling Boolean @default(true)
   shippingSalutation    String  @default("")
   shippingFirstName     String  @default("")
@@ -939,7 +939,7 @@ model Customer {
 // Profil Diagnostic d'un client connecté : ses RÉPONSES, pas sa routine.
 //
 // Les réponses restent valables dans le temps ; une routine calculée vieillit
-// avec le catalogue — ruptures, prix périmés, produits retirés. Stocker les
+// avec le catalogue - ruptures, prix périmés, produits retirés. Stocker les
 // réponses évite d'avoir à gérer chacun de ces cas à l'affichage.
 //
 // `Cascade` et non `Restrict`, contrairement à la facture : un profil n'a
@@ -950,7 +950,7 @@ model CustomerDiagProfile {
   customerId String   @unique
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // Tableau JSON d'identifiants DiagAnswer. Lu en bloc, jamais interrogé entrée
-  // par entrée — comme les pondérations de DiagAnswer, déjà stockées ainsi.
+  // par entrée - comme les pondérations de DiagAnswer, déjà stockées ainsi.
   answerIds  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -982,7 +982,7 @@ model CustomerFavorite {
 }
 
 // Réinitialisation du mot de passe : seul le SHA-256 du jeton est stocké.
-// Le jeton en clair n'existe que dans le lien envoyé par e-mail — une fuite de
+// Le jeton en clair n'existe que dans le lien envoyé par e-mail - une fuite de
 // la base ne permet donc pas de prendre la main sur un compte.
 model CustomerPasswordReset {
   id         String    @id @default(cuid())
@@ -1020,7 +1020,7 @@ model AdminUser {
 model AdminLoginChallenge {
   id          String    @id
   // Unique à dessein : un compte n'a jamais qu'un défi vivant à la fois. C'est
-  // la base qui garantit l'invariant, et non plus l'ordre des requêtes — deux
+  // la base qui garantit l'invariant, et non plus l'ordre des requêtes - deux
   // connexions simultanées ne peuvent donc plus créer deux défis et expédier
   // deux codes.
   adminUserId String    @unique
@@ -1052,7 +1052,7 @@ model Setting {
 // Le contenu est du HTML brut, inséré tel quel dans les pages de la boutique.
 // Écrire ici revient à exécuter du code chez chaque visiteur : l'écriture est
 // réservée à un administrateur authentifié et chaque ligne porte le nom de qui
-// l'a publiée. Le back-office, lui, n'est jamais concerné — l'injection a lieu
+// l'a publiée. Le back-office, lui, n'est jamais concerné - l'injection a lieu
 // dans le layout de la boutique, hors duquel /admin se trouve déjà.
 
 model CodeSnippet {
@@ -1229,7 +1229,7 @@ model CampaignRecipient {
   email     String
   firstName String @default("")
   lastName  String @default("")
-  // de | en — langue dans laquelle le message est composé
+  // de | en - langue dans laquelle le message est composé
   locale    String @default("fr")
 
   // Jeton aléatoire de 32 octets porté par les liens de suivi et de
@@ -1264,7 +1264,7 @@ model CampaignRecipient {
 }
 
 // Liste de blocage globale. Une désinscription vaut pour toutes les campagnes
-// à venir, pas seulement pour celle d'où le client est parti — l'inverse
+// à venir, pas seulement pour celle d'où le client est parti - l'inverse
 // reviendrait à ignorer sa demande dès le message suivant.
 model EmailSuppression {
   // Toujours normalisée en minuscules avant écriture.
@@ -1308,7 +1308,7 @@ model CampaignEvent {
 // où l'on peut annoncer une livraison offerte, un délai exceptionnel ou une
 // opération en cours sans toucher au code. Les réglages d'apparence (couleurs,
 // vitesse, activation) vivent dans `Setting` sous la clé « announcement.config »
-// — ils sont uniques, une table de configuration à une seule ligne n'apporterait
+// - ils sont uniques, une table de configuration à une seule ligne n'apporterait
 // rien.
 model Announcement {
   id        String   @id @default(cuid())
@@ -1379,7 +1379,7 @@ model Coupon {
 //     passe par des composants React et les marques restreintes de
 //     `src/lib/richText.ts` : aucune balise collée dans le back-office ne peut
 //     s'exécuter chez un visiteur. Pas de table fille parce qu'un article n'est
-//     jamais interrogé autrement que « tout le contenu d'un coup » — c'est le
+//     jamais interrogé autrement que « tout le contenu d'un coup » - c'est le
 //     même raisonnement que pour `LegalContent`.
 //
 //  2. La CORBEILLE est `deletedAt`, pas un statut. Un article jeté conserve
@@ -1395,7 +1395,7 @@ model Article {
   id   String @id @default(cuid())
   slug String @unique
 
-  // draft | scheduled | published | archived — voir src/types/journal.ts.
+  // draft | scheduled | published | archived - voir src/types/journal.ts.
   // Pas d'enum Prisma : le schéma s'interdit les enums pour rester portable.
   status String @default("draft")
 
@@ -1450,7 +1450,7 @@ model Article {
   twitterDescription String  @default("")
   twitterImage       String  @default("")
 
-  // Architecture préparée, fonctionnalité fermée — voir ArticleComment.
+  // Architecture préparée, fonctionnalité fermée - voir ArticleComment.
   commentsEnabled Boolean @default(false)
 
   createdAt DateTime @default(now())
@@ -1622,7 +1622,7 @@ model ArticleComment {
 //
 // Une ligne par article et par jour, jamais une ligne par visite : le détail
 // n'apporte rien et une table de visites grossit sans fin. Le total vit dans
-// Article.viewCount, incrémenté dans la même transaction — « les plus lus » se
+// Article.viewCount, incrémenté dans la même transaction - « les plus lus » se
 // lit alors sans agrégat.
 model ArticleViewDay {
   articleId String
@@ -1657,7 +1657,7 @@ model PurchaseOrder {
   id         String   @id @default(cuid())
   reference  String   @unique
   supplierId String
-  /// brouillon | envoye | recu_partiel | recu | annule — déduit des quantités,
+  /// brouillon | envoye | recu_partiel | recu | annule - déduit des quantités,
   /// jamais saisi à la main.
   status     String   @default("brouillon")
   note       String   @default("")

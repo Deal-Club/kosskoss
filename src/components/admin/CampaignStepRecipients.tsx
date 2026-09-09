@@ -58,7 +58,7 @@ interface CampaignStepRecipientsProps {
  * Deux principes tiennent cet écran. Les désinscrits restent visibles mais
  * jamais sélectionnables : les masquer laisserait croire à des adresses
  * perdues, alors que la boutique honore un refus. Et le lancement passe par une
- * confirmation qui rappelle le nombre exact de destinataires — un envoi ne se
+ * confirmation qui rappelle le nombre exact de destinataires - un envoi ne se
  * rattrape pas.
  */
 export function CampaignStepRecipients({
@@ -280,7 +280,7 @@ export function CampaignStepRecipients({
                     <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
                       {contact.lastOrderAt
                         ? dateFormatter.format(new Date(contact.lastOrderAt))
-                        : "—"}
+                        : "-"}
                     </td>
                   </tr>
                 );

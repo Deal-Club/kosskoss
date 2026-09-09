@@ -21,7 +21,7 @@ const CONFIRMATION_WORD = "SUPPRIMER";
  *
  * Deux confirmations avant d'agir : le mot de passe et le mot « SUPPRIMER »
  * recopié à la main. Le texte affiché juste au-dessus explique ce qui subsiste
- * malgré la suppression — les commandes, pour les délais de conservation
+ * malgré la suppression - les commandes, pour les délais de conservation
  * comptables. Informer avant la confirmation évite le reproche d'un art. 17
  * mal exécuté.
  */

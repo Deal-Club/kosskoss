@@ -39,7 +39,7 @@ import { LanguageSwitcher } from "./language-switcher";
  *
  * « Homme » est un univers du catalogue comme les autres, mais il ne se
  * cherche pas de la même façon : personne n'ouvre un menu déroulant pour
- * vérifier qu'une boutique de soin propose une gamme homme — on la voit, ou on
+ * vérifier qu'une boutique de soin propose une gamme homme - on la voit, ou on
  * suppose qu'il n'y en a pas. Il gagne donc sa place dans la barre, et sort du
  * méga-menu par la même occasion : deux entrées vers le même rayon à dix
  * centimètres l'une de l'autre, dont une cachée sous un survol, ne servent
@@ -48,7 +48,7 @@ import { LanguageSwitcher } from "./language-switcher";
  * Le slug est la SEULE chose écrite en dur. Le libellé et le lien viennent de
  * `groups`, c'est-à-dire du back-office : si l'univers est renommé, l'entrée
  * suit ; s'il est retiré ou vidé, `getShopNavigation` l'écarte et l'entrée
- * disparaît d'elle-même — là où un lien écrit à la main aurait survécu au
+ * disparaît d'elle-même - là où un lien écrit à la main aurait survécu au
  * rayon et mené à une page vide.
  */
 const UNIVERS_EN_BARRE = "homme";
@@ -74,7 +74,7 @@ function useDismiss(open: boolean, close: () => void) {
  * par aucun lien.
  *
  * Le formulaire part en GET natif, sans `router.push` : la recherche fonctionne
- * alors même que le JavaScript n'a pas fini de s'hydrater — un cas courant sur
+ * alors même que le JavaScript n'a pas fini de s'hydrater - un cas courant sur
  * les connexions mobiles auxquelles s'adresse cette boutique.
  */
 export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "icon" }) {
@@ -127,8 +127,8 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
       {/* Monté dans <body>, pour la même raison que le menu mobile : l'en-tête
           porte `backdrop-blur`, et un `backdrop-filter` devient le référentiel
           des positions `fixed` de ses descendants. Rendu sur place, ce panneau
-          `fixed inset-0` se calait donc sur la BOÎTE DE L'EN-TÊTE — 72 px de
-          haut — au lieu de l'écran : le voile ne couvrait pas la page et le
+          `fixed inset-0` se calait donc sur la BOÎTE DE L'EN-TÊTE - 72 px de
+          haut - au lieu de l'écran : le voile ne couvrait pas la page et le
           champ se retrouvait écrasé sous le logotype. Le menu mobile avait été
           corrigé, la recherche non. */}
       {open &&
@@ -144,7 +144,7 @@ export function SearchAction({ variant = "desktop" }: { variant?: "desktop" | "i
             {/* Le bouton « Chercher » disparaît sous 640 px : le champ, le
                 bouton et la croix réclamaient ensemble plus de largeur qu'un
                 téléphone n'en a, et le champ se réduisait à une fente. La
-                touche « Entrée » — « Rechercher » sur le clavier virtuel —
+                touche « Entrée » - « Rechercher » sur le clavier virtuel -
                 soumet le formulaire, la fonction n'est donc pas perdue. */}
             <form
               action={action}
@@ -206,7 +206,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
    * Le panneau se referme dès qu'un lien est suivi, sinon il resterait ouvert
    * par-dessus la page demandée. La fermeture est déclenchée par le clic, et
    * non par un effet sur l'URL : un effet qui appelle `setState` provoque un
-   * rendu en cascade — et ne se déclencherait pas si le visiteur reclique sur
+   * rendu en cascade - et ne se déclencherait pas si le visiteur reclique sur
    * la page où il est déjà.
    */
   const closeOnNavigate = { onClick: () => setOpen(false) };
@@ -242,8 +242,8 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
             className="absolute inset-0 bg-deep/40 backdrop-blur-sm"
           />
           {/* `h-[100dvh]` et non `h-full` : sur mobile, un bloc `fixed` se cale
-              sur la fenêtre barre d'adresse repliée, et le bas du panneau —
-              « Mon compte », « Mes commandes » — passait sous l'interface du
+              sur la fenêtre barre d'adresse repliée, et le bas du panneau -
+              « Mon compte », « Mes commandes » - passait sous l'interface du
               navigateur, hors d'atteinte. `overscroll-contain` empêche le
               geste de défilement de se propager à la page derrière. */}
           <nav className="absolute inset-y-0 left-0 flex h-[100dvh] w-full max-w-xs flex-col overflow-y-auto overscroll-contain bg-background shadow-2xl">
@@ -259,7 +259,7 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
               </button>
             </div>
 
-            {/* Bascule de langue — repliée ici depuis l'en-tête, où elle
+            {/* Bascule de langue - repliée ici depuis l'en-tête, où elle
                 disputait la place aux icônes de recherche, favoris et panier
                 sur les petits écrans. Sa propre ligne, sous le bandeau du
                 panneau : c'est un réglage global, pas une entrée du plan de
@@ -291,8 +291,8 @@ export function MobileMenu({ groups }: { groups: NavGroup[] }) {
               {/* Les univers en accordéons, et non tous déployés.
                   Trois rayons ouverts d'office donnaient une colonne de trente
                   liens : le visiteur faisait défiler à l'aveugle pour retrouver
-                  le sien, et les entrées du bas du panneau — compte, favoris,
-                  commandes — n'étaient jamais atteintes. Le premier reste
+                  le sien, et les entrées du bas du panneau - compte, favoris,
+                  commandes - n'étaient jamais atteintes. Le premier reste
                   ouvert pour que le menu ne s'affiche pas entièrement replié.
                   `details` natif : l'ouverture fonctionne sans JavaScript. */}
               <div className="mt-6 divide-y divide-border border-y border-border">
@@ -409,7 +409,7 @@ export function DesktopNav({
    * Le panneau tenait sur `group-hover` seul : il disparaissait au pixel près
    * dès que le curseur quittait l'entrée, et une diagonale vers la troisième
    * colonne le refermait en route. Les 180 ms de sursis suffisent à traverser
-   * le vide entre le lien et le panneau — c'est le délai qu'utilisent les
+   * le vide entre le lien et le panneau - c'est le délai qu'utilisent les
    * catalogues qui ne se referment pas au nez du visiteur.
    */
   function ouvrir(cle: Deroulant) {
@@ -441,7 +441,7 @@ export function DesktopNav({
   // barre, ce qui la portait à sept entrées et la faisait basculer d'une
   // hiérarchie à une liste. Ils passent sous « Boutique », en menu déroulant :
   // la barre retrouve sa lisibilité et l'accès direct aux rayons ne se perd
-  // pas — il gagne même les catégories, qui n'y figuraient pas.
+  // pas - il gagne même les catégories, qui n'y figuraient pas.
   const homme = groups.find((group) => group.slug === UNIVERS_EN_BARRE);
 
   const entries = [
@@ -496,7 +496,7 @@ export function DesktopNav({
               onMouseEnter={deroulant ? () => ouvrir(deroulant) : undefined}
               onMouseLeave={deroulant ? () => fermer() : undefined}
               // Le focus clavier ouvre le panneau comme le survol ; il ne le
-              // referme que lorsqu'il sort réellement de l'entrée — sinon
+              // referme que lorsqu'il sort réellement de l'entrée - sinon
               // tabuler du lien vers la première catégorie le ferait
               // disparaître à l'instant où l'on entre dedans.
               onFocus={deroulant ? () => ouvrir(deroulant) : undefined}
@@ -528,7 +528,7 @@ export function DesktopNav({
                 {/* Un seul filet, qui sert deux états : plein sur la rubrique
                     courante, il se déroule de gauche à droite au survol des
                     autres. La barre répondait jusqu'ici par un simple
-                    changement de gris — trop discret pour se voir. */}
+                    changement de gris - trop discret pour se voir. */}
                 <span
                   className={`absolute -bottom-0.5 left-0 h-px w-full origin-left bg-gold transition-transform duration-300 ${
                     active || deploye ? "scale-x-100" : "scale-x-0 group-hover/lien:scale-x-100"
@@ -567,7 +567,7 @@ export function DesktopNav({
  * Volontairement construit à l'inverse de celui de la boutique. « Boutique »
  * répond à « où est le rayon ? » : une table des matières, donc du texte
  * hiérarchisé. « Routines » répond à « laquelle est pour moi ? », qui n'est pas
- * une question de rangement mais de reconnaissance — d'où des vignettes portant
+ * une question de rangement mais de reconnaissance - d'où des vignettes portant
  * chacune sa teinte et son visuel, comme sur l'accueil. La couleur est ici
  * l'index : c'est elle qu'on retient d'une routine, avant son nom.
  *
@@ -576,13 +576,13 @@ export function DesktopNav({
  * justifie.
  *
  * Le repli visuel est le MOTIF sur l'aplat teinté, jamais le packshot du
- * premier geste — même règle que la carte d'accueil, et pour la même raison :
+ * premier geste - même règle que la carte d'accueil, et pour la même raison :
  * un flacon isolé se lit comme LE produit vendu, alors qu'une routine est un
  * ensemble de trois à cinq gestes. Le motif ne prétend rien et s'effacera dès
  * qu'un visuel de coffret sera renseigné sur `Routine.image`.
  *
  * Dernière colonne : le diagnostic. C'est la réponse honnête au visiteur qui
- * hésite entre cinq routines — plutôt que de le laisser en essayer une au
+ * hésite entre cinq routines - plutôt que de le laisser en essayer une au
  * hasard, on lui propose l'outil qui choisit pour lui.
  */
 function RoutinesMenu({
@@ -609,7 +609,7 @@ function RoutinesMenu({
                 chacune : « Routine Taches & Hyperpigmentation » y passait à la
                 ligne et repoussait son accroche. Une ligne pleine largeur donne
                 au nom et à l'accroche une ligne chacun, ce qui se lit d'un coup
-                d'œil — ce qu'on attend d'un menu. */}
+                d'œil - ce qu'on attend d'un menu. */}
             <div>
               <p className="text-[0.7rem] font-semibold tracking-[0.14em] text-gold-ink uppercase">
                 {t("routinesCta")}
@@ -712,8 +712,8 @@ function RoutinesMenu({
  *
  * Il valait 42 rem au milieu de l'écran et n'alignait que des noms de rayons :
  * une table des matières, là où la boutique a besoin d'une vitrine. Il occupe
- * désormais toute la gouttière — les rayons à gauche, deux produits réels à
- * droite — parce que c'est le premier endroit où un visiteur qui ne sait pas
+ * désormais toute la gouttière - les rayons à gauche, deux produits réels à
+ * droite - parce que c'est le premier endroit où un visiteur qui ne sait pas
  * encore ce qu'il veut peut être accroché par un produit plutôt que par un mot.
  */
 function MegaMenu({
@@ -745,11 +745,11 @@ function MegaMenu({
       }`}
     >
       {/* LE PANNEAU SUIT SON CONTENU, il ne suit plus la largeur de l'en-tête.
-          Il s'étendait sur les 88 rem du cadre — 1 400 px pour une dizaine de
+          Il s'étendait sur les 88 rem du cadre - 1 400 px pour une dizaine de
           liens courts et deux vignettes. Avec le départ de « Homme » vers la
           barre, la grille des rayons perdait en plus sa troisième colonne : le
           panneau était plus vide que plein. Il est ramené à 64 rem, et les
-          colonnes s'ajustent au nombre d'univers réellement servis — deux
+          colonnes s'ajustent au nombre d'univers réellement servis - deux
           colonnes pour deux univers, trois au-delà, sans jamais de colonne
           fantôme. */}
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -779,7 +779,7 @@ function MegaMenu({
                             l'exploitant, pas le client : personne ne choisit
                             « Toniques » plutôt que « Solaires » parce qu'il y
                             en a six au lieu de trois. Sur un catalogue jeune,
-                            il ne disait qu'une chose — c'est petit — et il le
+                            il ne disait qu'une chose - c'est petit - et il le
                             disait à l'endroit le plus visible du site. */}
                         <Link
                           href={category.href}
@@ -842,7 +842,7 @@ function MegaMenu({
           </div>
 
           {/* Pied du panneau : la sortie vers le catalogue entier, et les deux
-              portes d'entrée « par le besoin » — celles qui convertissent un
+              portes d'entrée « par le besoin » - celles qui convertissent un
               visiteur qui ne connaît aucune marque. */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-sand/60 px-5 py-3">
             <Link
@@ -850,7 +850,7 @@ function MegaMenu({
               onClick={onFermer}
               className="group/tout inline-flex items-center gap-1.5 text-sm font-semibold text-deep"
             >
-              {/* Le total entre parenthèses — « Voir tout le catalogue (71) » —
+              {/* Le total entre parenthèses - « Voir tout le catalogue (71) » -
                   a suivi les compteurs de rayon, pour la même raison : un
                   catalogue ne s'annonce pas par son inventaire. */}
               {t("viewAllCatalog")}

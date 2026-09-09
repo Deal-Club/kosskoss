@@ -19,7 +19,7 @@ export default async function AdminTraductionsPage({ searchParams }: { searchPar
   const apercu = await compterParModele();
 
   // Modèle et filtre par défaut à l'ouverture : le premier modèle du
-  // registre, et « à traduire » — cet écran s'ouvre pour combler, pas pour
+  // registre, et « à traduire » - cet écran s'ouvre pour combler, pas pour
   // admirer un pourcentage. `?modele=&filtre=` permet de lier directement
   // vers une vue précise (utile en revue), sans changer ce défaut.
   const modeleInitial = MODELES_TRADUISIBLES.some((m) => m.cle === params.modele)

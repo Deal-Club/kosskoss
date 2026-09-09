@@ -15,7 +15,7 @@ import { SmartsuppLauncher } from "@/components/SmartsuppLauncher";
  *
  * Ce composant ne fait que résoudre la langue et le libellé côté serveur ; le
  * chargement effectif, déclenché par le visiteur, est dans
- * `SmartsuppLauncher` — voir son en-tête pour la raison du chargement au clic.
+ * `SmartsuppLauncher` - voir son en-tête pour la raison du chargement au clic.
  *
  * Les libellés sont passés en propriété plutôt que lus dans les fichiers de
  * messages : deux chaînes ne justifient pas d'élargir le dictionnaire, et les

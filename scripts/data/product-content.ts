@@ -8,7 +8,7 @@ import type { ProductContent } from "../../src/lib/productContent";
  * automatiquement sur identifier_exists « no ».
  *
  * L'indexation se fait par slug, et non par SKU : `slug` est `@unique` dans
- * `prisma/schema.prisma`, alors que le SKU ne l'est pas — il est dérivé par
+ * `prisma/schema.prisma`, alors que le SKU ne l'est pas - il est dérivé par
  * troncature du slug à 12 caractères alphanumériques dans
  * `scripts/seed-bois-variations.ts` (`skuFromSlug`), ce qui produit des
  * collisions (ex. "bois-palette-30cm" et "bois-palette-33cm" partagent tous
@@ -20,9 +20,9 @@ export const PRODUCT_CONTENT: ProductContent[] = [
   //
   // Ces quatre fiches partagent le même procédé (séchoir, moins de 18 %
   // d'humidité sur brut) mais pas le même bois : chaque texte part de ce que
-  // l'essence apporte réellement au foyer — braise longue pour le chêne, peu
+  // l'essence apporte réellement au foyer - braise longue pour le chêne, peu
   // de cendres pour le frêne, flamme vive pour le bouleau, régularité pour le
-  // hêtre — plutôt que de décliner un gabarit commun.
+  // hêtre - plutôt que de décliner un gabarit commun.
   {
     slug: "mlc-bois-hetre-pret-a-bruler-25-cm-2-metre-cube",
     // Marque propre : la référence est attribuée par MLC Bois, qui conditionne
@@ -31,7 +31,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     shortDescription:
       "Bûches de hêtre fendues à 25 cm, séchées en séchoir sous 18 % d'humidité sur brut, livrées par 2 mètres cubes apparents, prêtes à brûler.",
     description:
-      "Bûches de hêtre pur, fendues et recoupées à 25 cm, livrées par 2 mètres cubes apparents — soit environ " +
+      "Bûches de hêtre pur, fendues et recoupées à 25 cm, livrées par 2 mètres cubes apparents - soit environ " +
       "1,4 stère une fois le bois empilé. Le lot est déversé à l'endroit que vous indiquez au livreur, sans " +
       "emballage individuel : rien à défaire ni à évacuer après le passage du camion." +
       "\n\n" +
@@ -198,7 +198,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Bûches de bouleau fendues à 25 cm, séchées sous 18 % d'humidité sur brut, à flamme claire, livrées par 2,3 mètres cubes apparents.",
     description:
       "Bûches de bouleau fendues à 25 cm, livrées par 2,3 mètres cubes apparents, soit environ 1,6 stère de " +
-      "bois empilé — le volume le plus généreux des formats courts de la gamme. Livraison en vrac, déversée à " +
+      "bois empilé - le volume le plus généreux des formats courts de la gamme. Livraison en vrac, déversée à " +
       "l'endroit que vous indiquez au livreur." +
       "\n\n" +
       "Le bouleau se distingue nettement des feuillus lourds. Son bois clair, à l'écorce blanche " +
@@ -222,7 +222,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "jusqu'à la flambée.",
     descriptionEn:
       "Birch logs split to 25 cm, supplied by the loose cubic metre: this lot holds 2.3, about 1.6 stère once " +
-      "stacked (one loose cubic metre equals roughly 0.7 stère, the French unit for stacked wood) — the most " +
+      "stacked (one loose cubic metre equals roughly 0.7 stère, the French unit for stacked wood) - the most " +
       "generous volume among the short formats in the range. Delivered loose and tipped where you direct the " +
       "driver." +
       "\n\n" +
@@ -286,7 +286,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "Le frêne est apprécié pour une raison très concrète : il encrasse peu. Sa combustion laisse " +
       "sensiblement moins de résidus que la plupart des feuillus, ce qui espace les vidages de cendrier et " +
-      "allège l'entretien courant du foyer — un critère qui compte quand l'appareil tourne tous les jours. La " +
+      "allège l'entretien courant du foyer - un critère qui compte quand l'appareil tourne tous les jours. La " +
       "flamme, elle, est calme et régulière, sans crépitement marqué ni projection." +
       "\n\n" +
       "C'est aussi un bois dense, qui figure au même rang que le chêne et le hêtre pour le rendement : séché " +
@@ -309,7 +309,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "Ash is valued for a very practical reason: it fouls the appliance little. Its combustion leaves " +
       "appreciably less residue than most hardwoods, which spaces out ash-pan emptying and lightens routine " +
-      "firebox maintenance — something that counts when the appliance runs every day. The flame itself is calm " +
+      "firebox maintenance - something that counts when the appliance runs every day. The flame itself is calm " +
       "and steady, without marked crackling or spitting." +
       "\n\n" +
       "It is also a dense wood, on a par with oak and beech for output: kiln dried below 18% moisture on a wet " +
@@ -357,7 +357,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
   //
   // Même mélange de feuillus et même taux d'humidité sur les trois longueurs :
   // ce qui les sépare est l'appareil visé et la manutention. Chaque fiche est
-  // donc écrite depuis cet angle — grands foyers pour le 50 cm, standard du
+  // donc écrite depuis cet angle - grands foyers pour le 50 cm, standard du
   // marché pour le 33 cm, chambres compactes pour le 25 cm.
   {
     slug: "bois-vrac-50cm",
@@ -365,7 +365,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-VRAC-50",
     shortDescription:
-      "Bûches de feuillus durs — chêne, charme et hêtre — de 50 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 6 stères.",
+      "Bûches de feuillus durs - chêne, charme et hêtre - de 50 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 6 stères.",
     description:
       "Bois de chauffage en bûches de 50 cm, issu d'un mélange de feuillus durs : chêne, charme et hêtre. Le " +
       "bois est vendu au stère, de 1 à 6 stères selon le volume retenu, et livré en vrac par camion-grue qui " +
@@ -417,7 +417,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "circulate, and cover only the top of the pile: a sheet taken down to the ground would stop the moisture " +
       "escaping.",
     shortDescriptionEn:
-      "Loose-tipped hardwood logs — oak, hornbeam, beech — 50 cm, delivered by crane truck, about 30% moisture, 1 to 6 stères.",
+      "Loose-tipped hardwood logs - oak, hornbeam, beech - 50 cm, delivered by crane truck, about 30% moisture, 1 to 6 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs, livrées en vrac",
@@ -449,9 +449,9 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-VRAC-33",
     shortDescription:
-      "Bûches de feuillus durs — chêne, charme et hêtre — de 33 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 7 stères.",
+      "Bûches de feuillus durs - chêne, charme et hêtre - de 33 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 7 stères.",
     description:
-      "Bois de chauffage en bûches de 33 cm, coupé dans un mélange de feuillus durs — chêne, charme et hêtre — " +
+      "Bois de chauffage en bûches de 33 cm, coupé dans un mélange de feuillus durs - chêne, charme et hêtre - " +
       "et livré en vrac, sans conditionnement. Le volume se choisit de 1 à 7 stères, la livraison s'effectuant " +
       "par camion-grue qui dépose le bois au sol à l'emplacement indiqué." +
       "\n\n" +
@@ -475,7 +475,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "personnes pour 2 stères. Une pile surélevée, aérée sur les côtés et couverte uniquement en partie haute " +
       "assure la poursuite du séchage.",
     descriptionEn:
-      "Firewood in 33 cm logs, cut from a mix of dense hardwoods — oak, hornbeam and beech — and delivered " +
+      "Firewood in 33 cm logs, cut from a mix of dense hardwoods - oak, hornbeam and beech - and delivered " +
       "loose, with no packaging. Volume can be chosen from 1 to 7 stères (the French unit for stacked wood, " +
       "roughly 0.7 m³ each), with delivery by crane truck, which sets the wood down at the spot you indicate." +
       "\n\n" +
@@ -498,7 +498,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "A raised stack, open to the air along the sides and covered across the top only, lets the seasoning " +
       "continue.",
     shortDescriptionEn:
-      "Loose-tipped hardwood logs — oak, hornbeam, beech — 33 cm, delivered by crane truck, about 30% moisture, 1 to 7 stères.",
+      "Loose-tipped hardwood logs - oak, hornbeam, beech - 33 cm, delivered by crane truck, about 30% moisture, 1 to 7 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs, livrées en vrac",
@@ -530,7 +530,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-VRAC-25",
     shortDescription:
-      "Bûches de feuillus durs — chêne, charme et hêtre — de 25 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 7 stères.",
+      "Bûches de feuillus durs - chêne, charme et hêtre - de 25 cm, livrées en vrac par camion-grue, humidité autour de 30 %, de 1 à 7 stères.",
     description:
       "Bois de chauffage en bûches courtes de 25 cm, issu d'un mélange de feuillus durs : chêne, charme et " +
       "hêtre. Livraison en vrac par camion-grue, qui dépose le bois au sol sans conditionnement ; le volume se " +
@@ -543,7 +543,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "Le format court a un autre avantage, moins souvent cité : la manutention. Les bûches sont plus légères " +
       "à l'unité, s'empilent plus régulièrement et se rangent dans des espaces où une bûche de 50 cm ne " +
-      "passerait pas — cave étroite, sous-escalier, coffre à bois d'intérieur. Il sèche aussi un peu plus vite " +
+      "passerait pas - cave étroite, sous-escalier, coffre à bois d'intérieur. Il sèche aussi un peu plus vite " +
       "qu'un format long, la surface exposée étant proportionnellement plus grande." +
       "\n\n" +
       "Le mélange est composé d'essences denses uniquement : chêne pour la braise et la tenue, charme pour la " +
@@ -564,7 +564,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "combustion air, which helps bring the fire up to temperature and keep it clean in a small firebox." +
       "\n\n" +
       "The short format has another advantage, less often mentioned: handling. The logs are lighter " +
-      "individually, stack more evenly and fit into spaces a 50 cm log never would — a narrow cellar, an " +
+      "individually, stack more evenly and fit into spaces a 50 cm log never would - a narrow cellar, an " +
       "under-stair recess, an indoor log box. It also seasons a little faster than a long format, since the " +
       "exposed surface is proportionally greater." +
       "\n\n" +
@@ -577,7 +577,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "wood arrives in a heap; stack it raised a few centimetres off the ground, leaving air to circulate " +
       "along the sides, and cover only the top of the pile.",
     shortDescriptionEn:
-      "Loose-tipped hardwood logs — oak, hornbeam, beech — 25 cm, delivered by crane truck, about 30% moisture, 1 to 7 stères.",
+      "Loose-tipped hardwood logs - oak, hornbeam, beech - 25 cm, delivered by crane truck, about 30% moisture, 1 to 7 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs, livrées en vrac",
@@ -609,7 +609,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
   // Les cinq longueurs partagent le même bois et le même conditionnement : ce
   // qui les sépare est la chambre de combustion visée, le volume des lots et la
   // manutention. Chaque fiche est écrite depuis cet angle-là, l'argument commun
-  // — extra-sec sous 20 %, livré rangé sous film — étant abordé sous un aspect
+  // - extra-sec sous 20 %, livré rangé sous film - étant abordé sous un aspect
   // différent à chaque fois plutôt que recopié.
   {
     slug: "bois-palette-40cm",
@@ -617,10 +617,10 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-PAL-40",
     shortDescription:
-      "Bûches de feuillus durs extra-secs — chêne, charme et hêtre — de 40 cm, sur palette filmée, humidité sous 20 %, de 1,5 à 2,5 stères.",
+      "Bûches de feuillus durs extra-secs - chêne, charme et hêtre - de 40 cm, sur palette filmée, humidité sous 20 %, de 1,5 à 2,5 stères.",
     description:
-      "Bois de chauffage extra-sec en bûches de 40 cm, coupé dans un mélange de feuillus durs — chêne, charme " +
-      "et hêtre — et livré sur palette filmée, rangé et prêt à brûler. Les lots vont de 1,5 à 2,5 stères ; " +
+      "Bois de chauffage extra-sec en bûches de 40 cm, coupé dans un mélange de feuillus durs - chêne, charme " +
+      "et hêtre - et livré sur palette filmée, rangé et prêt à brûler. Les lots vont de 1,5 à 2,5 stères ; " +
       "c'est le seul format de la gamme à descendre jusqu'à 1,5 stère, ce qui en fait le lot d'appoint pour " +
       "compléter une réserve en cours de saison sans engager le volume d'une palette pleine." +
       "\n\n" +
@@ -641,11 +641,11 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "à l'autre." +
       "\n\n" +
       "La palette se décharge au transpalette ou à l'engin de manutention et se stocke telle quelle : le bois " +
-      "arrive empilé, il n'y a pas de tas à ranger. Retirez le film dès la réception — il protège pendant le " +
+      "arrive empilé, il n'y a pas de tas à ranger. Retirez le film dès la réception - il protège pendant le " +
       "transport, mais laissé en place il enferme l'humidité et fait transpirer le bois. Ensuite, un " +
       "emplacement couvert et aéré suffit à conserver le taux d'humidité jusqu'à la dernière bûche.",
     descriptionEn:
-      "Extra-dry firewood in 40 cm logs, cut from a mix of dense hardwoods — oak, hornbeam and beech — and " +
+      "Extra-dry firewood in 40 cm logs, cut from a mix of dense hardwoods - oak, hornbeam and beech - and " +
       "delivered on a shrink-wrapped pallet, stacked and ready to burn. Lots run from 1.5 to 2.5 stères (the " +
       "French unit for stacked wood, roughly 0.7 m³ each); this is the only format in the range that goes down " +
       "to 1.5 stère, which makes it the top-up lot for replenishing a store mid-season without committing to a " +
@@ -666,11 +666,11 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "into the mix, which keeps the behaviour of the fire consistent from one reload to the next." +
       "\n\n" +
       "The pallet is unloaded with a pallet truck or forklift and stores as it arrives: the wood comes " +
-      "stacked, so there is no heap to sort out. Remove the film on receipt — it protects the load in transit, " +
+      "stacked, so there is no heap to sort out. Remove the film on receipt - it protects the load in transit, " +
       "but left in place it traps moisture and makes the wood sweat. After that, a covered, airy spot is " +
       "enough to hold the moisture level down to the last log.",
     shortDescriptionEn:
-      "Extra-dry hardwood logs — oak, hornbeam, beech — 40 cm, shrink-wrapped pallet, below 20% moisture, 1.5 to 2.5 stères.",
+      "Extra-dry hardwood logs - oak, hornbeam, beech - 40 cm, shrink-wrapped pallet, below 20% moisture, 1.5 to 2.5 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs extra-secs, sur palette",
@@ -702,10 +702,10 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-PAL-33",
     shortDescription:
-      "Bûches de feuillus durs extra-secs — chêne, charme et hêtre — de 33 cm, sur palette filmée, humidité sous 20 %, de 2,5 à 3 stères.",
+      "Bûches de feuillus durs extra-secs - chêne, charme et hêtre - de 33 cm, sur palette filmée, humidité sous 20 %, de 2,5 à 3 stères.",
     description:
-      "Bois de chauffage extra-sec en bûches de 33 cm, issu d'un mélange de feuillus durs — chêne, charme et " +
-      "hêtre — livré sur palette filmée. Deux volumes sont proposés, 2,5 et 3 stères : ce sont les lots les " +
+      "Bois de chauffage extra-sec en bûches de 33 cm, issu d'un mélange de feuillus durs - chêne, charme et " +
+      "hêtre - livré sur palette filmée. Deux volumes sont proposés, 2,5 et 3 stères : ce sont les lots les " +
       "plus importants de la gamme sur palette, dimensionnés pour couvrir une saison de chauffage complète " +
       "en une seule livraison plutôt que d'enchaîner les réassorts." +
       "\n\n" +
@@ -729,7 +729,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "sur sa palette, à l'abri de la pluie et ouvert à l'air, le bois garde son taux d'humidité toute la " +
       "saison.",
     descriptionEn:
-      "Extra-dry firewood in 33 cm logs, from a mix of dense hardwoods — oak, hornbeam and beech — delivered " +
+      "Extra-dry firewood in 33 cm logs, from a mix of dense hardwoods - oak, hornbeam and beech - delivered " +
       "on a shrink-wrapped pallet. Two volumes are offered, 2.5 and 3 stères (the French unit for stacked " +
       "wood, roughly 0.7 m³ each): these are the largest lots in the palletised range, sized to cover a full " +
       "heating season in a single delivery rather than through repeated top-ups." +
@@ -752,7 +752,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "transport, and the wood needs to breathe once set down. Kept on its pallet, out of the rain and open " +
       "to the air, the wood holds its moisture level through the season.",
     shortDescriptionEn:
-      "Extra-dry hardwood logs — oak, hornbeam, beech — 33 cm, shrink-wrapped pallet, below 20% moisture, 2.5 to 3 stères.",
+      "Extra-dry hardwood logs - oak, hornbeam, beech - 33 cm, shrink-wrapped pallet, below 20% moisture, 2.5 to 3 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs extra-secs, sur palette",
@@ -786,15 +786,15 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-PAL-30",
     shortDescription:
-      "Bûches de feuillus durs extra-secs — chêne, charme et hêtre — de 30 cm, sur palette filmée, humidité sous 20 %, de 2 à 3 stères.",
+      "Bûches de feuillus durs extra-secs - chêne, charme et hêtre - de 30 cm, sur palette filmée, humidité sous 20 %, de 2 à 3 stères.",
     description:
-      "Bois de chauffage extra-sec en bûches de 30 cm, coupé dans un mélange de feuillus durs — chêne, charme " +
-      "et hêtre — et livré sur palette filmée, prêt à brûler. Trois volumes sont proposés : 2, 2,5 et " +
+      "Bois de chauffage extra-sec en bûches de 30 cm, coupé dans un mélange de feuillus durs - chêne, charme " +
+      "et hêtre - et livré sur palette filmée, prêt à brûler. Trois volumes sont proposés : 2, 2,5 et " +
       "3 stères." +
       "\n\n" +
       "Le 30 cm existe pour une raison très pratique : la marge. Une bûche annoncée à 33 cm peut, selon la " +
       "coupe, dépasser de un ou deux centimètres, et un foyer dont la profondeur utile est tout juste de " +
-      "33 cm devient alors pénible à charger — la bûche bute, il faut la tourner ou la reprendre. En 30 cm, " +
+      "33 cm devient alors pénible à charger - la bûche bute, il faut la tourner ou la reprendre. En 30 cm, " +
       "la bûche entre franchement, se positionne où l'on veut et laisse de l'espace pour l'air de combustion " +
       "autour du chargement." +
       "\n\n" +
@@ -813,13 +813,13 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "maintenu, il retient la condensation et fait remonter l'humidité du bois là où le séchage l'avait " +
       "fait descendre.",
     descriptionEn:
-      "Extra-dry firewood in 30 cm logs, cut from a mix of dense hardwoods — oak, hornbeam and beech — and " +
+      "Extra-dry firewood in 30 cm logs, cut from a mix of dense hardwoods - oak, hornbeam and beech - and " +
       "delivered on a shrink-wrapped pallet, ready to burn. Three volumes are offered: 2, 2.5 and 3 stères " +
       "(the French unit for stacked wood, roughly 0.7 m³ each)." +
       "\n\n" +
       "30 cm exists for a very practical reason: clearance. A log sold as 33 cm may, depending on the cut, " +
       "run over by a centimetre or two, and a firebox with a usable depth of exactly 33 cm then becomes " +
-      "awkward to load — the log catches, and you have to turn it or take it back out. At 30 cm, the log goes " +
+      "awkward to load - the log catches, and you have to turn it or take it back out. At 30 cm, the log goes " +
       "in cleanly, sits where you place it and leaves room for combustion air around the charge." +
       "\n\n" +
       "This is therefore the length to choose when the appliance is rated for 33 cm with no margin, when the " +
@@ -834,7 +834,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Remove the film on receipt so air can move between the logs; left on, it holds condensation and drives " +
       "the moisture content back up where drying had brought it down.",
     shortDescriptionEn:
-      "Extra-dry hardwood logs — oak, hornbeam, beech — 30 cm, shrink-wrapped pallet, below 20% moisture, 2 to 3 stères.",
+      "Extra-dry hardwood logs - oak, hornbeam, beech - 30 cm, shrink-wrapped pallet, below 20% moisture, 2 to 3 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs extra-secs, sur palette",
@@ -866,10 +866,10 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-PAL-25",
     shortDescription:
-      "Bûches de feuillus durs extra-secs — chêne, charme et hêtre — de 25 cm, sur palette filmée, humidité sous 20 %, de 1,8 à 3 stères.",
+      "Bûches de feuillus durs extra-secs - chêne, charme et hêtre - de 25 cm, sur palette filmée, humidité sous 20 %, de 1,8 à 3 stères.",
     description:
-      "Bois de chauffage extra-sec en bûches courtes de 25 cm, issu d'un mélange de feuillus durs — chêne, " +
-      "charme et hêtre — et livré sur palette filmée. C'est le format qui offre la plus large gamme de " +
+      "Bois de chauffage extra-sec en bûches courtes de 25 cm, issu d'un mélange de feuillus durs - chêne, " +
+      "charme et hêtre - et livré sur palette filmée. C'est le format qui offre la plus large gamme de " +
       "volumes : 1,8, 2 ou 3 stères, du lot d'appoint à la réserve de saison." +
       "\n\n" +
       "La coupe à 25 cm est celle des chambres de combustion compactes : petits inserts, poêles à bûches " +
@@ -878,7 +878,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "primaire, ce qui aide à monter en température et à tenir une combustion propre." +
       "\n\n" +
       "Le format court a un second avantage, moins souvent mis en avant : la manutention. Les bûches sont " +
-      "plus légères à l'unité, se portent par brassées et se rangent là où un format long ne passerait pas — " +
+      "plus légères à l'unité, se portent par brassées et se rangent là où un format long ne passerait pas - " +
       "cave étroite, sous-escalier, coffre à bois d'intérieur. C'est le format le plus commode quand la " +
       "réserve n'est pas au même niveau que l'appareil." +
       "\n\n" +
@@ -892,7 +892,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "sous abri, ouverte à l'air : c'est tout ce qu'il faut pour conserver le bénéfice du séchage jusqu'à " +
       "la fin de la saison.",
     descriptionEn:
-      "Extra-dry firewood in short 25 cm logs, from a mix of dense hardwoods — oak, hornbeam and beech — " +
+      "Extra-dry firewood in short 25 cm logs, from a mix of dense hardwoods - oak, hornbeam and beech - " +
       "delivered on a shrink-wrapped pallet. This is the format with the widest choice of volumes: 1.8, 2 or " +
       "3 stères (the French unit for stacked wood, roughly 0.7 m³ each), from a top-up lot to a full season's " +
       "store." +
@@ -903,7 +903,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "combustion clean." +
       "\n\n" +
       "The short format has a second advantage, less often mentioned: handling. The logs are lighter " +
-      "individually, can be carried by the armful and fit where a long format never would — a narrow cellar, " +
+      "individually, can be carried by the armful and fit where a long format never would - a narrow cellar, " +
       "an under-stair recess, an indoor log box. It is the most practical format when the store is not on the " +
       "same level as the appliance." +
       "\n\n" +
@@ -915,7 +915,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "there is nothing to pile up. Remove the film on receipt and keep the pallet under cover, open to the " +
       "air: that is all it takes to preserve the benefit of drying through to the end of the season.",
     shortDescriptionEn:
-      "Extra-dry hardwood logs — oak, hornbeam, beech — 25 cm, shrink-wrapped pallet, below 20% moisture, 1.8 to 3 stères.",
+      "Extra-dry hardwood logs - oak, hornbeam, beech - 25 cm, shrink-wrapped pallet, below 20% moisture, 1.8 to 3 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs extra-secs, sur palette",
@@ -947,10 +947,10 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     // et vend ce produit. Google accepte marque + MPN à défaut de code-barres.
     mpn: "MLC-PAL-50",
     shortDescription:
-      "Bûches de feuillus durs extra-secs — chêne, charme et hêtre — de 50 cm, sur palette filmée, humidité sous 20 %, de 2 à 3 stères.",
+      "Bûches de feuillus durs extra-secs - chêne, charme et hêtre - de 50 cm, sur palette filmée, humidité sous 20 %, de 2 à 3 stères.",
     description:
-      "Bois de chauffage extra-sec en bûches de 50 cm, coupé dans un mélange de feuillus durs — chêne, charme " +
-      "et hêtre — et livré sur palette filmée, rangé et prêt à brûler. Deux volumes sont proposés : 2 ou " +
+      "Bois de chauffage extra-sec en bûches de 50 cm, coupé dans un mélange de feuillus durs - chêne, charme " +
+      "et hêtre - et livré sur palette filmée, rangé et prêt à brûler. Deux volumes sont proposés : 2 ou " +
       "3 stères." +
       "\n\n" +
       "C'est la plus grande longueur de la gamme, et elle suppose un appareil dimensionné en conséquence : " +
@@ -960,11 +960,11 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "L'intérêt d'une bûche longue tient à la manutention et au rythme du feu. À volume égal, il y a moins " +
       "de bûches à porter, moins de gestes pour remplir le foyer, et un chargement tient plus longtemps avant " +
-      "la recharge suivante — un confort qui compte lorsque l'appareil chauffe une grande pièce en continu." +
+      "la recharge suivante - un confort qui compte lorsque l'appareil chauffe une grande pièce en continu." +
       "\n\n" +
       "Le bois est séché jusqu'à un taux d'humidité inférieur à 20 % et livré prêt à brûler. Le mélange " +
       "n'associe que des essences denses : le chêne pour la braise longue, le charme pour la chaleur " +
-      "soutenue, le hêtre pour une flamme calme et peu étincelante — un comportement appréciable en foyer " +
+      "soutenue, le hêtre pour une flamme calme et peu étincelante - un comportement appréciable en foyer " +
       "ouvert, où les projections ne sont retenues par aucune vitre." +
       "\n\n" +
       "La palette se décharge au transpalette ou à l'engin de manutention. Prévoyez une surface plane et " +
@@ -972,7 +972,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "pour laisser l'air circuler, puis maintenez la palette à couvert et dégagée sur les côtés jusqu'à " +
       "la dernière bûche.",
     descriptionEn:
-      "Extra-dry firewood in 50 cm logs, cut from a mix of dense hardwoods — oak, hornbeam and beech — and " +
+      "Extra-dry firewood in 50 cm logs, cut from a mix of dense hardwoods - oak, hornbeam and beech - and " +
       "delivered on a shrink-wrapped pallet, stacked and ready to burn. Two volumes are offered: 2 or " +
       "3 stères (the French unit for stacked wood, roughly 0.7 m³ each)." +
       "\n\n" +
@@ -983,18 +983,18 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "The appeal of a long log lies in handling and in the rhythm of the fire. For the same volume there " +
       "are fewer logs to carry, fewer movements to fill the firebox, and a charge lasts longer before the " +
-      "next reload — a comfort that counts when the appliance heats a large room continuously." +
+      "next reload - a comfort that counts when the appliance heats a large room continuously." +
       "\n\n" +
       "The wood is dried to a moisture content below 20% and delivered ready to burn. The mix brings " +
       "together dense species only: oak for the long ember phase, hornbeam for sustained heat, beech for a " +
-      "calm flame with few sparks — welcome behaviour in an open fire, where nothing holds back what the " +
+      "calm flame with few sparks - welcome behaviour in an open fire, where nothing holds back what the " +
       "wood throws out." +
       "\n\n" +
       "The pallet is unloaded by pallet truck or forklift. Allow a level, sheltered surface: the wood keeps " +
       "on its pallet, with no restacking. Remove the film on receipt so air can circulate, then keep the " +
       "pallet under cover and clear along the sides down to the last log.",
     shortDescriptionEn:
-      "Extra-dry hardwood logs — oak, hornbeam, beech — 50 cm, shrink-wrapped pallet, below 20% moisture, 2 to 3 stères.",
+      "Extra-dry hardwood logs - oak, hornbeam, beech - 50 cm, shrink-wrapped pallet, below 20% moisture, 2 to 3 stères.",
     bullets: [
       "Produit : Bois de chauffage en bûches",
       "Type de produit : Bûches de feuillus durs extra-secs, sur palette",
@@ -1026,8 +1026,8 @@ export const PRODUCT_CONTENT: ProductContent[] = [
   // Huit appareils dont trois Deville partagent exactement les mêmes valeurs
   // techniques (8 kW, 77 %, EN 13240, classe A, indice 102). Les décrire à
   // l'identique n'aiderait personne : les fiches Orense, Toron 50 et Sandy
-  // partent donc de ce qui les sépare réellement — la masse, donc l'inertie et
-  // la vitesse de montée en température — et le disent explicitement.
+  // partent donc de ce qui les sépare réellement - la masse, donc l'inertie et
+  // la vitesse de montée en température - et le disent explicitement.
   {
     slug: "mkt-poele-interstoves-alessia-14-kw",
     // Poids net de l'appareil, e.leclerc + fiche technique Interstoves. À majorer du calage et de la
@@ -1043,7 +1043,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Avec 14 kW, c'est l'appareil le plus puissant de notre sélection, et cette puissance appelle " +
       "une vérification avant l'achat plutôt qu'après. L'ordre de grandeur retenu est d'environ " +
       "1 kW pour 10 m² dans un logement correctement isolé : ce modèle couvre donc quelque 140 m², " +
-      "et il est fait pour un volume important — grand séjour ouvert, maison de plain-pied, " +
+      "et il est fait pour un volume important - grand séjour ouvert, maison de plain-pied, " +
       "logement ancien difficile à chauffer." +
       "\n\n" +
       "Le point à ne pas négliger est le surdimensionnement. Un poêle trop puissant pour la pièce " +
@@ -1059,7 +1059,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "L'appareil fonctionne exclusivement aux bûches et ne demande aucun raccordement électrique : " +
       "il chauffe pendant une coupure de courant. L'installation doit être confiée à un " +
-      "professionnel qualifié — c'est une exigence des compagnies d'assurance habitation pour tout " +
+      "professionnel qualifié - c'est une exigence des compagnies d'assurance habitation pour tout " +
       "appareil raccordé à un conduit de fumée, et cela conditionne le cas échéant les aides à la " +
       "rénovation. Faites vérifier l'état et le dimensionnement du conduit existant avant de " +
       "commander.",
@@ -1071,7 +1071,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "At 14 kW this is the most powerful appliance in our selection, and that output calls for a " +
       "check before purchase rather than after. The working rule of thumb is about 1 kW per 10 m² " +
       "in a properly insulated home: this model therefore covers some 140 m², and it is built for a " +
-      "substantial volume — a large open living room, a single-storey house, an older property " +
+      "substantial volume - a large open living room, a single-storey house, an older property " +
       "that is hard to heat." +
       "\n\n" +
       "The point not to overlook is oversizing. A stove too powerful for the room does not merely " +
@@ -1085,7 +1085,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "also simplifies handling and installation on a floor that would not take 200 kg." +
       "\n\n" +
       "The appliance runs solely on logs and needs no electrical connection: it keeps heating " +
-      "through a power cut. Installation must be carried out by a qualified professional — a " +
+      "through a power cut. Installation must be carried out by a qualified professional - a " +
       "requirement set by home insurers for any appliance connected to a flue, and one that also " +
       "governs renovation grants where these apply. Have the condition and sizing of the existing " +
       "flue checked before ordering.",
@@ -1140,7 +1140,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Le four est ce qui distingue ce modèle. Il transforme l'appareil en équipement double : le " +
       "poêle chauffe la pièce, et la chaleur qu'il produit de toute façon sert en même temps à " +
       "cuire. Rien n'est consommé en plus pour cuisiner, puisque c'est l'énergie du foyer qui " +
-      "travaille — un pain, un gratin ou un plat mijoté profitent d'une flambée qui aurait eu lieu " +
+      "travaille - un pain, un gratin ou un plat mijoté profitent d'une flambée qui aurait eu lieu " +
       "de toute manière." +
       "\n\n" +
       "L'intérêt est concret dans deux situations. En résidence secondaire ou en maison isolée, " +
@@ -1166,7 +1166,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "The oven is what sets this model apart. It turns the appliance into a dual-purpose one: the " +
       "stove heats the room, and the heat it produces anyway is used at the same time for cooking. " +
-      "Nothing extra is burned to cook, since it is the firebox energy doing the work — a loaf, a " +
+      "Nothing extra is burned to cook, since it is the firebox energy doing the work - a loaf, a " +
       "gratin or a slow-cooked dish all benefit from a fire that would have been lit regardless." +
       "\n\n" +
       "The appeal is concrete in two situations. In a second home or an isolated house, the " +
@@ -1239,7 +1239,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "C'est le seul appareil de la sélection à afficher explicitement le label Flamme Verte 7 " +
       "étoiles, en plus de la conformité Eco Design 2022. Flamme Verte est un label français porté " +
       "par les fabricants d'appareils de chauffage au bois : il classe les appareils sur une " +
-      "échelle d'étoiles qui combine le rendement et les émissions de polluants — monoxyde de " +
+      "échelle d'étoiles qui combine le rendement et les émissions de polluants - monoxyde de " +
       "carbone, particules, composés organiques. Sept étoiles correspond au niveau le plus élevé " +
       "de cette échelle." +
       "\n\n" +
@@ -1266,7 +1266,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "It is the only appliance in the selection to state the Flamme Verte 7-star label explicitly, " +
       "alongside EcoDesign 2022 compliance. Flamme Verte is a French label backed by manufacturers " +
       "of wood-heating appliances: it rates appliances on a star scale combining efficiency and " +
-      "pollutant emissions — carbon monoxide, particulates, organic compounds. Seven stars is the " +
+      "pollutant emissions - carbon monoxide, particulates, organic compounds. Seven stars is the " +
       "highest level on that scale." +
       "\n\n" +
       "The label carries practical weight beyond the stated performance: it is among the criteria " +
@@ -1330,16 +1330,16 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "77 %, conformité à la norme EN 13240 et à la réglementation Eco Design 2022, classe " +
       "d'efficacité énergétique A et indice d'efficacité énergétique de 102. Poids de 112 kg." +
       "\n\n" +
-      "Trois poêles Deville de 8 kW figurent dans cette sélection — Orense, Toron 50 et cette " +
-      "référence — et ils partagent exactement les mêmes valeurs mesurées : même puissance, même " +
+      "Trois poêles Deville de 8 kW figurent dans cette sélection - Orense, Toron 50 et cette " +
+      "référence - et ils partagent exactement les mêmes valeurs mesurées : même puissance, même " +
       "rendement, même norme, même classe, même indice. Ce qui les sépare, c'est la masse. Autant " +
       "le dire franchement, cela évite de chercher une différence de performance qui n'existe pas." +
       "\n\n" +
       "Avec 112 kg, c'est le plus léger des trois. Un appareil moins lourd contient moins de " +
       "matière à porter en température : il commence donc à restituer de la chaleur plus tôt après " +
       "l'allumage, mais il refroidit aussi plus vite une fois le feu éteint. C'est le comportement " +
-      "recherché quand on chauffe à la demande — une pièce occupée le soir, un logement où le " +
-      "chauffage principal prend le relais la journée — plutôt qu'en feu continu." +
+      "recherché quand on chauffe à la demande - une pièce occupée le soir, un logement où le " +
+      "chauffage principal prend le relais la journée - plutôt qu'en feu continu." +
       "\n\n" +
       "Sa légèreté relative simplifie aussi la pose : 112 kg se manipulent à deux et ne posent " +
       "généralement pas de question de reprise de charge sur un plancher courant, là où un appareil " +
@@ -1355,7 +1355,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "of 77%, compliance with the EN 13240 standard and the EcoDesign 2022 regulation, energy " +
       "efficiency class A and an energy efficiency index of 102. Weight 112 kg." +
       "\n\n" +
-      "Three 8 kW Deville stoves appear in this selection — Orense, Toron 50 and this reference — " +
+      "Three 8 kW Deville stoves appear in this selection - Orense, Toron 50 and this reference - " +
       "and they share exactly the same measured values: same output, same efficiency, same " +
       "standard, same class, same index. What separates them is mass. Saying so plainly saves you " +
       "hunting for a performance difference that does not exist." +
@@ -1363,8 +1363,8 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "At 112 kg, this is the lightest of the three. A lighter appliance has less material to bring " +
       "up to temperature: it therefore starts giving out heat sooner after lighting, but it also " +
       "cools down faster once the fire is out. That is the behaviour you want when heating on " +
-      "demand — a room used in the evening, a home where the main heating takes over during the " +
-      "day — rather than running a continuous fire." +
+      "demand - a room used in the evening, a home where the main heating takes over during the " +
+      "day - rather than running a continuous fire." +
       "\n\n" +
       "Its relative lightness also simplifies installation: 112 kg can be handled by two people and " +
       "generally raises no question of load-bearing on an ordinary floor, where an appliance of " +
@@ -1424,8 +1424,8 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "énergétique A, indice d'efficacité énergétique de 102. Poids de 150 kg." +
       "\n\n" +
       "Le Toron 50 occupe la position médiane parmi les trois Deville de 8 kW présentés ici. Les " +
-      "trois appareils affichent des valeurs mesurées identiques — 77 % de rendement, classe A, " +
-      "indice 102 — et se distinguent uniquement par leur masse : 112, 150 et 192 kg. Le choix " +
+      "trois appareils affichent des valeurs mesurées identiques - 77 % de rendement, classe A, " +
+      "indice 102 - et se distinguent uniquement par leur masse : 112, 150 et 192 kg. Le choix " +
       "entre eux ne se fait donc pas sur la performance, mais sur le régime de chauffe visé." +
       "\n\n" +
       "À 150 kg, cet appareil se situe entre les deux extrêmes. Il monte en température moins vite " +
@@ -1449,7 +1449,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "energy efficiency index of 102. Weight 150 kg." +
       "\n\n" +
       "The Toron 50 sits in the middle of the three 8 kW Deville stoves presented here. All three " +
-      "post identical measured values — 77% efficiency, class A, index 102 — and differ only in " +
+      "post identical measured values - 77% efficiency, class A, index 102 - and differ only in " +
       "mass: 112, 150 and 192 kg. Choosing between them is therefore not a matter of performance " +
       "but of the heating pattern you have in mind." +
       "\n\n" +
@@ -1532,7 +1532,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "La puissance de 8 kW couvre environ 80 m² dans un logement correctement isolé, sur la base " +
       "d'un kilowatt pour dix mètres carrés. L'appareil fonctionne exclusivement aux bûches, sans " +
-      "électricité, et sa pose doit être confiée à un professionnel qualifié — exigence des " +
+      "électricité, et sa pose doit être confiée à un professionnel qualifié - exigence des " +
       "compagnies d'assurance habitation, qui conditionne également, le cas échéant, les aides à " +
       "la rénovation.",
     descriptionEn:
@@ -1557,7 +1557,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "The 8 kW output covers around 80 m² in a properly insulated home, on the basis of one " +
       "kilowatt per ten square metres. The appliance runs solely on logs, with no electricity, and " +
-      "installation must be entrusted to a qualified professional — a requirement of home insurers, " +
+      "installation must be entrusted to a qualified professional - a requirement of home insurers, " +
       "which also governs renovation grants where these apply.",
     shortDescriptionEn:
       "Deville Orense wood-burning stove, reference C077CD-06, 8 kW, 77% efficiency, energy class A, 192 kg.",
@@ -1795,9 +1795,9 @@ export const PRODUCT_CONTENT: ProductContent[] = [
   // --- Granulés de bois, marques tierces (identifiants : docs/research/identifiants-granules.md) ---
   //
   // Dix palettes du même combustible : la répétition guette. Chaque fiche part
-  // donc de la caractéristique qui distingue réellement le produit — le taux de
+  // donc de la caractéristique qui distingue réellement le produit - le taux de
   // cendres pour Hélios, l'humidité pour Butagaz, la densité pour Piveteau, la
-  // double certification pour Woodstock — et explique au passage un aspect
+  // double certification pour Woodstock - et explique au passage un aspect
   // différent du granulé, pour que dix fiches lues à la suite apprennent dix
   // choses et non la même dix fois. Aucun prix ne figure dans les textes : il
   // change, la fiche non, et Google refuse le prix dans une description.
@@ -1818,7 +1818,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Les valeurs annoncées se lisent comme des plafonds, pas comme des moyennes : cendres " +
       "inférieures ou égales à 0,7 %, humidité inférieure ou égale à 10 %. Ce sont les limites " +
       "hautes tolérées en A1, ce qui situe ce granulé dans la partie supérieure de la fourchette " +
-      "autorisée — un point à connaître si votre appareil est sensible à l'encrassement du " +
+      "autorisée - un point à connaître si votre appareil est sensible à l'encrassement du " +
       "brûleur. En contrepartie, le pouvoir calorifique annoncé est un plancher élevé : au moins " +
       "5 kWh par kilogramme, soit environ 75 kWh par sac de 15 kg." +
       "\n\n" +
@@ -1844,7 +1844,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "The stated figures read as ceilings, not averages: ash at or below 0.7%, moisture at or " +
       "below 10%. Those are the upper limits allowed in A1, which places this pellet in the higher " +
-      "part of the permitted range — worth knowing if your appliance is sensitive to burner " +
+      "part of the permitted range - worth knowing if your appliance is sensitive to burner " +
       "fouling. In return, the calorific value is quoted as a high floor: at least 5 kWh per " +
       "kilogram, about 75 kWh per 15 kg bag." +
       "\n\n" +
@@ -1901,7 +1901,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "« Bois vierge sans additif » n'est pas une formule commerciale mais une définition de " +
       "matière première. Le granulé est produit à partir de bois qui n'a jamais été transformé, " +
-      "peint, collé ni traité — à l'exclusion des bois de récupération, des panneaux et des " +
+      "peint, collé ni traité - à l'exclusion des bois de récupération, des panneaux et des " +
       "déchets de menuiserie. Aucun liant n'est ajouté non plus : c'est la lignine contenue dans " +
       "le bois qui, sous l'effet de la pression et de la chaleur de la presse, ressoude les " +
       "particules entre elles. C'est ce qui explique qu'un granulé bien fabriqué tienne sans " +
@@ -1924,7 +1924,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "pallet of 66 bags, about 0.99 tonnes in total." +
       "\n\n" +
       "\"Virgin wood, no additive\" is not marketing language but a definition of raw material. The " +
-      "pellet is produced from wood that has never been processed, painted, glued or treated — " +
+      "pellet is produced from wood that has never been processed, painted, glued or treated - " +
       "excluding reclaimed timber, boards and joinery waste. No binder is added either: it is the " +
       "lignin in the wood itself that, under the pressure and heat of the press, welds the " +
       "particles back together. That is why a well-made pellet holds without glue, and why burning " +
@@ -2079,7 +2079,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Concrètement, un taux de cendres ne se lit pas comme une performance abstraite mais comme " +
       "une fréquence de nettoyage. Un sac de 15 kg à 0,30 % laisse environ 45 grammes de cendres, " +
       "contre 105 grammes à 0,7 %. Sur une saison, la différence se compte en vidages du " +
-      "cendrier — et surtout en propreté du creuset : c'est l'accumulation de résidu autour du " +
+      "cendrier - et surtout en propreté du creuset : c'est l'accumulation de résidu autour du " +
       "brûleur qui finit par étouffer l'arrivée d'air et faire consommer davantage l'appareil " +
       "pour la même chaleur." +
       "\n\n" +
@@ -2090,7 +2090,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "Conservez la palette au sec et n'ouvrez les sacs qu'au moment de remplir le réservoir. Un " +
       "granulé qui a repris l'humidité gonfle, se fend et produit des fines qui bourrent la vis " +
-      "d'alimentation — un désagrément mécanique bien avant d'être une perte de rendement.",
+      "d'alimentation - un désagrément mécanique bien avant d'être une perte de rendement.",
     descriptionEn:
       "Wood pellets, 100% softwood, 6 mm in diameter, bagged in 15 kg sacks and grouped 66 to a " +
       "pallet. DINplus certification no. 7A219, class A1, compliant with DIN EN ISO 17225-2." +
@@ -2101,7 +2101,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "In practical terms, an ash figure is not an abstract performance but a cleaning frequency. " +
       "A 15 kg bag at 0.30% leaves around 45 grams of ash, against 105 grams at 0.7%. Over a " +
-      "season the difference shows up in ash-pan emptying — and above all in how clean the burn " +
+      "season the difference shows up in ash-pan emptying - and above all in how clean the burn " +
       "pot stays: it is residue building up around the burner that eventually chokes the air " +
       "supply and makes the appliance consume more for the same heat." +
       "\n\n" +
@@ -2110,7 +2110,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "pellet stoves, inserts and boilers sold in France." +
       "\n\n" +
       "Keep the pallet dry and open bags only when filling the hopper. A pellet that has taken " +
-      "moisture back swells, splits and produces fines that clog the feed auger — a mechanical " +
+      "moisture back swells, splits and produces fines that clog the feed auger - a mechanical " +
       "nuisance well before it becomes a loss of output.",
     shortDescriptionEn:
       "Hélios wood pellets, DINplus class A1, ash 0.30%, calorific value 4.9 kWh/kg, pallet of 66 bags of 15 kg.",
@@ -2579,7 +2579,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
     shortDescription:
       "Granulés de bois Piveteau HP+, résineux français, DINplus, cendres sous 0,35 %, palette de 72 sacs de 15 kg.",
     description:
-      "Granulés de bois 100 % résineux français — pin, douglas et épicéa — de 6 mm de diamètre. " +
+      "Granulés de bois 100 % résineux français - pin, douglas et épicéa - de 6 mm de diamètre. " +
       "Conditionnement en sacs de 15 kg, par palette de 72 sacs, soit environ 1,08 tonne : c'est " +
       "la palette la plus fournie de la sélection. Certification DINplus n° 7A109, conforme à la " +
       "norme DIN EN ISO 17225-2." +
@@ -2596,14 +2596,14 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "inférieure à 6,5 %, pouvoir calorifique supérieur à 4,85 kWh par kilogramme, soit plus de " +
       "72 kWh par sac. L'humidité sous 6,5 % place ce produit parmi les plus secs proposés ici." +
       "\n\n" +
-      "Les trois essences — pin, douglas et épicéa — sont des résineux de plantation français, " +
+      "Les trois essences - pin, douglas et épicéa - sont des résineux de plantation français, " +
       "les mêmes qui alimentent la filière du sciage. Le granulé en valorise la sciure." +
       "\n\n" +
       "Compatible avec les poêles, inserts et chaudières à granulés. Stockez la palette au sec, " +
       "sacs fermés : la densité et la tenue mécanique obtenues à la presse ne survivent pas à " +
       "une reprise d'humidité prolongée.",
     descriptionEn:
-      "Wood pellets, 100% French softwood — pine, Douglas fir and spruce — 6 mm in diameter. " +
+      "Wood pellets, 100% French softwood - pine, Douglas fir and spruce - 6 mm in diameter. " +
       "Bagged in 15 kg sacks, 72 bags to a pallet, about 1.08 tonnes: the fullest pallet in the " +
       "selection. DINplus certification no. 7A109, compliant with DIN EN ISO 17225-2." +
       "\n\n" +
@@ -2618,7 +2618,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "value above 4.85 kWh per kilogram, that is more than 72 kWh per bag. Moisture under 6.5% " +
       "places this product among the driest offered here." +
       "\n\n" +
-      "The three species — pine, Douglas fir and spruce — are French plantation softwoods, the " +
+      "The three species - pine, Douglas fir and spruce - are French plantation softwoods, the " +
       "same ones that feed the sawmilling industry. The pellet makes use of their sawdust." +
       "\n\n" +
       "Compatible with pellet stoves, inserts and boilers. Store the pallet dry, bags sealed: the " +
@@ -2664,7 +2664,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
 
   // --- Bûches compressées, marques tierces (identifiants : docs/research/identifiants-granules.md) ---
   //
-  // Cinq produits d'un même principe — de la sciure comprimée sans liant — mais
+  // Cinq produits d'un même principe - de la sciure comprimée sans liant - mais
   // de procédés et de formats différents : rond, rond à trou, cylindrique,
   // octogonal, brique. Chaque fiche part de la forme et du procédé, car c'est
   // ce qui détermine la durée de combustion et l'usage. L'avertissement de
@@ -2681,7 +2681,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "La cohésion d'une bûche compressée ne doit rien à une colle : elle vient de la lignine " +
       "naturellement contenue dans le bois, libérée par la pression exercée à la presse et qui " +
       "ressoude les particules en refroidissant. Une bûche de ce type ne rejette donc dans le " +
-      "conduit rien de plus que le bois dont elle est issue — c'est ce qui la distingue " +
+      "conduit rien de plus que le bois dont elle est issue - c'est ce qui la distingue " +
       "radicalement d'un aggloméré." +
       "\n\n" +
       "La qualité de cette gamme est contrôlée par le laboratoire CERIC, et le produit porte la " +
@@ -2704,7 +2704,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "The cohesion of a compressed log owes nothing to glue: it comes from the lignin naturally " +
       "present in the wood, released by the pressure applied in the press and re-bonding the " +
       "particles as it cools. A log of this kind therefore sends nothing up the flue that the wood " +
-      "it came from would not — which is what sets it radically apart from a bonded board product." +
+      "it came from would not - which is what sets it radically apart from a bonded board product." +
       "\n\n" +
       "Quality across this range is checked by the CERIC laboratory, and the product carries the " +
       "Bois de France mark. The measured figures are an ash content at or below 1.5%, moisture at " +
@@ -2770,7 +2770,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "rapide que sur une bûche pleine. En pratique, on démarre un feu avec ce format sans avoir " +
       "à multiplier le petit bois." +
       "\n\n" +
-      "L'absence d'écorce explique le taux de cendres, inférieur à 0,5 % — l'une des valeurs les " +
+      "L'absence d'écorce explique le taux de cendres, inférieur à 0,5 % - l'une des valeurs les " +
       "plus basses de la catégorie. L'écorce est la partie de l'arbre qui concentre les minéraux " +
       "et les particules de terre ; l'ôter avant compression, c'est retirer l'essentiel de ce qui " +
       "finira dans le cendrier." +
@@ -2792,7 +2792,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "core as well as the surface, and lighting is markedly faster than with a solid log. In " +
       "practice, you can start a fire with this format without piling on kindling." +
       "\n\n" +
-      "The absence of bark explains the ash content, below 0.5% — one of the lowest figures in the " +
+      "The absence of bark explains the ash content, below 0.5% - one of the lowest figures in the " +
       "category. Bark is the part of the tree that concentrates minerals and soil particles; " +
       "removing it before compression takes away most of what would end up in the ash pan." +
       "\n\n" +
@@ -2848,7 +2848,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "Leur particularité tient au procédé : la matière est comprimée sous une pression de 200 à " +
       "400 bars. C'est cette compression qui donne à la briquette sa densité, comprise entre 1,0 " +
-      "et 1,1 kg par décimètre cube — soit une matière plus dense que le bois massif dont elle " +
+      "et 1,1 kg par décimètre cube - soit une matière plus dense que le bois massif dont elle " +
       "est issue, puisque la compression supprime les vides de la structure cellulaire." +
       "\n\n" +
       "La combustion se déroule en deux temps nettement distincts, et c'est ce qui rend ce format " +
@@ -2872,7 +2872,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "\n\n" +
       "What sets them apart is the process: the material is compressed at a pressure of 200 to 400 " +
       "bars. That compression is what gives the briquette its density, between 1.0 and 1.1 kg per " +
-      "cubic decimetre — a denser material than the solid wood it came from, since compression " +
+      "cubic decimetre - a denser material than the solid wood it came from, since compression " +
       "removes the voids in the cell structure." +
       "\n\n" +
       "Burning happens in two clearly distinct stages, and that is what makes this format worth " +
@@ -3011,7 +3011,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "960 kg." +
       "\n\n" +
       "C'est le produit le plus dense de la catégorie : 1,25 gramme par centimètre cube. Cette " +
-      "densité a une conséquence directe, et c'est la raison d'être de ce format — la tenue de " +
+      "densité a une conséquence directe, et c'est la raison d'être de ce format - la tenue de " +
       "braise atteint quatre à cinq heures une fois la phase de flamme passée. Un chargement fait " +
       "en soirée laisse donc des braises vives au petit matin, de quoi relancer le feu sans " +
       "rallumer. Aucun bois fendu ne permet cela avec la même régularité." +
@@ -3033,7 +3033,7 @@ export const PRODUCT_CONTENT: ProductContent[] = [
       "Packed in 10 kg packs, about 96 packs per 960 kg pallet." +
       "\n\n" +
       "This is the densest product in the category: 1.25 grams per cubic centimetre. That density " +
-      "has one direct consequence, and it is the whole point of the format — ember life reaches " +
+      "has one direct consequence, and it is the whole point of the format - ember life reaches " +
       "four to five hours once the flame stage has passed. A charge made in the evening therefore " +
       "leaves live embers by early morning, enough to revive the fire without relighting it. No " +
       "split wood does that with the same consistency." +

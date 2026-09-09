@@ -1,4 +1,4 @@
-# 09 — Sécurité, performance, accessibilité, observabilité
+# 09 - Sécurité, performance, accessibilité, observabilité
 
 ## 1. Sécurité
 
@@ -51,7 +51,7 @@ Navigation clavier, ordre de tabulation, focus visible, lien d'évitement, menus
 | Fichier | Taille approx. | Note |
 |---|---|---|
 | `src/components/checkout/CheckoutFlow.tsx` | ~715 lignes | tunnel 3 étapes → sous-composants |
-| `src/app/[locale]/confirmation/[orderNumber]/page.tsx` | ~424 lignes | — |
+| `src/app/[locale]/confirmation/[orderNumber]/page.tsx` | ~424 lignes | - |
 | `src/components/admin/ProductForm.tsx` | ~535 lignes | admin |
 | `src/components/admin/LegalPageForm.tsx` | ~522 lignes | admin |
 | `src/app/admin/(protected)/campaigns/[id]/page.tsx` | ~591 lignes | admin |

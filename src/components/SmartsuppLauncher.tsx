@@ -5,7 +5,7 @@ import { useCallback, useState, useSyncExternalStore } from "react";
 /**
  * File d'attente de l'API Smartsupp.
  * Le chargeur rejoue `smartsupp._` une fois prêt : les appels passés avant la
- * fin du chargement — ici « ouvre le chat » — ne sont donc pas perdus.
+ * fin du chargement - ici « ouvre le chat » - ne sont donc pas perdus.
  */
 type SmartsuppQueue = ((...args: unknown[]) => void) & { _: unknown[][] };
 
@@ -31,7 +31,7 @@ type Etat = "repos" | "chargement" | "ouvert" | "echec";
  * Libertés), donc d'un bandeau.
  *
  * Ici, rien ne part tant que le visiteur n'a pas cliqué. Le clic EST la demande
- * expresse du service, ce qui fait tomber l'obligation de recueil préalable —
+ * expresse du service, ce qui fait tomber l'obligation de recueil préalable -
  * et évite d'imposer un bandeau à tout le monde pour une fonction que peu de
  * gens utilisent. La page « Politique de confidentialité » décrit ce
  * fonctionnement ; les deux doivent rester d'accord.
@@ -47,7 +47,7 @@ export function SmartsuppLauncher({
 }) {
   const [etat, setEtat] = useState<Etat>("repos");
 
-  // Le chat, une fois chargé, survit au démontage du composant — un changement
+  // Le chat, une fois chargé, survit au démontage du composant - un changement
   // de langue remonte cette partie de l'arbre alors que le widget, lui, reste
   // dans la page. Sans cette lecture, le bouton reviendrait se poser par-dessus.
   // `useSyncExternalStore` est la façon prévue de lire une valeur qui vit hors
@@ -102,7 +102,7 @@ export function SmartsuppLauncher({
       aria-label={label}
       title={label}
       // Le bouton WhatsApp est passé du coin bas-gauche au coin bas-DROITE,
-      // celui-ci — sur mobile, la gauche est le début de chaque ligne de texte
+      // celui-ci - sur mobile, la gauche est le début de chaque ligne de texte
       // et le bouton y recouvrait titres et liens. Les deux partagent donc
       // maintenant le même coin, empilés à la verticale : WhatsApp au ras du
       // bord, ce lanceur juste au-dessus.

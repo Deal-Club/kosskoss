@@ -25,7 +25,7 @@ export function alternatesFor(
    *
    * Il ne peut pas passer par `href` : `getPathname` ne traite qu'un chemin et
    * emporterait la chaîne de requête dans son calcul de préfixe de langue. Or
-   * une page 2 de rayon doit se désigner elle-même comme canonique — sans quoi
+   * une page 2 de rayon doit se désigner elle-même comme canonique - sans quoi
    * Google la replie sur la page 1 et n'explore jamais les produits qu'elle
    * seule contient.
    */

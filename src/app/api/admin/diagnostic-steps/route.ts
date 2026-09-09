@@ -26,7 +26,7 @@ function parseItem(raw: unknown): GesteLigne | null {
   return {
     // `key`, `labelFr` et `category` sont validées APRÈS `.trim()` : les
     // stocker brutes laisserait passer un `category: " hydratants "` qui, une
-    // fois validé, ne correspondrait plus jamais à une catégorie produit — le
+    // fois validé, ne correspondrait plus jamais à une catégorie produit - le
     // geste disparaîtrait de toute routine sans qu'aucune erreur ne le signale.
     key: r.key.trim(),
     labelFr: r.labelFr.trim(),

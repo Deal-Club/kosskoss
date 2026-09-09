@@ -13,11 +13,11 @@ import { LocalizedLink as Link } from "./localized-link";
  * Un élément que l'on déplace à la souris pose trois problèmes qu'aucune
  * animation ne rattrape : il n'existe pas au doigt (le glissement est déjà pris
  * par le défilement), il n'existe pas au clavier, et il faut mémoriser sa
- * position par visiteur puis la revalider à chaque redimensionnement — sans
+ * position par visiteur puis la revalider à chaque redimensionnement - sans
  * quoi il se retrouve hors écran. On perd donc en accessibilité ce qu'on gagne
  * en gadget.
  *
- * L'onglet ancré répond au même besoin — ne pas gêner, rester accessible — sans
+ * L'onglet ancré répond au même besoin - ne pas gêner, rester accessible - sans
  * aucun de ces défauts : il occupe 3,5 rem au repos, se déploie au survol ET au
  * focus clavier, et se referme seul.
  *
@@ -31,14 +31,14 @@ import { LocalizedLink as Link } from "./localized-link";
  *
  * Le déploiement anime `grid-template-columns` de `0fr` à `1fr` plutôt qu'une
  * largeur en pixels. C'est la seule façon d'obtenir une largeur qui s'adapte au
- * texte — donc à la traduction — tout en restant animable : `width: auto` ne
+ * texte - donc à la traduction - tout en restant animable : `width: auto` ne
  * s'interpole pas, et une largeur codée en dur casse dès que le libellé change.
  */
 
 /**
  * Le masquage est durable, pas seulement pour la session : refermer un
  * raccourci qui revient à chaque page n'est pas le refermer. L'accès au
- * diagnostic n'est pas perdu — il figure dans le menu, la navigation mobile et
+ * diagnostic n'est pas perdu - il figure dans le menu, la navigation mobile et
  * le pied de page.
  */
 const CLE_MASQUAGE = "kk:diagnostic-flottant-masque";
@@ -49,7 +49,7 @@ const CLE_MASQUAGE = "kk:diagnostic-flottant-masque";
  *  - `instantane` renseigne le client ;
  *  - `instantaneServeur` répond « masqué » au rendu serveur, si bien que le
  *    HTML livré ne contient jamais l'onglet et qu'aucune hydratation ne
- *    diverge — React réconcilie ensuite avec la valeur réelle ;
+ *    diverge - React réconcilie ensuite avec la valeur réelle ;
  *  - l'abonnement propage le clic sur la croix, et suit aussi l'événement
  *    `storage` : masquer dans un onglet masque dans les autres.
  */

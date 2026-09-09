@@ -2,7 +2,7 @@
  * État consolidé des prestataires pour l'écran d'administration : quels
  * prestataires existent, lesquels sont réellement implémentés, quelles clés sont
  * déjà renseignées, et quel prestataire est actif. Assemblé côté serveur pour
- * qu'aucun secret ne parte vers le navigateur — seul le fait qu'une clé soit
+ * qu'aucun secret ne parte vers le navigateur - seul le fait qu'une clé soit
  * « renseignée ou non » traverse.
  */
 

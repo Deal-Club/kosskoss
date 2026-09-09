@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 
 // Historique de consultation, propre à l'onglet en cours : sessionStorage et
-// non localStorage, volontairement — « les produits vus pendant cette visite »
+// non localStorage, volontairement - « les produits vus pendant cette visite »
 // n'a plus de sens si la liste survit à la fermeture de l'onglet. Même
 // principe de magasin singleton que le panier et la liste de souhaits.
 
@@ -21,7 +21,7 @@ export interface RecentlyViewedItem {
   image: string;
   path: string;
   priceCents: number;
-  /** Nombre de consultations pendant la session — sert à définir le « top ». */
+  /** Nombre de consultations pendant la session - sert à définir le « top ». */
   viewCount: number;
   lastViewedAt: number;
 }

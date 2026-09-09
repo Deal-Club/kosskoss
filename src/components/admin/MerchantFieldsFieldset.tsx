@@ -79,7 +79,7 @@ export function MerchantFieldsFieldset({
             }
           >
             {gtinInvalid
-              ? `${gtinDigits.length} chiffres — les valeurs valides sont 8, 12, 13 ou 14.`
+              ? `${gtinDigits.length} chiffres - les valeurs valides sont 8, 12, 13 ou 14.`
               : "Ne saisir que le code-barres réel. Un GTIN inventé entraîne la suspension du compte."}
           </span>
         </label>
@@ -140,7 +140,7 @@ export function MerchantFieldsFieldset({
           >
             {ENERGY_CLASSES.map((energyClass) => (
               <option key={energyClass || "none"} value={energyClass}>
-                {energyClass || "— aucune —"}
+                {energyClass || "- aucune -"}
               </option>
             ))}
           </select>
@@ -167,7 +167,7 @@ export function MerchantFieldsFieldset({
             >
               {suggestion.id}
             </button>{" "}
-            — {suggestion.path}
+            - {suggestion.path}
           </span>
         ) : (
           <span className="mt-1 block text-xs text-muted-foreground">

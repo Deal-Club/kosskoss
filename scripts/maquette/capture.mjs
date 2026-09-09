@@ -4,7 +4,7 @@
  *   node scripts/maquette/capture.mjs [--base https://…] [--seulement id,id]
  *
  * Le script ne modifie RIEN sur le site : il navigue, survole, clique sur des
- * liens et ajoute un produit au panier — lequel vit dans le navigateur jetable
+ * liens et ajoute un produit au panier - lequel vit dans le navigateur jetable
  * de Playwright. Aucun formulaire n'est envoyé, aucune commande n'est passée,
  * aucun compte n'est créé.
  *
@@ -148,7 +148,7 @@ async function ouvrir(page, chemin) {
  * Ajoute le produit de test au panier du contexte courant.
  *
  * On attend le tiroir, et non un délai fixe : il met plus d'une seconde à se
- * monter — il ne s'affiche qu'une fois le panier non vide et le magasin relu
+ * monter - il ne s'affiche qu'une fois le panier non vide et le magasin relu
  * après hydratation (voir CartDrawer.tsx). Un `waitForTimeout` trop court
  * photographiait la page sans tiroir sans jamais signaler d'erreur.
  * La lecture de localStorage derrière sert de contrôle : elle prouve que la
@@ -218,7 +218,7 @@ const MANOEUVRES = {
    *
    * L'écran d'analyse est une étape à durée fixe : on attend qu'il cède la
    * place, en surveillant le titre principal plutôt qu'en dormant un nombre de
-   * secondes choisi au hasard — une attente au réveil trop tôt photographiait
+   * secondes choisi au hasard - une attente au réveil trop tôt photographiait
    * la roue qui tourne à la place du résultat.
    */
   async diagnosticResultat(page) {
@@ -260,7 +260,7 @@ const MANOEUVRES = {
 /**
  * Relève les coordonnées d'une zone cliquable, en pourcentages de l'image.
  *
- * `:visible` est décisif : un même lien existe souvent deux fois dans la page —
+ * `:visible` est décisif : un même lien existe souvent deux fois dans la page -
  * une fois dans la navigation de bureau, une fois dans le menu mobile replié.
  * Sans ce filtre, la mesure tombait sur l'exemplaire masqué, de taille nulle,
  * et la zone disparaissait des captures mobiles.
@@ -393,7 +393,7 @@ for (const [nomAppareil, appareil] of Object.entries(APPAREILS)) {
       }
 
       // Deuxième attente d'images, après la manœuvre : un panneau ouvert charge
-      // ses propres visuels — les suggestions du tiroir, par exemple — et ceux-là
+      // ses propres visuels - les suggestions du tiroir, par exemple - et ceux-là
       // n'existaient pas encore lors de la première attente.
       await attendreImages(page);
 
@@ -427,7 +427,7 @@ for (const [nomAppareil, appareil] of Object.entries(APPAREILS)) {
 
       console.log(`✓ ${etiquette}  ${dimensions.largeur}×${dimensions.hauteur}`);
     } catch (erreur) {
-      console.error(`✗ ${etiquette} — ${erreur.message}`);
+      console.error(`✗ ${etiquette} - ${erreur.message}`);
       echecs.push({ ecran: ecran.id, appareil: nomAppareil, message: erreur.message });
     } finally {
       await page.close();

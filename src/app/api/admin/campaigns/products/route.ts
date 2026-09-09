@@ -9,7 +9,7 @@ import { listCampaignProductOptions } from "@/server/campaignAdmin";
  * L'assistant reçoit déjà cette liste en propriété au premier rendu ; la route
  * sert au rechargement après création d'un produit dans le panneau latéral. Le
  * produit tout juste créé doit apparaître et être coché sans quitter
- * l'assistant, et son prix doit venir du serveur — le formulaire produit, lui,
+ * l'assistant, et son prix doit venir du serveur - le formulaire produit, lui,
  * manipule des chaînes formatées.
  */
 export async function GET() {

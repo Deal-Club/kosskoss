@@ -120,7 +120,7 @@ export function AdminSidebar({
           famille: "diagnostic",
         },
         // Gestes du diagnostic : libellés FR/EN, catégorie source, ordre et
-        // activation — leur nombre actif fixe le nombre de produits proposés
+        // activation - leur nombre actif fixe le nombre de produits proposés
         // par le diagnostic (critère 08), sans redéploiement.
         {
           label: "Gestes du diagnostic",
@@ -185,7 +185,7 @@ export function AdminSidebar({
         // jamais auraient surtout allongé la barre.
         { label: "Le Journal", href: "/admin/journal", icon: Newspaper, famille: "journal" },
         // Ce que la boutique anglaise affiche encore en français, tous
-        // modèles confondus — voir CAPACITE_PAR_FAMILLE : famille
+        // modèles confondus - voir CAPACITE_PAR_FAMILLE : famille
         // "traductions" sous la même capacité "contenu".
         {
           label: "Traductions",
@@ -201,7 +201,7 @@ export function AdminSidebar({
         { label: "Pages & mentions légales", href: "/admin/pages", icon: FileText, famille: "pages" },
         { label: "Scripts & balises", href: "/admin/scripts", icon: Code2, famille: "scripts" },
         // Numéro WhatsApp, lien du formulaire d'évaluation et identifiants de
-        // mesure — modifiables sans redéploiement (critère 16).
+        // mesure - modifiables sans redéploiement (critère 16).
         {
           label: "Paramètres",
           href: "/admin/parametres",
@@ -214,7 +214,7 @@ export function AdminSidebar({
   ];
 
   // Une entrée dont la capacité est refusée disparaît ; une section dont plus
-  // aucune entrée ne subsiste disparaît à son tour, titre compris — un titre
+  // aucune entrée ne subsiste disparaît à son tour, titre compris - un titre
   // de section vide se lit comme un bogue d'affichage, pas comme un droit
   // absent.
   const sections: NavSection[] = sectionsBrutes
@@ -236,7 +236,7 @@ export function AdminSidebar({
           href="/admin"
           onClick={() => setMobileOpen(false)}
           className="block"
-          aria-label="KossKoss Select — administration"
+          aria-label="KossKoss Select - administration"
         >
           {/* Logo officiel, variante claire : le fond est sombre (bg-deep).
               `priority` parce qu'il est au-dessus de la ligne de flottaison sur
@@ -319,7 +319,7 @@ export function AdminSidebar({
 
       {/* Barre mobile : la même navigation, ouverte par-dessus le contenu */}
       <div className="sticky top-0 z-40 flex items-center justify-between border-b border-white/10 bg-deep px-4 py-3 text-white lg:hidden">
-        <Link href="/admin" aria-label="KossKoss Select — administration">
+        <Link href="/admin" aria-label="KossKoss Select - administration">
           <LogoImage tone="light" priority className="h-7 w-auto" />
         </Link>
         <button

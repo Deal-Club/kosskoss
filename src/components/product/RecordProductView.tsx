@@ -19,7 +19,7 @@ interface RecordProductViewProps {
  * « Consultés récemment ». Aucun rendu, un seul effet au montage.
  *
  * Les champs sont pris un par un (et non un objet `item`) pour que la liste de
- * dépendances de l'effet ne contienne que des primitives stables — un objet
+ * dépendances de l'effet ne contienne que des primitives stables - un objet
  * recréé à chaque rendu du parent aurait rejoué l'effet en boucle.
  */
 export function RecordProductView({

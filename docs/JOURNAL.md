@@ -1,4 +1,4 @@
-# Le Journal — module éditorial
+# Le Journal - module éditorial
 
 Espace éditorial de la boutique : articles, rubriques, tags, auteurs.
 Adresse publique `/journal`, administration `/admin/journal`.
@@ -8,7 +8,7 @@ Adresse publique `/journal`, administration `/admin/journal`.
 ```
 src/types/journal.ts              types des blocs et des statuts
 
-src/lib/journal/                  LOGIQUE PURE — testée, utilisable côté client
+src/lib/journal/                  LOGIQUE PURE - testée, utilisable côté client
   blocks.ts       normalisation et contrôle des blocs (frontière de sécurité)
   content.ts      texte brut, chapeau automatique, temps de lecture, sommaire
   slug.ts         résolution du slug et gel après publication
@@ -18,7 +18,7 @@ src/lib/journal/                  LOGIQUE PURE — testée, utilisable côté cl
   listing.ts      filtrage et tri de la liste d'administration
   input.ts        normalisation du formulaire article
 
-src/server/journal/               ACCÈS BASE — jamais importé par un client
+src/server/journal/               ACCÈS BASE - jamais importé par un client
   store.ts        CRUD d'administration, slug + redirection + tags + version
   read.ts         lectures publiques localisées (filtre unique)
   taxonomy.ts     rubriques, tags, auteurs
@@ -103,11 +103,11 @@ Le sitemap ne déclare pas tout ce qui existe :
 Les pages exclues restent accessibles par leur adresse, mais portent un
 `noindex`. Une page vide indexée est une dette, pas un gain.
 
-## Routage — un piège à connaître
+## Routage - un piège à connaître
 
 La boutique occupe la racine avec `/[locale]/[group]/[category]/[product]`.
 Next fait toujours gagner un segment statique sur un segment dynamique, donc
-`/journal` fonctionne — mais **un univers produit dont le slug serait `journal`
+`/journal` fonctionne - mais **un univers produit dont le slug serait `journal`
 deviendrait injoignable**. La constante `RESERVED_CATALOG_SLUGS`
 (`src/lib/journal/slug.ts`) existe pour ça ; elle n'est pas encore branchée sur
 la validation des groupes et catégories du catalogue, c'est un point à traiter.
@@ -137,4 +137,4 @@ npm run build
 - **Slugs réservés du catalogue.** Voir la section « Routage » ci-dessus.
 - **`NEXT_PUBLIC_SITE_URL`.** `src/lib/hreflang.ts`, `src/app/sitemap.ts` et
   `src/app/robots.ts` retombent sur `https://mlc-bois.fr` quand la variable est
-  absente — vestige de l'ancien projet. Les canoniques du Journal en dépendent.
+  absente - vestige de l'ancien projet. Les canoniques du Journal en dépendent.

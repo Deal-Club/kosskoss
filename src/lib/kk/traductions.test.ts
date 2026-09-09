@@ -157,7 +157,7 @@ describe("registre face au schéma", () => {
 
   /**
    * Isole le corps de chaque `model` par comptage d'accolades, pas par un
-   * `[^}]*` qui s'arrête à la première accolade fermante rencontrée — y
+   * `[^}]*` qui s'arrête à la première accolade fermante rencontrée - y
    * compris celle d'un commentaire (ex. `// JSON : { "a": 1 }` dans
    * `DiagAnswer` ou `ArticleAuthor`). Un `[^}]*` tronqué là ferait passer
    * inaperçu tout champ `*En` ajouté après ce commentaire : c'est exactement

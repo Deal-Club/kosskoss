@@ -12,8 +12,8 @@ import type { Locale } from "@/i18n/routing";
  * univers. Si le rayon ne suffit pas à remplir la rangée, on complète par le
  * reste du catalogue plutôt que d'afficher un bloc à moitié vide.
  *
- * Deux exclusions systématiques : ce qui est déjà au panier — le proposer
- * donnerait l'impression que la boutique ne suit pas —, et tout ce qui est en
+ * Deux exclusions systématiques : ce qui est déjà au panier - le proposer
+ * donnerait l'impression que la boutique ne suit pas -, et tout ce qui est en
  * rupture, qu'il serait vexant de mettre en avant.
  *
  * Aucune notion de « souvent achetés ensemble » ici : il faudrait un historique

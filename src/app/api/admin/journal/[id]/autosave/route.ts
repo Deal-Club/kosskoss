@@ -10,8 +10,8 @@
  *     suspendu et le bouton « Enregistrer » reprend la main.
  *
  *  2. **Écriture conditionnée à `expectedUpdatedAt`.** Si l'article a bougé
- *     depuis le chargement du formulaire — deuxième onglet, collègue sur le
- *     même article —, la requête est refusée en 409 plutôt que d'écraser. Perdre
+ *     depuis le chargement du formulaire - deuxième onglet, collègue sur le
+ *     même article -, la requête est refusée en 409 plutôt que d'écraser. Perdre
  *     une sauvegarde automatique est réparable ; écraser le travail de
  *     quelqu'un d'autre ne l'est pas.
  *

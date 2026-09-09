@@ -7,7 +7,7 @@ import { prisma } from "@/server/prisma";
  * KossKoss Select est un concept-store MULTIMARQUE : c'est sa proposition, et
  * rien sur l'accueil ne la disait. Cette lecture donne, pour chaque maison
  * présente au catalogue, le nombre de références actives et un packshot qui la
- * représente — de quoi bâtir une vitrine de marques sans logo.
+ * représente - de quoi bâtir une vitrine de marques sans logo.
  *
  * Pourquoi pas de logos : le projet n'en possède aucun pour ces maisons. Le
  * dossier public/images/brands/ ne contient que ceux de l'ancien projet
@@ -22,7 +22,7 @@ import { prisma } from "@/server/prisma";
 export interface BrandShowcaseItem {
   /** Nom de la maison, tel qu'il est saisi sur les fiches produit. */
   name: string;
-  /** Références actives — c'est un compte réel, jamais un chiffre d'affichage. */
+  /** Références actives - c'est un compte réel, jamais un chiffre d'affichage. */
   productCount: number;
   /** Packshot représentatif. `null` si aucune référence de la maison n'a d'image. */
   image: string | null;
@@ -49,7 +49,7 @@ export const getBrandShowcase = cache(async (limit = 12): Promise<BrandShowcaseI
     entree.count += 1;
 
     // Le packshot retenu : la référence la mieux notée par la rédaction parmi
-    // celles qui ont une image. À note égale — ou sans note — la plus ancienne
+    // celles qui ont une image. À note égale - ou sans note - la plus ancienne
     // gagne, ce qui rend la vitrine stable d'un rendu à l'autre. Une vitrine
     // qui change de visage à chaque visite ne construit aucune reconnaissance.
     if (row.image) {

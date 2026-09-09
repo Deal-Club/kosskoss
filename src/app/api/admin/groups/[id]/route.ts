@@ -104,7 +104,7 @@ export async function DELETE(_request: Request, { params }: { params: Params }) 
   }
 
   // Supprimer un univers supprimerait ses catégories et donc tous les produits
-  // per Cascade mitnehmen — deshalb wird das bewusst verweigert.
+  // per Cascade mitnehmen - deshalb wird das bewusst verweigert.
   if (group._count.categories > 0) {
     const count = group._count.categories;
     return NextResponse.json(

@@ -35,7 +35,7 @@ function validInput(overrides: Partial<LegalPageInput> = {}): LegalPageInput {
   };
 }
 
-describe("normalizeLegalPage — contenu accepté", () => {
+describe("normalizeLegalPage - contenu accepté", () => {
   it("accepte une page complète et lui rend son slug", () => {
     const result = normalizeLegalPage(validInput(), "mentions-legales");
     assert.ok(result.ok);
@@ -102,7 +102,7 @@ describe("normalizeLegalPage — contenu accepté", () => {
   });
 });
 
-describe("normalizeLegalPage — contenu refusé", () => {
+describe("normalizeLegalPage - contenu refusé", () => {
   const cases: [string, unknown][] = [
     ["un objet absent", null],
     ["une chaîne", "Mentions légales"],

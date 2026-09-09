@@ -4,7 +4,7 @@
  * ── POURQUOI CE MODULE EST PUR ──────────────────────────────────────────────
  *
  * L'écran et l'export CSV consomment les mêmes totaux. En gardant le module
- * sans dépendance, la règle de calcul est testable sans base — et c'est la
+ * sans dépendance, la règle de calcul est testable sans base - et c'est la
  * seule partie du lot où une erreur se verrait chez le comptable.
  *
  * ── LE FCFA N'A PAS DE SOUS-UNITÉ ───────────────────────────────────────────
@@ -27,14 +27,14 @@
  * `margeCents` soustrait un coût d'achat (`unitCostCents`) d'un prix de vente
  * (le total NET de la ligne). Si ces deux montants ne sont pas saisis sur la
  * même base, le taux qui en sort est approximatif. C'est une question qui
- * relève du comptable, pas de ce module — elle est notée ici pour qui lira ce
+ * relève du comptable, pas de ce module - elle est notée ici pour qui lira ce
  * calcul plus tard.
  *
  * ── BRUT, REMISE, NET : TROIS GRANDEURS, JAMAIS CONFONDUES ──────────────────
  *
  * Une ligne porte `lineTotalCents` (le total BRUT, prix unitaire × quantité)
  * et `remiseCents` (sa part de la remise de la commande). Leur différence est
- * le CA NET de la ligne — c'est LUI, jamais le brut, qui entre dans
+ * le CA NET de la ligne - c'est LUI, jamais le brut, qui entre dans
  * `chiffreAffairesCents`, dans la marge et dans le panier moyen : c'est
  * l'argent réellement reçu, celui qui doit couvrir le coût d'achat. Confondre
  * brut et net revient à afficher un chiffre d'affaires et une marge
@@ -56,7 +56,7 @@ export interface LigneVente {
   lineTotalCents: number;
   /**
    * Part de la remise de commande attribuée à cette ligne, au prorata de son
-   * total brut — voir `repartirRemise`. Toujours 0 sur une commande sans code
+   * total brut - voir `repartirRemise`. Toujours 0 sur une commande sans code
    * promo.
    */
   remiseCents: number;
@@ -132,8 +132,8 @@ function margeLigne(ligne: LigneVente): number | null {
  *
  * Chaque part est arrondie à l'entier inférieur ; la somme de ces parts
  * arrondies peut alors tomber quelques francs en-dessous de la remise
- * réellement accordée. Donner ce reste à la DERNIÈRE ligne — plutôt que de le
- * perdre, ou de le répartir une seconde fois au prorata — garantit que la
+ * réellement accordée. Donner ce reste à la DERNIÈRE ligne - plutôt que de le
+ * perdre, ou de le répartir une seconde fois au prorata - garantit que la
  * somme des parts vaut EXACTEMENT `discountCents`. Un écart d'un franc dans
  * une comptabilité se cherche pendant une heure ; il ne doit jamais
  * apparaître ici.
@@ -141,7 +141,7 @@ function margeLigne(ligne: LigneVente): number | null {
  * `subtotalCents` à 0 rend une remise nulle sur chaque ligne : diviser par
  * zéro n'a pas de sens, et une commande sans sous-total n'a rien à répartir.
  *
- * Garde-fou : la part d'une ligne ne dépasse jamais son propre total brut —
+ * Garde-fou : la part d'une ligne ne dépasse jamais son propre total brut -
  * une remise mal saisie en base ne doit pas rendre une ligne négative.
  *
  * ── QUAND CE GARDE-FOU PEUT EMPÊCHER L'EXACTITUDE ────────────────────────────
@@ -149,13 +149,13 @@ function margeLigne(ligne: LigneVente): number | null {
  * La somme des parts vaut EXACTEMENT `discountCents` tant que la dernière
  * ligne a assez de marge sous son propre plafond pour absorber le reste
  * d'arrondi. Formellement : `derniere_ligne × (1 − remise / sous_total) ≥
- * nombre_de_lignes − 1`. Ce n'est PAS une question de hauteur de remise — une
+ * nombre_de_lignes − 1`. Ce n'est PAS une question de hauteur de remise - une
  * remise de 20 % suffit à faire perdre 2 F si les lignes sont assez inégales
- * — c'est une question de PETITESSE DE LA DERNIÈRE LIGNE : moins elle a de
+ * - c'est une question de PETITESSE DE LA DERNIÈRE LIGNE : moins elle a de
  * marge sous son plafond, moins elle peut absorber.
  *
- * Sur les paniers réels de cette boutique — au plus 8 lignes, chacune d'au
- * moins 500 F — la condition tient toujours : aucun échec observé sur 1 800
+ * Sur les paniers réels de cette boutique - au plus 8 lignes, chacune d'au
+ * moins 500 F - la condition tient toujours : aucun échec observé sur 1 800
  * 000 tirages construits pour la mettre en défaut. Elle cesserait de tenir
  * si une ligne descendait à quelques francs. Le jour où ce cas se présente,
  * la correction n'est pas de changer le plafond mais de changer la
@@ -191,7 +191,7 @@ export function repartirRemise(
 /**
  * Clé de regroupement : les libellés RECOPIÉS sur la ligne, jamais
  * l'identifiant produit. Une ligne dont le produit a été supprimé du catalogue
- * porte `productId` à `null` — grouper là-dessus fondrait tous les produits
+ * porte `productId` à `null` - grouper là-dessus fondrait tous les produits
  * disparus en un seul. La clé passe par JSON.stringify plutôt que par une
  * concaténation : un séparateur, quel qu'il soit, peut figurer dans un nom de
  * produit et ferait alors se confondre deux articles distincts.
@@ -200,7 +200,7 @@ function cleProduit(ligne: LigneVente): string {
   return JSON.stringify([ligne.brand, ligne.name, ligne.variantLabel]);
 }
 
-/** « AAAA-MM-JJ » en heure locale — `toISOString` donnerait le jour UTC. */
+/** « AAAA-MM-JJ » en heure locale - `toISOString` donnerait le jour UTC. */
 function jourLocal(date: Date): string {
   const mois = String(date.getMonth() + 1).padStart(2, "0");
   const jour = String(date.getDate()).padStart(2, "0");

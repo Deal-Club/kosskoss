@@ -6,7 +6,7 @@ import { pickText, pickList } from "./localizedContent";
  * `pickText`/`pickList` portent la seule règle de repli de tout le catalogue
  * bilingue : traduction manquante ou vide → français. Rien d'autre dans la
  * boutique ne doit lire un champ `*En` directement (voir l'en-tête de
- * localizedContent.ts) — ces deux fonctions sont donc le seul endroit qui
+ * localizedContent.ts) - ces deux fonctions sont donc le seul endroit qui
  * mérite d'être éprouvé ligne à ligne.
  */
 

@@ -96,7 +96,7 @@ async function cloudinaryUtilisable(): Promise<boolean> {
     return true;
   } catch (erreur) {
     const message = (erreur as { error?: { message?: string } }).error?.message ?? "refus";
-    console.warn(`Cloudinary indisponible (${message}) — les visuels seront servis depuis public/.`);
+    console.warn(`Cloudinary indisponible (${message}) - les visuels seront servis depuis public/.`);
     return false;
   }
 }
@@ -226,7 +226,7 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      `[${index + 1}/${fiches.length}] ${fiche.brand} ${fiche.mpn ?? ""} — ${urls.length} visuel(s), ${existant ? "mis à jour" : "créé"}`,
+      `[${index + 1}/${fiches.length}] ${fiche.brand} ${fiche.mpn ?? ""} - ${urls.length} visuel(s), ${existant ? "mis à jour" : "créé"}`,
     );
   }
 
@@ -235,7 +235,7 @@ async function main(): Promise<void> {
   if (!versCloudinary) {
     console.log(
       "\nLes visuels sont servis depuis public/. Corrigez CLOUDINARY_API_SECRET puis relancez\n" +
-        "cette commande pour les basculer sur le CDN — les fiches seront mises à jour en place.",
+        "cette commande pour les basculer sur le CDN - les fiches seront mises à jour en place.",
     );
   }
 }

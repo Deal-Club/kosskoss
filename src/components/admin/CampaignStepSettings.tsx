@@ -80,7 +80,7 @@ export function CampaignStepSettings({
         <p className="mb-4 text-sm text-muted-foreground">
           {definition?.discountRequired
             ? "Ce type de campagne annonce un avantage : il est obligatoire."
-            : "Ce type de campagne peut se passer de remise — l'annonce du produit suffit."}
+            : "Ce type de campagne peut se passer de remise - l'annonce du produit suffit."}
         </p>
 
         <fieldset className="mb-4">
@@ -249,7 +249,7 @@ export function CampaignStepSettings({
               <ul className="mt-1 space-y-0.5 text-muted-foreground">
                 {conflicts.map((product) => (
                   <li key={product.id}>
-                    {product.brand} {product.name} — campagne « {product.conflict?.name} » (
+                    {product.brand} {product.name} - campagne « {product.conflict?.name} » (
                     {product.conflict?.code}) jusqu&apos;au{" "}
                     {product.conflict && dateFormatter.format(new Date(product.conflict.endsAt))}
                   </li>
@@ -329,7 +329,7 @@ export function CampaignStepSettings({
                       ) : draft.discountKind === "free_shipping" ? (
                         <span className="text-muted-foreground">frais de port offerts</span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </td>
                   </tr>

@@ -1,4 +1,4 @@
-# Lot 3D — Rôles et autorisations du back-office
+# Lot 3D - Rôles et autorisations du back-office
 
 **Critère visé :** 12 (rôles Administrateur / Gestionnaire de commandes).
 
@@ -9,8 +9,8 @@ des chiffres ou des libellés ; celui-ci ferme une porte ouverte.
 
 ## 1. L'état des lieux, sans ménagement
 
-`AdminUser` porte déjà une colonne `role` avec trois valeurs en usage —
-`superadmin`, `owner`, `admin` — et l'écran `/admin/users` permet de la changer.
+`AdminUser` porte déjà une colonne `role` avec trois valeurs en usage -
+`superadmin`, `owner`, `admin` - et l'écran `/admin/users` permet de la changer.
 
 **Cette colonne ne sert à rien.** Elle n'est lue nulle part pour autoriser quoi que
 ce soit :
@@ -40,7 +40,7 @@ fait croire à une cloison qui n'existe pas.
 | `superadmin` | compte technique, invisible dans la liste. Tout. |
 | `owner` | le propriétaire de la boutique. Tout, y compris les accès. |
 | `admin` | administrateur. Tout sauf la gestion des comptes. |
-| `gestionnaire` | **nouveau** — gestionnaire de commandes. Les commandes, les clients, les avis. Rien d'autre. |
+| `gestionnaire` | **nouveau** - gestionnaire de commandes. Les commandes, les clients, les avis. Rien d'autre. |
 
 `gestionnaire` est le rôle que le cahier des charges demande et qui manquait. Les
 trois autres existent déjà et gardent leur sens.
@@ -48,7 +48,7 @@ trois autres existent déjà et gardent leur sens.
 ### 2.2 L'autorisation se dit en capacités, pas en adresses
 
 Le back-office compte 26 familles de routes et 20 écrans. Écrire la règle route par
-route garantit qu'une route ajoutée demain sera oubliée — et une route oubliée est
+route garantit qu'une route ajoutée demain sera oubliée - et une route oubliée est
 une route ouverte.
 
 Cinq capacités, et chaque route en réclame exactement une :
@@ -65,8 +65,8 @@ Cinq capacités, et chaque route en réclame exactement une :
 |---|---|---|---|---|---|
 | `superadmin` | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `owner` | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `admin` | ✔ | ✔ | ✔ | ✔ | — |
-| `gestionnaire` | — | ✔ | — | — | — |
+| `admin` | ✔ | ✔ | ✔ | ✔ | - |
+| `gestionnaire` | - | ✔ | - | - | - |
 
 **Le gestionnaire voit les ventes.** C'est délibéré : suivre les commandes sans
 voir ce qu'elles rapportent n'a pas de sens, et la marge est déjà lisible sur
@@ -78,7 +78,7 @@ chaque fiche produit qu'il ne peut pas modifier.
 
 Le mettre dans le jeton serait plus rapide d'une requête. Mais un jeton vit
 plusieurs jours : rétrograder un compte, ou le désactiver, ne prendrait effet qu'à
-sa prochaine connexion. Pour une porte de sécurité, c'est le mauvais compromis —
+sa prochaine connexion. Pour une porte de sécurité, c'est le mauvais compromis -
 on révoque un accès parce qu'on veut qu'il cesse maintenant.
 
 La lecture est mémoïsée par requête avec `cache()` de React, comme l'est déjà
@@ -112,7 +112,7 @@ précèdent par nature toute session.
 - **La page d'accueil du back-office** est aujourd'hui un tableau de bord du
   catalogue. Pour un gestionnaire, elle redirige vers les commandes.
 - **Une page refusée** rend un 403 lisible en français, avec un lien vers ce à quoi
-  il a droit — pas une redirection silencieuse vers la connexion, qui ferait croire
+  il a droit - pas une redirection silencieuse vers la connexion, qui ferait croire
   à une session expirée.
 - **Une route API refusée** rend `403` et un corps `{ error: "Accès refusé." }`,
   distinct du `401` de l'absence de session. Confondre les deux ferait déconnecter
@@ -122,11 +122,11 @@ précèdent par nature toute session.
 
 ## 3. Ce qui ne bouge pas
 
-- **La connexion** — mot de passe, code à usage unique, cookie signé : inchangés.
-- **Les comptes existants** — la migration ne touche aucune donnée. Tous les comptes
+- **La connexion** - mot de passe, code à usage unique, cookie signé : inchangés.
+- **Les comptes existants** - la migration ne touche aucune donnée. Tous les comptes
   gardent leur rôle actuel, et `admin` reste le défaut.
-- **La visibilité des comptes `superadmin`** — la règle existante est conservée.
-- **Le partitionnement du catalogue par gestionnaire** — hors périmètre : le cahier
+- **La visibilité des comptes `superadmin`** - la règle existante est conservée.
+- **Le partitionnement du catalogue par gestionnaire** - hors périmètre : le cahier
   des charges ne demande pas que deux gestionnaires voient des commandes
   différentes.
 
@@ -135,17 +135,17 @@ précèdent par nature toute session.
 ## 4. Architecture
 
 ```
-src/lib/kk/roles.ts        pur — rôles, capacités, matrice, `peut(role, capacite)`
-src/lib/kk/roles.test.ts   pur — la matrice, cas par cas
+src/lib/kk/roles.ts        pur - rôles, capacités, matrice, `peut(role, capacite)`
+src/lib/kk/roles.test.ts   pur - la matrice, cas par cas
 src/server/kk/acces.ts     lecture mémoïsée du rôle en base + garde-fous
 src/lib/adminApi.ts        `requireCapaciteApi(capacite)`
 src/lib/dal.ts             `requireCapacitePage(capacite)`
-src/lib/kk/routesAdmin.ts  pur — la capacité de chaque famille de routes
+src/lib/kk/routesAdmin.ts  pur - la capacité de chaque famille de routes
 src/app/api/admin/**       chaque route nomme sa capacité
 src/app/admin/(protected)/** chaque page nomme sa capacité
 src/components/admin/AdminSidebar.tsx  le menu suit les capacités
 src/app/admin/(protected)/refuse/page.tsx  le 403 lisible
-prisma/schema.prisma       aucune migration — la colonne existe déjà
+prisma/schema.prisma       aucune migration - la colonne existe déjà
 ```
 
 **Aucune migration.** La colonne `role` est déjà là, avec le bon type et le bon
@@ -155,8 +155,8 @@ défaut. Ajouter une valeur à une colonne texte ne demande rien à la base.
 
 ## 5. Tests
 
-Le module pur des rôles est testé sans base : la matrice complète — quatre rôles ×
-cinq capacités — plus le refus d'un rôle inconnu, qui doit se comporter comme le
+Le module pur des rôles est testé sans base : la matrice complète - quatre rôles ×
+cinq capacités - plus le refus d'un rôle inconnu, qui doit se comporter comme le
 rôle le moins privilégié et non comme un administrateur.
 
 Un test d'arborescence vérifie que chaque route et chaque page d'administration
@@ -178,5 +178,5 @@ personne.
 
 **Le compte de secours.** Avant la fusion, il faut s'assurer qu'au moins un compte
 `owner` ou `superadmin` existe et fonctionne. Un back-office où plus personne ne
-peut créer de comptes se rouvre par une requête SQL — c'est faisable, mais cela ne
+peut créer de comptes se rouvre par une requête SQL - c'est faisable, mais cela ne
 doit pas être découvert un dimanche.

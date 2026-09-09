@@ -10,7 +10,7 @@ import {
 } from "@/server/announcements";
 
 /**
- * Bandeau d'annonce — messages et réglages d'apparence.
+ * Bandeau d'annonce - messages et réglages d'apparence.
  *
  * Chaque écriture invalide le cache de toute la boutique (`revalidatePath("/",
  * "layout")`) : le bandeau est monté par le gabarit, une annonce publiée doit

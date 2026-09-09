@@ -1,8 +1,8 @@
-# Lot 6 — Livrables et transfert — Plan
+# Lot 6 - Livrables et transfert - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 
-**Critères visés : 21 à 23** — livrables, documentation de reprise, transfert.
+**Critères visés : 21 à 23** - livrables, documentation de reprise, transfert.
 
 ## Pourquoi ce lot n'est pas de la décoration
 
@@ -10,7 +10,7 @@ La documentation actuelle **ment sur des points qui coûtent cher** :
 
 - `docs/HANDOVER.md` est daté du 26 juillet, annonce une base **SQLite locale** et
   recommande `npm run db:migrate`. La base est en réalité **PostgreSQL sur Neon**,
-  et **partagée entre développement et production** — cette commande est
+  et **partagée entre développement et production** - cette commande est
   précisément celle qui peut proposer une réinitialisation.
 - `TARGET.md` décrit encore une **boutique française de bois de chauffage**. Il est
   chargé par `AGENTS.md`, donc lu par tout agent qui reprendra ce dépôt. Trois
@@ -33,14 +33,14 @@ le seul risque de ce lot, et il suffit à le justifier.
    personnelle** dans les documents livrés. Les comptes se désignent par leur rôle.
 4. **Le français est la langue des livrables.**
 5. **Avant chaque commit :** `tsc --noEmit`, `eslint`, `npm test` ; `npm run build`
-   si du code est touché — **au premier plan**, `timeout` 600000. Rien en
+   si du code est touché - **au premier plan**, `timeout` 600000. Rien en
    arrière-plan.
 
 ---
 
 ### Tâche 1 : Les 57 chaînes d'interface restantes
 
-**Fichiers :** ceux que le rapport du lot 4B nomme — le corps de `routines/page.tsx`,
+**Fichiers :** ceux que le rapport du lot 4B nomme - le corps de `routines/page.tsx`,
 `compte/connexion/page.tsx`, `favoris/page.tsx`, et une vingtaine de composants
 `kk` et `journal`.
 
@@ -49,7 +49,7 @@ le seul risque de ce lot, et il suffit à le justifier.
 - [ ] Toute clé ajoutée l'est dans **les deux** fichiers de messages : un test de
       parité compare les clés, leur place et leurs valeurs, et tombe sinon.
 - [ ] **Aucune logique ne change.** Ce lot remplace des chaînes.
-- [ ] Recopier les textes français **mot pour mot** — une reformulation se confond
+- [ ] Recopier les textes français **mot pour mot** - une reformulation se confond
       avec une régression.
 - [ ] Donner le décompte avant/après, et **ce qui reste**, par fichier.
 - [ ] Vérifier et commiter.
@@ -67,7 +67,7 @@ le seul risque de ce lot, et il suffit à le justifier.
       `AGENTS.md` : il oriente tout agent qui reprendra le dépôt.
 - [ ] **`docs/HANDOVER.md`** dit la vérité sur l'infrastructure :
       - base **PostgreSQL sur Neon**, **partagée entre développement et
-        production** — et ce que cela implique ;
+        production** - et ce que cela implique ;
       - **la procédure de migration réelle** : `prisma migrate diff` pour lire le
         SQL, écrire le dossier à la main, `migrate deploy`, `generate`. **Écris
         pourquoi `prisma migrate dev` est proscrit** : il se bloque dans cet
@@ -88,23 +88,23 @@ le seul risque de ce lot, et il suffit à le justifier.
 Le commerçant doit pouvoir s'en servir sans nous. Une section par écran, courte,
 disant **ce qu'il fait, ce qu'il ne fait pas, et le piège à connaître** :
 
-- [ ] **Rôles et accès** — les quatre rôles, ce que chacun peut, et **le fait que le
+- [ ] **Rôles et accès** - les quatre rôles, ce que chacun peut, et **le fait que le
       rôle est relu à chaque requête** : rétrograder ou désactiver un compte prend
       effet immédiatement.
-- [ ] **Produits, marques, tags** — dont le coût d'achat, et le fait qu'un coût
+- [ ] **Produits, marques, tags** - dont le coût d'achat, et le fait qu'un coût
       absent n'est pas un coût nul.
-- [ ] **Approvisionnement** — fournisseurs, bons, réception ; **une réception ne se
+- [ ] **Approvisionnement** - fournisseurs, bons, réception ; **une réception ne se
       défait pas**, elle se corrige par un ajustement de stock tracé ; et la case qui
       met à jour le coût d'achat **écrase le coût dans tout le catalogue**.
-- [ ] **Ventes et export** — ce que l'encaissé comprend et ne comprend pas, pourquoi
+- [ ] **Ventes et export** - ce que l'encaissé comprend et ne comprend pas, pourquoi
       les remises sont réparties, pourquoi les commandes annulées en sortent et les
       remboursées y restent.
-- [ ] **Traductions** — et le fait que le corps des articles se traduit dans
+- [ ] **Traductions** - et le fait que le corps des articles se traduit dans
       l'éditeur d'article, pas là.
-- [ ] **Réglages** — WhatsApp, formulaire d'évaluation, mesure d'audience ; les
+- [ ] **Réglages** - WhatsApp, formulaire d'évaluation, mesure d'audience ; les
       secrets ne se réaffichent jamais, et un champ vide les laisse inchangés.
-- [ ] **Commandes et facturation** — l'émission de facture, la numérotation.
-- [ ] **Consentement et mesure** — rien ne part sans consentement, y compris la
+- [ ] **Commandes et facturation** - l'émission de facture, la numérotation.
+- [ ] **Consentement et mesure** - rien ne part sans consentement, y compris la
       mesure serveur.
 
 ---

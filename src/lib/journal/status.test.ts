@@ -4,7 +4,7 @@
  * Deux mécanismes protègent la publication programmée, et ils sont testés
  * séparément : la tâche planifiée qui bascule les articles à l'heure dite, et
  * le filtre de lecture qui, lui, ne sert jamais un article dont l'heure n'est
- * pas venue — même si la tâche n'a pas tourné.
+ * pas venue - même si la tâche n'a pas tourné.
  *
  * Lancer avec : npm test
  */
@@ -76,7 +76,7 @@ describe("dueForPublication", () => {
   });
 });
 
-describe("resolvePublication — passage en publié", () => {
+describe("resolvePublication - passage en publié", () => {
   it("date la publication de maintenant si aucune date n'est fournie", () => {
     const result = resolvePublication(
       { status: "published", scheduledAt: null, publishedAt: null },
@@ -102,7 +102,7 @@ describe("resolvePublication — passage en publié", () => {
   });
 });
 
-describe("resolvePublication — programmation", () => {
+describe("resolvePublication - programmation", () => {
   it("garde le statut programmé pour une date future", () => {
     const result = resolvePublication(
       { status: "scheduled", scheduledAt: DEMAIN, publishedAt: null },
@@ -131,7 +131,7 @@ describe("resolvePublication — programmation", () => {
   });
 });
 
-describe("resolvePublication — retour en arrière", () => {
+describe("resolvePublication - retour en arrière", () => {
   it("efface la date de publication quand on repasse en brouillon", () => {
     const result = resolvePublication(
       { status: "draft", scheduledAt: null, publishedAt: HIER },

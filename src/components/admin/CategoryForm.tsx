@@ -8,7 +8,7 @@ import { PreviewPanel } from "@/components/admin/PreviewPanel";
 import { slugify } from "@/lib/slugify";
 import type { CategoryGuideSection, CategoryRecord } from "@/server/types";
 
-/** Liste des univers produits — vient de la base de données, plus codée en dur. */
+/** Liste des univers produits - vient de la base de données, plus codée en dur. */
 export interface GroupOption {
   slug: string;
   label: string;

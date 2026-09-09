@@ -1,13 +1,13 @@
-# Lot 1 — Facturation, téléphone, facettes : plan d'implémentation
+# Lot 1 - Facturation, téléphone, facettes : plan d'implémentation
 
-> **Pour les agents :** SOUS-COMPÉTENCE REQUISE — utiliser `superpowers:subagent-driven-development`
+> **Pour les agents :** SOUS-COMPÉTENCE REQUISE - utiliser `superpowers:subagent-driven-development`
 > (recommandé) ou `superpowers:executing-plans` pour dérouler ce plan tâche par tâche.
 > Les étapes utilisent la syntaxe à cases (`- [ ]`) pour le suivi.
 
 **Goal :** rendre les critères d'acceptation 01, 02, 03 et 04 de l'annexe 3 satisfaits.
 
 **Architecture :** la facture devient une entité à part entière, émise au seul moment où un
-paiement est encaissé — dans `updatePaymentStatus`, passage obligé commun au webhook et au
+paiement est encaissé - dans `updatePaymentStatus`, passage obligé commun au webhook et au
 back-office. Le téléphone est normalisé par un module partagé appelé côté client et côté
 serveur. Les facettes de catalogue s'appuient sur un vocabulaire de tags déclaré en base,
 partagé avec le diagnostic.
@@ -48,7 +48,7 @@ PostgreSQL (Neon), pdf-lib, nodemailer, `node --test` avec `tsx`.
 | `src/server/kk/facture-numero.ts` | Calcul pur du numéro suivant. Aucun accès base. |
 | `src/server/kk/facture-numero.test.ts` | Tests du calcul. |
 | `src/server/kk/facture.ts` | Émission : allocation, écriture, PDF, e-mail. |
-| `src/server/invoice.ts` | *(modifié)* Générateur PDF — passage en FCFA. |
+| `src/server/invoice.ts` | *(modifié)* Générateur PDF - passage en FCFA. |
 | `src/server/orders.ts` | *(modifié)* Accroche de l'émission dans `updatePaymentStatus`. |
 | `src/server/kk/emails.ts` | *(modifié)* E-mail « paiement reçu » avec pièce jointe. |
 | `src/lib/kk/telephone.ts` | Normalisation et validation du numéro camerounais. |
@@ -80,8 +80,8 @@ Les tâches 1 à 5 forment la facturation et doivent s'enchaîner dans l'ordre. 
   `PREFIXE_FACTURE: "FAC-"`.
 
 **Pourquoi une fonction pure séparée :** les tests du projet n'ont pas d'accès base. En
-isolant le calcul, la règle de séquence — la seule partie où une erreur se voit chez le
-comptable — devient testable sans infrastructure.
+isolant le calcul, la règle de séquence - la seule partie où une erreur se voit chez le
+comptable - devient testable sans infrastructure.
 
 - [ ] **Step 1 : Écrire le test qui échoue**
 
@@ -126,7 +126,7 @@ describe("numeroFactureSuivant", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/server/kk/facture-numero.test.ts`
-Expected: FAIL — `Cannot find module './facture-numero'`
+Expected: FAIL - `Cannot find module './facture-numero'`
 
 - [ ] **Step 3 : Écrire l'implémentation minimale**
 
@@ -138,7 +138,7 @@ Expected: FAIL — `Cannot find module './facture-numero'`
  *
  * Séquence annuelle et continue : « FAC-2026-000001 ». Le calcul est isolé ici,
  * sans accès base, parce que c'est la seule partie dont une erreur se verrait
- * chez le comptable — et la seule que les tests du projet savent couvrir.
+ * chez le comptable - et la seule que les tests du projet savent couvrir.
  *
  * Le préfixe diffère volontairement de celui des commandes (« KK- ») : un
  * numéro de facture et un numéro de commande ne doivent jamais se confondre
@@ -171,7 +171,7 @@ export function numeroFactureSuivant(dernierNumero: string | null, annee: number
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/server/kk/facture-numero.test.ts`
-Expected: PASS — 6 tests
+Expected: PASS - 6 tests
 
 - [ ] **Step 5 : Vérifier types et lint**
 
@@ -213,7 +213,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 //
 // Elle porte sa PROPRE séquence, distincte du numéro de commande : la facture
 // n'existant qu'après paiement, réutiliser le numéro de commande laisserait un
-// trou dans la numérotation à chaque panier abandonné — ce qu'un comptable
+// trou dans la numérotation à chaque panier abandonné - ce qu'un comptable
 // refuse. Voir docs/superpowers/specs/2026-08-20-lot1-…-design.md.
 //
 // Le montant est RECOPIÉ et non lu sur la commande : une correction ultérieure
@@ -251,7 +251,7 @@ Expected: `The schema at prisma\schema.prisma is valid 🚀`
 - [ ] **Step 4 : Créer et appliquer la migration**
 
 ⚠️ **La base Neon est partagée avec la production.** Cette migration est purement
-additive — une nouvelle table et une relation optionnelle — donc sans risque pour les
+additive - une nouvelle table et une relation optionnelle - donc sans risque pour les
 données existantes. Vérifier le SQL généré avant de poursuivre.
 
 ```bash
@@ -300,7 +300,7 @@ factures fausses.
 
 **Pourquoi cette tâche n'a pas de test automatique.** Le formatage est délégué à
 `formatFcfa`, déjà couvert par ses propres tests ; ce qui reste à garantir ici, c'est
-qu'aucun appel à l'ancien formateur ne subsiste — ce que fait le `grep` de l'étape 3, qui
+qu'aucun appel à l'ancien formateur ne subsiste - ce que fait le `grep` de l'étape 3, qui
 échoue tant qu'il en reste un. Le rendu du PDF lui-même est contrôlé à la main lors de la
 vérification de fin de lot : lire les octets d'un PDF pour y chercher un symbole monétaire
 donnerait un test fragile qui passerait pour de mauvaises raisons.
@@ -323,7 +323,7 @@ Remplacer la fonction `euros` (ligne 87) par :
  *
  * Le franc CFA n'a PAS de sous-unité : l'entier stocké est un montant de francs
  * entiers, jamais des centimes. L'ancienne version divisait par 100 et
- * imprimait « € » — héritage de l'activité précédente. Une commande de 31 000 F
+ * imprimait « € » - héritage de l'activité précédente. Une commande de 31 000 F
  * en sortait à « 310,00 € ».
  */
 function montant(francs: number): string {
@@ -439,7 +439,7 @@ effacé à la compilation, donc il n'y a pas de cycle.
 
 L'émission **ne doit jamais faire échouer** `updatePaymentStatus`. Le paiement est déjà
 encaissé chez le prestataire ; lever une erreur ferait répondre 500 au webhook, qui
-relancerait — pour retomber sur la sortie anticipée. On journalise dans l'historique de
+relancerait - pour retomber sur la sortie anticipée. On journalise dans l'historique de
 commande, là où le commerçant le verra.
 
 - [ ] **Step 1 : Écrire le test qui échoue**
@@ -466,7 +466,7 @@ describe("doitEmettreFacture", () => {
   });
 
   it("n'émet pas sur un remboursement", () => {
-    // Un remboursement appelle un avoir, prévu au lot 3 — pas une facture.
+    // Un remboursement appelle un avoir, prévu au lot 3 - pas une facture.
     assert.equal(doitEmettreFacture("payee", "remboursee"), false);
   });
 });
@@ -475,7 +475,7 @@ describe("doitEmettreFacture", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/server/kk/facture.test.ts`
-Expected: FAIL — `Cannot find module './facture'`
+Expected: FAIL - `Cannot find module './facture'`
 
 - [ ] **Step 3 : Écrire le module d'émission**
 
@@ -492,7 +492,7 @@ import type { OrderRecord } from "@/server/orders";
  * Émission de la facture.
  *
  * Une facture n'existe QU'APRÈS encaissement. Tant qu'un paiement n'est pas
- * reçu, il n'y a pas de document comptable à produire — c'est ce qui distingue
+ * reçu, il n'y a pas de document comptable à produire - c'est ce qui distingue
  * une facture d'un accusé de réception de commande.
  */
 
@@ -564,7 +564,7 @@ export async function emettreFacture(order: OrderRecord): Promise<string | null>
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/server/kk/facture.test.ts`
-Expected: PASS — 4 tests
+Expected: PASS - 4 tests
 
 - [ ] **Step 5 : Accrocher l'émission dans `updatePaymentStatus`**
 
@@ -583,7 +583,7 @@ Puis, dans `updatePaymentStatus`, **après** le `prisma.order.update` et **avant
   // ICI et nulle part ailleurs. C'est le passage obligé de toute bascule de
   // paiement : le webhook GeniusPay (kk/paiement.ts), le back-office
   // (api/admin/orders/[id]) et l'ancien webhook y aboutissent tous. Le paiement
-  // à la livraison ne déclenche AUCUN webhook — sans ce point commun, il
+  // à la livraison ne déclenche AUCUN webhook - sans ce point commun, il
   // faudrait un second chemin d'émission, donc un second endroit où oublier un
   // cas.
   //
@@ -630,8 +630,8 @@ fallu un second chemin d'émission, donc un second endroit où oublier un cas.
 L'idempotence vient de la sortie anticipée déjà présente quand le statut ne
 bouge pas ; la contrainte unique sur orderId est la ceinture qui va avec.
 
-Une émission qui échoue ne fait pas échouer la bascule — le paiement est déjà
-encaissé — mais laisse un événement de commande visible au back-office.
+Une émission qui échoue ne fait pas échouer la bascule - le paiement est déjà
+encaissé - mais laisse un événement de commande visible au back-office.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
@@ -714,7 +714,7 @@ export async function sendPaymentReceivedEmail(input: PaymentReceivedInput): Pro
   try {
     await sendMail({
       to: input.to,
-      subject: `Paiement reçu — facture ${input.numeroFacture}`,
+      subject: `Paiement reçu - facture ${input.numeroFacture}`,
       html: shell("Paiement bien reçu", inner),
       text,
       attachments: [
@@ -743,7 +743,7 @@ puis, à la fin du fichier :
  * Émet la facture, puis l'envoie au client.
  *
  * Les deux moitiés sont séparées volontairement : l'écriture en base doit
- * réussir ou être signalée, l'envoi peut échouer sans conséquence — la facture
+ * réussir ou être signalée, l'envoi peut échouer sans conséquence - la facture
  * reste réémettable depuis le back-office.
  */
 export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void> {
@@ -793,7 +793,7 @@ l'encaissement. C'est le seul qui porte un document comptable, parce que c'est
 le seul qui suit un paiement réel.
 
 L'accusé de réception cesse de promettre que « le paiement Mobile Money est
-coordonné via WhatsApp » — vrai avant le branchement de la passerelle, faux
+coordonné via WhatsApp » - vrai avant le branchement de la passerelle, faux
 depuis.
 
 Émission et envoi sont séparés : l'écriture en base doit réussir ou être
@@ -815,7 +815,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 **Interfaces:**
 - Consumes: rien.
-- Produces: `normaliserTelephone(saisie: string): string | null` — rend
+- Produces: `normaliserTelephone(saisie: string): string | null` - rend
   `+237XXXXXXXXX` ou `null` si le numéro n'est pas valide ;
   `INDICATIF_CM: "+237"`.
 
@@ -823,7 +823,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 (MTN, Orange, Camtel), les fixes par `2`. L'indicatif pays est `237`.
 
 Le fixe est accepté : ce numéro sert le contact de livraison. Le téléphone qui portera
-le paiement Mobile Money est saisi chez le prestataire, pas chez nous — exiger un mobile
+le paiement Mobile Money est saisi chez le prestataire, pas chez nous - exiger un mobile
 ici refuserait des clients sans rien garantir.
 
 - [ ] **Step 1 : Écrire le test qui échoue**
@@ -886,7 +886,7 @@ describe("normaliserTelephone", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/telephone.test.ts`
-Expected: FAIL — `Cannot find module './telephone'`
+Expected: FAIL - `Cannot find module './telephone'`
 
 - [ ] **Step 3 : Écrire le module**
 
@@ -901,7 +901,7 @@ Expected: FAIL — `Cannot find module './telephone'`
  *
  * Le fixe est accepté volontairement : ce numéro sert le contact de livraison.
  * Le téléphone qui portera le paiement Mobile Money est saisi chez le
- * prestataire, pas ici — exiger un mobile refuserait des clients sans rien
+ * prestataire, pas ici - exiger un mobile refuserait des clients sans rien
  * garantir en échange.
  *
  * La validation précédente se contentait de « au moins huit chiffres ». Le
@@ -944,7 +944,7 @@ export function normaliserTelephone(saisie: string): string | null {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/telephone.test.ts`
-Expected: PASS — 9 tests
+Expected: PASS - 9 tests
 
 - [ ] **Step 5 : Brancher la validation du formulaire**
 
@@ -960,7 +960,7 @@ Remplacer le cas `"phone"` de la fonction de validation (ligne 79) :
     case "phone":
       // Format camerounais : neuf chiffres, mobile en 6 ou fixe en 2,
       // l'indicatif étant accepté sous toutes ses formes. Le message nomme le
-      // format attendu — « numéro invalide » laisserait le client deviner.
+      // format attendu - « numéro invalide » laisserait le client deviner.
       return normaliserTelephone(v)
         ? null
         : "Neuf chiffres, commençant par 6 (mobile) ou 2 (fixe). Ex. : 6 77 12 34 56";
@@ -980,7 +980,7 @@ Puis, dans `createKossOrder`, avant toute écriture utilisant `input.phone` :
 ```ts
   // Le numéro stocké est TOUJOURS en +237XXXXXXXXX, quelle que soit la saisie :
   // le service client, les rappels et l'export ne doivent pas avoir à deviner
-  // le format. Refuser ici et non seulement dans le formulaire — la route
+  // le format. Refuser ici et non seulement dans le formulaire - la route
   // accepte n'importe quel corps JSON.
   const telephone = normaliserTelephone(input.phone);
   if (!telephone) throw new OrderError("invalid_phone");
@@ -1009,7 +1009,7 @@ formes. La validation précédente se contentait de huit chiffres.
 Le fixe reste accepté : ce numéro sert le contact de livraison, celui du
 paiement Mobile Money étant saisi chez le prestataire.
 
-Normalisation appliquée aussi côté serveur, avant écriture — la route accepte
+Normalisation appliquée aussi côté serveur, avant écriture - la route accepte
 n'importe quel corps JSON, la validation du formulaire ne protège de rien. Le
 numéro stocké est toujours en +237XXXXXXXXX.
 
@@ -1095,7 +1095,7 @@ Expected: `The schema … is valid`, une table `ProductTag`, `Generated Prisma C
 
 Créer `prisma/seed-tags.ts` sur le patron de `prisma/seed-routines.ts`. Renseigner
 `VOCABULAIRE` avec **les clés relevées à l'étape 1**, en leur donnant un libellé lisible
-et une famille. Exemple de structure — les entrées doivent être remplacées par le relevé
+et une famille. Exemple de structure - les entrées doivent être remplacées par le relevé
 réel :
 
 ```ts
@@ -1228,7 +1228,7 @@ describe("parseTags", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/tags.test.ts`
-Expected: FAIL — `Cannot find module './tags'`
+Expected: FAIL - `Cannot find module './tags'`
 
 - [ ] **Step 3 : Écrire le module**
 
@@ -1260,7 +1260,7 @@ export function parseTags(value: string | null): string[] {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/tags.test.ts`
-Expected: PASS — 5 tests
+Expected: PASS - 5 tests
 
 - [ ] **Step 5 : Retirer les deux doublons**
 
@@ -1363,7 +1363,7 @@ describe("produitCorrespond", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/facettes.test.ts`
-Expected: FAIL — `Cannot find module './facettes'`
+Expected: FAIL - `Cannot find module './facettes'`
 
 - [ ] **Step 3 : Écrire la règle de correspondance**
 
@@ -1396,7 +1396,7 @@ export const FAMILLE_PREOCCUPATION = "preoccupation";
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/facettes.test.ts`
-Expected: PASS — 4 tests
+Expected: PASS - 4 tests
 
 - [ ] **Step 5 : Lire le vocabulaire côté serveur**
 
@@ -1617,7 +1617,7 @@ même vérification de session, `POST` qui valide le corps puis appelle
 `enregistrerVocabulaire`, réponse `NextResponse.json({ ok: true })`.
 
 Valider que `family` vaut `FAMILLE_PEAU`, `FAMILLE_PREOCCUPATION`, ou une autre chaîne
-non vide — les tags hors facettes restent modifiables.
+non vide - les tags hors facettes restent modifiables.
 
 - [ ] **Step 4 : Écrire l'écran**
 
@@ -1642,11 +1642,11 @@ Expected: aucune erreur, **398 tests au vert**, construction en succès
 
 Lancer `./node_modules/.bin/next dev -p 3001`, puis :
 
-1. `/admin/products/tags` — modifier un libellé, enregistrer.
-2. Recharger une page catégorie — le libellé de la facette a changé, **sans
+1. `/admin/products/tags` - modifier un libellé, enregistrer.
+2. Recharger une page catégorie - le libellé de la facette a changé, **sans
    redéploiement**.
-3. Basculer sur `/en` — la facette affiche son libellé anglais.
-4. Cocher deux valeurs du même groupe — la sélection s'élargit.
+3. Basculer sur `/en` - la facette affiche son libellé anglais.
+4. Cocher deux valeurs du même groupe - la sélection s'élargit.
 
 - [ ] **Step 8 : Commit**
 
@@ -1672,9 +1672,9 @@ Une fois les dix tâches passées, contrôler les quatre critères d'acceptation
 | Critère | Contrôle |
 |---|---|
 | **01** | Filtrer par catégorie, marque, prix, type de peau et préoccupation, sur mobile et desktop |
-| **02** | Saisir `6 77 12 34 56` puis `377123456` — le second est refusé avec un message nommant le format |
+| **02** | Saisir `6 77 12 34 56` puis `377123456` - le second est refusé avec un message nommant le format |
 | **03** | Payer en sandbox : la commande passe en « Payée », le stock baisse, une ligne `Invoice` apparaît |
-| **04** | La boîte de réception contient l'accusé de réception, puis « paiement reçu » avec le PDF joint — montants en FCFA, jamais en euros |
+| **04** | La boîte de réception contient l'accusé de réception, puis « paiement reçu » avec le PDF joint - montants en FCFA, jamais en euros |
 | **03 (hors ligne)** | Passer une commande « paiement à la livraison », la basculer en « Payée » au back-office : la facture part |
 | **Idempotence** | Rejouer le même webhook : aucune seconde facture, aucun second e-mail |
 

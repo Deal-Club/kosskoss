@@ -4,7 +4,7 @@
  * Deux responsabilités, toutes deux au service de la couche HTTP :
  *
  *  1. transformer un corps JSON quelconque en `CampaignInput` typé, sans jamais
- *     faire confiance à ce qui arrive — le contrôle métier reste ensuite entier
+ *     faire confiance à ce qui arrive - le contrôle métier reste ensuite entier
  *     dans src/server/campaigns.ts, qui est seul à connaître les règles ;
  *  2. traduire les `CampaignError` en phrases françaises. Un code brut comme
  *     « amount_too_high » renvoyé au navigateur obligerait le back-office à

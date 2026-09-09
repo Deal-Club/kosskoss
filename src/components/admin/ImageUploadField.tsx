@@ -138,14 +138,14 @@ export function ImageUploadField({
               </button>
             )}
             <span className="text-xs text-muted-foreground">
-              JPG, PNG, WebP ou AVIF — 5 Mo maximum.
+              JPG, PNG, WebP ou AVIF - 5 Mo maximum.
             </span>
           </div>
           <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
           {showLocalWarning && (
             <p className="mt-2 rounded-sm border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
               Stockage local de secours utilisé : les clés Cloudinary ne sont pas
-              renseignées. Les images locales disparaissent à chaque déploiement — définissez
+              renseignées. Les images locales disparaissent à chaque déploiement - définissez
               CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY et CLOUDINARY_API_SECRET dans
               l&apos;environnement du serveur, puis renvoyez l&apos;image.
             </p>

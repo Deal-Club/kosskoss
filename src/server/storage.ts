@@ -3,7 +3,7 @@
  *
  * USAGE SERVEUR UNIQUEMENT : ce module lit la clé secrète S3. Il ne doit jamais
  * être importé depuis un composant client, et aucune de ses fonctions ne
- * renvoie les identifiants — seuls des URL publiques et des clés d'objet
+ * renvoie les identifiants - seuls des URL publiques et des clés d'objet
  * sortent d'ici. Même discipline que l'ancien module Cloudinary
  * (src/server/cloudinary.ts), qu'il remplace comme destination d'upload.
  *
@@ -35,7 +35,7 @@ export interface UploadImageOptions {
   /** Type MIME du fichier, transmis tel quel comme Content-Type de l'objet. */
   contentType?: string;
   /**
-   * Clé d'objet exacte, si fournie — `folder`/`filename` sont alors ignorés.
+   * Clé d'objet exacte, si fournie - `folder`/`filename` sont alors ignorés.
    * Sert la migration d'un stockage existant (script one-off) : le nom de
    * fichier d'origine doit rester identique pour que les liens déjà posés
    * ailleurs (détourage par nom, voir `lib/kk/packshot.ts`) continuent de
@@ -77,7 +77,7 @@ function getCredentials(): S3Credentials | null {
 
 /**
  * Indique si les identifiants sont disponibles. Aucune requête n'est envoyée
- * à MinIO : on ne vérifie que la présence des valeurs — même contrat que
+ * à MinIO : on ne vérifie que la présence des valeurs - même contrat que
  * `isCloudinaryConfigured` qu'elle remplace.
  */
 export function isS3Configured(): boolean {
@@ -90,7 +90,7 @@ export function isS3Configured(): boolean {
  *
  * `forcePathStyle: true` est ce qui fait fonctionner MinIO : sans lui, le SDK
  * AWS adresse le bucket en sous-domaine (bucket.endpoint), que seul S3 lui-même
- * sait router — MinIO répond alors avec une erreur DNS/certificat.
+ * sait router - MinIO répond alors avec une erreur DNS/certificat.
  */
 function buildClient(credentials: S3Credentials): S3Client {
   const config: S3ClientConfig = {
@@ -125,7 +125,7 @@ function buildObjectKey(folder: string, filename?: string): string {
 /**
  * URL publique de l'objet, au format exact demandé :
  * https://<endpoint>/<bucket>/<clé>. Le bucket est en lecture publique côté
- * MinIO — cette URL fonctionne sans signature, comme la delivery URL
+ * MinIO - cette URL fonctionne sans signature, comme la delivery URL
  * Cloudinary.
  */
 function buildPublicUrl(credentials: S3Credentials, key: string): string {

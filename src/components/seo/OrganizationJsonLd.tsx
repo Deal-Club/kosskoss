@@ -10,7 +10,7 @@ import { MERCHANT_COUNTRY, MERCHANT_LANGUAGE, SHOP_NAME, SHOP_PHONE, siteUrl } f
 // À placer une seule fois, dans la mise en page racine ou sur la page d'accueil.
 
 interface OrganizationJsonLdProps {
-  /** Profils officiels de la boutique — renforce l'identification de l'entité. */
+  /** Profils officiels de la boutique - renforce l'identification de l'entité. */
   sameAs?: string[];
   /** Adresse postale du siège, telle qu'elle figure dans les mentions légales. */
   address?: {

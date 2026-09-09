@@ -5,7 +5,7 @@
  * - mise en page en tableaux et styles en ligne (Outlook ignore le CSS externe
  *   et la plupart des propriétés modernes) ;
  * - `color-scheme: light` + `supported-color-schemes: light` pour empêcher
- *   Apple Mail et Outlook d'inverser automatiquement les couleurs — le logo est
+ *   Apple Mail et Outlook d'inverser automatiquement les couleurs - le logo est
  *   sombre sur fond transparent, une inversion le rendrait illisible ;
  * - couleurs de fond déclarées explicitement sur chaque cellule, jamais héritées ;
  * - contrastes vérifiés sur fond blanc : texte principal #001424 (≈ 17:1),
@@ -111,7 +111,7 @@ export function buildAdminOtpEmail(input: AdminOtpEmailInput): Omit<MailMessage,
           <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%;">
             <tr>
               <td align="center" style="padding:20px 16px 0 16px; font-family:Arial,Helvetica,sans-serif; font-size:12px; line-height:20px; color:#4b5563;">
-                KossKoss Select — message automatique, merci de ne pas y répondre.
+                KossKoss Select - message automatique, merci de ne pas y répondre.
               </td>
             </tr>
           </table>

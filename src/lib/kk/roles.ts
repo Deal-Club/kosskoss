@@ -5,17 +5,17 @@
  *
  * Le menu (composant client), les gardes serveur et l'écran des comptes lisent
  * tous la même matrice. En la gardant sans dépendance, elle ne peut pas
- * diverger — et rien de serveur n'entre dans le paquet du navigateur.
+ * diverger - et rien de serveur n'entre dans le paquet du navigateur.
  *
  * ── L'AUTORISATION SE DIT EN CAPACITÉS, PAS EN ADRESSES ─────────────────────
  *
  * Le back-office compte vingt-six familles de routes. Écrire la règle adresse
- * par adresse garantirait qu'une route ajoutée demain soit oubliée — et une
+ * par adresse garantirait qu'une route ajoutée demain soit oubliée - et une
  * route oubliée est une route ouverte.
  *
  * ── REFUSER PAR DÉFAUT ──────────────────────────────────────────────────────
  *
- * Un rôle inconnu — faute de frappe en base, rôle d'une version future —
+ * Un rôle inconnu - faute de frappe en base, rôle d'une version future -
  * n'obtient rien. La position sûre est le refus, jamais l'ouverture.
  */
 

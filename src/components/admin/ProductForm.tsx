@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-// `marge` et `pricingUtils` sont des modules purs — vérifié : aucun import,
+// `marge` et `pricingUtils` sont des modules purs - vérifié : aucun import,
 // donc rien de serveur n'entre dans le paquet du navigateur. Ce composant est
 // un composant client, et le lot précédent a cassé la construction en tirant
 // Prisma dans le navigateur par un import qui semblait anodin.
@@ -29,7 +29,7 @@ export interface BrandOption {
 interface ProductFormProps {
   mode: "new" | "edit";
   categories: CategoryRecord[];
-  /** Marques déjà créées, pour la liste déroulante — vide si non fournie. */
+  /** Marques déjà créées, pour la liste déroulante - vide si non fournie. */
   brands?: BrandOption[];
   initialData?: ProductRecord;
   /**
@@ -102,12 +102,12 @@ export function ProductForm({
   /**
    * Marge affichée sous le champ, recalculée à la frappe.
    *
-   * Rendue `null` — donc remplacée par l'invite — tant que l'un des deux
+   * Rendue `null` - donc remplacée par l'invite - tant que l'un des deux
    * montants manque : une marge affichée sur un coût vide serait fausse, et
    * c'est précisément l'erreur que le champ nullable existe pour éviter.
    */
   const apercuMarge = useMemo(() => {
-    // Une saisie sans chiffre — « abc », « — » — n'est pas un coût de zéro :
+    // Une saisie sans chiffre - « abc », « - » - n'est pas un coût de zéro :
     // sans ce test, l'aperçu annonçait 100 % de marge avant que le serveur ne
     // refuse la même chaîne.
     if (!coutSaisiValide(cost)) return null;
@@ -121,7 +121,7 @@ export function ProductForm({
     if (marge === null || taux === null) return null;
 
     // Une vente à perte se dit, elle ne se déduit pas d'un signe moins.
-    const mention = marge < 0 ? " — vendu à perte" : "";
+    const mention = marge < 0 ? " - vendu à perte" : "";
     return `Marge : ${formatPrice(marge)} (${taux.toString().replace(".", ",")} %)${mention}`;
   }, [price, cost]);
 
@@ -293,7 +293,7 @@ export function ProductForm({
                 }}
                 className="mt-1.5 w-full rounded-sm border border-border px-3 py-1.5 text-xs outline-none focus:border-primary"
               >
-                <option value="">— Marque existante (ou saisie libre ci-dessus) —</option>
+                <option value="">- Marque existante (ou saisie libre ci-dessus) -</option>
                 {brands.map((option) => (
                   <option key={option.id} value={option.id}>
                     {option.name}
@@ -415,7 +415,7 @@ export function ProductForm({
             TROIS CHOIX, PLUS UN CHAMP LIBRE.
 
             C'était un `input` texte, « ex. -20%, Nouveau ». La boutique
-            n'affiche que deux valeurs exactes — `bestseller` et `nouveau` —,
+            n'affiche que deux valeurs exactes - `bestseller` et `nouveau` -,
             donc tout le reste, y compris le « Nouveau » suggéré par l'exemple
             lui-même, était enregistré puis ignoré à l'affichage. On pouvait
             croire avoir badgé un produit pendant des mois.
@@ -610,7 +610,7 @@ export function ProductForm({
           )}
           {lowStock && (
             <span className="rounded-sm bg-accent px-2 py-1 text-xs font-bold text-accent-foreground">
-              Stock faible — seuil d&apos;alerte atteint
+              Stock faible - seuil d&apos;alerte atteint
             </span>
           )}
         </div>

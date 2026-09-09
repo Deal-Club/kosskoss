@@ -1,5 +1,5 @@
 /**
- * Contenu légal et informatif d'ORIGINE — celui qui est versionné avec le code.
+ * Contenu légal et informatif d'ORIGINE - celui qui est versionné avec le code.
  *
  * Ce module ne doit pas être lu directement par une page : depuis que
  * l'administration peut réécrire ces textes, la source de vérité est

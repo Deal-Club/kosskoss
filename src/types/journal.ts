@@ -1,5 +1,5 @@
 /**
- * Types du Journal — l'espace éditorial de KossKoss Select.
+ * Types du Journal - l'espace éditorial de KossKoss Select.
  *
  * Deux principes structurent ce fichier, et ils viennent du reste du dépôt :
  *
@@ -79,7 +79,7 @@ export type JournalBlock =
   | {
       readonly kind: "video";
       readonly provider: VideoProvider;
-      /** Identifiant seul, jamais une URL libre — voir `normalizeBlocks`. */
+      /** Identifiant seul, jamais une URL libre - voir `normalizeBlocks`. */
       readonly videoId: string;
       readonly title: string;
     }

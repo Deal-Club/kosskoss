@@ -24,7 +24,7 @@ describe("hacherSha256", () => {
 });
 
 describe("donneesUtilisateur", () => {
-  it("hache l'e-mail normalisé (minuscules, sans espaces) — pas la saisie brute", () => {
+  it("hache l'e-mail normalisé (minuscules, sans espaces) - pas la saisie brute", () => {
     const attendu = hacherSha256("anne@example.fr");
     assert.deepEqual(donneesUtilisateur(" Anne@Example.FR ", ""), { em: [attendu] });
   });
@@ -50,7 +50,7 @@ describe("donneesUtilisateur", () => {
 // Prisma en réalité et LÈVENT en test sans `DATABASE_URL`, avalées par le
 // `catch` englobant avant même d'atteindre `fetch`. Un test qui se contente
 // d'espionner `fetch` global passerait alors même si la garde de consentement
-// disparaissait — pour la mauvaise raison (base absente, pas consentement
+// disparaissait - pour la mauvaise raison (base absente, pas consentement
 // refusé). Ces fausses dépendances sont donc délibérément VALIDES (dataset et
 // jeton renseignés, réseau qui répondrait 200) : la SEULE chose encore
 // capable d'empêcher l'appel à `fetch` dans les tests « sans consentement »
@@ -91,13 +91,13 @@ function dependancesValides(fetchMock: ReturnType<typeof fetchFactice>): Dependa
 }
 
 describe("envoyerAchatCapi sans consentement marketing", () => {
-  it("n'appelle jamais `fetch`, MÊME avec dataset et jeton valides — c'est la garde, pas l'environnement, qui l'empêche", async () => {
+  it("n'appelle jamais `fetch`, MÊME avec dataset et jeton valides - c'est la garde, pas l'environnement, qui l'empêche", async () => {
     const fetchMock = fetchFactice();
     await envoyerAchatCapi(achatDeTest({ marketingConsent: false }), dependancesValides(fetchMock));
     assert.equal(fetchMock.mock.callCount(), 0);
   });
 
-  it("ne lit même pas les réglages ni le jeton — la garde coupe avant toute dépendance", async () => {
+  it("ne lit même pas les réglages ni le jeton - la garde coupe avant toute dépendance", async () => {
     const getParametres = mock.fn(async () => ({ metaCapiDatasetId: DATASET_VALIDE }));
     const getIntegrationSecret = mock.fn(async () => JETON_VALIDE);
     await envoyerAchatCapi(achatDeTest({ marketingConsent: false }), {
@@ -121,7 +121,7 @@ describe("envoyerAchatCapi sans consentement marketing", () => {
 });
 
 describe("envoyerAchatCapi avec consentement marketing", () => {
-  it("appelle `fetch` quand consentement, dataset et jeton sont réunis — la garde ne bloque pas plus qu'il ne faut", async () => {
+  it("appelle `fetch` quand consentement, dataset et jeton sont réunis - la garde ne bloque pas plus qu'il ne faut", async () => {
     const fetchMock = fetchFactice();
     await envoyerAchatCapi(achatDeTest({ marketingConsent: true }), dependancesValides(fetchMock));
     assert.equal(fetchMock.mock.callCount(), 1);
@@ -148,7 +148,7 @@ describe("envoyerAchatCapi avec consentement marketing", () => {
   });
 });
 
-describe("envoyerAchatCapi — le jeton ne voyage jamais dans l'adresse", () => {
+describe("envoyerAchatCapi - le jeton ne voyage jamais dans l'adresse", () => {
   it("passe `access_token` dans le corps JSON, jamais dans l'URL", async () => {
     const fetchMock = fetchFactice();
     await envoyerAchatCapi(achatDeTest({ marketingConsent: true }), dependancesValides(fetchMock));
@@ -190,7 +190,7 @@ describe("masquerJeton", () => {
   });
 });
 
-describe("envoyerAchatCapi — HTTP 200 n'est pas une preuve de réception", () => {
+describe("envoyerAchatCapi - HTTP 200 n'est pas une preuve de réception", () => {
   it("signale un HTTP 200 dont le corps ne confirme aucun événement reçu (events_received manquant)", async () => {
     const fetchMock = mock.fn(async () => new Response("{}", { status: 200 }));
     const erreurs: string[] = [];
@@ -237,7 +237,7 @@ describe("envoyerAchatCapi — HTTP 200 n'est pas une preuve de réception", () 
   });
 });
 
-describe("envoyerAchatCapi — les journaux ne portent jamais le jeton en clair", () => {
+describe("envoyerAchatCapi - les journaux ne portent jamais le jeton en clair", () => {
   it("masque le jeton dans le message journalisé si la réponse Meta le cite", async () => {
     const fetchMock = mock.fn(
       async () => new Response(`{"error":"access_token invalide : ${JETON_VALIDE}"}`, { status: 400 }),

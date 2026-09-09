@@ -1,10 +1,10 @@
-# Lot 3D — Rôles et autorisations — Plan d'implémentation
+# Lot 3D - Rôles et autorisations - Plan d'implémentation
 
-> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE —
+> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE -
 > superpowers:subagent-driven-development. Les étapes utilisent la syntaxe à
 > cases (`- [ ]`).
 
-**But :** fermer la seule porte ouverte du chantier — aujourd'hui tout compte
+**But :** fermer la seule porte ouverte du chantier - aujourd'hui tout compte
 authentifié peut tout faire dans le back-office.
 
 **Architecture :** un module pur porte la matrice rôles × capacités ; une lecture
@@ -88,8 +88,8 @@ describe("peut", () => {
   });
 
   it("refuse tout à un rôle inconnu", () => {
-    // Une valeur inattendue en base — faute de frappe, rôle d'une version
-    // future — ne doit pas ouvrir les portes. Le refus est la position sûre.
+    // Une valeur inattendue en base - faute de frappe, rôle d'une version
+    // future - ne doit pas ouvrir les portes. Le refus est la position sûre.
     for (const capacite of CAPACITES) {
       assert.equal(peut("directeur" as never, capacite), false, capacite);
       assert.equal(peut("" as never, capacite), false, capacite);
@@ -141,7 +141,7 @@ describe("capacitesDe", () => {
 node --test --import tsx src/lib/kk/roles.test.ts
 ```
 
-Attendu : ÉCHEC — le module n'existe pas.
+Attendu : ÉCHEC - le module n'existe pas.
 
 - [ ] **Étape 3 : écrire le module**
 
@@ -155,17 +155,17 @@ Créer `src/lib/kk/roles.ts` :
  *
  * Le menu (composant client), les gardes serveur et l'écran des comptes lisent
  * tous la même matrice. En la gardant sans dépendance, elle ne peut pas
- * diverger — et rien de serveur n'entre dans le paquet du navigateur.
+ * diverger - et rien de serveur n'entre dans le paquet du navigateur.
  *
  * ── L'AUTORISATION SE DIT EN CAPACITÉS, PAS EN ADRESSES ─────────────────────
  *
  * Le back-office compte vingt-six familles de routes. Écrire la règle adresse
- * par adresse garantirait qu'une route ajoutée demain soit oubliée — et une
+ * par adresse garantirait qu'une route ajoutée demain soit oubliée - et une
  * route oubliée est une route ouverte.
  *
  * ── REFUSER PAR DÉFAUT ──────────────────────────────────────────────────────
  *
- * Un rôle inconnu — faute de frappe en base, rôle d'une version future —
+ * Un rôle inconnu - faute de frappe en base, rôle d'une version future -
  * n'obtient rien. La position sûre est le refus, jamais l'ouverture.
  */
 
@@ -275,7 +275,7 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   upload: "catalogue",
   "vocabulaire-tags": "catalogue",
 
-  // Commandes — y compris les ventes : suivre les commandes sans voir ce
+  // Commandes - y compris les ventes : suivre les commandes sans voir ce
   // qu'elles rapportent n'aurait pas de sens.
   orders: "commandes",
   customers: "commandes",
@@ -324,7 +324,7 @@ Créer `src/lib/kk/routesAdmin.test.ts` :
 
 ```ts
 // Ce test lit le système de fichiers : c'est délibéré. Il est le seul garde-fou
-// qui survivra aux lots suivants — sans lui, une route ajoutée sans droit
+// qui survivra aux lots suivants - sans lui, une route ajoutée sans droit
 // déclaré s'ouvrirait en silence.
 import assert from "node:assert/strict";
 import { readdirSync, existsSync } from "node:fs";
@@ -377,7 +377,7 @@ describe("carte des capacités", () => {
 
   it("ne classe pas de famille qui n'existe plus", () => {
     // Une entrée orpheline laisse croire qu'un écran est protégé alors qu'il a
-    // disparu — et masque le jour où un écran du même nom réapparaît.
+    // disparu - et masque le jour où un écran du même nom réapparaît.
     const reelles = new Set([
       ...familles("src/app/api/admin"),
       ...familles("src/app/admin/(protected)"),
@@ -418,7 +418,7 @@ git commit src/lib/kk/routesAdmin.ts src/lib/kk/routesAdmin.test.ts -m "Carte de
 - Créer : `src/app/admin/(protected)/refuse/page.tsx`
 
 **Interfaces produites :**
-- `roleCourant(): Promise<RoleAdmin | null>` — mémoïsé par requête
+- `roleCourant(): Promise<RoleAdmin | null>` - mémoïsé par requête
 - `requireCapaciteApi(capacite): Promise<{ session, unauthorized }>`
 - `requireCapacitePage(capacite): Promise<AdminSession>`
 
@@ -659,7 +659,7 @@ appelée change.
 **Trois pièges :**
 - une route peut appeler la garde dans PLUSIEURS fonctions exportées (`GET`, `POST`,
   `PATCH`, `DELETE`) : toutes doivent être câblées, pas seulement la première ;
-- `login` et `logout` ne prennent aucune garde de capacité — ce sont les exceptions
+- `login` et `logout` ne prennent aucune garde de capacité - ce sont les exceptions
   nommées ;
 - si une route n'appelle aucune garde du tout aujourd'hui, **c'est un trou** :
   signale-le dans ton rapport et pose la garde correspondante.
@@ -671,7 +671,7 @@ grep -rLn "requireCapaciteApi" src/app/api/admin --include=route.ts
 ```
 
 Attendu : uniquement les routes de `login` et `logout`. Toute autre ligne est une
-route ouverte — corrige-la.
+route ouverte - corrige-la.
 
 ```bash
 grep -rn "requireAdminApi()" src/app/api/admin --include=route.ts
@@ -702,7 +702,7 @@ Dans chaque page protégée, remplacer `await requireAdminSession();` par
 `await requireCapacitePage("<capacité de la famille>");`.
 
 Deux exceptions :
-- `refuse/page.tsx` garde `requireAdminSession()` — un écran de refus qui exigerait
+- `refuse/page.tsx` garde `requireAdminSession()` - un écran de refus qui exigerait
   un droit serait injoignable, ce qui est le comble ;
 - la page d'accueil `page.tsx` est traitée à l'étape 2.
 
@@ -725,7 +725,7 @@ gestionnaire de commandes n'y a pas sa place. En tête de la page, après la ses
 
 `AdminSidebar` doit recevoir la liste des capacités du compte et n'afficher que les
 sections ouvertes. Ajoute une propriété `capacites: readonly Capacite[]` et, pour
-chaque entrée du menu, la capacité qu'elle exige — en réutilisant
+chaque entrée du menu, la capacité qu'elle exige - en réutilisant
 `CAPACITE_PAR_FAMILLE` plutôt qu'en recopiant la règle. Une section dont toutes les
 entrées sont refusées ne s'affiche pas du tout, titre compris.
 
@@ -771,5 +771,5 @@ Message : « Les écrans et le menu suivent les droits du compte ».
 - [ ] `npm test` au vert, `npm run build` en succès.
 - [ ] **Le compte de secours** : vérifier qu'au moins un compte `owner` ou
       `superadmin` existe et actif. Un back-office où plus personne ne peut créer de
-      comptes se rouvre par une requête SQL — faisable, mais à ne pas découvrir un
+      comptes se rouvre par une requête SQL - faisable, mais à ne pas découvrir un
       dimanche.

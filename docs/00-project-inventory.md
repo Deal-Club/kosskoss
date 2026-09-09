@@ -1,4 +1,4 @@
-# 00 — Inventaire du projet source `mlcbois`
+# 00 - Inventaire du projet source `mlcbois`
 
 > Audit sans modification. Source analysée : `D:\PROJETS\MAXIME\mlcbois` (branche `main`, arbre de travail propre).
 > Cible du nouveau projet : Koss Koss (dossier de travail actuel `D:\PROJETS\MAXIME\kosskoss`, vide).
@@ -14,7 +14,7 @@
 
 Origine documentée (`TARGET.md`, `AGENTS.md`) : template de reverse-engineering → clone quelle.de → boutique électroménager inspirée d'alternate.de → **repositionnée en boutique française de bois de chauffage « MLC Bois »**. Le socle technique a survécu à tous ces pivots, d'où des **résidus allemands** dans le code (voir `01` et `12`).
 
-## 2. Pile technique et versions (verrouillées — à NE PAS changer sans raison)
+## 2. Pile technique et versions (verrouillées - à NE PAS changer sans raison)
 
 | Élément | Version | Source |
 |---|---|---|
@@ -37,7 +37,7 @@ Origine documentée (`TARGET.md`, `AGENTS.md`) : template de reverse-engineering
 
 | Script | Commande | Dépendance |
 |---|---|---|
-| `dev` | `next dev` | — |
+| `dev` | `next dev` | - |
 | `build` | `next build` | **DATABASE_URL requis** (collecte les pages depuis la base) |
 | `start` | `next start` | build préalable |
 | `lint` | `eslint` | node_modules |

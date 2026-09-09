@@ -9,7 +9,7 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
  * Next dimensionne son pool sur `os.cpus()`. Sur un hébergement mutualisé, cet
  * appel renvoie les cœurs de la machine HÔTE et non ceux alloués au conteneur :
  * sur Hostinger, le build a démarré soixante-trois workers. Chacun ouvre son
- * propre client Prisma — jusqu'à dix connexions PostgreSQL — pour aller lire le
+ * propre client Prisma - jusqu'à dix connexions PostgreSQL - pour aller lire le
  * catalogue, et Neon a rendu « timeout exceeded when trying to connect » bien
  * avant la fin de la collecte.
  *
@@ -34,7 +34,7 @@ const nextConfig: NextConfig = {
   images: {
     // Cloudinary : ancien stockage, laissé autorisé le temps que les URL déjà
     // en base finissent de tourner. MinIO (kosskoss-minio…) est le stockage
-    // courant — voir src/server/storage.ts.
+    // courant - voir src/server/storage.ts.
     remotePatterns: [
       {
         protocol: "https",

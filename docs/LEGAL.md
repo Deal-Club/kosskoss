@@ -1,4 +1,4 @@
-# Contenu légal et informatif — MLC Bois
+# Contenu légal et informatif - MLC Bois
 
 Ce document décrit le corpus légal livré dans `src/content/legal/`, ce qu'il couvre,
 ce qui **doit impérativement être personnalisé avant la mise en ligne**, et les sources
@@ -26,7 +26,7 @@ Aucun HTML brut n'est stocké : le rendu découpe sur `\n\n` et échappe normale
 (pas de `dangerouslySetInnerHTML`).
 
 Le français est la langue de référence. En cas de divergence entre les deux versions,
-c'est le texte français qui engage la société — la version anglaise le dit explicitement
+c'est le texte français qui engage la société - la version anglaise le dit explicitement
 dans son avertissement.
 
 ## 2. Pages disponibles (slugs)
@@ -60,7 +60,7 @@ commande.
 ## 3. À remplacer impérativement avant la mise en ligne
 
 Toutes ces valeurs vivent dans la constante `COMPANY`, désormais isolée dans
-`src/content/legal/company.ts` — un module sans dépendance, réexporté par
+`src/content/legal/company.ts` - un module sans dépendance, réexporté par
 `fr.ts`. Elles alimentent les **pages légales**, la **facture PDF**
 (`src/server/invoice.ts`) et le **pied des e-mails de campagne**
 (`src/server/emails/campaign.ts`).
@@ -98,7 +98,7 @@ Tant que `provisoire` vaut `true` :
 - la **facture** ajoute une ligne en pied déclarant qu'elle est un document de
   démonstration.
 
-Les deux disparaissent en passant `provisoire` à `false` — ce qui doit se faire
+Les deux disparaissent en passant `provisoire` à `false` - ce qui doit se faire
 **en même temps** que la saisie des vraies valeurs, jamais avant.
 
 Les champs `siren` et `siret`, hérités de l'activité française, ont été retirés :
@@ -107,7 +107,7 @@ ils n'avaient aucun usage et n'ont pas d'équivalent camerounais.
 ### Avertissement sur le reste de ce document
 
 Les points ci-dessous, et une grande partie des sections suivantes, invoquent
-encore le **droit français** — LCEN, Code de la consommation, médiateur de la
+encore le **droit français** - LCEN, Code de la consommation, médiateur de la
 consommation, code APE/NAF, greffe du tribunal de commerce. Ils viennent de
 l'activité précédente et **n'ont pas été transposés au Cameroun**. Ils ne sont
 donc pas une liste de tâches valide en l'état : chaque point demande d'abord de
@@ -143,7 +143,7 @@ Autres éléments à vérifier au cas par cas :
 Le bois de chauffage à usage domestique relève du taux réduit de 10 % prévu à
 l'article 278 bis du Code général des impôts. La boutique n'applique **qu'un seul
 taux** pour l'ensemble du panier. Si le catalogue venait à mélanger des articles
-relevant du taux normal (20 % — allume-feu, accessoires non combustibles, prestations),
+relevant du taux normal (20 % - allume-feu, accessoires non combustibles, prestations),
 le taux devrait être porté par la ligne de commande et non plus par une constante
 globale.
 

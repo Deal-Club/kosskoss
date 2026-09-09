@@ -14,7 +14,7 @@ import { messageDErreur, signalerIncident } from "@/server/kk/incident";
  * Elle doit répondre à un visiteur anonyme, en pleine erreur, éventuellement
  * sans session : la garder derrière une authentification reviendrait à ne rien
  * recueillir. En contrepartie, elle n'écrit RIEN en base, ne rend rien
- * d'exploitable, et borne sévèrement ce qu'elle accepte — un point d'entrée
+ * d'exploitable, et borne sévèrement ce qu'elle accepte - un point d'entrée
  * public qui journalise sans limite est une invitation à noyer les journaux.
  */
 

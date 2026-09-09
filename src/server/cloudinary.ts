@@ -3,7 +3,7 @@
  *
  * USAGE SERVEUR UNIQUEMENT : ce module lit l'API secret Cloudinary. Il ne doit
  * jamais être importé depuis un composant client, et aucune de ses fonctions ne
- * renvoie les identifiants — seuls des URL publiques et des public_id sortent
+ * renvoie les identifiants - seuls des URL publiques et des public_id sortent
  * d'ici.
  *
  * Les identifiants proviennent uniquement des variables d'environnement

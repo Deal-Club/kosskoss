@@ -1,7 +1,7 @@
 /**
  * Formatage monétaire KossKoss Select.
  *
- * Devise : Franc CFA (XAF) — SANS sous-unité. Les montants sont des entiers de
+ * Devise : Franc CFA (XAF) - SANS sous-unité. Les montants sont des entiers de
  * FCFA (pas de centimes) : on ne divise jamais par 100. Séparateur de milliers
  * par espace insécable fine, suffixe « FCFA ».
  *
@@ -15,7 +15,7 @@ export function formatFcfa(amount: number): string {
 
 /**
  * Titre produit avec sa contenance intégrée (« Crème solaire riz +
- * probiotiques - 50 ml »), au lieu d'une ligne séparée — demande client
+ * probiotiques - 50 ml »), au lieu d'une ligne séparée - demande client
  * explicite : le format doit se lire DANS le titre lui-même, sur chaque
  * vignette, la fiche produit et les gestes de routine. `sizeLabel` absent
  * (produit sans variante active) = titre nu, inchangé.

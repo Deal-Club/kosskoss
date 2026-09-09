@@ -3,7 +3,7 @@
  *
  * Volontairement une chaîne HTML autonome plutôt qu'une route Next : elle est
  * rendue depuis le proxy, avant tout routage. Aucune base, aucune traduction,
- * aucun composant — donc rien qui puisse tomber en même temps que ce qu'on est
+ * aucun composant - donc rien qui puisse tomber en même temps que ce qu'on est
  * en train de réparer. Les styles sont en ligne pour la même raison : la
  * feuille compilée peut très bien être ce qui manque.
  *
@@ -22,7 +22,7 @@ export const PAGE_MAINTENANCE = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Maintenance en cours — KossKoss Select</title>
+<title>Maintenance en cours - KossKoss Select</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; }
   body {

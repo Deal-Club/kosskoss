@@ -9,7 +9,7 @@ import { Star, Check, Loader2 } from "lucide-react";
  *
  * ── Ce que le formulaire promet ───────────────────────────────────────────
  * Rien n'est publié directement : l'API enregistre en `pending` et un
- * modérateur relit. Le formulaire le DIT avant l'envoi, pas seulement après —
+ * modérateur relit. Le formulaire le DIT avant l'envoi, pas seulement après -
  * quelqu'un qui écrit trois paragraphes et ne les voit jamais apparaître
  * conclut que le site avale les avis négatifs.
  *
@@ -24,7 +24,7 @@ import { Star, Check, Loader2 } from "lucide-react";
  * Les bornes sont celles de l'API (`/api/reviews`) : 2 à 80 caractères pour le
  * nom, 10 à 2000 pour le texte, note entière de 1 à 5. Elles sont répétées ici
  * pour éviter un aller-retour réseau qui ne dirait rien de plus, mais c'est
- * bien le serveur qui tranche — un formulaire ne valide jamais rien pour de
+ * bien le serveur qui tranche - un formulaire ne valide jamais rien pour de
  * bon.
  */
 

@@ -14,7 +14,7 @@ import type { ComponentProps } from "react";
  *
  * Pourquoi ce composant plutôt que le `Link` de `@/i18n/navigation` : l'en-tête
  * est aussi monté par /preview, qui vit hors du segment [locale] et n'a donc
- * aucun contexte next-intl — s'y appuyer y ferait échouer la page entière. La
+ * aucun contexte next-intl - s'y appuyer y ferait échouer la page entière. La
  * langue est ici déduite du chemin affiché, ce qui ne dépend d'aucun contexte.
  *
  * Composant client, mais utilisable depuis un composant serveur : seuls les

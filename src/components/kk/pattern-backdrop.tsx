@@ -1,16 +1,16 @@
 import Image from "next/image";
 
 /**
- * Motif de marque KossKoss — tissage de la charte — posé en fond de section.
+ * Motif de marque KossKoss - tissage de la charte - posé en fond de section.
  *
  * ─────────────────────────────────────────────────────────────────────────
- * RÈGLE : jamais sous du texte courant — bandeaux de tête et pied de page
+ * RÈGLE : jamais sous du texte courant - bandeaux de tête et pied de page
  * seulement, et toujours sous un voile.
  * ─────────────────────────────────────────────────────────────────────────
  *
  * La règle a d'abord été « un seul emplacement sur tout le parcours ». Elle a
  * été élargie à la demande du client : le motif habille désormais TOUS les
- * bandeaux sombres hors accueil — rayons, routines, marques, favoris — plus le
+ * bandeaux sombres hors accueil - rayons, routines, marques, favoris - plus le
  * bandeau d'inscription et le pied de page.
  *
  * Ce qui n'a pas bougé, et qui est le fond du reproche d'origine, c'est
@@ -25,19 +25,19 @@ import Image from "next/image";
  * d'accueil, et systématiquement sous du texte. Trois sources concordantes ont
  * tranché :
  *
- *   — le retour client : « ne pas en abuser sur les pages ; ça devient
+ *   - le retour client : « ne pas en abuser sur les pages ; ça devient
  *     agressif », et « attention si vous possédez des textes dessus avec les
  *     motifs aussi visibles ; ça nuit à la lecture » ;
- *   — la charte de marque, pilier « Afro contemporain » : « références
+ *   - la charte de marque, pilier « Afro contemporain » : « références
  *     visuelles inspirées du continent, mais ÉPURÉES, loin des clichés
  *     folkloriques » ;
- *   — les deux maquettes livrées par le client, où le motif n'apparaît
+ *   - les deux maquettes livrées par le client, où le motif n'apparaît
  *     strictement nulle part en fond de section.
  *
  * Il reste malgré tout : le client a explicitement trouvé notre usage du motif
  * « intéressant ». Le supprimer entièrement jetterait le seul élément de
- * territoire visuel qu'il a salué. Il est donc conservé à UN emplacement — le
- * bandeau d'inscription, en bas de page — où le texte se réduit à une ligne et
+ * territoire visuel qu'il a salué. Il est donc conservé à UN emplacement - le
+ * bandeau d'inscription, en bas de page - où le texte se réduit à une ligne et
  * un champ, et où la marque peut signer sans gêner personne.
  *
  * Le fichier servi est une version WebP réduite (1400 px, ~120 Ko) ; le PNG
@@ -59,7 +59,7 @@ import Image from "next/image";
  * (opaque) à gauche vers `deep/25` (presque nu) à droite, alors que les
  * sections concernées portaient justement leur contenu dense dans la colonne
  * de DROITE. Le texte se retrouvait posé exactement là où le motif était le
- * plus visible — l'origine directe du reproche.
+ * plus visible - l'origine directe du reproche.
  *
  * Les deux voiles restants sont donc calibrés sur l'inverse : opaques du côté
  * du contenu, respirants du côté vide.
@@ -82,7 +82,7 @@ const VEIL = {
     "bg-[radial-gradient(ellipse_at_center,var(--deep)_0%,color-mix(in_oklab,var(--deep)_92%,transparent)_60%,color-mix(in_oklab,var(--deep)_70%,transparent)_100%)]",
   /**
    * Pied de page. Voile UNIFORME et non dégradé : le footer porte du texte sur
-   * toute sa surface — quatre colonnes de liens puis les mentions légales — et
+   * toute sa surface - quatre colonnes de liens puis les mentions légales - et
    * il n'existe donc aucun côté « vide » où relâcher le voile.
    *
    * Il reprend `--footer`, qui vaut désormais le vert profond de la marque :

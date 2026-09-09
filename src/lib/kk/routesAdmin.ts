@@ -24,15 +24,15 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   "vocabulaire-tags": "catalogue",
   // Approvisionnement : de qui vient la marchandise, et ce qui reste à
   // recevoir. Rattaché au catalogue comme `stock`, dont ce lot est le
-  // prolongement — pas aux commandes, qui décrivent ce qu'on vend, pas ce
+  // prolongement - pas aux commandes, qui décrivent ce qu'on vend, pas ce
   // qu'on achète.
   suppliers: "catalogue",
   "purchase-orders": "catalogue",
-  // Import du master client (fiches produits + routines) — voir
+  // Import du master client (fiches produits + routines) - voir
   // src/server/kk/master.ts et docs/HANDOVER.md.
   "master-import": "catalogue",
 
-  // Commandes — y compris les ventes : suivre les commandes sans voir ce
+  // Commandes - y compris les ventes : suivre les commandes sans voir ce
   // qu'elles rapportent n'aurait pas de sens.
   orders: "commandes",
   customers: "commandes",
@@ -47,7 +47,7 @@ export const CAPACITE_PAR_FAMILLE: Record<string, Capacite> = {
   scripts: "contenu",
   traductions: "contenu",
 
-  // Réglages — y compris les moyens de paiement : virement et passerelles en
+  // Réglages - y compris les moyens de paiement : virement et passerelles en
   // ligne sont des réglages de paiement, pas des commandes.
   parametres: "reglages",
   integrations: "reglages",

@@ -9,7 +9,7 @@ import type { CompteRenduMaster } from "@/server/kk/master";
  * leurs gestes) et affiche le compte rendu intégral, section par section.
  *
  * Idempotent : relancé sans changement du fichier source, il ne crée ni ne
- * modifie plus rien — les listes « inchangées » en sont la preuve à l'écran.
+ * modifie plus rien - les listes « inchangées » en sont la preuve à l'écran.
  */
 export function MasterImportButton() {
   const router = useRouter();
@@ -92,7 +92,7 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
         <p className="font-black text-foreground">Compte rendu de l&apos;import du master</p>
       </div>
 
-      <Section titre={`Lecture du classeur — ${lecture.totalFiches} fiches, ${lecture.totalRoutines} routines, ${lecture.totalLiaisons} liaisons`}>
+      <Section titre={`Lecture du classeur - ${lecture.totalFiches} fiches, ${lecture.totalRoutines} routines, ${lecture.totalLiaisons} liaisons`}>
         <Liste
           items={[
             ...lecture.fichesIgnorees.map((l) => `Fiche ligne ${l.ligne} écartée : ${l.raison}`),
@@ -107,11 +107,11 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
         <p className="mb-2 font-black text-foreground">Fiches produits</p>
 
         <Section titre={`Fiches mises à jour (${fiches.misesAJour.length})`}>
-          <Liste items={fiches.misesAJour.map((f) => `${f.sku} — ${f.nom}`)} vide="Aucune fiche mise à jour." />
+          <Liste items={fiches.misesAJour.map((f) => `${f.sku} - ${f.nom}`)} vide="Aucune fiche mise à jour." />
         </Section>
 
         <Section titre={`Fiches inchangées (${fiches.inchangees.length})`}>
-          <Liste items={fiches.inchangees.map((f) => `${f.sku} — ${f.nom}`)} vide="Aucune fiche inchangée." />
+          <Liste items={fiches.inchangees.map((f) => `${f.sku} - ${f.nom}`)} vide="Aucune fiche inchangée." />
         </Section>
 
         <Section titre={`Prix modifiés (${fiches.prixModifies.length})`}>
@@ -122,7 +122,7 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
               {fiches.prixModifies.map((p) => (
                 <li key={p.sku}>
                   <span className="font-semibold text-foreground">
-                    {p.sku} — {p.nom}
+                    {p.sku} - {p.nom}
                   </span>{" "}
                   : {p.ancienFcfa.toLocaleString("fr-FR")} FCFA → {p.nouveauFcfa.toLocaleString("fr-FR")} FCFA
                 </li>
@@ -142,9 +142,9 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
           <Liste items={fiches.gtinInvalides.map((g) => `${g.sku} : ${g.ean}`)} vide="Aucun GTIN invalide." />
         </Section>
 
-        <Section titre={`SKU du master introuvables en base (${fiches.skusInconnus.length}) — signalés, jamais créés`}>
+        <Section titre={`SKU du master introuvables en base (${fiches.skusInconnus.length}) - signalés, jamais créés`}>
           <Liste
-            items={fiches.skusInconnus.map((s) => `Ligne ${s.ligne} — ${s.sku} — ${s.nom}`)}
+            items={fiches.skusInconnus.map((s) => `Ligne ${s.ligne} - ${s.sku} - ${s.nom}`)}
             vide="Aucun SKU inconnu."
           />
         </Section>
@@ -156,25 +156,25 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
           />
         </Section>
 
-        <Section titre={`Produits en base absents du master (${fiches.produitsHorsMaster.length}) — signalés, jamais supprimés`}>
+        <Section titre={`Produits en base absents du master (${fiches.produitsHorsMaster.length}) - signalés, jamais supprimés`}>
           <Liste
-            items={fiches.produitsHorsMaster.map((f) => `${f.sku} — ${f.nom}`)}
+            items={fiches.produitsHorsMaster.map((f) => `${f.sku} - ${f.nom}`)}
             vide="Aucun produit hors master."
           />
         </Section>
 
-        <Section titre={`Catégories divergentes (${fiches.categoriesDivergentes.length}) — signalées, jamais corrigées`}>
+        <Section titre={`Catégories divergentes (${fiches.categoriesDivergentes.length}) - signalées, jamais corrigées`}>
           <Liste
             items={fiches.categoriesDivergentes.map(
-              (c) => `${c.sku} — ${c.nom} : master « ${c.categorieMaster} », site « ${c.categorieSite} »`,
+              (c) => `${c.sku} - ${c.nom} : master « ${c.categorieMaster} », site « ${c.categorieSite} »`,
             )}
             vide="Aucune catégorie divergente."
           />
         </Section>
 
-        <Section titre={`Tags de préoccupation posés depuis Besoin_Principal (${fiches.preoccupationsAjoutees.length}) — ajoutés, jamais retirés`}>
+        <Section titre={`Tags de préoccupation posés depuis Besoin_Principal (${fiches.preoccupationsAjoutees.length}) - ajoutés, jamais retirés`}>
           <Liste
-            items={fiches.preoccupationsAjoutees.map((p) => `${p.sku} — ${p.nom} : +${p.tag}`)}
+            items={fiches.preoccupationsAjoutees.map((p) => `${p.sku} - ${p.nom} : +${p.tag}`)}
             vide="Aucun tag de préoccupation posé."
           />
         </Section>
@@ -184,43 +184,43 @@ function CompteRenduAffiche({ rapport }: { rapport: CompteRenduMaster }) {
         <p className="mb-2 font-black text-foreground">Routines</p>
 
         <Section titre={`Routines créées (${routines.creees.length})`}>
-          <Liste items={routines.creees.map((r) => `${r.code} — ${r.nom}`)} vide="Aucune routine créée." />
+          <Liste items={routines.creees.map((r) => `${r.code} - ${r.nom}`)} vide="Aucune routine créée." />
         </Section>
 
         <Section titre={`Routines mises à jour (${routines.misesAJour.length})`}>
-          <Liste items={routines.misesAJour.map((r) => `${r.code} — ${r.nom}`)} vide="Aucune routine mise à jour." />
+          <Liste items={routines.misesAJour.map((r) => `${r.code} - ${r.nom}`)} vide="Aucune routine mise à jour." />
         </Section>
 
         <Section titre={`Routines inchangées (${routines.inchangees.length})`}>
-          <Liste items={routines.inchangees.map((r) => `${r.code} — ${r.nom}`)} vide="Aucune routine inchangée." />
+          <Liste items={routines.inchangees.map((r) => `${r.code} - ${r.nom}`)} vide="Aucune routine inchangée." />
         </Section>
 
         <Section titre={`Gestes remplacés (${routines.gestesRemplaces.length})`}>
           <Liste
             items={routines.gestesRemplaces.map(
-              (g) => `${g.code} — ${g.nom} : ${g.avant} geste(s) → ${g.apres} geste(s)${g.apres < g.avant ? " (un geste a disparu)" : ""}`,
+              (g) => `${g.code} - ${g.nom} : ${g.avant} geste(s) → ${g.apres} geste(s)${g.apres < g.avant ? " (un geste a disparu)" : ""}`,
             )}
             vide="Aucun remplacement de gestes."
           />
         </Section>
 
-        <Section titre={`Routines annulées (${routines.routinesAnnulees.length}) — SKU introuvable, ambigu ou dupliqué`}>
+        <Section titre={`Routines annulées (${routines.routinesAnnulees.length}) - SKU introuvable, ambigu ou dupliqué`}>
           <Liste
-            items={routines.routinesAnnulees.map((r) => `Ligne ${r.ligne} — ${r.code} : ${r.raison}`)}
+            items={routines.routinesAnnulees.map((r) => `Ligne ${r.ligne} - ${r.code} : ${r.raison}`)}
             vide="Aucune routine annulée."
           />
         </Section>
 
-        <Section titre={`Routines hors master, sans code (${routines.routinesHorsMaster.length}) — à trancher par le client`}>
+        <Section titre={`Routines hors master, sans code (${routines.routinesHorsMaster.length}) - à trancher par le client`}>
           <Liste
-            items={routines.routinesHorsMaster.map((r) => `${r.slug} — ${r.nom}`)}
+            items={routines.routinesHorsMaster.map((r) => `${r.slug} - ${r.nom}`)}
             vide="Aucune routine hors master."
           />
         </Section>
 
         <Section titre={`Codes en base disparus du master (${routines.routinesCodeesDisparuesDuMaster.length})`}>
           <Liste
-            items={routines.routinesCodeesDisparuesDuMaster.map((r) => `${r.code} — ${r.nom}`)}
+            items={routines.routinesCodeesDisparuesDuMaster.map((r) => `${r.code} - ${r.nom}`)}
             vide="Aucun code disparu."
           />
         </Section>

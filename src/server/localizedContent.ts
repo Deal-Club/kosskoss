@@ -10,7 +10,7 @@ import type { Product } from "@/types/home";
 // des colonnes « *En » facultatives. Ce module charge une seule fois les
 // traductions puis les applique à des données déjà chargées par le store.
 // Le repli est systématique : si le champ anglais est vide, le français est
-// affiché — jamais de champ vide sur la boutique.
+// affiché - jamais de champ vide sur la boutique.
 
 // ---- Types ----
 

@@ -5,7 +5,7 @@ import { issueLoginChallenge } from "@/server/adminOtp";
 
 /**
  * Premier facteur : e-mail + mot de passe.
- * En cas de succès, aucune session n'est ouverte — un code à usage unique part
+ * En cas de succès, aucune session n'est ouverte - un code à usage unique part
  * par e-mail et la suite se joue sur /api/admin/login/verify.
  */
 export async function POST(request: Request) {

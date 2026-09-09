@@ -3,19 +3,19 @@ Détourage et recadrage des visuels produits.
 
 POURQUOI
 ────────
-Les 70 visuels du catalogue sont des JPG — format qui ne connaît pas la
+Les 70 visuels du catalogue sont des JPG - format qui ne connaît pas la
 transparence. Chaque flacon traîne donc son fond de studio, un blanc cassé
 légèrement différent d'un produit à l'autre (#f1f1f1, #efeff1, #f0eff4…).
 
 Tant que ces vignettes vivaient sur des cartes blanches, cela ne se voyait pas.
 La refonte les pose sur les teintes des routines et sur le vert profond du focus
 marque : chaque packshot y apparaît alors comme un rectangle gris flottant sur
-la couleur. C'est ce que le retour décrit — « du fait qu'elles ont du
+la couleur. C'est ce que le retour décrit - « du fait qu'elles ont du
 background, ça a gâté l'affichage ».
 
 Second défaut, mesuré : le sujet n'occupe que 5 à 21 % de l'image. Le flacon est
 minuscule au milieu d'une marge vide, et aucune mise en page ne peut rattraper
-ça — d'où « les images ne sont pas bien disposées ».
+ça - d'où « les images ne sont pas bien disposées ».
 
 MÉTHODE
 ───────
@@ -25,7 +25,7 @@ MÉTHODE
 2. Le fond est retiré PAR PROPAGATION DEPUIS LES BORDS, et non par simple seuil
    global. La différence est décisive : un bouchon blanc ou une étiquette claire
    ressemblent au fond, mais ne lui sont pas reliés. Un seuil global les
-   effacerait — un test l'a montré, un flacon perdait les trois quarts de sa
+   effacerait - un test l'a montré, un flacon perdait les trois quarts de sa
    surface. La propagation ne retire que ce qui touche le bord.
 
 3. Le bord du sujet est adouci sur un pixel : sans cela le détourage laisse un
@@ -66,7 +66,7 @@ MARGE = 0.04
 
 
 def couleur_de_fond(pixels: np.ndarray) -> np.ndarray:
-    """Couleur dominante de la bande périphérique — le fond, quel qu'il soit."""
+    """Couleur dominante de la bande périphérique - le fond, quel qu'il soit."""
     bande = np.concatenate(
         [
             pixels[0:6].reshape(-1, 3),

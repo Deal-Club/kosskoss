@@ -12,9 +12,9 @@ const inputCls =
 
 /**
  * `vocabulaire` vient de la base (lireVocabulaireAdmin), pas d'une liste figée
- * dans ce fichier. La liste en dur qui occupait cette place mentait déjà — elle
+ * dans ce fichier. La liste en dur qui occupait cette place mentait déjà - elle
  * annonçait « protection », absent du catalogue, et taisait « toner », « corps »,
- * « homme » et « hygiene » — et elle serait devenue franchement fausse dès la
+ * « homme » et « hygiene » - et elle serait devenue franchement fausse dès la
  * première retouche du client dans /admin/products/tags.
  */
 export function ProductTagsAdmin({

@@ -7,7 +7,7 @@ import { validerCoupon } from "@/server/coupons";
  *
  * Le sous-total n'est pas lu dans la requête : le navigateur enverrait le
  * montant qui l'arrange. Seules les lignes du panier arrivent ici, et leurs
- * prix sont relus en base — exactement comme le fait `createKossOrder`. Un
+ * prix sont relus en base - exactement comme le fait `createKossOrder`. Un
  * panier gonflé côté client ne peut donc pas débloquer un code réservé aux
  * grosses commandes.
  *

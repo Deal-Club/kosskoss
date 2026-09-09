@@ -46,7 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
           sur la page de recherche, seul appelant restant de cette vignette. Il
           passe par la table partagée (`lib/kk/badges`), comme les vignettes de
           la boutique. Une clé inconnue ne donne rien plutôt qu'un mot technique
-          — ce qui est aussi le comportement de la boutique. */}
+          - ce qui est aussi le comportement de la boutique. */}
       <div className="relative mb-2 min-h-6">
         {libelleBadge && (
           <span className="absolute top-0 left-0 z-10 rounded-sm bg-badge px-2 py-0.5 text-[11px] font-bold text-badge-foreground">
@@ -67,7 +67,7 @@ export function ProductCard({ product }: { product: Product }) {
         {product.brand}
       </p>
       {/* Contenance intégrée AU TITRE (« ... - 50 ml »), même donnée que la
-          ligne Format de la fiche produit — voir `formatProductTitle`. */}
+          ligne Format de la fiche produit - voir `formatProductTitle`. */}
       <p className="mt-1 mb-1 line-clamp-2 font-heading text-sm leading-snug font-bold text-foreground transition-colors group-hover:text-primary">
         {formatProductTitle(product.name, product.variants?.[0]?.label)}
       </p>

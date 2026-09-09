@@ -70,7 +70,7 @@ async function poser(compte: Compte): Promise<void> {
 
   if (!email || !motDePasse) {
     console.log(
-      `— ${compte.description} : ignoré, ${compte.variableEmail} ou ${compte.variableMotDePasse} est vide.`,
+      `- ${compte.description} : ignoré, ${compte.variableEmail} ou ${compte.variableMotDePasse} est vide.`,
     );
     return;
   }
@@ -80,10 +80,10 @@ async function poser(compte: Compte): Promise<void> {
   if (!appliquer) {
     console.log(
       existant
-        ? `— ${compte.description} : ${email} existe (rôle « ${existant.role} », ${
+        ? `- ${compte.description} : ${email} existe (rôle « ${existant.role} », ${
             existant.active ? "actif" : "inactif"
           }) -> mot de passe réécrit, rôle « ${compte.role} », actif.`
-        : `— ${compte.description} : ${email} serait créé (rôle « ${compte.role} »).`,
+        : `- ${compte.description} : ${email} serait créé (rôle « ${compte.role} »).`,
     );
     return;
   }
@@ -107,7 +107,7 @@ async function poser(compte: Compte): Promise<void> {
   });
 
   console.log(
-    `✔ ${compte.description} : ${email} — rôle « ${compte.role} », actif, mot de passe posé.`,
+    `✔ ${compte.description} : ${email} - rôle « ${compte.role} », actif, mot de passe posé.`,
   );
 }
 
@@ -115,11 +115,11 @@ async function poser(compte: Compte): Promise<void> {
 async function desactiver(email: string): Promise<void> {
   const existant = await prisma.adminUser.findUnique({ where: { email } });
   if (!existant) {
-    console.log(`— désactivation : ${email} est inconnu, rien à faire.`);
+    console.log(`- désactivation : ${email} est inconnu, rien à faire.`);
     return;
   }
   if (!existant.active) {
-    console.log(`— désactivation : ${email} est déjà inactif.`);
+    console.log(`- désactivation : ${email} est déjà inactif.`);
     return;
   }
 
@@ -127,13 +127,13 @@ async function desactiver(email: string): Promise<void> {
   const actifs = await prisma.adminUser.count({ where: { active: true } });
   if (actifs <= 1) {
     console.log(
-      `✗ désactivation : ${email} est le dernier compte actif — poser les nouveaux accès d'abord.`,
+      `✗ désactivation : ${email} est le dernier compte actif - poser les nouveaux accès d'abord.`,
     );
     return;
   }
 
   if (!appliquer) {
-    console.log(`— désactivation : ${email} serait passé à inactif.`);
+    console.log(`- désactivation : ${email} serait passé à inactif.`);
     return;
   }
 
@@ -151,14 +151,14 @@ async function main(): Promise<void> {
     await desactiver(email);
   }
 
-  // État final : les superadmins sont volontairement inclus ici — ce script est
+  // État final : les superadmins sont volontairement inclus ici - ce script est
   // lancé depuis un terminal par la personne qui détient déjà les secrets.
   const tous = await prisma.adminUser.findMany({ orderBy: { createdAt: "asc" } });
   console.log("\nComptes du back-office :");
   for (const ligne of tous) {
     const marque = ligne.role === SUPERADMIN_ROLE ? " (masqué)" : "";
     console.log(
-      `  ${ligne.active ? "actif  " : "inactif"} ${ligne.email} — ${ligne.role}${marque}`,
+      `  ${ligne.active ? "actif  " : "inactif"} ${ligne.email} - ${ligne.role}${marque}`,
     );
   }
 }

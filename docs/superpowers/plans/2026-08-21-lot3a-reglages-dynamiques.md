@@ -1,16 +1,16 @@
-# Lot 3A — Réglages dynamiques : plan d'implémentation
+# Lot 3A - Réglages dynamiques : plan d'implémentation
 
-> **Pour les agents :** SOUS-COMPÉTENCE REQUISE — utiliser `superpowers:subagent-driven-development`
+> **Pour les agents :** SOUS-COMPÉTENCE REQUISE - utiliser `superpowers:subagent-driven-development`
 > (recommandé) ou `superpowers:executing-plans` pour dérouler ce plan tâche par tâche.
 > Les étapes utilisent la syntaxe à cases (`- [ ]`) pour le suivi.
 
-**Goal :** rendre le critère d'acceptation 16 satisfait — numéro WhatsApp, lien du
+**Goal :** rendre le critère d'acceptation 16 satisfait - numéro WhatsApp, lien du
 formulaire d'évaluation et identifiants de mesure modifiables en administration, sans
 redéploiement.
 
 **Architecture :** une clé `Setting` portant un JSON, sur le motif déjà employé trois fois
 dans le projet. Les types, les valeurs par défaut et la normalisation vivent dans
-`src/lib/kk` — pur, sans Prisma — parce que le back-office est un composant client et ne
+`src/lib/kk` - pur, sans Prisma - parce que le back-office est un composant client et ne
 peut pas importer un module serveur. La lecture est mémoïsée par `cache()` de React et
 retombe sur la variable d'environnement tant que le réglage est vide, pour qu'aucun
 déploiement ne casse.
@@ -46,7 +46,7 @@ PostgreSQL (Neon), `node --test` avec `tsx`.
 - **Le seed prévu par la spec n'est pas réalisé, et c'est délibéré.** La spec proposait
   d'initialiser le réglage avec la valeur de la variable d'environnement. Le repli de
   `numeroWhatsappEffectif` rend ce seed inutile : tant que le réglage est vide, la variable
-  sert déjà. Deux mécanismes pour un seul besoin auraient divergé — le seed ne s'exécutant
+  sert déjà. Deux mécanismes pour un seul besoin auraient divergé - le seed ne s'exécutant
   qu'une fois, un opérateur qui l'oublie n'aurait aucun filet.
 - **Commentaires en français**, expliquant le *pourquoi*, à la densité du code existant.
 - **TypeScript strict, aucun `any`.**
@@ -91,7 +91,7 @@ la 2 ; la 4 branche ce que la 2 lit. Aucune n'est interchangeable.
 
 **Pourquoi ce module est pur.** Le formulaire d'administration est un composant client : il
 ne peut pas importer un module qui tire Prisma. Le projet a déjà tranché cette question pour
-les annonces (`src/server/announcements.ts:24-28`) — types et normalisation dans
+les annonces (`src/server/announcements.ts:24-28`) - types et normalisation dans
 `src/lib/kk`, accès base dans `src/server`, réexport par le second.
 
 **Les quatre champs sont facultatifs.** Une boutique sans Pixel doit pouvoir enregistrer les
@@ -227,7 +227,7 @@ describe("normaliserParametres", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/parametres.test.ts`
-Expected: FAIL — `Cannot find module './parametres'`
+Expected: FAIL - `Cannot find module './parametres'`
 
 - [ ] **Step 3 : Écrire le module**
 
@@ -290,7 +290,7 @@ export function lienEvaluationValide(valeur: string): boolean {
 /**
  * Identifiant de mesure GA4, de la forme « G-XXXXXXXXXX ».
  *
- * Le motif n'atteste pas que le compte existe — rien ne le peut depuis un
+ * Le motif n'atteste pas que le compte existe - rien ne le peut depuis un
  * formulaire. Il attrape la faute de frappe, qui est le cas réel : une mesure
  * qui ne remonte pas ne se signale jamais d'elle-même.
  */
@@ -334,7 +334,7 @@ export function normaliserParametres(brut: unknown): ParametresBoutique {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/parametres.test.ts`
-Expected: PASS — 18 tests
+Expected: PASS - 18 tests
 
 - [ ] **Step 5 : Vérifier**
 
@@ -351,7 +351,7 @@ Module pur, sans Prisma : le formulaire d'administration est un composant client
 et ne peut pas importer un module serveur. C'est le découpage que le projet a
 déjà retenu pour le bandeau d'annonces.
 
-Les quatre champs sont facultatifs — une boutique sans Pixel doit pouvoir
+Les quatre champs sont facultatifs - une boutique sans Pixel doit pouvoir
 enregistrer les trois autres. La validation n'attrape donc que la valeur
 présente et mal formée, en particulier la faute de frappe sur un identifiant de
 mesure : une mesure qui ne remonte pas ne se signale jamais d'elle-même.
@@ -375,7 +375,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 **Le repli est le cœur de cette tâche.** Le numéro WhatsApp vient aujourd'hui de
 `NEXT_PUBLIC_WHATSAPP_NUMBER`. Entre le déploiement de ce sous-lot et la première saisie en
-administration, le réglage sera vide — et sans repli, le bouton WhatsApp disparaîtrait du
+administration, le réglage sera vide - et sans repli, le bouton WhatsApp disparaîtrait du
 site en production.
 
 - [ ] **Step 1 : Écrire le module**
@@ -390,7 +390,7 @@ import { normaliserParametres, PARAMETRES_PAR_DEFAUT, type ParametresBoutique } 
  * Réglages de la boutique, côté serveur.
  *
  * Les types, les valeurs par défaut et la normalisation vivent dans
- * `@/lib/kk/parametres`, que le back-office — composant client — peut importer.
+ * `@/lib/kk/parametres`, que le back-office - composant client - peut importer.
  * On les réexporte ici pour que les appelants serveur n'aient qu'un import.
  */
 export type { ParametresBoutique } from "@/lib/kk/parametres";
@@ -507,7 +507,7 @@ describe("numeroWhatsappEffectif", () => {
 ```
 
 Run: `node --test --import tsx src/server/kk/parametres.test.ts`
-Expected: PASS — 3 tests
+Expected: PASS - 3 tests
 
 - [ ] **Step 3 : Vérifier**
 
@@ -527,7 +527,7 @@ Le repli sur NEXT_PUBLIC_WHATSAPP_NUMBER n'est pas une précaution de principe :
 entre le déploiement et la première saisie en administration, le réglage est
 vide, et sans lui le bouton WhatsApp disparaîtrait du site en production.
 
-Une base injoignable rend les valeurs par défaut plutôt que de lever — ce numéro
+Une base injoignable rend les valeurs par défaut plutôt que de lever - ce numéro
 est lu sur CHAQUE page, une exception les ferait toutes échouer.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
@@ -591,10 +591,10 @@ Le corps attendu est un objet aux quatre clés, toutes facultatives.
 - [ ] **Step 4 : Écrire l'écran**
 
 Quatre champs, avec pour chacun une aide sous le champ disant **où trouver la valeur** :
-- Numéro WhatsApp — « en chiffres, indicatif compris : 237658013646 »
-- Lien du formulaire d'évaluation — « adresse https du Google Form envoyé au client après livraison »
-- Identifiant GA4 — « de la forme G-XXXXXXXXXX, dans Google Analytics › Administration › Flux de données »
-- Identifiant du Pixel Meta — « suite de chiffres, dans le Gestionnaire d'événements Meta »
+- Numéro WhatsApp - « en chiffres, indicatif compris : 237658013646 »
+- Lien du formulaire d'évaluation - « adresse https du Google Form envoyé au client après livraison »
+- Identifiant GA4 - « de la forme G-XXXXXXXXXX, dans Google Analytics › Administration › Flux de données »
+- Identifiant du Pixel Meta - « suite de chiffres, dans le Gestionnaire d'événements Meta »
 
 Sous le formulaire, une phrase indiquant que les deux identifiants de mesure sont
 **enregistrés mais pas encore posés** : les balises appartiennent au lot de mesure
@@ -613,14 +613,14 @@ Expected: aucune erreur, **455 tests au vert**, construction en succès
 
 Lancer `./node_modules/.bin/next dev -p 3001` **au premier plan**, puis :
 
-1. `/admin/parametres` — enregistrer un numéro, vérifier qu'il est relu après rechargement.
-2. Saisir `ABCDE12345` en GA4 — refusé, avec un message nommant le format.
-3. Saisir `http://exemple.fr` en lien — refusé.
-4. Tout vider et enregistrer — accepté, les quatre champs sont facultatifs.
+1. `/admin/parametres` - enregistrer un numéro, vérifier qu'il est relu après rechargement.
+2. Saisir `ABCDE12345` en GA4 - refusé, avec un message nommant le format.
+3. Saisir `http://exemple.fr` en lien - refusé.
+4. Tout vider et enregistrer - accepté, les quatre champs sont facultatifs.
 
 Arrêter le serveur ensuite. Si une vérification est impossible pour une raison
-d'environnement — pas de compte administrateur, pas de boîte mail pour le code à usage
-unique — le dire franchement dans le rapport plutôt que de la déclarer réussie.
+d'environnement - pas de compte administrateur, pas de boîte mail pour le code à usage
+unique - le dire franchement dans le rapport plutôt que de la déclarer réussie.
 
 - [ ] **Step 8 : Commit**
 
@@ -629,7 +629,7 @@ git add "src/app/admin/(protected)/parametres" src/app/api/admin/parametres src/
 git commit -m "Écran des paramètres de la boutique
 
 Numéro WhatsApp, lien du formulaire d'évaluation et identifiants de mesure,
-modifiables sans redéploiement — c'est ce que le critère 16 exige.
+modifiables sans redéploiement - c'est ce que le critère 16 exige.
 
 Chaque champ porte une aide disant où trouver la valeur, et une phrase sous le
 formulaire précise que les identifiants de mesure sont enregistrés mais pas
@@ -653,7 +653,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 **C'est ici que la frontière serveur/client se déplace.** `NEXT_PUBLIC_WHATSAPP_NUMBER` est
 une variable **publique** : `WhatsAppButton` la lit directement dans son propre code, parce
-qu'il est un composant client. Une valeur en base ne peut pas l'atteindre ainsi — elle doit
+qu'il est un composant client. Une valeur en base ne peut pas l'atteindre ainsi - elle doit
 **descendre en propriété** depuis un composant serveur.
 
 C'est le seul endroit de ce sous-lot où la migration change autre chose qu'une source de
@@ -667,14 +667,14 @@ grep -rn "WhatsAppButton\|SiteHeader\|SiteFooter" src/app --include=*.tsx | head
 ```
 
 Noter lesquels portent `"use client"` et depuis quels composants serveur ils sont rendus.
-**C'est ce relevé qui décide de la forme du branchement** — si un composant est déjà
+**C'est ce relevé qui décide de la forme du branchement** - si un composant est déjà
 serveur, il lit directement ; s'il est client, il reçoit une propriété.
 
 - [ ] **Step 2 : Faire descendre le numéro**
 
 Pour chaque consommateur, selon le relevé de l'étape 1 :
-- **Composant serveur** — appeler `numeroWhatsappEffectif(await getParametres())`.
-- **Composant client** — ajouter une propriété `numeroWhatsapp: string` et la faire passer
+- **Composant serveur** - appeler `numeroWhatsappEffectif(await getParametres())`.
+- **Composant client** - ajouter une propriété `numeroWhatsapp: string` et la faire passer
   par le composant serveur qui le rend.
 
 Ne pas introduire de nouveau contexte React ni de nouvel appel de données : le numéro est
@@ -684,7 +684,7 @@ déjà lu une fois par requête grâce à `cache()`.
 
 Dans `chrome.tsx` et `WhatsAppButton.tsx`, `process.env.NEXT_PUBLIC_WHATSAPP_NUMBER`
 disparaît. Elle ne subsiste que dans `numeroWhatsappEffectif`, où elle sert de repli, et
-dans `src/config/brand.ts` — **qu'on ne touche pas** : `CONTACT.whatsapp` sert d'autres
+dans `src/config/brand.ts` - **qu'on ne touche pas** : `CONTACT.whatsapp` sert d'autres
 appelants, et le nettoyage complet de la variable est une tâche à part, après vérification
 en production.
 
@@ -697,13 +697,13 @@ Expected: aucune erreur, **455 tests au vert**, construction en succès
 
 Serveur de développement au premier plan.
 
-1. Réglage vide — le bouton WhatsApp affiche toujours le numéro de la variable
+1. Réglage vide - le bouton WhatsApp affiche toujours le numéro de la variable
    d'environnement. **C'est le repli, et c'est le point le plus important de cette tâche :
    il garantit qu'aucun déploiement ne fait disparaître le bouton.**
-2. Saisir un autre numéro en administration, recharger une page de la boutique — le lien
+2. Saisir un autre numéro en administration, recharger une page de la boutique - le lien
    `wa.me` porte le nouveau numéro, **sans redéploiement**. C'est la démonstration du
    critère 16.
-3. Ouvrir la page de confirmation d'une commande — même numéro.
+3. Ouvrir la page de confirmation d'une commande - même numéro.
 
 Dire franchement dans le rapport toute vérification impossible.
 

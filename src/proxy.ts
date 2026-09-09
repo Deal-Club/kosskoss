@@ -19,8 +19,8 @@ const routageMultilingue = createMiddleware(routing);
  * Le back-office, les API, le flux Merchant et les trois routes de campagne
  * restent hors du routage multilingue.
  *
- * Les routes de campagne sont volontairement courtes — un lien de message doit
- * rester lisible et tenir sur une ligne — et n'ont pas de version par langue :
+ * Les routes de campagne sont volontairement courtes - un lien de message doit
+ * rester lisible et tenir sur une ligne - et n'ont pas de version par langue :
  * /c et /p ne renvoient qu'une redirection ou une image, et /desinscription choisit
  * sa langue d'après le destinataire enregistré, pas d'après l'URL. Les faire
  * passer par le routage multilingue les réécrirait en /fr/c/... et casserait
@@ -47,7 +47,7 @@ function horsRoutageMultilingue(pathname: string): boolean {
  * Une session valide suffit à traverser la maintenance. On ne vérifie que la
  * signature du jeton, pas l'existence du compte en base : ce serait une requête
  * de plus sur chaque page, et la maintenance est justement le moment où la base
- * peut être indisponible. Le jeton est signé et daté — il ne s'obtient pas sans
+ * peut être indisponible. Le jeton est signé et daté - il ne s'obtient pas sans
  * être passé par le mot de passe et le code à six chiffres.
  */
 function administrateurConnecte(request: NextRequest): boolean {
@@ -108,7 +108,7 @@ export const config = {
   // les deux traitements se fait dans `proxy`, pas ici.
   //
   // Restent en dehors : les ressources internes de Next et tout chemin portant
-  // une extension de fichier — images, polices, favicon. La page d'attente en a
+  // une extension de fichier - images, polices, favicon. La page d'attente en a
   // besoin, et les exclure évite de faire tourner ce code sur chaque octet
   // statique.
   //

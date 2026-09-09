@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 
 // Galerie de la fiche produit : une grande vue, et les miniatures juste en
 // dessous quand le produit a plusieurs visuels. Sans vue complémentaire, le
-// rendu est exactement celui d'avant — une seule image, sans rangée vide.
+// rendu est exactement celui d'avant - une seule image, sans rangée vide.
 //
 // L'ordre vient du back-office : l'image principale d'abord, puis la galerie
 // telle qu'elle a été rangée dans le formulaire produit.

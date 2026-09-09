@@ -14,9 +14,9 @@ import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
  * ── UNE RÈGLE QUI GOUVERNE TOUT ─────────────────────────────────────────────
  *
  * Une commande ne passe JAMAIS en « payée » depuis le retour navigateur du
- * client. Ce retour prouve seulement qu'un onglet s'est rouvert — pas qu'un
+ * client. Ce retour prouve seulement qu'un onglet s'est rouvert - pas qu'un
  * franc a été encaissé. Seuls le webhook signé (ou, pour CinetPay, une
- * relecture serveur-à-serveur systématique — voir gateways/cinetpay.ts) font
+ * relecture serveur-à-serveur systématique - voir gateways/cinetpay.ts) font
  * autorité. C'est écrit noir sur blanc dans le cahier des charges (docs/13
  * §5.2) et c'est la faute la plus coûteuse qu'un tunnel de paiement puisse
  * commettre.
@@ -28,18 +28,18 @@ import { identifiantProduitCatalogue } from "@/lib/kk/mesure";
  * dépôt (code éprouvé, pourrait redevenir un repli un jour) mais
  * `fournisseurActif` ne le regarde plus : demande explicite du client, un
  * paiement de test avait redirigé vers GeniusPay pendant que CinetPay était
- * encore bloqué par la liste blanche IP côté CinetPay — un repli silencieux
+ * encore bloqué par la liste blanche IP côté CinetPay - un repli silencieux
  * vers un second prestataire configuré est justement le genre de surprise
  * qu'on ne veut pas sur un tunnel de paiement. Tant que CinetPay échoue
  * (IP non autorisée, jeton refusé…), le tunnel retombe sur la confirmation
- * manuelle par WhatsApp — jamais sur GeniusPay à l'insu de quiconque.
+ * manuelle par WhatsApp - jamais sur GeniusPay à l'insu de quiconque.
  * `PaymentTransaction.provider` garde le nom du prestataire par lequel
  * chaque tentative est réellement passée.
  */
 
 type Provider = { nom: "cinetpay"; config: cinetpay.ConfigCinetPay };
 
-/** Prestataire actif — CinetPay uniquement, voir la note ci-dessus. */
+/** Prestataire actif - CinetPay uniquement, voir la note ci-dessus. */
 function fournisseurActif(): Provider | null {
   const cp = cinetpay.lireConfig();
   return cp ? { nom: "cinetpay", config: cp } : null;
@@ -94,7 +94,7 @@ export async function ouvrirPaiement(
   // Les deux sorties qui suivent rendent `null` sans lever : la commande est
   // déjà enregistrée, et l'appelant doit pouvoir répondre au client quoi qu'il
   // arrive. Mais un `return null` muet sur un tunnel de paiement est
-  // indiagnosticable — vu de l'extérieur, une passerelle non configurée et une
+  // indiagnosticable - vu de l'extérieur, une passerelle non configurée et une
   // commande introuvable donnent la même page de confirmation sans lien de
   // paiement, et les journaux ne portent rien du tout. Ces deux traces disent
   // laquelle des deux s'est produite.
@@ -124,12 +124,12 @@ export async function ouvrirPaiement(
     telephone: commande.phone,
   };
 
-  // `transaction_id` CinetPay DOIT être unique par tentative — contrairement
+  // `transaction_id` CinetPay DOIT être unique par tentative - contrairement
   // à GeniusPay, qui délivre sa propre référence opaque, c'est nous qui la
   // choisissons ici. Le numéro de commande sert de base ; une reprise après
   // échec (nouvel appel pour la même commande) ajoute un suffixe `R<n>`,
   // jamais un caractère qui pourrait apparaître dans un vrai numéro de
-  // commande (`KK-AAAA-NNNNNN`, uniquement chiffres après le second tiret) —
+  // commande (`KK-AAAA-NNNNNN`, uniquement chiffres après le second tiret) -
   // c'est ce qui permet de retrouver la commande sans ambiguïté depuis le
   // webhook (voir `commandeDepuisReferenceCinetpay`).
   //
@@ -137,7 +137,7 @@ export async function ouvrirPaiement(
   //
   // La page de confirmation demande une preuve d'accès, sans quoi n'importe
   // qui lirait la commande de n'importe qui à partir de son seul numéro.
-  // Cette preuve a d'abord été mise ici, en `?t=<accessToken>` — et c'était
+  // Cette preuve a d'abord été mise ici, en `?t=<accessToken>` - et c'était
   // une faute : le prestataire ENREGISTRE cette URL chez lui, elle apparaît
   // dans ses réponses d'API et dans ses journaux, puis elle se dépose dans
   // l'historique du navigateur et dans l'en-tête `Referer` des requêtes
@@ -185,14 +185,14 @@ export async function ouvrirPaiement(
   await recordOrderEvent(
     commande.id,
     "paiement",
-    `Paiement ouvert chez ${fournisseur.nom} (${paiement.environnement}) — référence ${paiement.reference}`,
+    `Paiement ouvert chez ${fournisseur.nom} (${paiement.environnement}) - référence ${paiement.reference}`,
   );
 
   return { urlPaiement: paiement.urlPaiement, reference: paiement.reference };
 }
 
 /**
- * Numéro de commande depuis une référence CinetPay — l'inverse du suffixe
+ * Numéro de commande depuis une référence CinetPay - l'inverse du suffixe
  * `R<n>` posé à l'ouverture. Une référence sans suffixe EST déjà le numéro de
  * commande (première tentative).
  */
@@ -203,7 +203,7 @@ export function commandeDepuisReferenceCinetpay(transactionId: string): string {
 // ---- Conclusion depuis un webhook ----
 
 export interface EvenementPaiement {
-  /** Lequel des deux prestataires a émis l'événement — détermine le
+  /** Lequel des deux prestataires a émis l'événement - détermine le
    *  vocabulaire de statut lu par `estEncaisse`/`estEchoue` ("completed" chez
    *  GeniusPay, "ACCEPTED" chez CinetPay, entre autres divergences. */
   provider: "cinetpay" | "geniuspay";
@@ -241,7 +241,7 @@ export type Issue = "encaisse" | "echoue" | "ignore" | "commande_introuvable" | 
  * Ne suppose rien de l'ordre d'arrivée : un `payment.success` peut précéder la
  * création de la transaction si le client a payé très vite, et un événement
  * peut arriver deux fois. La fonction est donc écrite pour être rejouable sans
- * effet de bord — c'est l'appelant qui garantit l'unicité par le journal des
+ * effet de bord - c'est l'appelant qui garantit l'unicité par le journal des
  * webhooks, mais elle ne doit pas en dépendre pour rester correcte.
  */
 export async function appliquerEvenement(evenement: EvenementPaiement): Promise<Issue> {
@@ -251,8 +251,8 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
   // ── Idempotence propre à CinetPay ─────────────────────────────────────────
   // GeniusPay est protégé en amont par le verrou sur `WebhookEvent.deliveryId`
   // (voir la route de webhook correspondante). CinetPay n'offre aucun
-  // identifiant de livraison stable — sa documentation dit explicitement que
-  // `notify_url` peut être appelée PLUSIEURS FOIS pour le même paiement — donc
+  // identifiant de livraison stable - sa documentation dit explicitement que
+  // `notify_url` peut être appelée PLUSIEURS FOIS pour le même paiement - donc
   // le verrou se pose ici : si cette transaction est DÉJÀ dans l'état encaissé
   // qu'annonce l'événement, les effets de bord (mail, statut, CAPI) ne sont
   // pas rejoués une deuxième fois.
@@ -294,10 +294,10 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
     });
 
     // CAPI Meta (critère 20) : l'ENCAISSEMENT est la conversion, pas la
-    // commande — c'est pourquoi cet appel vit ICI et nulle part ailleurs, dans
+    // commande - c'est pourquoi cet appel vit ICI et nulle part ailleurs, dans
     // le seul point de passage qui fait passer une commande en « payée » (voir
     // l'en-tête du fichier). N'envoie rien sans consentement marketing figé à
-    // la commande, ni sans identifiant/jeton CAPI configurés — voir
+    // la commande, ni sans identifiant/jeton CAPI configurés - voir
     // `src/server/kk/capi.ts`. `await`ée : une erreur y est toujours avalée,
     // jamais laissée remonter jusqu'ici (même fichier, même garantie).
     await envoyerAchatCapi({
@@ -309,7 +309,7 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
       // Référence ALIGNÉE SUR LE FLUX GOOGLE MERCHANT (voir
       // `identifiantProduitCatalogue`), même repli qu'à la page de confirmation
       // (MesureAchat, côté navigateur) : slug, puis identifiant produit, puis
-      // nom — la seule valeur garantie non vide sur toute ligne de commande
+      // nom - la seule valeur garantie non vide sur toute ligne de commande
       // (colonne `slug` ajoutée après coup, produit parfois supprimé depuis).
       articles: commande.items.map((item) => ({
         reference: identifiantProduitCatalogue(item.slug, item.productId || item.name),
@@ -338,7 +338,7 @@ export async function appliquerEvenement(evenement: EvenementPaiement): Promise<
  * Le cas « elle manque » n'est pas théorique : si l'ouverture a réussi chez le
  * prestataire mais que notre écriture a échoué juste après, le webhook arrive
  * pour une référence inconnue. Perdre la trace du paiement à ce moment-là
- * serait le pire des deux mondes — l'argent est parti, nous n'en savons rien.
+ * serait le pire des deux mondes - l'argent est parti, nous n'en savons rien.
  */
 async function majTransaction(orderId: string, evenement: EvenementPaiement): Promise<void> {
   const conclu = estEncaisse(evenement);

@@ -22,7 +22,7 @@ export async function POST(request: Request, { params }: Params) {
   }
   // Champ exigé, sans défaut : cette case écrase le coût d'achat du produit
   // dans tout le catalogue. Un appelant qui l'omet ne doit jamais l'écraser
-  // par accident — l'écran l'envoie toujours (coché par défaut à l'écran,
+  // par accident - l'écran l'envoie toujours (coché par défaut à l'écran,
   // pas dans l'API).
   if (typeof body.majCoutProduit !== "boolean") {
     return NextResponse.json(

@@ -67,7 +67,7 @@ export function ProductPurchaseBox({ product }: { product: Product }) {
             </div>
             {/* Vente flash : le décompte est l'argument principal, il vient juste
                 sous le prix. Les autres campagnes affichent leur pastille et rien
-                de plus — un compte à rebours sur une offre de deux semaines
+                de plus - un compte à rebours sur une offre de deux semaines
                 fabrique une urgence qui n'existe pas. */}
             {product.promoCountdown && product.promoEndsAt && (
               <div className="mt-2">

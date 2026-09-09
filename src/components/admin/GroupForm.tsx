@@ -131,7 +131,7 @@ export function GroupForm({ mode, initialData }: GroupFormProps) {
 
 /**
  * Suppression avec retour d'information : l'API refuse les univers qui contiennent
- * encore des catégories — ce message est affiché ici en clair.
+ * encore des catégories - ce message est affiché ici en clair.
  */
 export function GroupDeleteButton({ id, label }: { id: string; label: string }) {
   const router = useRouter();

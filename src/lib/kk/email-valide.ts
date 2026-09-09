@@ -5,7 +5,7 @@
  * la lettre d'information (`src/app/api/kk/newsletter/route.ts`) et l'envoi de
  * la routine du diagnostic (`src/app/api/kk/diagnostic/routine-email/route.ts`).
  * Une règle de validation qui vivrait dans les deux fichiers finirait par
- * diverger sans que rien ne le signale — elle est donc écrite une seule fois
+ * diverger sans que rien ne le signale - elle est donc écrite une seule fois
  * ici, et les deux routes l'importent.
  *
  * Volontairement large : le rôle du serveur est d'écarter les saisies

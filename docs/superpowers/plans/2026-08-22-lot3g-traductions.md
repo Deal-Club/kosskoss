@@ -1,6 +1,6 @@
-# Lot 3G — L'écran des traductions — Plan d'implémentation
+# Lot 3G - L'écran des traductions - Plan d'implémentation
 
-> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE —
+> **Pour les exécutants agentiques :** SOUS-COMPÉTENCE REQUISE -
 > superpowers:subagent-driven-development.
 
 **But :** un écran unique qui dit ce qui manque en anglais et permet de le combler,
@@ -23,7 +23,7 @@ au lieu de dix-sept écrans à ouvrir un par un.
    propres ne se traduisent pas.
 5. **`Article.blocksEn` est exclu de l'écran, et l'exclusion est DITE.** Le taire
    ferait croire l'article traduit.
-6. **Toute route et tout écran nomment leur capacité** — `contenu` ici — et
+6. **Toute route et tout écran nomment leur capacité** - `contenu` ici - et
    `traductions` doit être ajouté à `CAPACITE_PAR_FAMILLE` **avant** d'écrire les
    routes. Le test exige autant de gardes que de fonctions exportées.
 7. **Les modules de `src/lib/kk/` n'importent que des modules purs.**
@@ -51,7 +51,7 @@ export function etatTraduction(valeurs: Record<string, string>, champs: ChampTra
 export interface EtatTraduction { traduits: number; aTraduire: number; total: number; complet: boolean }
 ```
 
-**Le registre, à écrire tel quel** — dix-sept modèles, en reprenant exactement les
+**Le registre, à écrire tel quel** - dix-sept modèles, en reprenant exactement les
 noms de champs du schéma :
 
 | Modèle | Champs (fr → en) |
@@ -69,7 +69,7 @@ noms de champs du schéma :
 | `DiagStep` | label |
 | `ProductTag` | label |
 | `Campaign` | subject, headline, bodyText, ctaLabel |
-| `Article` | title, excerpt, coverAlt, metaTitle, metaDescription — **PAS `blocks`** |
+| `Article` | title, excerpt, coverAlt, metaTitle, metaDescription - **PAS `blocks`** |
 | `ArticleCategory` | label, description |
 | `ArticleTag` | label |
 | `ArticleAuthor` | role, bio |
@@ -171,7 +171,7 @@ tous les champs `*En` par modèle, et vérifie **dans les deux sens** :
 
 - chaque champ `*En` du schéma figure au registre, **sauf** une liste d'exclusions
   nommées et justifiées en commentaire (`Article.blocksEn`, et tout autre champ que
-  tu décides d'exclure — dis pourquoi) ;
+  tu décides d'exclure - dis pourquoi) ;
 - chaque entrée du registre correspond à un champ réellement présent au schéma.
 
 Le message d'échec doit nommer le modèle et le champ. C'est ce test qui empêchera
@@ -211,8 +211,8 @@ cet écran écrit dans dix-sept tables, et un accès dynamique n'échouerait qu'
 l'exécution, après avoir peut-être écrit ailleurs. La répétition est ici une
 garantie.
 
-Chaque entrée doit aussi savoir donner un **libellé lisible** de l'enregistrement —
-le nom du produit, le titre de l'article — pour que la liste soit navigable. Un
+Chaque entrée doit aussi savoir donner un **libellé lisible** de l'enregistrement -
+le nom du produit, le titre de l'article - pour que la liste soit navigable. Un
 écran qui affiche des identifiants n'est pas utilisable.
 
 - [ ] **Étape 2 : l'écriture**
@@ -222,7 +222,7 @@ modèle. Tout champ reçu qui n'y figure pas est ignoré : c'est ce qui empêche
 route d'écrire n'importe quoi n'importe où.
 
 Le champ de format `liste` (`Product.bulletsEn`) est reçu comme une ligne par puce
-et rangé au même format JSON que son homologue français — **regarde comment
+et rangé au même format JSON que son homologue français - **regarde comment
 `bullets` est écrit aujourd'hui et fais pareil**, ne réinvente pas le format.
 
 - [ ] **Étape 3 : vérifier et commiter**
@@ -237,11 +237,11 @@ git commit src/server/kk/traductions.ts -m "Lecture et écriture des traductions
 ### Tâche 3 : L'écran et les routes
 
 **Fichiers :**
-- `src/lib/kk/routesAdmin.ts` — `traductions: "contenu"`, **d'abord**
+- `src/lib/kk/routesAdmin.ts` - `traductions: "contenu"`, **d'abord**
 - `src/app/api/admin/traductions/route.ts`
 - `src/app/admin/(protected)/traductions/page.tsx`
 - `src/components/admin/TraductionsEditeur.tsx`
-- `src/components/admin/AdminSidebar.tsx` — entrée « Traductions » dans la section Contenu
+- `src/components/admin/AdminSidebar.tsx` - entrée « Traductions » dans la section Contenu
 
 - [ ] **Étape 1 : la carte des capacités d'abord.** Le test d'arborescence échouera
       sinon, et c'est son rôle.
@@ -250,11 +250,11 @@ git commit src/server/kk/traductions.ts -m "Lecture et écriture des traductions
 
 Trois parties, dans cet ordre :
 
-1. **La vue d'ensemble** — un tableau par modèle : total, complets, à traduire, et
+1. **La vue d'ensemble** - un tableau par modèle : total, complets, à traduire, et
    le pourcentage. C'est le chiffre qu'on vient chercher.
-2. **Les filtres** — modèle et état. Le filtre d'état vaut **« à traduire » par
+2. **Les filtres** - modèle et état. Le filtre d'état vaut **« à traduire » par
    défaut** : on ouvre cet écran pour combler, pas pour admirer.
-3. **La liste et l'éditeur** — pour chaque enregistrement, le français à gauche
+3. **La liste et l'éditeur** - pour chaque enregistrement, le français à gauche
    **non modifiable**, l'anglais à droite. On traduit en regardant l'original.
 
 **L'exclusion des blocs d'article doit être VISIBLE** : sur la ligne d'un article,
@@ -262,7 +262,7 @@ une mention disant que le corps se traduit dans l'éditeur d'article, avec un li
 Sans elle, un article dont le titre est traduit paraîtrait fait.
 
 Pour les puces : une ligne par puce, et **le nombre de puces françaises rappelé à
-côté** — une traduction qui en perd une se voit alors immédiatement.
+côté** - une traduction qui en perd une se voit alors immédiatement.
 
 - [ ] **Étape 3 : les routes**
 
@@ -295,6 +295,6 @@ et relis la base pour le confirmer. Écris ce décompte dans ton rapport.
 
 - [ ] `npm test` au vert, `npm run build` en succès.
 - [ ] Le test registre/schéma passe, et échoue si l'on retire une entrée du registre
-      — éprouve-le par mutation et rapporte le résultat.
+      - éprouve-le par mutation et rapporte le résultat.
 - [ ] Aucune route ni écran sans capacité déclarée.
 - [ ] Aucun enregistrement laissé modifié par les essais.

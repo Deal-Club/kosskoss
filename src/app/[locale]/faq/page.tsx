@@ -26,7 +26,7 @@ export default async function FaqPage({ params }: { params: PageParams }) {
   if (!page) notFound();
 
   // Balisage FAQPage : Google peut afficher les questions directement
-  // dans les résultats de recherche. Le balisage attend du texte nu — les
+  // dans les résultats de recherche. Le balisage attend du texte nu - les
   // marques de formatage sont retirées, et les puces d'une réponse sont
   // recollées pour que la réponse reste complète.
   const jsonLd = {

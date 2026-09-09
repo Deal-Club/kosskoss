@@ -19,7 +19,7 @@ function prefixes(): string[] {
 
 /**
  * Un article a changé : sa page, la liste, et les pages de taxonomie qui le
- * citent. Le slug est facultatif — à la création, il n'y a pas encore de page
+ * citent. Le slug est facultatif - à la création, il n'y a pas encore de page
  * à invalider.
  */
 export function revalidateJournal(slug?: string): void {

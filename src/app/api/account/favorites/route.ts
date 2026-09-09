@@ -13,7 +13,7 @@ import {
  * Favoris du client connecté.
  *
  * La lecture répond 200 même sans session, avec `authenticated: false` : c'est
- * le cas le plus courant — un visiteur sur deux n'a pas de compte — et il n'a
+ * le cas le plus courant - un visiteur sur deux n'a pas de compte - et il n'a
  * rien d'anormal. Un 401 inscrirait une erreur rouge dans la console de chaque
  * visiteur et noierait les vraies. Les écritures, elles, répondent bien 401 :
  * là, l'absence de session empêche réellement l'opération.

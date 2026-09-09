@@ -6,7 +6,7 @@
  * Produit livrables/maquette-kosskoss/index.html : une page autoportante, sans
  * serveur ni dépendance réseau, qui s'ouvre au double-clic. Les captures et les
  * maquettes du client restent des fichiers à côté, ce qui garde la page légère
- * à l'ouverture — les images se chargent au défilement.
+ * à l'ouverture - les images se chargent au défilement.
  *
  * À relancer après chaque campagne de capture.
  */
@@ -568,7 +568,7 @@ const SCRIPT = `
   const ECRANS = JSON.parse(document.getElementById("liste-ecrans").textContent);
   // Déclaré avant les boucles qui peignent les cartes : chacune appelle
   // compter() dès son premier rendu, et une déclaration plus bas laissait la
-  // variable dans sa zone morte — la barre du bas restait vide.
+  // variable dans sa zone morte - la barre du bas restait vide.
   const sortieCompteurs = document.querySelector(".compteurs");
 
   /** État du client : verdict et commentaire par écran, gardés dans son navigateur. */
@@ -702,7 +702,7 @@ const SCRIPT = `
   // ---------------------------------------------------------------- export
   function composerRetours() {
     const lignes = [
-      "Retours sur la maquette — KossKoss Select",
+      "Retours sur la maquette - KossKoss Select",
       "Site présenté : " + document.body.dataset.base,
       "",
     ];
@@ -792,7 +792,7 @@ const page = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Maquette du site — KossKoss Select</title>
+<title>Maquette du site - KossKoss Select</title>
 <style>${STYLES}</style>
 </head>
 <body data-base="${donnees.base}">
@@ -840,9 +840,9 @@ const page = `<!doctype html>
       <h2>Ce que cette maquette ne montre pas</h2>
       <p>Par honnêteté, et pour que la validation porte sur du solide :</p>
       <ul>
-        <li><strong>L’espace client une fois connecté</strong> — compte, historique de commandes, carnet d’adresses. Ces écrans existent et fonctionnent ; les photographier demandait de créer un compte réel dans la base de la boutique en ligne, ce qui a été écarté pour cette version.</li>
-        <li><strong>La confirmation de commande</strong> — l’afficher supposait de passer une vraie commande, avec le paiement et les courriels qui vont avec. Le parcours s’arrête donc au récapitulatif, juste avant l’envoi.</li>
-        <li><strong>Le back-office</strong> — les écrans d’administration de la boutique ne font pas partie de cette présentation.</li>
+        <li><strong>L’espace client une fois connecté</strong> - compte, historique de commandes, carnet d’adresses. Ces écrans existent et fonctionnent ; les photographier demandait de créer un compte réel dans la base de la boutique en ligne, ce qui a été écarté pour cette version.</li>
+        <li><strong>La confirmation de commande</strong> - l’afficher supposait de passer une vraie commande, avec le paiement et les courriels qui vont avec. Le parcours s’arrête donc au récapitulatif, juste avant l’envoi.</li>
+        <li><strong>Le back-office</strong> - les écrans d’administration de la boutique ne font pas partie de cette présentation.</li>
       </ul>
     </section>
 
@@ -884,7 +884,7 @@ writeFileSync(
 ================================
 
 Ouvrez « index.html » d'un double-clic : la maquette s'affiche dans votre
-navigateur. Aucune installation, aucun compte, aucune connexion nécessaire —
+navigateur. Aucune installation, aucun compte, aucune connexion nécessaire -
 sauf pour les boutons « Ouvrir la vraie page », qui mènent au site en ligne.
 
 Le dossier contient :

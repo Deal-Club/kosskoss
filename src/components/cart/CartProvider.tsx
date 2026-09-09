@@ -63,7 +63,7 @@ const CartContext = createContext<CartContextValue | null>(null);
  *
  * Le cookie n'est lu ici que pour savoir s'il vaut la peine de poser la
  * question : sans lui, la grande majorité des visites n'émet aucune requête.
- * Sa présence ne décide de rien — c'est /api/campaign-context qui répond, en
+ * Sa présence ne décide de rien - c'est /api/campaign-context qui répond, en
  * relisant la campagne en base, et le tunnel de commande refait le contrôle.
  * Un cookie recopié d'un ami n'offre donc pas la livraison gratuite.
  */

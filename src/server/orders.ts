@@ -107,7 +107,7 @@ export interface OrderRecord {
   withdrawalAcknowledgedAt?: string;
   /**
    * Consentement « marketing » au moment de la COMMANDE (voir le commentaire
-   * sur la colonne, dans le schéma) — c'est cette valeur, figée, que la CAPI
+   * sur la colonne, dans le schéma) - c'est cette valeur, figée, que la CAPI
    * lit à l'encaissement, pas un cookie relu après coup.
    */
   marketingConsent: boolean;
@@ -173,7 +173,7 @@ function toRecord(row: NonNullable<OrderRow>): OrderRecord {
     paymentMethodKey: row.paymentMethodKey,
     paymentMethodLabel: row.paymentMethodLabel,
     paymentMethodFee: row.paymentMethodFee,
-    // Une clé inconnue en base — mode retiré du catalogue plus tard — retombe
+    // Une clé inconnue en base - mode retiré du catalogue plus tard - retombe
     // sur le standard plutôt que de casser l'affichage de la commande.
     shippingMethodKey: isShippingMethodKey(row.shippingMethodKey)
       ? row.shippingMethodKey
@@ -337,7 +337,7 @@ const ORDER_NUMBER_BASE = 14_678;
  *
  * Le préfixe était « MLC- », hérité de l'ancienne activité de bois de chauffage :
  * il apparaissait en clair sur la confirmation de commande, la facture et le
- * libellé de paiement. Les commandes déjà émises gardent leur ancien numéro —
+ * libellé de paiement. Les commandes déjà émises gardent leur ancien numéro -
  * la recherche par numéro les retrouve, le préfixe n'entre pas dans le compteur.
  */
 async function nextOrderNumber(): Promise<string> {
@@ -369,7 +369,7 @@ interface ReservedLine {
 
 /**
  * Rattachement d'une commande à la campagne qui l'a provoquée. Reconstitué par
- * l'appelant HTTP à partir du cookie d'attribution — jamais depuis la charge
+ * l'appelant HTTP à partir du cookie d'attribution - jamais depuis la charge
  * utile du formulaire.
  */
 export interface CampaignContext {
@@ -434,12 +434,12 @@ async function releaseReservations(reserved: ReservedLine[], reference: string):
  * `customerId` est un paramètre distinct de la charge utile, et non un champ de
  * `CheckoutInput` : il vient exclusivement du cookie de session côté serveur.
  * Le navigateur ne doit jamais pouvoir désigner le compte auquel une commande
- * est rattachée. Sans compte connecté, il reste vide — la commande en tant
+ * est rattachée. Sans compte connecté, il reste vide - la commande en tant
  * qu'invité fonctionne exactement comme avant.
  *
  * `campaignContext` suit la même règle : il est reconstitué côté serveur depuis
  * le cookie d'attribution. Il ne fait qu'énoncer une prétention, que cette
- * fonction revalide entièrement — existence de la campagne, période, avantage
+ * fonction revalide entièrement - existence de la campagne, période, avantage
  * réellement accordé.
  */
 export async function createOrder(
@@ -487,7 +487,7 @@ export async function createOrder(
       });
     }
 
-    // Si une variation est demandée, son prix fait autorité — jamais le prix
+    // Si une variation est demandée, son prix fait autorité - jamais le prix
     // catalogue ni le moteur de promotions ne peuvent le réécrire.
     let linePriceCents = product.priceCents;
     let lineVariantId: string | undefined;
@@ -549,7 +549,7 @@ export async function createOrder(
     }
 
     // Ligne avec variation : on applique la remise campagne (ratio) sur le
-    // prix de base de la variation, lu en base ci-dessus — jamais depuis le
+    // prix de base de la variation, lu en base ci-dessus - jamais depuis le
     // navigateur.
     const promotion = promotionMap.get(line.productId);
     const finalCents = discountedVariantCents(line.priceCents, promotion);
@@ -563,8 +563,8 @@ export async function createOrder(
   if (!method) throw new OrderError("invalid_payment_method");
 
   // 4. Attribution marketing et avantage associé. La campagne est retenue dès
-  // qu'elle existe — c'est ce qui rend le chiffre d'affaires attribué
-  // exploitable —, mais la livraison offerte, elle, n'est accordée que si la
+  // qu'elle existe - c'est ce qui rend le chiffre d'affaires attribué
+  // exploitable -, mais la livraison offerte, elle, n'est accordée que si la
   // campagne l'accorde vraiment et court encore.
   const attribution = campaignContext
     ? await resolveCampaignAttribution(campaignContext)
@@ -806,12 +806,12 @@ export async function updatePaymentStatus(
   // ICI et nulle part ailleurs. C'est le passage obligé de toute bascule de
   // paiement : le webhook GeniusPay (kk/paiement.ts), le back-office
   // (api/admin/orders/[id]) et l'ancien webhook y aboutissent tous. Le paiement
-  // à la livraison ne déclenche AUCUN webhook — sans ce point commun, il
+  // à la livraison ne déclenche AUCUN webhook - sans ce point commun, il
   // faudrait un second chemin d'émission, donc un second endroit où oublier un
   // cas.
   //
   // La sortie anticipée ci-dessus (ligne 773) filtre déjà le cas le plus
-  // fréquent — un statut qui ne bouge pas — mais elle n'est pas atomique :
+  // fréquent - un statut qui ne bouge pas - mais elle n'est pas atomique :
   // deux webhooks simultanés pour la même commande peuvent tous deux la
   // franchir et arriver ici. La vraie garantie d'unicité est la contrainte
   // `Invoice.orderId @unique` couplée à la reprise sur P2002 dans
@@ -827,7 +827,7 @@ export async function updatePaymentStatus(
       // `getOrder(id)` est une lecture base ajoutée par ce point d'accroche :
       // elle doit rester dans le même filet que `emettreFacture`, sinon une
       // base injoignable la ferait échouer hors du try et remonterait
-      // jusqu'au webhook — le même trou que celui refermé pour
+      // jusqu'au webhook - le même trou que celui refermé pour
       // recordOrderEvent juste en dessous.
       const record = await getOrder(id);
       if (record) {
@@ -877,7 +877,7 @@ export async function updatePaymentStatus(
  * `updatePaymentStatus` n'écrit un événement que lorsque le statut bascule
  * réellement : une anomalie détectée sur une commande déjà « en attente » n'y
  * laisserait donc aucune trace. C'est précisément le cas d'un paiement reçu
- * pour un montant qui ne correspond pas — il faut qu'il apparaisse dans
+ * pour un montant qui ne correspond pas - il faut qu'il apparaisse dans
  * l'historique du back-office, là où le commerçant le verra, et pas seulement
  * dans les journaux du serveur.
  */
@@ -950,12 +950,12 @@ export type DeleteOrderResult = "supprimee" | "introuvable" | "facturee";
  *
  * Une commande facturée est refusée AVANT le `delete` : la relation
  * `Invoice.order` est en `onDelete: Restrict` (voir prisma/schema.prisma), donc
- * la base rejetterait de toute façon — mais par une P2003 non typée, que la
+ * la base rejetterait de toute façon - mais par une P2003 non typée, que la
  * route rendrait en 500 nu. L'opérateur ne saurait alors pas que c'est la
  * facture qui bloque, ni que le blocage est voulu : une pièce comptable ne
  * disparaît pas, sa séquence doit rester continue.
  *
- * La vérification n'est pas atomique — une facture peut naître entre la lecture
+ * La vérification n'est pas atomique - une facture peut naître entre la lecture
  * et la suppression, si un webhook de paiement arrive pile à ce moment. La
  * contrainte base reste le garde-fou dans ce cas ; ce test-ci n'est là que pour
  * rendre le cas courant lisible.

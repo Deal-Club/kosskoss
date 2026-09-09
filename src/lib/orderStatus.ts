@@ -9,7 +9,7 @@
 //
 // ── LES STATUTS SONT CEUX DU CAHIER DES CHARGES ─────────────────────────────
 //
-// La liste précédente était celle héritée de `mlcbois` — reçue, en traitement,
+// La liste précédente était celle héritée de `mlcbois` - reçue, en traitement,
 // expédiée, livrée, annulée. Elle ne correspondait pas au CDC KossKoss (voir
 // docs/13, §3), et surtout `src/server/kk/checkout.ts` créait déjà les
 // commandes avec `en_attente_paiement`, une valeur ABSENTE de la liste : le
@@ -17,11 +17,11 @@
 // toute commande fraîchement passée.
 //
 // Deux ajouts par rapport au CDC :
-//   — « remboursee » est un statut à part entière et non un synonyme
+//   - « remboursee » est un statut à part entière et non un synonyme
 //     d'« annulée ». Le CDC les écrit « Annulée/Remboursée », mais une commande
 //     remboursée a été payée puis rendue, alors qu'une commande annulée n'a
 //     jamais encaissé. Confondre les deux fausse le chiffre d'affaires.
-//   — l'ordre du tableau est l'ordre du parcours : le back-office s'en sert
+//   - l'ordre du tableau est l'ordre du parcours : le back-office s'en sert
 //     pour proposer l'étape suivante.
 
 export const ORDER_STATUSES = [

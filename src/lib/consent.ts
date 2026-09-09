@@ -4,7 +4,7 @@
  * ── POURQUOI CE MODULE EXISTE ────────────────────────────────────────────────
  *
  * `TARGET.md` disait qu'un bandeau était inutile « tant que seuls des cookies
- * strictement nécessaires sont déposés ». C'était vrai — ça ne l'est plus : la
+ * strictement nécessaires sont déposés ». C'était vrai - ça ne l'est plus : la
  * boutique dispose d'un écran « Scripts & balises » qui injecte du HTML
  * arbitraire (gestionnaire de balises, pixel publicitaire) dans toutes les
  * pages, pour tous les visiteurs. Dès qu'un fragment de ce type est actif,
@@ -12,7 +12,7 @@
  * doit être recueilli AVANT le dépôt.
  *
  * Le chat Smartsupp, lui, ne pose pas de problème : il ne charge rien tant que
- * le visiteur n'a pas cliqué — voir `SmartsuppLauncher`.
+ * le visiteur n'a pas cliqué - voir `SmartsuppLauncher`.
  *
  * ── TROIS RÈGLES QUI GOUVERNENT TOUT LE MODULE ───────────────────────────────
  *
@@ -28,8 +28,8 @@
  *  3. **Le choix se périme.** Six mois, la durée recommandée par la CNIL :
  *     passé ce délai le bandeau revient, y compris après un refus.
  *
- * Le format du cookie est volontairement lisible à l'œil nu — `1.1.0.1755424800`
- * — plutôt qu'un JSON encodé : on peut vérifier un consentement depuis
+ * Le format du cookie est volontairement lisible à l'œil nu - `1.1.0.1755424800`
+ * - plutôt qu'un JSON encodé : on peut vérifier un consentement depuis
  * l'inspecteur du navigateur, sans outil.
  */
 
@@ -45,7 +45,7 @@ export const CONSENT_COOKIE = "kk_consent";
 export const CONSENT_VERSION = 1;
 
 /**
- * Treize mois — le maximum retenu par la CNIL pour la durée de vie d'un cookie
+ * Treize mois - le maximum retenu par la CNIL pour la durée de vie d'un cookie
  * de consentement.
  *
  * C'était six mois, la durée qu'elle *recommande* pour re-solliciter. Mais un
@@ -61,7 +61,7 @@ export const CONSENT_VERSION = 1;
 export const CONSENT_MAX_AGE_SECONDS = 60 * 60 * 24 * 396;
 
 /**
- * `necessaire`  session, panier, langue, panier d'achat — jamais négociable
+ * `necessaire`  session, panier, langue, panier d'achat - jamais négociable
  * `mesure`      statistiques de fréquentation
  * `marketing`   publicité, remarketing, réseaux sociaux
  */
@@ -98,7 +98,7 @@ export function rejectAll(now: Date = new Date()): Consent {
 
 // ---- Sérialisation ----
 
-/** `version.mesure.marketing.horodatage` — aucun caractère réservé des cookies. */
+/** `version.mesure.marketing.horodatage` - aucun caractère réservé des cookies. */
 export function serializeConsent(consent: Consent): string {
   const flag = (value: boolean) => (value ? "1" : "0");
   return [
@@ -112,7 +112,7 @@ export function serializeConsent(consent: Consent): string {
 /**
  * Lit la valeur du cookie.
  *
- * Rend `null` dès que quelque chose cloche — et `null` signifie « aucune
+ * Rend `null` dès que quelque chose cloche - et `null` signifie « aucune
  * décision », donc « on ne dépose rien et on redemande ». Aucun repli
  * permissif : c'est le seul comportement acceptable pour un module de
  * consentement.

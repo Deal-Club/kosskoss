@@ -5,7 +5,7 @@
 // dans le flux produits que dans les composants du back-office.
 
 export interface GoogleCategory {
-  /** Identifiant numérique — recommandé par Google, indépendant de la langue. */
+  /** Identifiant numérique - recommandé par Google, indépendant de la langue. */
   id: string;
   /** Chemin complet traduit, pour l'affichage dans le back-office. */
   path: string;

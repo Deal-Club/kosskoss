@@ -13,7 +13,7 @@
  *
  * Aucun secret. Ces valeurs partent dans le HTML ou dans un lien cliquable ;
  * le jeton de l'API Conversions, lui, doit rester au serveur et va dans
- * `Integration`, qui le chiffre — voir `CLE_JETON_CAPI` et `jetonCapiValide`
+ * `Integration`, qui le chiffre - voir `CLE_JETON_CAPI` et `jetonCapiValide`
  * plus bas : ils décrivent le format attendu, mais la valeur elle-même ne
  * transite JAMAIS par `ParametresBoutique`.
  */
@@ -31,7 +31,7 @@ export interface ParametresBoutique {
    * Identifiant du jeu de données Meta interrogé par l'API de conversions
    * (CAPI). Distinct du Pixel : Meta permet de faire pointer la CAPI vers un
    * jeu de données propre, séparé de celui du Pixel navigateur. Ce n'est pas
-   * un secret — c'est un identifiant, au même titre que `ga4` ou `metaPixel` —
+   * un secret - c'est un identifiant, au même titre que `ga4` ou `metaPixel` -
    * seul le jeton d'accès qui l'accompagne (`CLE_JETON_CAPI`) l'est.
    */
   metaCapiDatasetId: string;
@@ -65,7 +65,7 @@ export function lienEvaluationValide(valeur: string): boolean {
 /**
  * Identifiant de mesure GA4, de la forme « G-XXXXXXXXXX ».
  *
- * Le motif n'atteste pas que le compte existe — rien ne le peut depuis un
+ * Le motif n'atteste pas que le compte existe - rien ne le peut depuis un
  * formulaire. Il attrape la faute de frappe, qui est le cas réel : une mesure
  * qui ne remonte pas ne se signale jamais d'elle-même.
  */
@@ -79,8 +79,8 @@ export function identifiantPixelValide(valeur: string): boolean {
 }
 
 /**
- * Identifiant du jeu de données Meta (CAPI) : même forme que le Pixel — une
- * suite de chiffres — puisque c'est aussi un identifiant d'objet Meta.
+ * Identifiant du jeu de données Meta (CAPI) : même forme que le Pixel - une
+ * suite de chiffres - puisque c'est aussi un identifiant d'objet Meta.
  */
 export function identifiantDatasetMetaValide(valeur: string): boolean {
   return valeur === "" || /^\d{8,20}$/.test(valeur);
@@ -89,7 +89,7 @@ export function identifiantDatasetMetaValide(valeur: string): boolean {
 /**
  * Clé de la table `Integration` (voir `src/server/integrations.ts`) sous
  * laquelle vit le jeton d'accès à l'API de conversions Meta (CAPI), chiffré.
- * Nommée ici — pas seulement côté serveur — pour que l'écran d'administration
+ * Nommée ici - pas seulement côté serveur - pour que l'écran d'administration
  * et la route d'enregistrement pointent vers la même clé sans la recopier.
  */
 export const CLE_JETON_CAPI = "meta_capi_token";
@@ -97,8 +97,8 @@ export const CLE_JETON_CAPI = "meta_capi_token";
 /**
  * Format du jeton d'accès à l'API de conversions Meta : un jeton système
  * (« System User access token »), chaîne opaque sans espace. Le motif
- * n'atteste pas que Meta acceptera ce jeton — rien ne le peut depuis un
- * formulaire — il attrape le collage accidentel d'autre chose (un mot de
+ * n'atteste pas que Meta acceptera ce jeton - rien ne le peut depuis un
+ * formulaire - il attrape le collage accidentel d'autre chose (un mot de
  * passe, une URL, une clé tronquée).
  *
  * Contrairement aux validateurs ci-dessus, le vide n'est PAS accepté ici :
@@ -115,7 +115,7 @@ export function jetonCapiValide(valeur: string): boolean {
  * format qu'un échec doit afficher.
  *
  * La route d'enregistrement et l'écran d'administration important tous les
- * deux CETTE table plutôt que d'en tenir chacun une copie manuscrite — deux
+ * deux CETTE table plutôt que d'en tenir chacun une copie manuscrite - deux
  * copies avaient déjà divergé une fois (le Pixel Meta : « 8 à 20 chiffres »
  * côté route, « une suite de chiffres » côté écran, qui ne dit pas pourquoi
  * cinq chiffres sont refusés).
@@ -148,7 +148,7 @@ export const CHAMPS_PARAMETRES: DescriptionChamp[] = [
  * `whatsapp` est aujourd'hui le seul champ dont la normalisation SUPPRIME des
  * caractères au lieu de simplement rogner : « à venir » ou « wa.me/kosskoss »
  * n'y laissent aucun chiffre et deviennent la chaîne vide. Or le vide est une
- * valeur parfaitement légitime — le réglage est facultatif — donc le validateur
+ * valeur parfaitement légitime - le réglage est facultatif - donc le validateur
  * l'accepte. Sans ce garde-fou, une faute de saisie effaçait le numéro de
  * contact de la boutique et l'écran annonçait « Enregistré ✓ ».
  *
@@ -156,7 +156,7 @@ export const CHAMPS_PARAMETRES: DescriptionChamp[] = [
  * champ : tout futur champ normalisant est couvert sans qu'on ait à y revenir,
  * et les champs seulement rognés ne peuvent pas le déclencher.
  *
- * Un champ volontairement vidé — saisie vide, ou seulement des espaces — reste
+ * Un champ volontairement vidé - saisie vide, ou seulement des espaces - reste
  * accepté : c'est la façon de retirer un réglage.
  */
 export function saisieEffacee(brut: string, normalise: string): boolean {

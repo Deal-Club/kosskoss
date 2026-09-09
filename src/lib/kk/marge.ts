@@ -4,7 +4,7 @@
  * ── POURQUOI CE MODULE EST PUR ──────────────────────────────────────────────
  *
  * Le tableau de bord des ventes et l'export CSV le consommeront tous les deux.
- * En le gardant sans dépendance, la règle de calcul reste testable sans base —
+ * En le gardant sans dépendance, la règle de calcul reste testable sans base -
  * et c'est la seule partie où une erreur se verrait chez le comptable.
  *
  * ── LA CONVENTION RETENUE, ET POURQUOI ELLE COMPTE ──────────────────────────
@@ -20,7 +20,7 @@
  *
  * Ce module retient le TAUX DE MARGE SUR PRIX DE VENTE : c'est la convention
  * du commerce de détail, celle qu'un commerçant lit sans conversion, et celle
- * qui reste bornée à 100 % — donc lisible dans un tableau de bord.
+ * qui reste bornée à 100 % - donc lisible dans un tableau de bord.
  *
  * ── LE FCFA N'A PAS DE SOUS-UNITÉ ───────────────────────────────────────────
  *
@@ -35,7 +35,7 @@
  * Rend `null` quand le coût d'achat n'est pas renseigné. C'est délibéré : un
  * coût absent n'est PAS un coût nul. Traiter l'un comme l'autre ferait afficher
  * 100 % de marge sur tout le catalogue existant, dont aucun produit ne porte
- * encore de coût — un chiffre faux, et plus nuisible qu'une case vide.
+ * encore de coût - un chiffre faux, et plus nuisible qu'une case vide.
  *
  * Une marge négative est rendue telle quelle : un produit vendu à perte, par
  * déstockage ou par erreur de saisie, doit se voir. La masquer empêcherait
@@ -54,7 +54,7 @@ export function margeUnitaire(
  *
  * Rend `null` quand le coût n'est pas renseigné, et quand le prix est nul :
  * diviser par le prix de vente exige qu'il existe. Un produit à prix zéro n'a
- * pas de taux — ce n'est pas une erreur, simplement une question sans réponse.
+ * pas de taux - ce n'est pas une erreur, simplement une question sans réponse.
  *
  * L'arrondi à une décimale n'est pas cosmétique : un taux affiché avec quinze
  * décimales ne se lit pas, et le tableau de bord est fait pour être lu d'un
@@ -75,8 +75,8 @@ export function tauxMarge(
  * ── POURQUOI CETTE FONCTION EXISTE ──────────────────────────────────────────
  *
  * `toCents` rend 0 aussi bien pour « 0 » que pour « abc » : après conversion,
- * les deux sont indistinguables. Or l'un est un coût RÉEL — un échantillon reçu
- * gratuitement, une dotation fournisseur — et l'autre une faute de frappe.
+ * les deux sont indistinguables. Or l'un est un coût RÉEL - un échantillon reçu
+ * gratuitement, une dotation fournisseur - et l'autre une faute de frappe.
  *
  * On regarde donc la SAISIE et non son résultat. Sans cela, l'aperçu de marge
  * annonçait « 100 % » sur « abc » avant que le serveur ne refuse la même
@@ -88,7 +88,7 @@ export function tauxMarge(
 export function coutSaisiValide(saisie: string): boolean {
   const brut = saisie.trim();
   if (!brut) return true;
-  // Au moins un chiffre : « 0 » passe, « abc » et « — » non. `toCents` écarte
+  // Au moins un chiffre : « 0 » passe, « abc » et « - » non. `toCents` écarte
   // ensuite tout le reste, donc ce test suffit à séparer les deux cas.
   return /\d/.test(brut);
 }

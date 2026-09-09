@@ -9,7 +9,7 @@ import { poserAccesCommande } from "@/server/kk/acces-commande";
  * ── LA COMMANDE EXISTE AVANT LE PAIEMENT, ET C'EST VOULU ────────────────────
  *
  * On enregistre d'abord, on encaisse ensuite. Si l'ouverture du paiement
- * échoue — passerelle en panne, clés expirées, réseau coupé — la commande
+ * échoue - passerelle en panne, clés expirées, réseau coupé - la commande
  * subsiste en « en attente de paiement » et la boutique peut la reprendre par
  * WhatsApp. L'inverse ferait perdre la vente et le client avec.
  *

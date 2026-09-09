@@ -3,13 +3,13 @@ import { describe, it, afterEach } from "node:test";
 import { dejaMesure, marquerMesure, PREFIXE_STOCKAGE } from "./mesure-achat";
 
 /**
- * Tests de la garde persistante — voir l'en-tête de `mesure-achat.tsx`.
+ * Tests de la garde persistante - voir l'en-tête de `mesure-achat.tsx`.
  *
  * `useRef` seul empêche un second envoi au double montage du Strict Mode,
  * mais disparaît avec le composant : ces tests vérifient que la garde survit
  * à un « rechargement » simulé (un second appel indépendant, comme le serait
  * un nouveau montage après `F5`), pas seulement à un second appel dans la
- * MÊME exécution — c'est précisément ce qu'un `useRef` ne peut pas garantir
+ * MÊME exécution - c'est précisément ce qu'un `useRef` ne peut pas garantir
  * et que `localStorage` garantit.
  */
 
@@ -48,13 +48,13 @@ describe("dejaMesure / marquerMesure hors navigateur", () => {
   });
 });
 
-describe("dejaMesure / marquerMesure — la garde survit au rechargement", () => {
+describe("dejaMesure / marquerMesure - la garde survit au rechargement", () => {
   it("rend false pour une commande jamais marquée", () => {
     poserFauxLocalStorage();
     assert.equal(dejaMesure("KOSS-2026-000123"), false);
   });
 
-  it("rend true pour cette commande après l'avoir marquée — même après un « rechargement » simulé (nouvel appel indépendant sur le même stockage)", () => {
+  it("rend true pour cette commande après l'avoir marquée - même après un « rechargement » simulé (nouvel appel indépendant sur le même stockage)", () => {
     const store = poserFauxLocalStorage();
     assert.equal(dejaMesure("KOSS-2026-000123"), false, "pas encore marquée");
 
@@ -62,12 +62,12 @@ describe("dejaMesure / marquerMesure — la garde survit au rechargement", () =>
     assert.equal(store.get(`${PREFIXE_STOCKAGE}KOSS-2026-000123`), "1");
 
     // Un « rechargement » ne fait rien d'autre, ici, qu'un second appel
-    // indépendant sur le MÊME stockage persistant — ce qu'un `useRef` ne
+    // indépendant sur le MÊME stockage persistant - ce qu'un `useRef` ne
     // pourrait pas simuler puisqu'il disparaîtrait avec le composant.
     assert.equal(dejaMesure("KOSS-2026-000123"), true);
   });
 
-  it("ne marque PAS une autre commande — la garde est bornée au numéro de commande, jamais un drapeau global", () => {
+  it("ne marque PAS une autre commande - la garde est bornée au numéro de commande, jamais un drapeau global", () => {
     poserFauxLocalStorage();
     marquerMesure("KOSS-2026-000123");
     assert.equal(dejaMesure("KOSS-2026-000124"), false, "une autre commande doit rester mesurable");

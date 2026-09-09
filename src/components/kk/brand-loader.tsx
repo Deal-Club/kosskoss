@@ -1,22 +1,22 @@
 import { KK_MONOGRAM_PATH } from "./motifs";
 
 /**
- * Écran d'attente de la boutique — servi par les fichiers `loading.tsx` de
+ * Écran d'attente de la boutique - servi par les fichiers `loading.tsx` de
  * l'App Router pendant qu'un segment se charge.
  *
  * Un seul geste, en trois temps : le filet du sigle se trace, le bloc se
- * remplit par le bas comme de l'encre qui monte — découvrant les deux K
- * évidés —, puis une onde part du centre au moment où le bloc se referme. Le
+ * remplit par le bas comme de l'encre qui monte - découvrant les deux K
+ * évidés -, puis une onde part du centre au moment où le bloc se referme. Le
  * logotype se pose enfin en resserrant son interlettrage jusqu'à la valeur de
  * la charte. Pas de roue qui tourne ni de barre indéterminée : le remplissage
  * fait office d'indicateur, et il porte l'identité.
  *
  * Le sigle est le monogramme officiel (`assets/marque/kk-monogramme.png`,
- * celui du favicon), vectorisé — et non un symbole approchant.
+ * celui du favicon), vectorisé - et non un symbole approchant.
  *
  * Aucun état, aucun effet : tout est en CSS (voir globals.css, section
  * « Écran d'attente »). Le composant reste donc rendu côté serveur et n'ajoute
- * rien au JavaScript envoyé au navigateur — un écran de chargement qui attend
+ * rien au JavaScript envoyé au navigateur - un écran de chargement qui attend
  * son propre bundle serait une contradiction.
  */
 

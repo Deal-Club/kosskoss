@@ -68,12 +68,12 @@ export default async function AdminVentesPage({
   const mentionMarge =
     lignesSansCout === 0
       ? `calculée sur les ${totaux.lignesTotal} lignes de la période`
-      : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} — le coût d’achat manque sur les autres`;
+      : `calculée sur ${totaux.lignesAvecCout} lignes sur ${totaux.lignesTotal} - le coût d’achat manque sur les autres`;
 
   const exportHref = `/api/admin/ventes/export?du=${formatJourIso(periode.du)}&au=${formatJourIso(periode.au)}`;
 
   // La carte dit toujours ce qui est retiré : la livraison, mais aussi les
-  // remises — sans quoi « produits seuls, hors livraison » laisserait croire
+  // remises - sans quoi « produits seuls, hors livraison » laisserait croire
   // qu'elles seules manquent au compte.
   const mentionEncaisse =
     totaux.remisesCents > 0
@@ -111,7 +111,7 @@ export default async function AdminVentesPage({
           titre="Marge"
           valeur={
             totaux.margeCents === null
-              ? "—"
+              ? "-"
               : `${formatFcfa(totaux.margeCents)}${totaux.tauxMarge === null ? "" : ` (${totaux.tauxMarge.toString().replace(".", ",")} %)`}`
           }
           mention={
@@ -130,7 +130,7 @@ export default async function AdminVentesPage({
         <Carte
           titre="Panier moyen"
           valeur={
-            totaux.panierMoyenCents === null ? "—" : formatFcfa(totaux.panierMoyenCents)
+            totaux.panierMoyenCents === null ? "-" : formatFcfa(totaux.panierMoyenCents)
           }
           mention={totaux.panierMoyenCents === null ? "aucune commande sur la période" : undefined}
         />
@@ -190,7 +190,7 @@ export default async function AdminVentesPage({
                     <span className="text-muted-foreground">{produit.brand}</span>{" "}
                     {produit.name}
                     {produit.variantLabel ? (
-                      <span className="text-muted-foreground"> — {produit.variantLabel}</span>
+                      <span className="text-muted-foreground"> - {produit.variantLabel}</span>
                     ) : null}
                   </td>
                   <td className="px-4 py-2">{produit.quantite}</td>
@@ -198,7 +198,7 @@ export default async function AdminVentesPage({
                   <td className="px-4 py-2">
                     {produit.margeCents === null ? (
                       <span className="text-muted-foreground" title="Coût d’achat non renseigné">
-                        —
+                        -
                       </span>
                     ) : (
                       <>

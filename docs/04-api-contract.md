@@ -1,4 +1,4 @@
-# 04 — Cartographie des API et contrat de données
+# 04 - Cartographie des API et contrat de données
 
 ~55 Route Handlers (`src/app/api/**/route.ts`) + flux publics (`src/app/feed/**`) + webhooks + cron. Validation **manuelle** (pas de Zod), centralisée dans des parsers `src/server/*Input.ts`. **Recalcul serveur systématique** des montants sensibles.
 
@@ -8,16 +8,16 @@
 |---|---|---|---|---|
 | `/api/account/login` | POST | publique | manuelle + rate-limit | session client |
 | `/api/account/register` | POST | publique | `parseSignUpPayload()` | e-mail bienvenue (pas de session auto) |
-| `/api/account/logout` | POST | client | — | efface cookie |
+| `/api/account/logout` | POST | client | - | efface cookie |
 | `/api/account/profile` | PATCH | client | `parseProfilePayload()` | MàJ profil |
 | `/api/account/addresses` | PUT | client | `parseAddressPayload()` | MàJ adresses |
 | `/api/account/password/change\|forgot\|reset` | POST | client / publique | manuelle | reset (SHA-256 jeton) |
 | `/api/account/delete` | POST | client | mot de passe + `confirm` | suppression + anonymisation commandes |
-| `/api/account/export` | GET | client | — | export RGPD JSON |
+| `/api/account/export` | GET | client | - | export RGPD JSON |
 | `/api/cart` | POST | publique | filtre lignes | **revalide prix/stock/promos en base** |
 | `/api/checkout` | POST | client optionnel | `parseCheckoutPayload()` → `createOrder()` | **recalcule tout**, décrémente stock, e-mails, redirect paiement |
 | `/api/reviews` | POST | publique | manuelle + anti-spam (mémoire) | avis `pending` |
-| `/api/campaign-context` | GET | cookie campagne | — | contexte remise (no-store) |
+| `/api/campaign-context` | GET | cookie campagne | - | contexte remise (no-store) |
 
 ## 2. Routes admin (toutes derrière `requireAdminApi()`)
 
@@ -84,4 +84,4 @@ type ApiError = {
 };
 ```
 
-Règle : **une seule source de vérité** pour statuts de commande/paiement, rôles, devises, taxes, types de produit — exposée en constantes typées partagées, jamais dupliquée entre front et back.
+Règle : **une seule source de vérité** pour statuts de commande/paiement, rôles, devises, taxes, types de produit - exposée en constantes typées partagées, jamais dupliquée entre front et back.

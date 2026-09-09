@@ -90,7 +90,7 @@ interface ProductRow {
   stock: number;
   lowStockThreshold: number;
   active: boolean;
-  /** Clés de tags JSON — voir Product.tags côté Prisma */
+  /** Clés de tags JSON - voir Product.tags côté Prisma */
   tags: string;
   gtin: string | null;
   mpn: string | null;
@@ -634,12 +634,12 @@ function toViewCategory(
 /**
  * Toutes les pages de catégorie, produits compris.
  *
- * `locale` est facultatif et localise le résultat AVANT de le renvoyer — la
+ * `locale` est facultatif et localise le résultat AVANT de le renvoyer - la
  * traduction descend dans la lecture, pas dans l'appelant. Omis (comme pour
  * `sitemap.ts`, qui ne s'intéresse qu'aux adresses), la page reste en
  * français : aucune requête de traduction n'est émise. Un appelant qui
  * localiserait le résultat une seconde fois après l'avoir reçu déjà traduit
- * ne romprait rien aujourd'hui — `pickText` est idempotent — mais doublerait
+ * ne romprait rien aujourd'hui - `pickText` est idempotent - mais doublerait
  * le travail pour rien ; ne le fais pas.
  */
 export async function getCategoryPages(locale?: Locale): Promise<CategoryPageView[]> {
@@ -718,7 +718,7 @@ export function getRelatedProducts(
 }
 
 /**
- * Produits d'une liste d'identifiants, vus par la boutique — donc remises de
+ * Produits d'une liste d'identifiants, vus par la boutique - donc remises de
  * campagne comprises. Sert à la page d'action, qui connaît sa sélection par
  * identifiants et non par catégorie.
  *
@@ -727,7 +727,7 @@ export function getRelatedProducts(
  *
  * `locale` est facultatif, comme pour `getCategoryPages` : omis, le résultat
  * reste en français et aucune requête de traduction n'est émise. La
- * traduction descend ici, dans la lecture — pas chez l'appelant. Type `string`
+ * traduction descend ici, dans la lecture - pas chez l'appelant. Type `string`
  * et non `Locale`, comme `loadCatalogTranslations` : l'appelant (la page
  * d'action d'une campagne) reçoit sa locale de route en `string`.
  */

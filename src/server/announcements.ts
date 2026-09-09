@@ -12,7 +12,7 @@ import type { Locale } from "@/i18n/routing";
 /**
  * Bandeau d'annonce défilant.
  *
- * Les messages vivent dans leur propre table — on en ajoute, on en retire, on
+ * Les messages vivent dans leur propre table - on en ajoute, on en retire, on
  * les réordonne. Les réglages d'apparence, eux, sont uniques pour tout le site
  * et tiennent dans une ligne de `Setting` sérialisée en JSON : une table de
  * configuration à un seul enregistrement n'aurait apporté qu'une jointure.
@@ -63,7 +63,7 @@ export async function saveAnnouncementConfig(
 /**
  * Messages affichés en boutique : actifs seulement, dans l'ordre choisi.
  *
- * `locale` est facultative, comme sur `getShopNavigation` — le bandeau est
+ * `locale` est facultative, comme sur `getShopNavigation` - le bandeau est
  * lui aussi présent sur toutes les pages, et un message resté en français y
  * serait tout aussi visible qu'un menu qui l'est resté.
  */
@@ -84,7 +84,7 @@ export const getActiveAnnouncements = cache(
   },
 );
 
-/** Tous les messages, actifs ou non — vue du back-office. */
+/** Tous les messages, actifs ou non - vue du back-office. */
 export async function listAnnouncements(): Promise<AnnouncementItem[]> {
   const lignes = await prisma.announcement.findMany({
     orderBy: [{ position: "asc" }, { createdAt: "asc" }],

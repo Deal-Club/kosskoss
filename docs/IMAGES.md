@@ -83,7 +83,7 @@ L'envoi reste protégé exactement comme avant :
 
 - session administrateur obligatoire ;
 - type réel vérifié sur les octets de signature du fichier (JPG, PNG, WebP,
-  AVIF) — l'extension déclarée n'est pas crue sur parole ;
+  AVIF) - l'extension déclarée n'est pas crue sur parole ;
 - 5 Mo maximum.
 
 L'envoi passe **toujours par le serveur** (`POST /api/admin/upload`). L'API
@@ -112,14 +112,14 @@ Dès que les trois clés sont renseignées, la bascule est automatique : aucun c
 
 Ces fichiers ne sont pas repris automatiquement. Le plus simple, vu le volume :
 
-### Option 1 — réenvoyer depuis le back-office
+### Option 1 - réenvoyer depuis le back-office
 
 Pour chaque produit concerné, ouvrir sa fiche, cliquer sur **Envoyer une image**
 et sélectionner le fichier depuis `public/uploads/`. Le champ est mis à jour
 avec la nouvelle URL Cloudinary. C'est la méthode à privilégier s'il reste
 moins d'une vingtaine d'images.
 
-### Option 2 — téléverser en masse dans Cloudinary
+### Option 2 - téléverser en masse dans Cloudinary
 
 1. Dans Cloudinary, ouvrir **Media Library**, créer le dossier
    `hausgeraete-pfeffer/products`.
@@ -145,11 +145,11 @@ vidé. Il est déjà ignoré par git (`.gitignore`), rien n'est donc versionné.
 
 - SDK : paquet npm `cloudinary` (v2), utilisé uniquement côté serveur.
 - Code : `src/server/cloudinary.ts`
-  - `isCloudinaryConfigured()` — les trois valeurs sont-elles disponibles ?
-  - `uploadImage(buffer, { filename, folder })` — envoi par `upload_stream`,
+  - `isCloudinaryConfigured()` - les trois valeurs sont-elles disponibles ?
+  - `uploadImage(buffer, { filename, folder })` - envoi par `upload_stream`,
     renvoie l'URL de livraison et le `public_id`.
-  - `deleteImage(publicId)` — suppression d'un asset, avec purge du cache CDN.
-  - `publicIdFromUrl(url)` — retrouve le `public_id` à partir d'une URL stockée.
+  - `deleteImage(publicId)` - suppression d'un asset, avec purge du cache CDN.
+  - `publicIdFromUrl(url)` - retrouve le `public_id` à partir d'une URL stockée.
 - Route : `src/app/api/admin/upload/route.ts`. Réponse en cas de succès :
 
   ```json

@@ -24,7 +24,7 @@ describe("normaliserTelephone", () => {
     // 237222333 est un numéro national complet (fixe : premier chiffre 2), pas
     // un « 237 » suivi d'un numéro à six chiffres : neuf chiffres ≠ douze, le
     // dépouillement de l'indicatif ne se déclenche donc pas. C'est exactement
-    // l'ambiguïté que la longueur est censée lever — sans ce cas, un futur
+    // l'ambiguïté que la longueur est censée lever - sans ce cas, un futur
     // changement de la garde de longueur pourrait la casser sans faire échouer
     // aucun autre test.
     assert.equal(normaliserTelephone("237222333"), "+237237222333");
@@ -50,7 +50,7 @@ describe("normaliserTelephone", () => {
   it("refuse un numéro trop long", () => {
     // Sans indicatif, la saisie est lue comme camerounaise : dix chiffres est
     // donc une faute de frappe, pas un numéro étranger. Celui qui appelle d'un
-    // autre pays écrit son indicatif — voir les cas internationaux plus bas.
+    // autre pays écrit son indicatif - voir les cas internationaux plus bas.
     assert.equal(normaliserTelephone("6771234567"), null);
   });
 
@@ -84,7 +84,7 @@ describe("normaliserTelephone", () => {
     it("ne valide pas le plan de numérotation des autres pays", () => {
       // Deux cents plans, qui changent : on contrôle la longueur, rien de
       // plus. Ce numéro n'existe probablement pas, il est malgré tout accepté
-      // — c'est assumé, le faux refus coûte plus cher que le faux positif.
+      // - c'est assumé, le faux refus coûte plus cher que le faux positif.
       assert.equal(normaliserTelephone("+99912345678"), "+99912345678");
     });
 
@@ -108,7 +108,7 @@ describe("normaliserTelephone", () => {
       // 237 est NOTRE plan : dix chiffres nationaux derrière un +237 explicite
       // est une coquille, pas un numéro étranger. La voie internationale, qui
       // ne contrôle que la longueur E.164, laissait passer ce numéro
-      // injoignable — observé sur une commande réelle (TK-06).
+      // injoignable - observé sur une commande réelle (TK-06).
       assert.equal(normaliserTelephone("+2376775501002"), null);
       assert.equal(normaliserTelephone("002376775501002"), null);
       // Le +237 correct, lui, reste accepté (déjà couvert plus haut) et le

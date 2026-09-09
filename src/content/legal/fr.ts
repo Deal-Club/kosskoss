@@ -1,12 +1,12 @@
 /**
- * Contenu légal et informatif en FRANÇAIS — KossKoss Select (marché Cameroun).
+ * Contenu légal et informatif en FRANÇAIS - KossKoss Select (marché Cameroun).
  *
  * ATTENTION : toutes les données d'entreprise sont des PLACEHOLDERS
  * (adresse, RCCM, NIU, capital, tarifs). Voir docs/LEGAL.md pour la liste
  * exhaustive des éléments à remplacer avant mise en ligne.
  *
  * Cadre juridique visé : droit camerounais de la vente et de la protection du
- * consommateur — notamment la loi n° 2011/012 du 6 mai 2011 portant protection
+ * consommateur - notamment la loi n° 2011/012 du 6 mai 2011 portant protection
  * du consommateur au Cameroun, l'Acte uniforme OHADA relatif au droit commercial
  * général, et la réglementation applicable aux produits cosmétiques. Les
  * références précises restent à confirmer.
@@ -23,7 +23,7 @@ const UPDATED_AT = "2026-08-06";
  * Coordonnées de l'entreprise.
  *
  * Elles vivaient ici, au milieu de 34 Ko de texte juridique, si bien que tout
- * module qui les voulait héritait du corpus entier — ce qui avait poussé les
+ * module qui les voulait héritait du corpus entier - ce qui avait poussé les
  * e-mails de campagne à en recopier une seconde version, déjà divergente.
  * Elles sont désormais dans `./company`, sans dépendance, et réexportées ici
  * pour que rien de ce qui les importait déjà ne change.

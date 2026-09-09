@@ -2,7 +2,7 @@
  * Recadre les logos de marque sur leur tracé réel.
  *
  * Les fichiers du jeu d'icônes sont normalisés dans un carré de 24 × 24. Un
- * logo en toutes lettres — Samsung, Siemens, Sony — n'y occupe qu'une bande
+ * logo en toutes lettres - Samsung, Siemens, Sony - n'y occupe qu'une bande
  * horizontale au milieu, le reste étant du vide. Affiché en masque contraint
  * par la hauteur, ce vide compte : le lettrage se retrouve trois fois plus
  * petit qu'un logo rond comme celui de Bosch, qui remplit son carré.
@@ -25,7 +25,7 @@ const MARGE = 0.5;
  *
  * Les points de contrôle des courbes sont comptés comme des points ordinaires :
  * la boîte obtenue est donc au plus légèrement trop large, jamais trop étroite.
- * C'est le bon sens de l'erreur — un logo un peu moins grand vaut mieux qu'un
+ * C'est le bon sens de l'erreur - un logo un peu moins grand vaut mieux qu'un
  * logo rogné.
  */
 function pointsDuTrace(d) {

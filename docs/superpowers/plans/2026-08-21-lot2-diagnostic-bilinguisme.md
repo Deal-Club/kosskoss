@@ -1,6 +1,6 @@
-# Lot 2 — Diagnostic administrable, profil, bilinguisme : plan d'implémentation
+# Lot 2 - Diagnostic administrable, profil, bilinguisme : plan d'implémentation
 
-> **Pour les agents :** SOUS-COMPÉTENCE REQUISE — utiliser `superpowers:subagent-driven-development`
+> **Pour les agents :** SOUS-COMPÉTENCE REQUISE - utiliser `superpowers:subagent-driven-development`
 > (recommandé) ou `superpowers:executing-plans` pour dérouler ce plan tâche par tâche.
 > Les étapes utilisent la syntaxe à cases (`- [ ]`) pour le suivi.
 
@@ -8,7 +8,7 @@
 
 **Architecture :** les gestes du diagnostic quittent le code pour la base, ce qui rend le
 nombre de produits proposés administrable et leurs libellés bilingues. Un profil par client
-stocke ses réponses — pas sa routine — pour qu'un retour six mois plus tard recalcule sur le
+stocke ses réponses - pas sa routine - pour qu'un retour six mois plus tard recalcule sur le
 catalogue du jour. L'e-mail de routine et l'inscription à la lettre d'information restent
 deux consentements distincts. Le bilinguisme applique un motif déjà présent dans le dépôt
 plutôt que d'en introduire un second.
@@ -46,7 +46,7 @@ PostgreSQL (Neon), next-intl, nodemailer, `node --test` avec `tsx`.
 - **Commentaires en français**, expliquant le *pourquoi*, à la densité du code existant.
 - **TypeScript strict, aucun `any`.**
 - **Toute valeur fournie par le client insérée dans un e-mail HTML passe par `esc()`**
-  (`src/server/kk/emails.ts`) — il existe pour empêcher l'injection depuis un nom d'acheteur.
+  (`src/server/kk/emails.ts`) - il existe pour empêcher l'injection depuis un nom d'acheteur.
 
 ---
 
@@ -229,7 +229,7 @@ leur traduction anglaise, qui manquait : un visiteur sur /en lisait « Nettoyer 
 Le modèle s'appelle DiagStep et non RoutineStep : ce dernier existe déjà pour
 les routines éditoriales.
 
-Le seed ne met à jour que les libellés sur une ligne existante — position,
+Le seed ne met à jour que les libellés sur une ligne existante - position,
 activation et catégorie sont des choix du client.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
@@ -253,7 +253,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
   `lireGestes(): Promise<GesteLigne[]>`.
 
 **Pourquoi une fonction pure séparée :** les tests du projet n'ont pas d'accès base. Le tri,
-le filtrage et le repli de libellé sont la partie où une erreur se verrait — un geste
+le filtrage et le repli de libellé sont la partie où une erreur se verrait - un geste
 disparu de la routine, ou une clé brute affichée au visiteur.
 
 - [ ] **Step 1 : Écrire le test qui échoue**
@@ -330,7 +330,7 @@ describe("libelleGeste", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/gestes-selection.test.ts`
-Expected: FAIL — `Cannot find module './gestes-selection'`
+Expected: FAIL - `Cannot find module './gestes-selection'`
 
 - [ ] **Step 3 : Écrire le module pur**
 
@@ -378,7 +378,7 @@ export function libelleGeste(geste: GesteLigne, locale: string): string {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/gestes-selection.test.ts`
-Expected: PASS — 7 tests
+Expected: PASS - 7 tests
 
 - [ ] **Step 5 : Écrire la lecture en base**
 
@@ -428,7 +428,7 @@ puis remplacer le corps de la boucle pour utiliser `geste.category` au lieu de
 - [ ] **Step 7 : Passer la langue depuis la route**
 
 Dans `src/app/api/kk/diagnostic/route.ts:14`, transmettre la langue du corps de la requête
-à `buildRoutine`, en n'acceptant que `"en"` ou `"fr"` — le corps vient du navigateur.
+à `buildRoutine`, en n'acceptant que `"en"` ou `"fr"` - le corps vient du navigateur.
 
 - [ ] **Step 8 : Vérifier**
 
@@ -534,7 +534,7 @@ Règles de validation :
 - `labelFr` : chaîne non vide après `.trim()`, stockée rognée.
 - `labelEn` : chaîne, éventuellement vide, stockée rognée.
 - `category` : chaîne non vide après `.trim()`, stockée rognée.
-- `position` : `Number.isInteger` — la colonne est un `Int`, un `1.5` produirait un 500 nu.
+- `position` : `Number.isInteger` - la colonne est un `Int`, un `1.5` produirait un 500 nu.
 - `active` : booléen.
 
 - [ ] **Step 4 : Écrire l'écran**
@@ -546,7 +546,7 @@ La clé reste non éditable : elle est la clé primaire, et la changer créerait
 orpheline plutôt que de renommer quoi que ce soit.
 
 Sous le tableau, une phrase indiquant le nombre de gestes actifs et donc le nombre de
-produits que le diagnostic proposera — c'est le lien que le critère 08 demande de rendre
+produits que le diagnostic proposera - c'est le lien que le critère 08 demande de rendre
 visible au client.
 
 - [ ] **Step 5 : Ajouter l'entrée de navigation**
@@ -563,13 +563,13 @@ Expected: aucune erreur, **411 tests au vert**, construction en succès
 
 Lancer `./node_modules/.bin/next dev -p 3001` **au premier plan**, puis :
 
-1. `/admin/diagnostic/gestes` — désactiver « Protéger », enregistrer.
-2. Refaire le diagnostic côté boutique — la routine compte trois produits, **sans
+1. `/admin/diagnostic/gestes` - désactiver « Protéger », enregistrer.
+2. Refaire le diagnostic côté boutique - la routine compte trois produits, **sans
    redéploiement**.
 3. Réactiver, changer un libellé anglais, vérifier sur `/en`.
 
 Arrêter le serveur ensuite. Si une vérification est impossible pour une raison
-d'environnement — pas de compte administrateur, pas de boîte mail pour l'OTP — le dire
+d'environnement - pas de compte administrateur, pas de boîte mail pour l'OTP - le dire
 franchement dans le rapport plutôt que de la déclarer réussie.
 
 - [ ] **Step 8 : Commit**
@@ -583,7 +583,7 @@ libellés dans les deux langues, sans redéploiement. Le nombre de produits que 
 diagnostic proposera est affiché sous le tableau : c'est le lien que le critère
 08 demande de rendre visible.
 
-La clé reste en lecture seule — la modifier créerait une ligne orpheline au lieu
+La clé reste en lecture seule - la modifier créerait une ligne orpheline au lieu
 de renommer.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
@@ -607,7 +607,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 **Pourquoi `Cascade` ici alors que la facture est en `Restrict`.** Un profil n'a aucune
 valeur probante : il n'existe que pour servir son client. Supprimer le client doit
 l'emporter. Une facture, elle, est un document comptable dont la séquence doit rester sans
-rupture — d'où la différence, qui est délibérée et non une incohérence.
+rupture - d'où la différence, qui est délibérée et non une incohérence.
 
 - [ ] **Step 1 : Écrire le test qui échoue**
 
@@ -651,7 +651,7 @@ describe("lireReponses", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/profil-reponses.test.ts`
-Expected: FAIL — `Cannot find module './profil-reponses'`
+Expected: FAIL - `Cannot find module './profil-reponses'`
 
 - [ ] **Step 3 : Écrire le module**
 
@@ -688,7 +688,7 @@ export function lireReponses(json: string | null): string[] {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/profil-reponses.test.ts`
-Expected: PASS — 6 tests
+Expected: PASS - 6 tests
 
 - [ ] **Step 5 : Ajouter le modèle**
 
@@ -696,7 +696,7 @@ Expected: PASS — 6 tests
 // Profil Diagnostic d'un client connecté : ses RÉPONSES, pas sa routine.
 //
 // Les réponses restent valables dans le temps ; une routine calculée vieillit
-// avec le catalogue — ruptures, prix périmés, produits retirés. Stocker les
+// avec le catalogue - ruptures, prix périmés, produits retirés. Stocker les
 // réponses évite d'avoir à gérer chacun de ces cas à l'affichage.
 //
 // `Cascade` et non `Restrict`, contrairement à la facture : un profil n'a
@@ -707,7 +707,7 @@ model CustomerDiagProfile {
   customerId String   @unique
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   // Tableau JSON d'identifiants DiagAnswer. Lu en bloc, jamais interrogé entrée
-  // par entrée — comme les pondérations de DiagAnswer, déjà stockées ainsi.
+  // par entrée - comme les pondérations de DiagAnswer, déjà stockées ainsi.
   answerIds  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -774,7 +774,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 **Comment reconnaître le client connecté.** Le projet a déjà une session client :
 `src/server/customerSession.ts`, utilisée par `createKossOrder`. Lire ce module et suivre
-sa façon de résoudre la session — ne pas en inventer une seconde.
+sa façon de résoudre la session - ne pas en inventer une seconde.
 
 - [ ] **Step 1 : Écrire le module**
 
@@ -933,7 +933,7 @@ describe("choisirLangue", () => {
 - [ ] **Step 2 : Lancer le test et vérifier qu'il échoue**
 
 Run: `node --test --import tsx src/lib/kk/langue.test.ts`
-Expected: FAIL — `Cannot find module './langue'`
+Expected: FAIL - `Cannot find module './langue'`
 
 - [ ] **Step 3 : Écrire le module**
 
@@ -961,7 +961,7 @@ export function choisirLangue(locale: string | null | undefined): Langue {
 - [ ] **Step 4 : Lancer le test et vérifier qu'il passe**
 
 Run: `node --test --import tsx src/lib/kk/langue.test.ts`
-Expected: PASS — 6 tests
+Expected: PASS - 6 tests
 
 - [ ] **Step 5 : Traduire les trois e-mails existants**
 
@@ -970,7 +970,7 @@ Dans `src/server/kk/emails.ts`, ajouter `langue: Langue` aux trois types d'entr�
 sélectionner chaque texte par cette valeur.
 
 Traduire **tous** les textes visibles : objet, titre, corps, encadré, variante texte brut.
-Ne pas traduire les valeurs (numéro de commande, montants) — elles sont déjà neutres.
+Ne pas traduire les valeurs (numéro de commande, montants) - elles sont déjà neutres.
 
 Conserver `esc()` sur chaque valeur fournie par le client, dans les deux langues.
 
@@ -997,7 +997,7 @@ français, y compris à un acheteur venu de /en. La revue du lot précédent l'a
 relevé sur la facture : c'est corrigé ici pour les trois.
 
 Le motif est celui de emails/order.ts, qui résolvait déjà ce problème pour
-l'e-mail de commande hérité — extrait en fonction nommée plutôt que réécrit.
+l'e-mail de commande hérité - extrait en fonction nommée plutôt que réécrit.
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
@@ -1035,7 +1035,7 @@ export interface RoutineEmailInput {
  * Routine personnalisée envoyée par e-mail.
  *
  * Transactionnel : le visiteur l'a demandée. L'inscription à la lettre
- * d'information est un consentement séparé, traité ailleurs — cette fonction
+ * d'information est un consentement séparé, traité ailleurs - cette fonction
  * n'inscrit personne.
  *
  * Best-effort, comme les autres : une panne SMTP ne doit pas faire échouer
@@ -1048,7 +1048,7 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
   const lignes = input.etapes
     .map(
       (e) =>
-        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(e.label)} — ${esc(
+        `<tr><td style="padding:8px 0;border-bottom:1px solid #eee">${esc(e.label)} - ${esc(
           e.brand,
         )} ${esc(e.name)}</td><td style="padding:8px 0;border-bottom:1px solid #eee;text-align:right;white-space:nowrap">${esc(
           formatFcfa(e.prixFcfa),
@@ -1076,7 +1076,7 @@ export async function sendRoutineEmail(input: RoutineEmailInput): Promise<void> 
     </div>`;
 
   const text = input.etapes
-    .map((e) => `${e.label} : ${e.brand} ${e.name} — ${formatFcfa(e.prixFcfa)}`)
+    .map((e) => `${e.label} : ${e.brand} ${e.name} - ${formatFcfa(e.prixFcfa)}`)
     .join("\n");
 
   try {
@@ -1100,7 +1100,7 @@ Créer `src/app/api/kk/diagnostic/routine-email/route.ts`. Le corps attendu est
 Règles :
 - `try/catch` sur `request.json()` → 400 « Requête illisible. »
 - Valider l'adresse avec la même expression que la route newsletter
-  (`src/app/api/kk/newsletter/route.ts`) — ne pas en inventer une seconde. Longueur
+  (`src/app/api/kk/newsletter/route.ts`) - ne pas en inventer une seconde. Longueur
   maximale 254.
 - `answers` doit être un tableau de chaînes non vide → 400 sinon.
 - **Recalculer la routine côté serveur** avec `buildRoutine(answers, langue)`. Ne jamais
@@ -1143,7 +1143,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
   `POST /api/kk/newsletter` (existant).
 - Produces: rien pour les tâches suivantes.
 
-**Deux consentements, deux actions.** L'envoi est transactionnel — le visiteur l'a
+**Deux consentements, deux actions.** L'envoi est transactionnel - le visiteur l'a
 demandé. L'inscription ne l'est pas : elle est proposée par une case **décochée par
 défaut**, à côté et non à la place. Cocher la case sans demander l'envoi inscrit ; demander
 l'envoi sans cocher n'inscrit pas.
@@ -1169,7 +1169,7 @@ Comportement attendu :
   nommant ce qui a échoué.
 - Le bouton est désactivé pendant l'envoi, pour qu'un double clic n'envoie pas deux e-mails.
 
-Suivre le style des autres formulaires du site — voir le bloc newsletter existant dans
+Suivre le style des autres formulaires du site - voir le bloc newsletter existant dans
 `src/components/kk/newsletter.tsx` pour le balisage et les classes.
 
 - [ ] **Step 3 : Vérifier**
@@ -1183,7 +1183,7 @@ Serveur au premier plan. Faire le diagnostic, demander l'envoi sans cocher la ca
 l'e-mail arrive, aucune inscription en base. Recommencer en cochant : les deux ont lieu.
 Double-cliquer le bouton : un seul envoi.
 
-Dire franchement dans le rapport ce qui n'a pas pu être vérifié — notamment si aucun SMTP
+Dire franchement dans le rapport ce qui n'a pas pu être vérifié - notamment si aucun SMTP
 n'est configuré dans l'environnement.
 
 - [ ] **Step 5 : Commit**
@@ -1240,7 +1240,7 @@ Chaque littéral rendu à l'écran devient une clé. Les valeurs (nombres, codes
 - [ ] **Step 3 : Ajouter les clés dans les deux langues**
 
 Ajouter chaque clé au fichier français **et** au fichier anglais. Une clé présente d'un
-seul côté fait tomber la page dans l'autre langue — c'est le mode d'échec habituel de
+seul côté fait tomber la page dans l'autre langue - c'est le mode d'échec habituel de
 `next-intl`.
 
 Traduire réellement, ne pas recopier le français dans le fichier anglais.
@@ -1248,7 +1248,7 @@ Traduire réellement, ne pas recopier le français dans le fichier anglais.
 - [ ] **Step 4 : Brancher le composant**
 
 Le composant est un composant client. Utiliser `useTranslations` de `next-intl`, comme le
-font les autres composants clients du projet — chercher un exemple avec
+font les autres composants clients du projet - chercher un exemple avec
 `grep -rln "useTranslations" src/components | head -3` et suivre le même appel.
 
 Attention aux messages d'erreur de validation : ils sont produits dans une fonction hors du
@@ -1291,7 +1291,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 |---|---|
 | **08** | Désactiver un geste en admin ; la routine en propose un de moins, sans redéploiement |
 | **08** | Le QCM se déroule en FR et en EN, libellés de gestes traduits |
-| **09** | Client connecté : QCM, déconnexion, reconnexion — la reprise est proposée |
+| **09** | Client connecté : QCM, déconnexion, reconnexion - la reprise est proposée |
 | **09** | Demander la routine par e-mail sans cocher : e-mail reçu, aucune inscription |
 | **09** | Cocher la case : e-mail reçu **et** inscription enregistrée avec la source `diagnostic` |
 | **10** | Commander depuis `/en` : formulaire, confirmation et facture tous en anglais |

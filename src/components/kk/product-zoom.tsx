@@ -20,7 +20,7 @@ import { ZoomIn } from "lucide-react";
  * nœud, sans passer par un état React. Un `setState` à chaque `mousemove`
  * relancerait un rendu à chaque pixel parcouru : la loupe deviendrait
  * saccadée précisément quand on la déplace lentement pour lire quelque chose.
- * Seul le fait d'être survolé ou non passe par un état — il change deux fois
+ * Seul le fait d'être survolé ou non passe par un état - il change deux fois
  * par visite, pas soixante fois par seconde.
  *
  * ── Ce qui est laissé de côté ─────────────────────────────────────────────
@@ -79,7 +79,7 @@ export function ProductZoom({
         // (`cubic-bezier(0.16,1,0.3,1)`, voir product-card.tsx) : le zoom
         // s'installe, il ne saute plus. Le SUIVI du pointeur, lui, reste
         // instantané (`--zoom-x`/`--zoom-y` posés hors React, jamais
-        // transitionnés) — ralentir la loupe pendant qu'on la déplace pour
+        // transitionnés) - ralentir la loupe pendant qu'on la déplace pour
         // lire une étiquette la rendrait justement saccadée, voir le
         // commentaire d'en-tête du fichier.
         className="object-contain p-2 transition-transform duration-[550ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transform-none motion-reduce:transition-none"

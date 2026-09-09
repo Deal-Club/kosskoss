@@ -4,7 +4,7 @@
  *
  * Ce module ne connaît ni la base ni Next : il transforme un objet reçu du
  * navigateur en page valide, ou explique pourquoi il refuse. Le contrôle est
- * refait ici même si le formulaire l'a déjà fait — une requête peut arriver
+ * refait ici même si le formulaire l'a déjà fait - une requête peut arriver
  * sans passer par le formulaire.
  *
  * Les bornes de longueur ne protègent pas d'une attaque mais d'une erreur :
@@ -161,7 +161,7 @@ export function toLegalPageInput(page: LegalPage): LegalPageInput {
 
 /**
  * Relit une page stockée en base.
- * Un contenu illisible — colonne tronquée, format d'une version précédente —
+ * Un contenu illisible - colonne tronquée, format d'une version précédente -
  * ne doit pas faire tomber une page obligatoire : l'appelant retombera sur le
  * contenu d'origine.
  */

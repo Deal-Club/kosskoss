@@ -57,7 +57,7 @@ export function libelleBesoinRoutine(besoin: BesoinRoutine, locale: string): str
  * Un besoin que le registre ne connaît pas n'est pas perdu pour autant : il
  * forme son propre groupe, placé après les sept, avec son étiquette brute pour
  * libellé. Le jour où le client ajoute un huitième besoin à son fichier, ses
- * routines s'affichent — mal nommées, ce qui se voit et se corrige — plutôt que
+ * routines s'affichent - mal nommées, ce qui se voit et se corrige - plutôt que
  * de disparaître sans bruit, ce qui ne se voit pas.
  */
 export function grouperParBesoin<T extends { besoinTag: string }>(

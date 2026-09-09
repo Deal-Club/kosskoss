@@ -57,14 +57,14 @@ const VITRINE = [
 
 interface PaymentMethodsBarProps {
   /**
-   * `section` — bandeau autonome avec titre, pour la fiche produit et le pied de page.
-   * `inline` — rangée de logos seule, pour le panier, la caisse et le tiroir.
+   * `section` - bandeau autonome avec titre, pour la fiche produit et le pied de page.
+   * `inline` - rangée de logos seule, pour le panier, la caisse et le tiroir.
    */
   variant?: "section" | "inline";
   /**
-   * `catalogue` — moyens activés dans le back-office, ceux réellement proposés
+   * `catalogue` - moyens activés dans le back-office, ceux réellement proposés
    *   à la caisse.
-   * `vitrine` — liste figée, indépendante du back-office.
+   * `vitrine` - liste figée, indépendante du back-office.
    */
   source?: "catalogue" | "vitrine";
   className?: string;

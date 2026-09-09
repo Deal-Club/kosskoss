@@ -18,7 +18,7 @@ describe("doitEmettreFacture", () => {
   });
 
   it("n'émet pas sur un remboursement", () => {
-    // Un remboursement appelle un avoir, prévu au lot 3 — pas une facture.
+    // Un remboursement appelle un avoir, prévu au lot 3 - pas une facture.
     assert.equal(doitEmettreFacture("payee", "remboursee"), false);
   });
 });

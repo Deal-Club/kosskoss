@@ -93,11 +93,11 @@ const REVEAL =
  * Ajout au panier en un geste, depuis la grille.
  *
  * Trois comportements, selon le produit :
- *   - **plusieurs contenances** — un lien vers la fiche. Le prix montré sur la
+ *   - **plusieurs contenances** - un lien vers la fiche. Le prix montré sur la
  *     vignette est celui du produit de base ; choisir une contenance à la place
  *     du client reviendrait à lui facturer un montant qu'il n'a pas vu ;
- *   - **rupture de stock** — bouton désactivé ;
- *   - **produit simple** — ajout immédiat, sans quitter la page.
+ *   - **rupture de stock** - bouton désactivé ;
+ *   - **produit simple** - ajout immédiat, sans quitter la page.
  *
  * L'ajout ouvre le tiroir latéral, comme le clic sur l'icône du panier : le
  * client voit tout de suite ce qu'il vient de mettre dedans, son sous-total, et
@@ -137,7 +137,7 @@ export function QuickAddButton({ product }: { product: KKProductView }) {
    * Trois temps, dans cet ordre : la ligne entre au panier, la photo s'envole
    * vers l'icône, le tiroir s'ouvre.
    *
-   * L'ajout d'abord — le panier doit être juste même si l'onglet passe en
+   * L'ajout d'abord - le panier doit être juste même si l'onglet passe en
    * arrière-plan pendant le vol et que l'animation est suspendue. L'ouverture
    * en dernier : le tiroir couvre la droite de l'écran, il masquerait la fin de
    * la trajectoire s'il s'ouvrait avant.
@@ -208,7 +208,7 @@ export function BoutonAcheter({ product }: { product: KKProductView }) {
   if (!isActionable(product)) return null;
 
   // Plusieurs contenances : on ne peut pas payer « le produit » sans que le
-  // client ait choisi laquelle — on l'envoie donc d'abord à la fiche.
+  // client ait choisi laquelle - on l'envoie donc d'abord à la fiche.
   if (product.hasVariants) {
     return (
       <Link
@@ -222,7 +222,7 @@ export function BoutonAcheter({ product }: { product: KKProductView }) {
 
   /**
    * « Acheter » : la ligne entre au panier PUIS on file droit à la
-   * page de paiement (/commande), sans ouvrir le tiroir — c'est un achat direct,
+   * page de paiement (/commande), sans ouvrir le tiroir - c'est un achat direct,
    * pas un « ajouter et continuer ». Le panier reste la source de vérité du
    * tunnel, mais le visiteur ne le voit pas s'ouvrir.
    */
@@ -254,7 +254,7 @@ export function BoutonAcheter({ product }: { product: KKProductView }) {
  * Cœur des favoris.
  *
  * Sans compte, la liste reste dans le navigateur ; une fois connecté, elle est
- * versée sur le compte — voir `src/lib/favorites.ts`. Le bouton, lui, ne connaît
+ * versée sur le compte - voir `src/lib/favorites.ts`. Le bouton, lui, ne connaît
  * pas cette distinction.
  */
 export function FavoriteHeart({

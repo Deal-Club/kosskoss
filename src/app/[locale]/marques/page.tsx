@@ -21,12 +21,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 /**
- * Les maisons distribuées — entrée « Marques » de la structure fournie par le
+ * Les maisons distribuées - entrée « Marques » de la structure fournie par le
  * client (bloc de navigation de la maquette).
  *
  * Elle remplace le bandeau de marques qui occupait une bande entière sur
- * l'accueil : nommer les maisons répond à l'inquiétude n°1 de cette clientèle —
- * la contrefaçon — mais cette réponse n'avait pas besoin d'un huitième bloc sur
+ * l'accueil : nommer les maisons répond à l'inquiétude n°1 de cette clientèle -
+ * la contrefaçon - mais cette réponse n'avait pas besoin d'un huitième bloc sur
  * la page d'accueil. Elle a besoin d'une page, atteignable et indexable.
  */
 export default async function MarquesPage({ params }: { params: Params }) {

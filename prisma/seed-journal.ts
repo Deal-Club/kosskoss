@@ -119,7 +119,7 @@ const ARTICLES: SeedArticle[] = [
         kind: "callout",
         tone: "conseil",
         title: "Le test des cinq premières lignes",
-        text: "Si l'actif mis en avant sur le flacon — vitamine C, acide hyaluronique, karité — apparaît en toute fin de liste, il est présent en quantité symbolique. Le nom sur l'emballage ne dit rien de la dose.",
+        text: "Si l'actif mis en avant sur le flacon - vitamine C, acide hyaluronique, karité - apparaît en toute fin de liste, il est présent en quantité symbolique. Le nom sur l'emballage ne dit rien de la dose.",
       },
       { kind: "heading", level: 2, text: "Règle 2 : l'eau ouvre presque toujours la marche" },
       {
@@ -132,7 +132,7 @@ const ARTICLES: SeedArticle[] = [
         items: [
           "**Glycerin** : humectant, retient l'eau dans la couche superficielle de la peau.",
           "**Butyrospermum Parkii Butter** : beurre de karité, le nom botanique du karité.",
-          "**Cetearyl Alcohol** : un alcool gras, émollient — à ne pas confondre avec l'alcool desséchant, qui s'écrit **Alcohol Denat.**",
+          "**Cetearyl Alcohol** : un alcool gras, émollient - à ne pas confondre avec l'alcool desséchant, qui s'écrit **Alcohol Denat.**",
           "**Parfum** ou **Fragrance** : le parfum, première cause d'intolérance sur peau réactive.",
         ],
       },
@@ -311,7 +311,7 @@ const ARTICLES: SeedArticle[] = [
         kind: "callout",
         tone: "conseil",
         title: "Attention à la glycérine en air très sec",
-        text: "La glycérine capte l'humidité de l'air. Quand l'air est plus sec que le cheveu — vent d'harmattan, climatisation — elle peut faire l'inverse et puiser dans la fibre. Dans ces conditions, on réduit sa part au profit des corps gras.",
+        text: "La glycérine capte l'humidité de l'air. Quand l'air est plus sec que le cheveu - vent d'harmattan, climatisation - elle peut faire l'inverse et puiser dans la fibre. Dans ces conditions, on réduit sa part au profit des corps gras.",
       },
       { kind: "heading", level: 2, text: "Espacer les shampoings" },
       {

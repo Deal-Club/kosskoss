@@ -21,7 +21,7 @@ describe("margeUnitaire", () => {
   });
 
   it("rend une marge négative quand le produit est vendu à perte", () => {
-    // Le cas existe — déstockage, erreur de saisie — et le masquer
+    // Le cas existe - déstockage, erreur de saisie - et le masquer
     // empêcherait justement de le repérer.
     assert.equal(margeUnitaire(10000, 12000), -2000);
   });
@@ -77,7 +77,7 @@ describe("coutSaisiValide", () => {
     // Sans ce refus, l'aperçu annonçait 100 % de marge sur « abc » avant que
     // le serveur ne rejette la même chaîne.
     assert.equal(coutSaisiValide("abc"), false);
-    assert.equal(coutSaisiValide("—"), false);
+    assert.equal(coutSaisiValide("-"), false);
     assert.equal(coutSaisiValide("-"), false);
   });
 

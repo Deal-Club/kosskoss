@@ -7,7 +7,7 @@ import { localePrefixOf, withLocale } from "./localized-link";
  * Ce test protège le correctif du lot bilingue : un lien interne écrit en dur
  * (`/panier`, `href={product.href}`…) doit repartir vers `/en/panier` quand la
  * page courante est anglaise, sinon le premier clic depuis `/en` ramène le
- * visiteur en français — c'est exactement le défaut que ce composant corrige.
+ * visiteur en français - c'est exactement le défaut que ce composant corrige.
  */
 
 describe("localePrefixOf", () => {

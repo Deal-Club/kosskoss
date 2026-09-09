@@ -1,5 +1,5 @@
 /**
- * Legal and informational content in ENGLISH — KossKoss Select (Cameroon market).
+ * Legal and informational content in ENGLISH - KossKoss Select (Cameroon market).
  *
  * Mirror of src/content/legal/fr.ts. The French version is authoritative: it is
  * the language that binds the company, and this translation exists so that a
@@ -22,7 +22,7 @@ import { COMPANY as COMPANY_FR } from "./fr";
 /**
  * Valeurs d'affichage anglaises des quelques champs dont l'orthographe
  * française fuyait dans les pages traduites (« Cameroun », « La gérance »,
- * « États-Unis »). Tout le reste — adresse, numéros, e-mail — est neutre et
+ * « États-Unis »). Tout le reste - adresse, numéros, e-mail - est neutre et
  * vient tel quel de src/content/legal/company.ts, la source unique.
  */
 const COMPANY = {

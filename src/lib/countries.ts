@@ -80,7 +80,7 @@ export function countryName(code: string, locale: string): string {
  * vaut laisser passer une adresse exotique que rejeter un client dont on
  * connaît mal le format postal.
  *
- * Les codes sont comparés en majuscules — le serveur normalise avant de valider.
+ * Les codes sont comparés en majuscules - le serveur normalise avant de valider.
  */
 const POSTAL_CODE_PATTERNS: Record<string, RegExp> = {
   DE: /^\d{5}$/,
@@ -115,7 +115,7 @@ export function isValidPostalCode(country: string, postalCode: string): boolean 
 }
 
 /**
- * Liste complète, triée selon les règles alphabétiques de la langue affichée —
+ * Liste complète, triée selon les règles alphabétiques de la langue affichée -
  * « Éthiopie » se classe entre « Estonie » et « Fidji » en français, et non en
  * fin de liste comme le ferait un tri sur les octets.
  */

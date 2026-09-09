@@ -99,7 +99,7 @@ export async function validerCoupon(
  *
  * `updateMany` filtré plutôt que `update` : si deux commandes valident le
  * dernier exemplaire d'un code au même instant, la condition sur `usedCount`
- * fait que la seconde ne passe pas — c'est la base qui arbitre, pas l'ordre des
+ * fait que la seconde ne passe pas - c'est la base qui arbitre, pas l'ordre des
  * requêtes. L'échec est silencieux : refuser une commande déjà payée pour un
  * compteur dépassé d'une unité serait pire que la laisser passer.
  */

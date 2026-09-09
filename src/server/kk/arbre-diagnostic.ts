@@ -4,7 +4,7 @@
  * (Essentielle / Premium) en sortent, avec l'état de chacune.
  *
  * C'est une VUE, pas une seconde vérité : elle relit les mêmes sources que le
- * moteur — `BESOIN_PAR_REPONSE_PRIORITE` (réponse → besoin), `MATRICE` (besoin
+ * moteur - `BESOIN_PAR_REPONSE_PRIORITE` (réponse → besoin), `MATRICE` (besoin
  * → codes de routine) et les routines en base. Elle ne recopie aucune règle.
  */
 import { prisma } from "@/server/prisma";
@@ -12,7 +12,7 @@ import { getQuestions } from "./diagnostic-data";
 import { MATRICE, type Besoin } from "@/lib/kk/diagnostic-matrice";
 import type { Locale } from "@/i18n/routing";
 
-/** Clé (DiagQuestion.key) de la question de priorité — celle qui décide du besoin. */
+/** Clé (DiagQuestion.key) de la question de priorité - celle qui décide du besoin. */
 const CLE_Q2 = "priorite";
 
 /**

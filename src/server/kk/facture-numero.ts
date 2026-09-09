@@ -3,7 +3,7 @@
  *
  * Séquence annuelle et continue : « FAC-2026-000001 ». Le calcul est isolé ici,
  * sans accès base, parce que c'est la seule partie dont une erreur se verrait
- * chez le comptable — et la seule que les tests du projet savent couvrir.
+ * chez le comptable - et la seule que les tests du projet savent couvrir.
  *
  * Le préfixe diffère volontairement de celui des commandes (« KOSS- », posé par
  * createKossOrder dans server/kk/checkout.ts) : un numéro de facture et un

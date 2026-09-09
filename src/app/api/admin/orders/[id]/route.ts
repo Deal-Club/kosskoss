@@ -91,7 +91,7 @@ export async function GET(_request: Request, { params }: { params: Params }) {
   return NextResponse.json(order);
 }
 
-/** Suppression définitive — utile pour retirer les commandes de test. */
+/** Suppression définitive - utile pour retirer les commandes de test. */
 export async function DELETE(_request: Request, { params }: { params: Params }) {
   const { unauthorized } = await requireCapaciteApi("commandes");
   if (unauthorized) return unauthorized;

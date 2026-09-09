@@ -1,19 +1,19 @@
 /**
- * Adaptateur Mollie — encaissement par page de paiement hébergée.
+ * Adaptateur Mollie - encaissement par page de paiement hébergée.
  *
  * Même principe que Stripe et Square : le client paie chez Mollie, aucune donnée
  * de carte ne transite par ce serveur.
  *
  * Particularité de Mollie, à connaître avant de lire `handleWebhook` : la
  * notification **n'est pas signée** et ne contient qu'un identifiant de paiement.
- * C'est le modèle documenté par Mollie — la sécurité vient de ce qu'on relit le
+ * C'est le modèle documenté par Mollie - la sécurité vient de ce qu'on relit le
  * paiement depuis l'API avec notre propre clé plutôt que de croire le corps du
  * message. Un faux webhook ne peut donc rien affirmer : au pire il nous fait
  * relire un paiement qui nous appartient déjà.
  *
  * Autre particularité : l'URL de notification est transmise à chaque paiement
  * (`webhookUrl`), il n'y a donc rien à déclarer dans le tableau de bord Mollie.
- * En revanche Mollie refuse une URL non publique — un `localhost` fait échouer
+ * En revanche Mollie refuse une URL non publique - un `localhost` fait échouer
  * la création du paiement.
  *
  * Une seule clé, saisie en administration et stockée chiffrée :
@@ -101,7 +101,7 @@ export const mollieGateway: PaymentGateway = {
     id: "mollie",
     label: "Mollie",
     availability:
-      "Bien adapté à la France — CB, Bancontact, iDEAL, virement SEPA. Une seule clé à saisir, rien à déclarer côté Mollie.",
+      "Bien adapté à la France - CB, Bancontact, iDEAL, virement SEPA. Une seule clé à saisir, rien à déclarer côté Mollie.",
     implemented: true,
     keys: [
       {
@@ -189,7 +189,7 @@ export const mollieGateway: PaymentGateway = {
     try {
       const profile = await mollie.profiles.getCurrent();
       profileName = profile.name;
-      details.push({ label: "Profil", value: `${profile.name} — ${profile.website}` });
+      details.push({ label: "Profil", value: `${profile.name} - ${profile.website}` });
       details.push({ label: "Statut du profil", value: `${profile.status} (${profile.mode})` });
       if (profile.status !== "verified") {
         issues.push(

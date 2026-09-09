@@ -3,7 +3,7 @@
  *
  * Ce qui est couvert n'est pas choisi au hasard : ce parseur reçoit du texte
  * saisi dans le back-office et le transforme en éléments affichés sur des pages
- * publiques. Deux familles de cas comptent vraiment — les marques mal formées
+ * publiques. Deux familles de cas comptent vraiment - les marques mal formées
  * (qui ne doivent jamais casser la page) et les adresses de lien hostiles (qui
  * ne doivent jamais devenir cliquables).
  *
@@ -32,7 +32,7 @@ function shape(nodes: readonly RichTextNode[]): string {
     .join("");
 }
 
-describe("parseRichText — marques bien formées", () => {
+describe("parseRichText - marques bien formées", () => {
   it("reconnaît le gras", () => {
     assert.equal(shape(parseRichText("Valable **aujourd'hui**")), "Valable <b>aujourd'hui</b>");
   });
@@ -59,7 +59,7 @@ describe("parseRichText — marques bien formées", () => {
   });
 });
 
-describe("parseRichText — marques mal formées", () => {
+describe("parseRichText - marques mal formées", () => {
   it("affiche littéralement une astérisque isolée", () => {
     assert.equal(shape(parseRichText("Preis 349 € *")), "Preis 349 € *");
   });
@@ -86,7 +86,7 @@ describe("parseRichText — marques mal formées", () => {
   });
 });
 
-describe("parseRichText — liens", () => {
+describe("parseRichText - liens", () => {
   it("accepte un chemin interne", () => {
     assert.equal(
       shape(parseRichText("Voir les [mentions légales](/mentions-legales)")),

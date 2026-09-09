@@ -115,7 +115,7 @@ export function IntegrationForm({ integration }: IntegrationFormProps) {
       <p className="mb-3 text-sm">
         <span className="font-semibold text-foreground">Valeur enregistrée : </span>
         <span className="font-mono text-muted-foreground">
-          {integration.maskedValue ?? "— aucune clé enregistrée —"}
+          {integration.maskedValue ?? "- aucune clé enregistrée -"}
         </span>
       </p>
 

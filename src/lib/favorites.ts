@@ -6,15 +6,15 @@ import { useSyncExternalStore } from "react";
  * Favoris de la boutique.
  *
  * Deux régimes, un seul magasin :
- *   - **visiteur sans compte** — la liste vit dans le navigateur
+ *   - **visiteur sans compte** - la liste vit dans le navigateur
  *     (localStorage). Aucun compte n'est nécessaire pour mettre un produit de
  *     côté, et rien n'est envoyé au serveur ;
- *   - **client connecté** — la base fait autorité. La liste locale accumulée
+ *   - **client connecté** - la base fait autorité. La liste locale accumulée
  *     avant la connexion y est versée une fois, puis le stockage du navigateur
  *     est vidé : la sélection suit le client d'un appareil à l'autre.
  *
- * Le régime n'est pas deviné depuis un cookie — celui de session est httpOnly,
- * illisible en JavaScript — mais lu dans le champ `authenticated` que renvoie
+ * Le régime n'est pas deviné depuis un cookie - celui de session est httpOnly,
+ * illisible en JavaScript - mais lu dans le champ `authenticated` que renvoie
  * `GET /api/account/favorites`.
  *
  * Le magasin est un singleton hors React, lu par `useSyncExternalStore` : le
@@ -59,7 +59,7 @@ type Listener = () => void;
 const EMPTY: FavoriteItem[] = [];
 
 /**
- * État complet, remplacé — jamais muté — à chaque changement.
+ * État complet, remplacé - jamais muté - à chaque changement.
  *
  * `mode` et `ready` vivent dans l'instantané et non à côté : sans cela, passer
  * du régime local au régime compte sur une liste identique ne changerait aucune
@@ -404,7 +404,7 @@ export function syncFavoritesAfterLogin(): void {
  * À appeler juste après une déconnexion.
  *
  * La liste du compte ne doit pas rester affichée pour le visiteur anonyme qui
- * reprend le navigateur — sur un poste partagé, ce serait montrer la sélection
+ * reprend le navigateur - sur un poste partagé, ce serait montrer la sélection
  * de quelqu'un d'autre.
  */
 export function resetFavoritesAfterLogout(): void {

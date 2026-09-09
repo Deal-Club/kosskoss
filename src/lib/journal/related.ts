@@ -6,9 +6,9 @@
  * articles au bas de tous les articles d'une catégorie, ce qui n'aide ni le
  * lecteur ni le maillage interne.
  *
- * Les tags pèsent donc plus lourd que la catégorie — deux articles partageant
+ * Les tags pèsent donc plus lourd que la catégorie - deux articles partageant
  * « hydratation » se ressemblent davantage que deux articles rangés dans
- * « Soin » — et la récence ne sert qu'à départager les ex æquo. Quand rien ne
+ * « Soin » - et la récence ne sert qu'à départager les ex æquo. Quand rien ne
  * correspond, la fonction ne rend pas une liste vide : elle retombe sur les
  * articles récents, un score nul restant un score.
  */

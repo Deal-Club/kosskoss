@@ -1,8 +1,8 @@
-# Lot 4C — Les facettes du catalogue — Plan
+# Lot 4C - Les facettes du catalogue - Plan
 
 > **SOUS-COMPÉTENCE REQUISE :** superpowers:subagent-driven-development.
 
-**Critère visé : 01** — filtres catégorie, marque, **type de peau**, **préoccupation**
+**Critère visé : 01** - filtres catégorie, marque, **type de peau**, **préoccupation**
 et **prix**, plus le tri. C'est le dernier critère contractuel encore ouvert du
 catalogue.
 
@@ -53,14 +53,14 @@ ce qui existe réellement, avant de coder. Ma description peut être périmée.
       familles séparément. **Union dans une famille, intersection entre familles.**
       Écris la règle en commentaire : elle n'est pas devinable, et une inversion
       donnerait un catalogue qui se vide au deuxième clic.
-- [ ] `parseFacettes` lit `?peau=grasse,mixte&preoccupation=taches` — valeurs
+- [ ] `parseFacettes` lit `?peau=grasse,mixte&preoccupation=taches` - valeurs
       inconnues **ignorées**, jamais d'erreur : un lien périmé doit afficher le rayon,
       pas un 500. C'est déjà la doctrine de `parseBesoin`.
-- [ ] `parsePrix` lit `?prixMin=&prixMax=` — bornes en francs entiers. **Le FCFA n'a
+- [ ] `parsePrix` lit `?prixMin=&prixMax=` - bornes en francs entiers. **Le FCFA n'a
       pas de sous-unité.** Bornes inversées : les échanger plutôt que rendre une liste
       vide. Valeurs absurdes : ignorées.
 - [ ] **Compatibilité :** `?besoin=` existe dans des liens déjà partagés et dans le
-      diagnostic. Fais-le survivre — un `besoin` reçu se traduit dans la bonne famille.
+      diagnostic. Fais-le survivre - un `besoin` reçu se traduit dans la bonne famille.
       Teste-le explicitement ; un lien de diagnostic cassé serait une régression
       visible.
 - [ ] Tests : union dans une famille, intersection entre familles, sélection vide,
@@ -80,7 +80,7 @@ ce qui existe réellement, avant de coder. Ma description peut être périmée.
       inégales.
 - [ ] Les facettes portent sur les étiquettes du diagnostic déjà utilisées par
       `besoin` : regarde comment c'est fait et étends, ne réécris pas.
-- [ ] **Rends les décomptes par option** — combien de produits pour chaque type de
+- [ ] **Rends les décomptes par option** - combien de produits pour chaque type de
       peau, chaque préoccupation, chaque marque, dans la sélection courante. Un filtre
       qui annonce zéro avant d'être coché évite un aller-retour inutile.
 - [ ] Rends aussi le prix minimum et maximum du rayon, pour borner le curseur.
@@ -91,7 +91,7 @@ ce qui existe réellement, avant de coder. Ma description peut être périmée.
 ### Tâche 3 : L'écran
 
 **Fichiers :** `src/components/kk/catalog.tsx`, plus un composant de facettes si le
-fichier devient trop gros — dis-le si c'est le cas.
+fichier devient trop gros - dis-le si c'est le cas.
 
 - [ ] Quatre blocs : marque, type de peau, préoccupation, prix. Plus le tri, déjà là.
 - [ ] Chaque option porte son décompte. Une option à zéro se désactive plutôt que de

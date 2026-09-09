@@ -23,7 +23,7 @@
  *
  * Usage :
  *   node scripts/verifier-pages.mjs [base]
- * où `base` vaut par défaut http://127.0.0.1:3000 — passez l'adresse de
+ * où `base` vaut par défaut http://127.0.0.1:3000 - passez l'adresse de
  * production pour contrôler un déploiement.
  */
 import { chromium } from "playwright";

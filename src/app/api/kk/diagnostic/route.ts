@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     : [];
   // Le corps vient du navigateur : on n'accepte que les deux langues connues,
   // jamais une chaîne arbitraire transmise telle quelle à buildRoutine.
-  // `choisirLangue` porte cette règle pour tout le site — une seconde variante
+  // `choisirLangue` porte cette règle pour tout le site - une seconde variante
   // écrite à la main finirait par diverger de la première.
   const locale = choisirLangue(typeof body.locale === "string" ? body.locale : null);
   const result = await computeDiagnostic(answers, locale);

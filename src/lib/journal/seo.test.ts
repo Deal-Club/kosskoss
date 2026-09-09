@@ -3,7 +3,7 @@
  *
  * Un rédacteur ne remplit presque jamais les douze champs SEO d'un article.
  * Ce qui compte n'est donc pas de les stocker mais de décider proprement ce
- * qui est servi quand ils sont vides — une seule fois, dans une fonction pure,
+ * qui est servi quand ils sont vides - une seule fois, dans une fonction pure,
  * plutôt que dispersé dans chaque composant.
  *
  * Lancer avec : npm test
@@ -31,9 +31,9 @@ const BASE: ArticleSeoSource = {
 
 const OPTIONS = { brandName: "KossKoss Select", canonical: "https://kosskoss.example/journal/choisir-son-nettoyant" };
 
-describe("resolveArticleSeo — replis", () => {
+describe("resolveArticleSeo - replis", () => {
   it("compose le titre à partir du titre de l'article et de la marque", () => {
-    assert.equal(resolveArticleSeo(BASE, OPTIONS).title, "Choisir son nettoyant — KossKoss Select");
+    assert.equal(resolveArticleSeo(BASE, OPTIONS).title, "Choisir son nettoyant - KossKoss Select");
   });
 
   it("préfère le meta title quand il est renseigné", () => {
@@ -46,7 +46,7 @@ describe("resolveArticleSeo — replis", () => {
   });
 
   it("retombe sur le meta title pour Open Graph", () => {
-    assert.equal(resolveArticleSeo(BASE, OPTIONS).ogTitle, "Choisir son nettoyant — KossKoss Select");
+    assert.equal(resolveArticleSeo(BASE, OPTIONS).ogTitle, "Choisir son nettoyant - KossKoss Select");
   });
 
   it("retombe sur l'image de couverture pour Open Graph", () => {
@@ -64,7 +64,7 @@ describe("resolveArticleSeo — replis", () => {
   });
 });
 
-describe("resolveArticleSeo — canonique et robots", () => {
+describe("resolveArticleSeo - canonique et robots", () => {
   it("utilise l'URL canonique calculée par défaut", () => {
     assert.equal(resolveArticleSeo(BASE, OPTIONS).canonical, OPTIONS.canonical);
   });
@@ -88,7 +88,7 @@ describe("resolveArticleSeo — canonique et robots", () => {
   });
 });
 
-describe("resolveArticleSeo — hygiène", () => {
+describe("resolveArticleSeo - hygiène", () => {
   it("ne double pas la marque quand le titre la contient déjà", () => {
     const seo = resolveArticleSeo({ ...BASE, title: "Le guide KossKoss Select" }, OPTIONS);
     assert.equal(seo.title, "Le guide KossKoss Select");

@@ -1,7 +1,7 @@
 import type { KKBadge } from "@/types/kk";
 
 /**
- * LES BADGES PRODUIT — source unique.
+ * LES BADGES PRODUIT - source unique.
  *
  * Deux distinctions, pas davantage : « Meilleure vente » et « Nouveauté ».
  * Elles se posent à la main, produit par produit, depuis le back-office.
@@ -9,8 +9,8 @@ import type { KKBadge } from "@/types/kk";
  * ── Pourquoi ce fichier existe ────────────────────────────────────────────
  * Le badge était un champ de TEXTE LIBRE au back-office (« ex. -20%,
  * Nouveau »), alors que la boutique n'affiche que deux valeurs, écrites en
- * minuscules et sans accent : `bestseller` et `nouveau`. Tout le reste — un
- * « Nouveau » avec sa majuscule, un « -20% », une faute de frappe — était
+ * minuscules et sans accent : `bestseller` et `nouveau`. Tout le reste - un
+ * « Nouveau » avec sa majuscule, un « -20% », une faute de frappe - était
  * enregistré sans broncher puis ignoré à l'affichage. Le badge ne sortait
  * jamais, et rien ne disait pourquoi.
  *
@@ -21,7 +21,7 @@ import type { KKBadge } from "@/types/kk";
  * ── Ce que la clé n'est pas ───────────────────────────────────────────────
  * Ce n'est pas un libellé. `bestseller` est ce qu'on écrit en base ;
  * « Meilleure vente » est ce que lit un client. Les deux ne se confondent
- * jamais — c'est ce qui permet de retoucher le second sans migration.
+ * jamais - c'est ce qui permet de retoucher le second sans migration.
  */
 
 export interface BadgeDefinition {
@@ -52,9 +52,9 @@ export const PRODUCT_BADGES: readonly BadgeDefinition[] = [
  * Même convention que `ORDER_STATUS_LABELS` (src/lib/orderStatus.ts) et que
  * `Besoin.label`/`labelEn` (src/lib/kk/besoins.ts) : une valeur bilingue
  * portée par ce module, plutôt qu'une clé next-intl. Ces trois fichiers ne
- * dépendent ni de Prisma ni du serveur — badges, statuts et besoins doivent
+ * dépendent ni de Prisma ni du serveur - badges, statuts et besoins doivent
  * rester importables depuis le bundle du navigateur comme depuis le
- * back-office — et c'est ce qui les distingue des messages next-intl, qui
+ * back-office - et c'est ce qui les distingue des messages next-intl, qui
  * exigent un contexte de requête.
  */
 export const BADGE_LABEL: Record<Exclude<KKBadge, null>, { en: string; fr: string }> = {
@@ -70,8 +70,8 @@ export const BADGE_LABEL: Record<Exclude<KKBadge, null>, { en: string; fr: strin
  * vente » désignent tous quelque chose de connu, et les refuser au motif que
  * la casse diffère ferait perdre la colonne entière sans le dire.
  *
- * La comparaison se fait sur une forme réduite — minuscules, accents retirés,
- * séparateurs supprimés — d'où l'absence de variantes accentuées dans cette
+ * La comparaison se fait sur une forme réduite - minuscules, accents retirés,
+ * séparateurs supprimés - d'où l'absence de variantes accentuées dans cette
  * table : « nouveaute » couvre déjà « Nouveauté ».
  */
 const ALIAS: Record<Exclude<KKBadge, null>, readonly string[]> = {

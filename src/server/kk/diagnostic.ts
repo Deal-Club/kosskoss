@@ -27,7 +27,7 @@ import type { Locale } from "@/i18n/routing";
  *     mettre en forme pour l'écran.
  */
 
-/** Clés (DiagQuestion.key) des cinq questions du quiz client — voir
+/** Clés (DiagQuestion.key) des cinq questions du quiz client - voir
  *  scripts/installer-quiz-diagnostic.ts, seule autre source qui les nomme. */
 const CLE_Q1_PEAU = "peau";
 const CLE_Q2_PRIORITE = "priorite";
@@ -39,7 +39,7 @@ const CLE_Q4_ENVIRONNEMENT = "environnement";
  *
  * Les clés des réponses de Q2 posées en base par `installerQuizClient()`
  * (scripts/installer-quiz-diagnostic.ts) ne reprennent pas toutes
- * littéralement un des sept `Besoin` — seule « anti_age » coïncide. Cette
+ * littéralement un des sept `Besoin` - seule « anti_age » coïncide. Cette
  * table est un détail de câblage (le nom donné à une réponse en base), pas
  * une règle de décision : elle n'a donc pas sa place dans
  * diagnostic-matrice.ts, qui reste pur et sans connaissance de la base.
@@ -56,7 +56,7 @@ type ReponseChoisie = { key: string; label: string; description: string };
 
 /** Les réponses choisies, une par question (clé de question → réponse). Une
  *  question sans réponse dans `answerIds` (absente, invisible, id inconnu)
- *  n'a simplement pas d'entrée — jamais une hypothèse sur ce qu'elle aurait
+ *  n'a simplement pas d'entrée - jamais une hypothèse sur ce qu'elle aurait
  *  valu. */
 async function reponsesParQuestion(
   answerIds: string[],
@@ -81,19 +81,19 @@ async function reponsesParQuestion(
 }
 
 export type DiagnosticResult = {
-  /** Type de peau déclaré (Q1) — étiquette de profil (« Peau Grasse ») quand
+  /** Type de peau déclaré (Q1) - étiquette de profil (« Peau Grasse ») quand
    *  la clé est connue de `etiquetteProfil`, sinon le libellé brut traduit ;
    *  "" si absent. */
   peauLabel: string;
-  /** Préoccupation déclarée (Q2) — libellé traduit tel que choisi, "" si
+  /** Préoccupation déclarée (Q2) - libellé traduit tel que choisi, "" si
    *  absente. CONSERVÉE même quand la bascule de sécurité l'a emportée. */
   besoinDeclareLabel: string;
-  /** Phrase de priorité — la description de la réponse Q2 choisie. */
+  /** Phrase de priorité - la description de la réponse Q2 choisie. */
   prioriteTexte: string;
-  /** Réactivité déclarée (Q3) — étiquette de profil (« Peau Sensible » /
+  /** Réactivité déclarée (Q3) - étiquette de profil (« Peau Sensible » /
    *  « Peau Tolérante ») plutôt que le « Oui »/« Non » brut, "" si absente. */
   reactiviteLabel: string;
-  /** Environnement quotidien (Q4) — étiquette de profil (« Climat Chaud &
+  /** Environnement quotidien (Q4) - étiquette de profil (« Climat Chaud &
    *  Humide », « Espaces Climatisés »), "" si absent. Entré au profil par
    *  TK-02 : la variable environnementale fait partie du bilan. */
   environnementLabel: string;
@@ -107,15 +107,15 @@ export type DiagnosticResult = {
    *  exact du document du client) ; `null` sinon. */
   messageSecurite: string | null;
   /** Routine Essentielle du besoin retenu. `null` si elle n'existe pas ou
-   *  n'est plus servable (voir getRoutineByCode) — l'écran le dit plutôt que
+   *  n'est plus servable (voir getRoutineByCode) - l'écran le dit plutôt que
    *  d'en inventer une. */
   essentielle: KKRoutineView | null;
   /** Routine Premium du besoin retenu. Même règle que ci-dessus. */
   premium: KKRoutineView | null;
-  /** Conseil selon le type de peau (Q1) — texte exact du document du client,
+  /** Conseil selon le type de peau (Q1) - texte exact du document du client,
    *  "" si Q1 est absente. */
   conseilTypePeau: string;
-  /** Conseil selon l'environnement (Q4) — texte exact du document du client,
+  /** Conseil selon l'environnement (Q4) - texte exact du document du client,
    *  "" si Q4 est absente. */
   conseilEnvironnement: string;
 };
@@ -123,7 +123,7 @@ export type DiagnosticResult = {
 /**
  * Calcule le résultat du Diagnostic Beauté à partir des identifiants de
  * réponse reçus (un `DiagAnswer.id` par question à laquelle le visiteur a
- * répondu — les questions restées invisibles n'y figurent simplement pas).
+ * répondu - les questions restées invisibles n'y figurent simplement pas).
  */
 export async function computeDiagnostic(
   answerIds: string[],

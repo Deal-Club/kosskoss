@@ -5,8 +5,8 @@
  *
  * Le kit livré par le client contient un visuel par produit, et parfois une
  * seconde vue (fichiers suffixés « (1) »). Les 71 produits actifs ont déjà une
- * vignette ; aucun n'a de galerie. Ce script remplit la galerie — le champ
- * `images` — et ne touche JAMAIS à `image`, la vignette de référence qui sert
+ * vignette ; aucun n'a de galerie. Ce script remplit la galerie - le champ
+ * `images` - et ne touche JAMAIS à `image`, la vignette de référence qui sert
  * les listes, le panier et le flux Google.
  *
  * Il n'efface rien : un produit dont la galerie est déjà remplie est laissé
@@ -25,7 +25,7 @@
  *
  * Mesuré : sur les 84 visuels appariés, 73 sont EXACTEMENT la vignette déjà
  * en place. Les verser en galerie afficherait deux fois la même photo sur la
- * fiche. Seuls 11 montrent autre chose — un étui à côté d'un pot, un dos de
+ * fiche. Seuls 11 montrent autre chose - un étui à côté d'un pot, un dos de
  * flacon, un second angle.
  *
  * La comparaison est perceptuelle (empreinte d'image), donc hors de portée de
@@ -88,7 +88,7 @@ function mots(libelle: string): string[] {
  * l'autre et fait de faux rapprochements. Mais pour certains produits, elle
  * est le SEUL élément distinctif : « Gel Hydratant 50 ml » et « Gel Hydratant
  * 125 ml » ont exactement les mêmes mots. Sans ce garde-fou, les deux fiches
- * obtenaient le même score et recevaient chacune la photo de l'autre — ce
+ * obtenaient le même score et recevaient chacune la photo de l'autre - ce
  * qu'une vérification perceptuelle a effectivement mis au jour.
  *
  * La contenance du produit se lit sur sa référence interne, dont c'est le
@@ -120,26 +120,26 @@ function recouvrement(reference: string[], candidat: string[]): number {
  * trop peu de mots communs pour franchir le seuil.
  *
  * Abaisser ce seuil serait la mauvaise réponse : il tomberait alors sur des
- * rapprochements FAUX, et en silence — une photo de nettoyant sur une fiche de
+ * rapprochements FAUX, et en silence - une photo de nettoyant sur une fiche de
  * sérum ne déclenche aucune erreur, elle se contente d'être fausse en
  * vitrine. Ces six paires ont donc été vérifiées à l'œil, une par une, et
  * sont écrites ici pour être relisibles.
  *
- * Clé : « marque — nom » tel qu'en base. Valeur : nom du fichier, sans
- * extension ni suffixe « (1) » — les deux vues sont reprises ensemble.
+ * Clé : « marque - nom » tel qu'en base. Valeur : nom du fichier, sans
+ * extension ni suffixe « (1) » - les deux vues sont reprises ensemble.
  */
 const APPARIEMENTS_MANUELS: Record<string, string> = {
-  "Axis-Y — Spot The Difference":
+  "Axis-Y - Spot The Difference":
     "AXIS-Y – Spot The Difference Soin local anti-imperfections – 15 ml",
-  "Biotherm — Aquapower 72h":
+  "Biotherm - Aquapower 72h":
     "Biotherm Homme - Aquapower 72h concentré hydratant 50 ml",
-  "Lancaster — Sun Beauty Lait Corps SPF50":
+  "Lancaster - Sun Beauty Lait Corps SPF50":
     "Lancaster Sun Beauty - Lait Corps protection solaire SPF 50 100 ml",
-  "Clinique — Moisture Surge 100H":
+  "Clinique - Moisture Surge 100H":
     "Clinique Moisture Surge - Soin auto-réhydratant 100H 50 ml",
-  "Clinique — Déodorant roll-on":
+  "Clinique - Déodorant roll-on":
     "Clinique For Men - Déodorant anti-transpirant roll-on 75 ml",
-  "Clinique — Crème régulatrice de sébum":
+  "Clinique - Crème régulatrice de sébum":
     "Clinique For Men - Crème hydratante régulatrice de sébum 100 ml",
 };
 
@@ -171,20 +171,20 @@ async function main() {
   });
 
   const visuels = lireVisuels();
-  console.log(`${produits.length} produits actifs — ${visuels.length} visuels (hors ambiances de marque)\n`);
+  console.log(`${produits.length} produits actifs - ${visuels.length} visuels (hors ambiances de marque)\n`);
 
   const apparies: { produit: (typeof produits)[number]; fichiers: string[] }[] = [];
   const douteux: string[] = [];
   const utilises = new Set<string>();
 
   for (const produit of produits) {
-    const manuel = APPARIEMENTS_MANUELS[`${produit.brand} — ${produit.name}`];
+    const manuel = APPARIEMENTS_MANUELS[`${produit.brand} - ${produit.name}`];
     if (manuel) {
       const retenus = visuels
         .filter((v) => basename(v.nom, extname(v.nom)).replace(/\(1\)$/, "") === manuel)
         .sort((a, b) => Number(a.alternative) - Number(b.alternative));
       if (retenus.length === 0) {
-        douteux.push(`${produit.brand} — ${produit.name} (appariement manuel sans fichier : ${manuel})`);
+        douteux.push(`${produit.brand} - ${produit.name} (appariement manuel sans fichier : ${manuel})`);
         continue;
       }
       retenus.forEach((r) => utilises.add(r.nom));
@@ -211,7 +211,7 @@ async function main() {
 
     const meilleure = notes[0]?.note ?? 0;
     if (meilleure < 0.6) {
-      douteux.push(`${produit.brand} — ${produit.name} (meilleur score ${meilleure.toFixed(2)})`);
+      douteux.push(`${produit.brand} - ${produit.name} (meilleur score ${meilleure.toFixed(2)})`);
       continue;
     }
 
@@ -237,7 +237,7 @@ async function main() {
   console.log(`visuels orphelins : ${orphelins.length}`);
 
   if (douteux.length) {
-    console.log("\nProduits sans visuel sûr — à trancher à l'œil :");
+    console.log("\nProduits sans visuel sûr - à trancher à l'œil :");
     for (const d of douteux) console.log(`  ${d}`);
   }
   if (orphelins.length) {
@@ -264,7 +264,7 @@ async function main() {
   }
 
   if (!ECRIRE) {
-    console.log("\nSimulation. Rien n'a été écrit — relancez avec --ecrire.");
+    console.log("\nSimulation. Rien n'a été écrit - relancez avec --ecrire.");
     return;
   }
 

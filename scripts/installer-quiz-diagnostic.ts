@@ -4,30 +4,30 @@
  *
  *  1. Pose l'étiquette de besoin (`Routine.besoinTag`) des 14 routines
  *     importées du master, à partir de leur code (`TAC-*` → `taches`, et
- *     ainsi de suite pour les sept familles — voir `besoinDuCodeRoutine`,
+ *     ainsi de suite pour les sept familles - voir `besoinDuCodeRoutine`,
  *     src/lib/kk/diagnostic-matrice.ts, qui LIT la matrice plutôt que de
  *     recopier une seconde table). Sans cette étiquette, le moteur de
  *     recommandation (tâche 3 de ce lot) ne peut relier aucune routine à
  *     une réponse du quiz.
  *  2. Désactive les cinq questions actuelles du Diagnostic Beauté
- *     (`type`, `concern`, `sensitivity`, `budget`, `sun`) — DÉSACTIVÉES,
+ *     (`type`, `concern`, `sensitivity`, `budget`, `sun`) - DÉSACTIVÉES,
  *     PAS SUPPRIMÉES : des profils clients (`src/server/kk/profil-diagnostic.ts`)
  *     y font référence par id, et les supprimer rendrait leur historique
  *     illisible.
  *  3. Pose les cinq questions du quiz client, avec leurs réponses, et la
  *     condition d'affichage de Q5 (elle ne s'affiche que si Q2 = « Boutons /
- *     Imperfections » ou « Glow / Éclat » — évaluée par
+ *     Imperfections » ou « Glow / Éclat » - évaluée par
  *     src/lib/kk/diagnostic-conditions.ts, appelée par le parcours à la
  *     tâche 3, pas encore aujourd'hui).
  *
  * IDEMPOTENT : chaque écriture est un upsert par clé stable (`Routine.code`,
  * `DiagQuestion.key`, `DiagAnswer.key`), et n'écrit que ce qui a réellement
- * changé. Le compte rendu NOMME chaque écriture — créée, mise à jour,
- * inchangée — comme l'import du master (src/server/kk/master.ts) : jamais un
+ * changé. Le compte rendu NOMME chaque écriture - créée, mise à jour,
+ * inchangée - comme l'import du master (src/server/kk/master.ts) : jamais un
  * simple compteur.
  *
  * Lancement : tsx scripts/installer-quiz-diagnostic.ts
- * (ce script charge lui-même .env.local puis .env — pas besoin de
+ * (ce script charge lui-même .env.local puis .env - pas besoin de
  * --env-file).
  */
 import { config as loadEnv } from "dotenv";
@@ -47,10 +47,10 @@ interface ReglageBesoinTag {
 export interface CompteRenduBesoinTag {
   /** Routine dont `besoinTag` a été écrit (créé ou corrigé). */
   misAJour: ReglageBesoinTag[];
-  /** Routine déjà à jour — preuve d'idempotence. */
+  /** Routine déjà à jour - preuve d'idempotence. */
   inchanges: ReglageBesoinTag[];
   /** Routine du master dont le code n'appartient à aucun besoin de la
-   *  matrice — SIGNALÉE, jamais écrite au hasard. Ne doit normalement
+   *  matrice - SIGNALÉE, jamais écrite au hasard. Ne doit normalement
    *  jamais apparaître : les 14 codes du master couvrent exactement les
    *  sept besoins de la matrice, dans les deux niveaux. */
   sansCorrespondance: string[];
@@ -59,7 +59,7 @@ export interface CompteRenduBesoinTag {
 async function poserBesoinTagRoutines(): Promise<CompteRenduBesoinTag> {
   // Seules les routines du master portent un code (voir le commentaire de
   // Routine.code, prisma/schema.prisma) : les 5 routines historiques, sans
-  // code, ne sont jamais touchées ici — leur besoinTag est déjà renseigné à
+  // code, ne sont jamais touchées ici - leur besoinTag est déjà renseigné à
   // la main.
   const routines = await prisma.routine.findMany({
     where: { code: { not: null } },
@@ -94,9 +94,9 @@ const CLES_ANCIENNES_QUESTIONS = ["type", "concern", "sensitivity", "budget", "s
 export interface CompteRenduDesactivation {
   /** Question désactivée par ce passage (elle était active). */
   desactivees: string[];
-  /** Question déjà inactive — preuve d'idempotence. */
+  /** Question déjà inactive - preuve d'idempotence. */
   dejaInactives: string[];
-  /** Clé attendue absente de la base — SIGNALÉE, jamais recréée : ce script
+  /** Clé attendue absente de la base - SIGNALÉE, jamais recréée : ce script
    *  ne crée jamais de question sous ces clés-là. */
   introuvables: string[];
 }
@@ -118,7 +118,7 @@ async function desactiverAnciennesQuestions(): Promise<CompteRenduDesactivation>
     // la liste d'administration (getAdminQuestionnaire, triée par position)
     // montre les questions actives d'abord, l'historique ensuite. Ni le
     // titre, ni le sous-titre, ni les réponses ne sont touchés : seuls
-    // `active` et `position` le sont — l'historique reste lisible tel quel.
+    // `active` et `position` le sont - l'historique reste lisible tel quel.
     await prisma.diagQuestion.update({
       where: { id: question.id },
       data: { active: false, position: 5 + index },
@@ -150,7 +150,7 @@ interface QuestionSeed {
  * Les cinq questions du document du client. Les clés des réponses de Q2
  * (`priorite`) reprennent celles déjà anticipées par
  * src/lib/kk/diagnostic-conditions.test.ts (« Cas exact du quiz client » :
- * `boutons_imperfections`, `glow_eclat`) — c'est elles que Q5 cible dans sa
+ * `boutons_imperfections`, `glow_eclat`) - c'est elles que Q5 cible dans sa
  * condition d'affichage, posée plus bas.
  */
 const QUESTIONS_CLIENT: QuestionSeed[] = [
@@ -417,7 +417,7 @@ async function poserConditionQ5(): Promise<CompteRenduConditionQ5> {
   const question = await prisma.diagQuestion.findUnique({ where: { key: CLE_QUESTION_Q5 } });
   if (!question) {
     throw new Error(
-      `Question « ${CLE_QUESTION_Q5} » introuvable — poserQuestionsClient() doit avoir créé la question avant poserConditionQ5().`,
+      `Question « ${CLE_QUESTION_Q5} » introuvable - poserQuestionsClient() doit avoir créé la question avant poserConditionQ5().`,
     );
   }
 

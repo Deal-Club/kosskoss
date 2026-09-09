@@ -48,7 +48,7 @@ export function CartDrawer({ paymentSlot }: { paymentSlot?: ReactNode }) {
   // Vider le panier depuis le tiroir le fait disparaître. Sans cette remise à
   // zéro, `open` resterait vrai : le défilement de la page resterait bloqué et
   // le tiroir se rouvrirait seul au prochain ajout. L'ajustement se fait pendant
-  // le rendu — React relance aussitôt, avant tout affichage et tout effet.
+  // le rendu - React relance aussitôt, avant tout affichage et tout effet.
   if (open && count === 0) closeDrawer();
 
   // Rien à montrer tant que le panier est vide : ni bouton, ni panneau.

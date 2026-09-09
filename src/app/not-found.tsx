@@ -11,8 +11,8 @@ import Link from "next/link";
  * Merchant, les liens de campagne et les fichiers vivent en dehors.
  *
  * Sans ce fichier, Next.js sert son propre écran pour ces chemins-là : anglais,
- * sans marque, sans issue. Celle-ci est volontairement sobre — elle ne peut
- * charger ni traductions ni chrome, faute de contexte de langue — mais elle
+ * sans marque, sans issue. Celle-ci est volontairement sobre - elle ne peut
+ * charger ni traductions ni chrome, faute de contexte de langue - mais elle
  * porte le nom de la boutique et une porte de sortie.
  */
 export default function PageIntrouvableRacine() {

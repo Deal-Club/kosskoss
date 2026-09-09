@@ -17,7 +17,7 @@ export interface PriceRange {
  * Tranches de prix en FCFA, calées sur le catalogue réel : les références vont
  * d'environ 4 500 à 30 000 FCFA. Les bornes héritées de l'ancien projet
  * (0-100 €, 100-300 €…) rangeaient l'intégralité du catalogue dans la dernière
- * tranche — le filtre était donc décoratif.
+ * tranche - le filtre était donc décoratif.
  */
 export const PRICE_RANGES: PriceRange[] = [
   { id: "under5000", min: 0, max: 5_000 },
@@ -73,8 +73,8 @@ export function CategoryFilters({
   onReset: () => void;
   hasActiveFilters: boolean;
   /**
-   * Le composant est rendu deux fois en parallèle — barre latérale sur grand
-   * écran, panneau mobile en dessous de « lg » — avec le même état levé dans
+   * Le composant est rendu deux fois en parallèle - barre latérale sur grand
+   * écran, panneau mobile en dessous de « lg » - avec le même état levé dans
    * le parent. Un groupe de boutons radio HTML se distingue par son `name`,
    * pas par sa visibilité : sans préfixe distinct, cocher un prix dans l'une
    * des deux copies décocherait l'autre au niveau du navigateur.

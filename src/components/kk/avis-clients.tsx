@@ -9,8 +9,8 @@ import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
  * ── Ce qu'elle remplace ───────────────────────────────────────────────────
  * Les avis vivaient en TROISIÈME COLONNE du panneau « Bon à savoir », à côté
  * des conseils et de l'avant/après, et un seul témoignage y était montré sur
- * les trois lus en base. La preuve sociale — le seul contenu de la page écrit
- * par quelqu'un d'autre que la marque — occupait donc un tiers de cadre
+ * les trois lus en base. La preuve sociale - le seul contenu de la page écrit
+ * par quelqu'un d'autre que la marque - occupait donc un tiers de cadre
  * partagé, sans note moyenne ni volume. Elle prend ici une section entière.
  *
  * ── La règle qui commande tout le reste ───────────────────────────────────
@@ -18,7 +18,7 @@ import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
  * viennent de `getHomeTestimonials` (avis modérés, note ≥ 4, corps d'au moins
  * 40 caractères) et l'agrégat de `getReviewsSummary`, calculé sur TOUTES les
  * notes publiées, mauvaises comprises. Sans avis publié, la section ne rend
- * rien du tout — pas de témoignage de remplissage, pas de « 0/5 », pas de
+ * rien du tout - pas de témoignage de remplissage, pas de « 0/5 », pas de
  * moyenne de repli. Publier de faux avis ou une note moyenne fabriquée est
  * une pratique commerciale trompeuse (article L121-2 du Code de la
  * consommation) ; c'est aussi ce qui ruinerait le bénéfice recherché sur un
@@ -26,7 +26,7 @@ import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
  *
  * ── Fond blanc, et pas de motif ───────────────────────────────────────────
  * La section était montée sur le vert profond avec le tissage de marque en
- * fond. Elle passe en blanc à la demande du client — et le motif part avec,
+ * fond. Elle passe en blanc à la demande du client - et le motif part avec,
  * pour une raison qui lui préexiste : la règle de `PatternBackdrop` le
  * proscrit sous du texte courant, et c'est ici la seule section de l'accueil
  * qui porte de vrais paragraphes de lecture. Les cartes se détachent du blanc
@@ -34,14 +34,14 @@ import type { KKReviewsSummary, KKTestimonialView } from "@/types/kk";
  *
  * ── La composition ────────────────────────────────────────────────────────
  * Deux temps. À gauche, LE CHIFFRE : la moyenne en grand, les étoiles, le
- * volume, et la répartition des notes — c'est ce qu'on regarde avant de lire
+ * volume, et la répartition des notes - c'est ce qu'on regarde avant de lire
  * quoi que ce soit. À droite, LES VOIX : trois avis in extenso, chacun rendu
  * à son auteur et rattaché à la fiche du produit concerné, pour qu'un avis
  * mène à un achat plutôt qu'à un cul-de-sac.
  *
  * UNE SEULE RANGÉE. Les cartes passent en grille de trois à partir de `xl`
  * seulement : en dessous, la colonne de gauche laisse trop peu de place pour
- * trois cartes lisibles, et elles restent en rail à défilement — qui est lui
+ * trois cartes lisibles, et elles restent en rail à défilement - qui est lui
  * aussi une seule ligne, mais qui glisse. Passer en grille dès `lg` donnerait
  * des cartes de 170 px.
  */
@@ -71,7 +71,7 @@ function Etoiles({ note, taille = "h-4 w-4", label }: { note: number; taille?: s
  * Pas de photo : nous n'en avons pas, et en tirer une d'une banque d'images
  * pour illustrer un vrai avis reviendrait à fabriquer un visage de cliente.
  * Les initiales suffisent à rendre l'avis à quelqu'un. La teinte est tirée du
- * nom — donc stable d'un rendu à l'autre — parmi les cinq teintes de routine
+ * nom - donc stable d'un rendu à l'autre - parmi les cinq teintes de routine
  * de la charte, ce qui évite trois pastilles identiques côte à côte.
  */
 const TEINTES = ["bg-tint-acne", "bg-tint-taches", "bg-tint-eclat", "bg-tint-age", "bg-tint-hydratation"];
@@ -89,7 +89,7 @@ function teinte(nom: string): string {
   return TEINTES[somme % TEINTES.length];
 }
 
-/** « août 2026 » — le jour n'apporte rien et vieillit l'avis pour rien. */
+/** « août 2026 » - le jour n'apporte rien et vieillit l'avis pour rien. */
 function moisAnnee(iso?: string): string | undefined {
   if (!iso) return undefined;
   const d = new Date(iso);
@@ -198,22 +198,22 @@ export async function AvisClients({
      * SECTION RAMENÉE À SA PLUS COURTE EXPRESSION.
      *
      * Elle se composait en deux colonnes côte à côte : à gauche un panneau de
-     * chiffres — sur-titre, titre en deux lignes de 36 px, moyenne en 60 px,
+     * chiffres - sur-titre, titre en deux lignes de 36 px, moyenne en 60 px,
      * puis l'histogramme des cinq notes ; à droite trois cartes dont la
      * citation courait sur six lignes. Chacune tenait dans les 400 px, et la
      * rangée prenait la hauteur de la plus haute : la preuve sociale occupait
      * un écran entier au milieu du parcours.
      *
      * Ce qui a été coupé, dans l'ordre du gain :
-     *   — L'HISTOGRAMME (≈ 150 px). Il détaillait la répartition des notes
+     *   - L'HISTOGRAMME (≈ 150 px). Il détaillait la répartition des notes
      *     alors que la section n'a plus à convaincre à elle seule : la page
      *     /avis le porte en entier, et le lien y mène.
-     *   — LA CITATION passe de six lignes à trois (≈ 70 px par carte, et
+     *   - LA CITATION passe de six lignes à trois (≈ 70 px par carte, et
      *     c'est la carte qui fixe la hauteur de la rangée).
-     *   — LE PANNEAU DE CHIFFRES devient une ligne : moyenne, étoiles et
+     *   - LE PANNEAU DE CHIFFRES devient une ligne : moyenne, étoiles et
      *     nombre d'avis se lisent maintenant côte à côte sous le titre, au
      *     lieu de s'empiler sur trois niveaux.
-     *   — LES MARGES : palier `section` au lieu de `section-wide`, cartes en
+     *   - LES MARGES : palier `section` au lieu de `section-wide`, cartes en
      *     p-5 au lieu de p-7.
      *
      * Ce qui reste est ce qu'on vient chercher : la note, le volume, trois

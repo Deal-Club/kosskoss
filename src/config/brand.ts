@@ -20,9 +20,9 @@ export const BRAND = {
 
 /** Palette de la charte (HEX). La conversion oklch pour globals.css se fait à partir d'ici. */
 export const COLORS = {
-  // Bleu Profond — couleur primaire (RVB 15.59.70 / CMJN 94.41.44.36)
+  // Bleu Profond - couleur primaire (RVB 15.59.70 / CMJN 94.41.44.36)
   primary: "#0F3B46",
-  // Beige Sable — couleur secondaire (RVB 243.232.221 / CMJN 5.7.9.0)
+  // Beige Sable - couleur secondaire (RVB 243.232.221 / CMJN 5.7.9.0)
   secondary: "#F3E8DD",
   // Neutres de la charte (fonds sombres du logo)
   ink: "#1E1E1E",
@@ -33,7 +33,7 @@ export const COLORS = {
  * Typographie. Cinzel pour les titres/logo, Gilroy pour le texte courant.
  * ⚠️ Gilroy est une police commerciale : soit licence webfont acquise, soit
  * substitut libre visuellement proche. `bodyFallback` liste les substituts
- * candidats (CDC §20) — à figer une fois la licence tranchée.
+ * candidats (CDC §20) - à figer une fois la licence tranchée.
  */
 export const TYPOGRAPHY = {
   display: "Cinzel",
@@ -70,7 +70,7 @@ export const CONTACT = {
 } as const;
 
 /**
- * Coordonnées légales de l'entreprise — À FOURNIR PAR KossKoss (CDC §20).
+ * Coordonnées légales de l'entreprise - À FOURNIR PAR KossKoss (CDC §20).
  * Placeholders explicites : ne pas publier tant qu'ils ne sont pas renseignés.
  */
 export const LEGAL = {

@@ -14,8 +14,8 @@ import { ActiveFilters, FiltersPanel, activeFilterCount, withParams, type Catalo
 /**
  * Rayon du catalogue.
  *
- * Quatre familles de filtre — catégorie, marque, type de peau, préoccupation
- * — plus le prix et le tri, tous combinés dans l'URL (voir `withParams` dans
+ * Quatre familles de filtre - catégorie, marque, type de peau, préoccupation
+ * - plus le prix et le tri, tous combinés dans l'URL (voir `withParams` dans
  * `catalog-filters.tsx`) : un rayon filtré se partage et se remet en favori.
  *
  * RÈGLE DE COMBINAISON, visible à l'écran par les décomptes et par le
@@ -24,8 +24,8 @@ import { ActiveFilters, FiltersPanel, activeFilterCount, withParams, type Catalo
  * préoccupation restreint). Voir `produitCorrespondFacettes` dans
  * `src/lib/kk/facettes.ts` et le `where` construit par `getCatalog`.
  *
- * `?besoin=` — l'ancien paramètre à choix unique, encore présent dans des
- * liens partagés et dans les résultats du Diagnostic Beauté — continue de
+ * `?besoin=` - l'ancien paramètre à choix unique, encore présent dans des
+ * liens partagés et dans les résultats du Diagnostic Beauté - continue de
  * fonctionner : `parseFacettes` (appelé par les pages `[group]`) le verse dans
  * la bonne famille avant d'arriver ici. Cet écran ne le connaît plus en tant
  * que tel, il ne voit qu'une `FacetteSelection` déjà résolue.
@@ -62,7 +62,7 @@ export async function CatalogView({
 
   // Texte d'en-tête : la version propre au rayon quand elle existe
   // (`heroLead_<slug>`), le texte générique sinon. Avant TK-05, tous les
-  // rayons — Homme compris — récitaient mot pour mot le même paragraphe.
+  // rayons - Homme compris - récitaient mot pour mot le même paragraphe.
   const leadKey = `heroLead_${groupSlug}`;
   const lead = t.has(leadKey) ? t(leadKey) : t("heroLead");
 
@@ -76,7 +76,7 @@ export async function CatalogView({
   };
   const filterCount = activeFilterCount(state);
 
-  // Rendu deux fois — mobile repliable, bureau fixe — chacun avec son propre
+  // Rendu deux fois - mobile repliable, bureau fixe - chacun avec son propre
   // `idPrefix` : les deux panneaux ne peuvent pas partager les mêmes `id` de
   // champ de prix, sous peine de casser l'association `<label for>` du
   // second (voir catalog-filters.tsx).

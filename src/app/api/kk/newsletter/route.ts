@@ -6,8 +6,8 @@ import { adresseEmailValide } from "@/lib/kk/email-valide";
  * Inscription à la lettre d'information.
  *
  * Un formulaire de newsletter existait dans le pied de page et avait été retiré
- * parce qu'il n'envoyait rien nulle part. Le bloc revient — c'est le bloc 12 de
- * la structure fournie par le client — mais avec un point de collecte réel.
+ * parce qu'il n'envoyait rien nulle part. Le bloc revient - c'est le bloc 12 de
+ * la structure fournie par le client - mais avec un point de collecte réel.
  *
  * Une adresse déjà inscrite renvoie le même succès qu'une nouvelle : répondre
  * « cette adresse est déjà inscrite » transformerait le formulaire en oracle

@@ -11,23 +11,23 @@ import type { KKRoutineView } from "@/types/kk";
 /**
  * Achat d'une routine entière en un geste.
  *
- * C'est le mécanisme de conversion demandé par le client — « le site doit être
+ * C'est le mécanisme de conversion demandé par le client - « le site doit être
  * orienté conversion et donc ne pas multiplier les étapes si elles ne sont pas
- * nécessaires » — et repris de sa maquette, où chaque carte de routine porte
+ * nécessaires » - et repris de sa maquette, où chaque carte de routine porte
  * son propre bouton d'achat. Aucune configuration : la routine est composée,
  * elle part telle quelle.
  *
  * DEUX RÉGIMES, PARCE QUE LES DEUX PLACES N'ONT PAS LE MÊME PUBLIC :
  *
- *   — `mode="achat"` (les vignettes des rangées de routines) mène DIRECTEMENT
+ *   - `mode="achat"` (les vignettes des rangées de routines) mène DIRECTEMENT
  *     au tunnel. Sur une vignette, la routine se choisit d'un coup d'œil ; y
  *     déposer un article puis laisser le visiteur chercher son panier ajoute
  *     deux gestes à une décision déjà prise. Le panier reste le passage obligé
- *     — c'est lui qui porte l'état de la commande, et le tunnel le lit — mais
+ *     - c'est lui qui porte l'état de la commande, et le tunnel le lit - mais
  *     il est traversé, pas exposé. Même dispositif que « Payer maintenant » sur
  *     une fiche produit (`add-to-cart.tsx`).
  *
- *   — `mode="panier"` (la page de la routine) dépose et reste sur place. On y
+ *   - `mode="panier"` (la page de la routine) dépose et reste sur place. On y
  *     arrive pour lire le détail des gestes ; couper cette lecture par un saut
  *     au paiement priverait de la seule page qui explique ce qu'on achète.
  *
@@ -35,7 +35,7 @@ import type { KKRoutineView } from "@/types/kk";
  * elles-mêmes restent des composants serveur.
  *
  * En mode panier, le tiroir ne s'ouvre pas tout seul : sur une rangée de
- * routines, le visiteur compare — lui couper la vue au premier ajout le
+ * routines, le visiteur compare - lui couper la vue au premier ajout le
  * forcerait à refermer pour continuer. La confirmation se lit sur le bouton, et
  * la pastille du panier fait le reste.
  */

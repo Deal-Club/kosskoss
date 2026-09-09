@@ -1,4 +1,4 @@
-# Google Merchant Center — conformité du catalogue
+# Google Merchant Center - conformité du catalogue
 
 Synthèse de la spécification officielle (`support.google.com/merchants`, consultée en
 juillet 2026) et de la façon dont ce projet la met en œuvre.
@@ -12,7 +12,7 @@ Sources principales :
 - [Price \[price\]](https://support.google.com/merchants/answer/6324371)
 - [Certification \[certification\]](https://support.google.com/merchants/answer/13528839)
 - [Merchant listing structured data](https://developers.google.com/search/docs/appearance/structured-data/merchant-listing)
-- [Produktdatenqualität — Ablehnungen beheben](https://support.google.com/merchants/answer/13447092?hl=de)
+- [Produktdatenqualität - Ablehnungen beheben](https://support.google.com/merchants/answer/13447092?hl=de)
 
 ---
 
@@ -34,7 +34,7 @@ Sources principales :
 
 Le point clé : **le flux XML, le flux TSV et le JSON-LD passent tous par
 `buildMerchantRecord()`**. Prix, disponibilité, état et identifiants ne peuvent donc pas
-diverger entre le flux et la page — c'est la première cause de refus.
+diverger entre le flux et la page - c'est la première cause de refus.
 
 ---
 
@@ -50,7 +50,7 @@ diverger entre le flux et la page — c'est la première cause de refus.
 | `link` | URL absolue sur le domaine vérifié | `NEXT_PUBLIC_SITE_URL` + `/{group}/{category}/{slug}` |
 | `image_link` | URL absolue, ≥ 500 × 500 px à partir du 31/01/2027 | `product.image`, à défaut l'image de catégorie |
 | `availability` | `in_stock` / `out_of_stock` / `preorder` / `backorder` | `stock > 0` |
-| `price` | `349.00 EUR` — point décimal, code ISO 4217, **TVA incluse pour la France** | `priceCents` |
+| `price` | `349.00 EUR` - point décimal, code ISO 4217, **TVA incluse pour la France** | `priceCents` |
 
 ### Identifiants uniques
 
@@ -155,7 +155,7 @@ Le code est le numéro d'enregistrement issu de l'URL `https://eprel.ec.europa.e
 
 Catégories concernées ici : lave-linge, lave-vaisselle, fours, climatiseurs, téléviseurs.
 L'audit lève un avertissement `certification` pour chacune. Google peut renseigner
-l'EPREL automatiquement à partir de la GTIN ou de la MPN — raison de plus pour saisir les
+l'EPREL automatiquement à partir de la GTIN ou de la MPN - raison de plus pour saisir les
 vraies GTIN.
 
 **Le champ EPREL n'existe pas encore en base.** Il faudra soit ajouter une colonne
@@ -194,7 +194,7 @@ npx tsx --env-file=.env scripts/apply-product-content.ts
 
 Le contenu (descriptions FR/EN, GTIN, MPN, catégorie Google, poids d'expédition, classe
 d'efficacité énergétique) est rédigé à l'avance dans `scripts/data/product-content.ts`,
-sous forme d'un tableau indexé par `slug` — `slug` est `@unique` dans le schéma Prisma,
+sous forme d'un tableau indexé par `slug` - `slug` est `@unique` dans le schéma Prisma,
 contrairement au SKU, tronqué et susceptible d'entrer en collision.
 
 Déroulé du script :
@@ -206,7 +206,7 @@ Déroulé du script :
    entrées. À la moindre anomalie, **rien n'est écrit** : le script journalise la liste des
    anomalies et sort en erreur.
 2. **Sauvegarde JSON** de l'intégralité de la table `Product` avant la première écriture,
-   dans `.tmp-backup/products-<horodatage>.json` — un retour en arrière reste possible même
+   dans `.tmp-backup/products-<horodatage>.json` - un retour en arrière reste possible même
    après application.
 3. **Application en base** : chaque entrée est reliée à son produit par le slug ; un slug
    absent de la base est journalisé et compté, sans faire échouer les autres mises à jour.
@@ -225,10 +225,10 @@ ou si au moins un slug est resté introuvable en base.
    numéro de TVA intracommunautaire.
 2. **Revendiquer le domaine** `mlc-bois.fr` (Search Console ou balise HTML).
 3. **Renseigner les informations d'entreprise** : Impressum, CGV, politique de retour,
-   politique de confidentialité — toutes accessibles depuis le pied de page.
+   politique de confidentialité - toutes accessibles depuis le pied de page.
 4. **Configurer les règles de livraison** pour la France, en euros. Elles s'appliquent
    aux produits dont le flux ne porte pas de bloc `shipping`.
-5. **Configurer la TVA** : en France, la TVA est incluse dans le prix — ne rien ajouter
+5. **Configurer la TVA** : en France, la TVA est incluse dans le prix - ne rien ajouter
    au niveau du compte.
 6. **Ajouter la source de données** : *Produktdatenquellen → Datenquelle hinzufügen →
    Datei planen*, puis l'une des deux URL :

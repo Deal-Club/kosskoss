@@ -40,8 +40,8 @@ function layout(input: LayoutInput): string {
   const lang = input.locale;
   const footer =
     lang === "en"
-      ? "KossKoss Select — automated message, please do not reply."
-      : "KossKoss Select — message automatique, merci de ne pas y répondre.";
+      ? "KossKoss Select - automated message, please do not reply."
+      : "KossKoss Select - message automatique, merci de ne pas y répondre.";
 
   const body = input.paragraphs
     .map(
@@ -142,8 +142,8 @@ export function buildPasswordResetEmail(input: PasswordResetEmailInput): Omit<Ma
       ];
 
   const footnote = fr
-    ? `Le lien est valable ${input.expiresInMinutes} minutes et ne peut servir qu'une seule fois. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail — votre mot de passe reste inchangé.`
-    : `The link is valid for ${input.expiresInMinutes} minutes and can be used only once. If you did not request the reset, simply ignore this email — your password stays unchanged.`;
+    ? `Le lien est valable ${input.expiresInMinutes} minutes et ne peut servir qu'une seule fois. Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail - votre mot de passe reste inchangé.`
+    : `The link is valid for ${input.expiresInMinutes} minutes and can be used only once. If you did not request the reset, simply ignore this email - your password stays unchanged.`;
 
   const html = layout({
     locale: input.locale,

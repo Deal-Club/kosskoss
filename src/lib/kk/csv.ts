@@ -5,15 +5,15 @@
  *
  * Ces deux fonctions vivaient recopiées dans la route d'export des produits.
  * L'export des ventes en aurait fait une deuxième copie, et deux copies d'une
- * règle d'échappement divergent tôt ou tard — au détriment d'un fichier que
+ * règle d'échappement divergent tôt ou tard - au détriment d'un fichier que
  * personne ne relit avant de l'ouvrir chez le comptable.
  *
  * ── LES DEUX CONVENTIONS, ET LEURS RAISONS ──────────────────────────────────
  *
- *  • SÉPARATEUR POINT-VIRGULE — c'est celui qu'Excel attend dans un
+ *  • SÉPARATEUR POINT-VIRGULE - c'est celui qu'Excel attend dans un
  *    environnement francophone. La virgule y couperait « 12 000,50 » en deux
  *    colonnes.
- *  • BOM EN TÊTE — sans lui, Excel lit le fichier dans son encodage local et
+ *  • BOM EN TÊTE - sans lui, Excel lit le fichier dans son encodage local et
  *    affiche « CrÃ¨me » au lieu de « Crème ».
  *
  * Ces conventions valent pour les exports du back-office. Le flux Google

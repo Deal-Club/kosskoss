@@ -7,7 +7,7 @@ import type { KKProductView } from "@/types/kk";
  *
  * ── L'IDÉE ───────────────────────────────────────────────────────────────────
  *
- * Un aplat VERT PROFOND — la couleur primaire de la charte — monte du bas du
+ * Un aplat VERT PROFOND - la couleur primaire de la charte - monte du bas du
  * cadre, avec un bord supérieur COURBE : un niveau qui remonte dans un pot. Le
  * packshot, lui, s'élève et s'incline légèrement au même moment ; il sort du
  * soin au lieu d'être recouvert par lui. C'est ce contre-mouvement qui fait
@@ -17,7 +17,7 @@ import type { KKProductView } from "@/types/kk";
  * Le vert plutôt que le sable : sur un packshot photographié fond blanc, un
  * aplat sable se distinguait à peine du cadre et l'animation se voyait mal. Le
  * contraste du vert rend le mouvement lisible d'un coup d'œil sur toute la
- * grille — et c'est la couleur qui signe la marque.
+ * grille - et c'est la couleur qui signe la marque.
  *
  * Le geste est emprunté au produit lui-même, pas à un catalogue d'animations.
  * C'est ce qui le rend difficile à confondre avec la vignette de n'importe
@@ -27,14 +27,14 @@ import type { KKProductView } from "@/types/kk";
  *
  * `rounded-t-[100%]` sur une bande de 1,5 rem : le rayon dépassant la hauteur,
  * le navigateur dessine une ellipse aplatie. Aucun SVG, aucune image, et la
- * courbe s'adapte à la largeur de la colonne — ce qu'un tracé figé ne ferait
+ * courbe s'adapte à la largeur de la colonne - ce qu'un tracé figé ne ferait
  * pas sur une grille responsive.
  *
  * ── CE QUE LE PANNEAU CONTIENT ───────────────────────────────────────────────
  *
  * Il ne répète pas la marque, le nom et le prix : ils sont déjà lisibles sous
- * la vignette, sans survol. Il montre ce qui manquait — la description courte,
- * l'existence de plusieurs contenances — et invite à ouvrir la fiche.
+ * la vignette, sans survol. Il montre ce qui manquait - la description courte,
+ * l'existence de plusieurs contenances - et invite à ouvrir la fiche.
  *
  * Le texte s'arrête avant le bord droit (`pr-14`) : cette réserve est la place
  * de la pastille d'ajout rapide, qui vient se poser sur la bande verte. Les
@@ -47,7 +47,7 @@ import type { KKProductView } from "@/types/kk";
  * ── TACTILE ──────────────────────────────────────────────────────────────────
  *
  * Sans survol, le panneau ne s'ouvre jamais : il est masqué sous `sm`. La
- * pastille d'ajout, elle, y reste visible en permanence — aucun écran ne se
+ * pastille d'ajout, elle, y reste visible en permanence - aucun écran ne se
  * retrouve sans moyen d'ajouter au panier depuis la grille.
  *
  * Il s'ouvre aussi au focus clavier, via `group-focus-within`.
@@ -61,14 +61,14 @@ const GLISSE = "duration-[620ms] ease-[cubic-bezier(0.16,1,0.3,1)]";
  *
  * Ce panneau est rendu par `ProductCard`, qui l'est à son tour depuis des
  * pages serveur MAIS AUSSI depuis `product-carousel.tsx`, un composant
- * client. Importé par un fichier client, ce composant en devient un — et
+ * client. Importé par un fichier client, ce composant en devient un - et
  * `getTranslations`, réservé au serveur, y lève une exception.
  *
  * Le défaut ne se voyait pas au rendu serveur : la page partait complète et
  * correcte. Il frappait à L'HYDRATATION, dans le navigateur, où l'exception
  * remontait à la frontière d'erreur et remplaçait l'accueil entier par
  * « Une erreur est survenue ». Un contrôle par code HTTP ne pouvait pas le
- * voir — la réponse valait 200.
+ * voir - la réponse valait 200.
  *
  * `useTranslations` fonctionne des DEUX côtés. C'est la seule forme correcte
  * pour un composant qu'un arbre client peut atteindre.
@@ -80,7 +80,7 @@ export function ProductHoverPanel({ product }: { product: KKProductView }) {
   // Sans description ni pluralité de contenances, le panneau n'apporterait
   // qu'un « Voir la fiche » redondant avec le lien qui l'entoure : on ne
   // l'ouvre pas. `multipleVariants` et non `hasVariants` : une variante
-  // unique n'est pas une information — 70 des 71 produits du catalogue en
+  // unique n'est pas une information - 70 des 71 produits du catalogue en
   // portaient l'étiquette à tort.
   if (!resume && !product.multipleVariants) return null;
 

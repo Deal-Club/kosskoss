@@ -41,7 +41,7 @@ export function CampaignStepType({
             required
             value={name}
             onChange={(event) => onNameChange(event.target.value)}
-            placeholder="ex. Lave-linge Bosch — remise de printemps"
+            placeholder="ex. Lave-linge Bosch - remise de printemps"
             className="w-full rounded-sm border border-border px-3 py-2 outline-none focus:border-primary"
           />
           <span className="mt-1 block text-xs text-muted-foreground">

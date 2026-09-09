@@ -4,7 +4,7 @@ import { prisma } from "@/server/prisma";
  * Fournisseurs.
  *
  * Une entité volontairement simple : nom, coordonnées, notes, actif. Le seul
- * point d'attention est la suppression — un fournisseur rattaché à des bons de
+ * point d'attention est la suppression - un fournisseur rattaché à des bons de
  * commande (`onDelete: Restrict` en base) ne peut pas disparaître sans les
  * emporter dans un silence total. Le refus dit combien de bons s'y opposent,
  * plutôt que de renvoyer une contrainte de clé étrangère brute que personne au
@@ -121,7 +121,7 @@ export async function updateSupplier(
  * Supprime un fournisseur, uniquement s'il n'a aucun bon de commande rattaché.
  *
  * `onDelete: Restrict` sur `PurchaseOrder.supplierId` refuserait de toute
- * façon la requête en base — mais avec un message de contrainte de clé
+ * façon la requête en base - mais avec un message de contrainte de clé
  * étrangère, illisible pour qui administre. Compter d'abord permet un refus
  * qui dit CONTRE QUOI on bute : un refus muet est un refus qu'on ne comprend
  * pas.

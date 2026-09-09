@@ -34,7 +34,7 @@ export function VentesHistogramme({ points }: { points: PointJour[] }) {
               height={hauteur}
               className="fill-primary"
             >
-              <title>{`${point.jour} — ${formatFcfa(point.chiffreAffairesCents)} (${point.nombreCommandes} commande${point.nombreCommandes > 1 ? "s" : ""})`}</title>
+              <title>{`${point.jour} - ${formatFcfa(point.chiffreAffairesCents)} (${point.nombreCommandes} commande${point.nombreCommandes > 1 ? "s" : ""})`}</title>
             </rect>
           );
         })}

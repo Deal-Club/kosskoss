@@ -75,7 +75,7 @@ describe("besoinDuCodeRoutine", () => {
   });
 });
 
-describe("recommander — préoccupation déclarée (Q3 non réactive)", () => {
+describe("recommander - préoccupation déclarée (Q3 non réactive)", () => {
   for (const { q2, essentielle, premium } of PREOCCUPATIONS) {
     it(`retient « ${q2} » avec le motif « préoccupation »`, () => {
       const resultat = recommander({ q2, q3: "tolerante" });
@@ -94,7 +94,7 @@ describe("recommander — préoccupation déclarée (Q3 non réactive)", () => {
   });
 });
 
-describe("recommander — la bascule de sécurité prime sur la préoccupation déclarée", () => {
+describe("recommander - la bascule de sécurité prime sur la préoccupation déclarée", () => {
   for (const { q2 } of PREOCCUPATIONS) {
     it(`bascule sur « sensibilite » même si Q2 = « ${q2} »`, () => {
       const resultat = recommander({ q2, q3: "reactive" });
@@ -126,7 +126,7 @@ describe("recommander — la bascule de sécurité prime sur la préoccupation d
   });
 });
 
-describe("recommander — réponses manquantes ou inconnues, sans bascule", () => {
+describe("recommander - réponses manquantes ou inconnues, sans bascule", () => {
   it("ne recommande rien quand tout est absent", () => {
     const resultat = recommander({});
     assert.deepEqual(resultat, {
@@ -154,7 +154,7 @@ describe("recommander — réponses manquantes ou inconnues, sans bascule", () =
   });
 });
 
-describe("conseilTypePeau — textes exacts du document du client (Q1)", () => {
+describe("conseilTypePeau - textes exacts du document du client (Q1)", () => {
   it("rend le texte exact pour chaque type de peau", () => {
     assert.equal(conseilTypePeau("peau_grasse"), "Textures légères, limiter les produits trop riches");
     assert.equal(conseilTypePeau("peau_mixte"), "Équilibrer sébum + hydratation");
@@ -171,7 +171,7 @@ describe("conseilTypePeau — textes exacts du document du client (Q1)", () => {
   });
 });
 
-describe("conseilEnvironnement — textes exacts du document du client (Q4)", () => {
+describe("conseilEnvironnement - textes exacts du document du client (Q4)", () => {
   it("rend le texte exact pour chacun des trois environnements", () => {
     assert.equal(
       conseilEnvironnement("climatisation"),

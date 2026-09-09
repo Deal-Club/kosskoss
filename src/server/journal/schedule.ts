@@ -9,7 +9,7 @@
  *
  * Cette fonction n'est pas la seule protection : `isPubliclyVisible` sert déjà
  * les articles dont l'heure est passée, même si la tâche n'a jamais tourné.
- * Elle sert à rendre l'état de la base cohérent avec la réalité — pour que le
+ * Elle sert à rendre l'état de la base cohérent avec la réalité - pour que le
  * back-office affiche « Publié » et non « Programmé » sur un article visible,
  * et pour que le sitemap le reprenne.
  */

@@ -10,7 +10,7 @@ import { routing } from "@/i18n/routing";
  * Utilise la navigation localisée de next-intl (`@/i18n/navigation`) : le
  * `pathname` renvoyé est sans préfixe de langue, et `router.replace(pathname,
  * { locale })` réapplique le bon préfixe (`/en`, ou rien pour le français à la
- * racine — `localePrefix: "as-needed"`). Le visiteur reste ainsi sur la MÊME
+ * racine - `localePrefix: "as-needed"`). Le visiteur reste ainsi sur la MÊME
  * page dans l'autre langue, jamais renvoyé à l'accueil.
  *
  * Segmenté plutôt qu'un bouton unique : les deux langues sont visibles, la

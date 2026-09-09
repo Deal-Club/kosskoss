@@ -22,7 +22,7 @@ import type { Locale } from "@/i18n/routing";
  *
  * Aucun jeton d'aperçu n'est nécessaire : cette page vit sous
  * `admin/(protected)`, dont le layout garantit déjà la session. La capacité
- * `contenu`, elle, est vérifiée ici — le layout ne connaît que la session, pas
+ * `contenu`, elle, est vérifiée ici - le layout ne connaît que la session, pas
  * le droit sur cet écran.
  */
 

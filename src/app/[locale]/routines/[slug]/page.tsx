@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
  * l'indexer, la partager, y revenir. Sans cela, une routine n'était qu'un état
  * de composant, perdu au premier rechargement.
  *
- * La composition est expliquée geste par geste — c'est le pilier « Expertise /
+ * La composition est expliquée geste par geste - c'est le pilier « Expertise /
  * Conseil » de la charte : « nous guidons, nous ne nous contentons pas de
  * montrer un rayon ». Le rayon filtré reste accessible en bas de page, pour qui
  * veut choisir lui-même ; mais il vient en second.
@@ -56,13 +56,13 @@ export default async function RoutinePage({ params }: { params: Params }) {
   const routine = await getRoutine(slug, locale);
   if (!routine) notFound();
 
-  // Niveau en toutes lettres — jamais écrit en dur, toujours lu par ce module
+  // Niveau en toutes lettres - jamais écrit en dur, toujours lu par ce module
   // pur (`src/lib/kk/routines-niveau.ts`) : c'est lui qui sait que le « Eco »
   // du master s'affiche « Essentielle ».
   const niveauLabel = libelleNiveau(routine.niveau, locale);
 
-  // Étiquette de besoin (« Boutons »…) — modèle client, un des trois repères
-  // d'en-tête (niveau, nombre de gestes, besoin) — voir CONSIGNES de
+  // Étiquette de besoin (« Boutons »…) - modèle client, un des trois repères
+  // d'en-tête (niveau, nombre de gestes, besoin) - voir CONSIGNES de
   // MODELE_Fiche Routine_V2.docx : « Boutons ← Besoin ← B4 ». Servait déjà à
   // grouper /routines (`grouperParBesoin`), jamais montrée sur la fiche
   // elle-même. Repli sur le tag brut si le registre ne le connaît pas
@@ -72,8 +72,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
   const besoinLabel = besoin ? libelleBesoinRoutine(besoin, locale) : routine.besoinTag;
 
   // Parcours numéroté du modèle (« 01 NETTOYER → 02 TRAITER → 03 PROTÉGER ») :
-  // le rôle du geste prime sur son étiquette générique — voir la note sur
-  // `KKRoutineStepView.role` — avec repli sur `label` pour les 5 routines
+  // le rôle du geste prime sur son étiquette générique - voir la note sur
+  // `KKRoutineStepView.role` - avec repli sur `label` pour les 5 routines
   // historiques, non couvertes par le master.
   const parcours = routine.steps
     .map((s, i) => `${String(i + 1).padStart(2, "0")} ${s.role || s.label}`)
@@ -112,29 +112,29 @@ export default async function RoutinePage({ params }: { params: Params }) {
             BANDEAU FIN, ET VOLONTAIREMENT. L'en-tête portait auparavant la
             description, le prix et l'ajout au panier : il occupait la moitié de
             l'écran, et repoussait sous la ligne de flottaison le contenu qui
-            justifie la page — la composition geste par geste.
+            justifie la page - la composition geste par geste.
 
             Les trois éléments retirés ne sont pas perdus pour autant : le prix
             et l'ajout au panier vivent dans le récapitulatif collant, qui suit
             la lecture au lieu d'attendre en haut ; la description est reprise
             en tête de la composition, là où on la lit vraiment. */}
         <section className={`relative overflow-hidden ${tintClass(routine.tint)}`}>
-          {/* La nature morte de la routine, EN FOND DE BANDEAU — mobile
+          {/* La nature morte de la routine, EN FOND DE BANDEAU - mobile
               seulement (`sm:hidden`). C'est là qu'elle posait problème : sous
               `sm` le bandeau empile texte puis illustration, et l'illustration
               tombait seule en dessous, sans rien pour la relier au texte. Ici
               elle est calée en arrière-plan sous tout le bandeau, avec le texte
-              par-dessus — elle devient le décor du texte plutôt qu'un bloc à
+              par-dessus - elle devient le décor du texte plutôt qu'un bloc à
               part. Le voile dégradé qui l'accompagne la fond dans la teinte
               plutôt que de la poser comme une pièce rapportée.
 
               À partir de `sm`, la mise en page CÔTE À CÔTE reprend telle
-              qu'elle était — c'est elle qui fonctionnait sur grand écran, le
+              qu'elle était - c'est elle qui fonctionnait sur grand écran, le
               retour ne portait que sur le mobile.
 
               Ce traitement de fond ne vaut que pour la scène dessinée : une
               vraie photo de coffret (`Routine.image`) n'a pas vocation à être
-              recadrée en plein cadre ni voilée d'un dégradé — elle reprend sur
+              recadrée en plein cadre ni voilée d'un dégradé - elle reprend sur
               mobile la même présentation contenue que sur desktop, juste en
               dessous du texte au lieu d'à côté. */}
           {!routine.image && (
@@ -142,14 +142,14 @@ export default async function RoutinePage({ params }: { params: Params }) {
               {/* `opacity-55` : la scène ne doit jamais rivaliser avec le
                   texte, seulement suggérer un décor. Un titre sur deux lignes
                   (« Teint Net Essential ») descend sur toute la hauteur du
-                  bandeau — le voile ci-dessous doit donc rester net sur TOUTE
+                  bandeau - le voile ci-dessous doit donc rester net sur TOUTE
                   la zone de texte, pas seulement sa première ligne. */}
               <div className="pointer-events-none absolute inset-0 opacity-55 sm:hidden" aria-hidden="true">
                 <RoutineIllustration tint={routine.tint} fit="cover" className="h-full w-full" />
               </div>
-              {/* Le voile ne s'ouvre plus qu'en bordure droite du cadre — la
+              {/* Le voile ne s'ouvre plus qu'en bordure droite du cadre - la
                   seule zone que le texte n'atteint jamais, quelle que soit sa
-                  longueur — au lieu d'un dégradé diagonal réglé sur un titre
+                  longueur - au lieu d'un dégradé diagonal réglé sur un titre
                   précis, qui se rouvrait dès qu'un autre titre passait sur
                   deux lignes. */}
               <div
@@ -164,7 +164,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
           <div className="relative mx-auto flex max-w-7xl flex-col gap-6 px-6 py-7 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
             <div className="max-w-2xl">
-              {/* Niveau en toutes lettres (jamais « Eco » écrit en dur — voir
+              {/* Niveau en toutes lettres (jamais « Eco » écrit en dur - voir
                   `niveauLabel` ci-dessus) et nombre de gestes : les deux
                   premiers repères du modèle client, avant même le nom. */}
               <p className="eyebrow">
@@ -176,7 +176,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
               {/* Profil visé, texte libre du master (« Peaux mixtes à
                   grasses, boutons, brillance… ») : c'est LUI qui porte le
-                  type de peau du modèle client — jamais recomposé à partir
+                  type de peau du modèle client - jamais recomposé à partir
                   des tags, qui serviraient à mentir sur une distinction que
                   le champ ne fait pas explicitement. */}
               {routine.profilCible && (
@@ -191,7 +191,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
             </div>
 
             {/* Vraie photo de coffret, sur mobile : présentation contenue, en
-                flux sous le texte — le fond voilé ci-dessus ne s'applique
+                flux sous le texte - le fond voilé ci-dessus ne s'applique
                 qu'à la scène dessinée. Rare tant que le client n'a pas fourni
                 ses visuels ; voir `Routine.image`. */}
             {routine.image && (
@@ -245,7 +245,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
         <section className="section mx-auto max-w-6xl px-6">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-14">
             <div>
-              {/* La promesse (modèle client) — « Promesse » du master,
+              {/* La promesse (modèle client) - « Promesse » du master,
                   `Routine.claim`. Absente sur aucune des 14 routines
                   importées, mais gardée quand même : les 5 routines
                   historiques, hors master, peuvent l'avoir vide. */}
@@ -256,8 +256,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
                 </>
               )}
 
-              {/* Parcours numéroté (modèle client) — « 01 NETTOYER → 02
-                  TRAITER → 03 PROTÉGER » — avant le détail geste par geste
+              {/* Parcours numéroté (modèle client) - « 01 NETTOYER → 02
+                  TRAITER → 03 PROTÉGER » - avant le détail geste par geste
                   qui suit. */}
               <p className={`eyebrow ${routine.claim ? "mt-8" : ""}`}>
                 {t("journeyTitle", { count: routine.steps.length })}
@@ -274,8 +274,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
 
               Trois choses gonflaient ces cartes sans rien apporter : un carreau
               d'image de 128 px qui imposait à lui seul la hauteur de la ligne,
-              un titre à la taille par défaut des h3 — celle des titres de
-              section, ici pour un nom de produit — et l'étiquette du geste
+              un titre à la taille par défaut des h3 - celle des titres de
+              section, ici pour un nom de produit - et l'étiquette du geste
               seule sur sa ligne, la marque seule sur la suivante, alors que la
               largeur restait vide à droite.
 
@@ -294,7 +294,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   {/* Fond de vignette NEUTRE (`bg-sand`), pas la teinte de la
                       routine : le packshot est déjà photographié sur blanc, et
                       un carré teinté derrière une photo à fond blanc se lisait
-                      comme deux blancs qui se disputent — la couleur de la
+                      comme deux blancs qui se disputent - la couleur de la
                       routine ternissait le produit au lieu de le mettre en
                       valeur. La teinte n'habille que le motif de secours
                       (`BottleMotif`), un dessin sans fond propre, pour lequel
@@ -312,7 +312,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    {/* Quatre lignes, chacune sa propre information — retour
+                    {/* Quatre lignes, chacune sa propre information - retour
                         client : rôle et marque se disputaient la première
                         ligne, resserrés au point de se lire comme une seule
                         mention. Ici chacun respire, et le produit gagne une
@@ -324,7 +324,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                         {i + 1}
                       </span>
                       {/* Le rôle du geste, DANS CETTE routine, prime sur son
-                          étiquette générique — voir la note sur
+                          étiquette générique - voir la note sur
                           `KKRoutineStepView.role`. Repli sur `label` pour les
                           5 routines historiques, hors master, où `role` est
                           vide. */}
@@ -340,16 +340,16 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     {/* Nom du produit en texte, sans lien : la routine se vend
                         et s'achète comme un tout (voir la note sur le prix
                         plus bas), le clic ne doit donc pas ouvrir la fiche
-                        produit et faire quitter la page — c'est là que se
+                        produit et faire quitter la page - c'est là que se
                         prend la décision d'achat. */}
                     {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande
-                        client — voir `formatProductTitle`. */}
+                        client - voir `formatProductTitle`. */}
                     <h3 className="mt-1 font-display text-[1.15rem] leading-snug text-deep">
                       {formatProductTitle(p.name, p.sizeLabel)}
                     </h3>
 
                     {/* Deux premiers bienfaits, mêmes textes que la section
-                        « Pourquoi on l'aime » de la fiche produit — voir
+                        « Pourquoi on l'aime » de la fiche produit - voir
                         `KKProductView.bullets`. Absents sur les produits que
                         le master n'a pas encore renseignés : la ligne ne
                         s'affiche alors simplement pas, plutôt qu'un vide. */}
@@ -376,7 +376,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
           </ol>
 
               {/* Matin et soir, tels que le master les décrit (`usageMatin` /
-                  `usageSoir`, texte libre — ex. « Nettoyant → ACT-5 → SPF50 »).
+                  `usageSoir`, texte libre - ex. « Nettoyant → ACT-5 → SPF50 »).
                   Chaque bloc ne s'affiche que si le champ est renseigné : une
                   routine corps sans étape matin, par exemple, n'affiche que
                   le soir. */}
@@ -405,7 +405,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                 </div>
               )}
 
-              {/* Le mot de l'équipe — `noteKossKoss`. Toutes les routines
+              {/* Le mot de l'équipe - `noteKossKoss`. Toutes les routines
                   n'en ont pas : un intertitre suivi du vide serait pire
                   qu'une fiche courte. */}
               {routine.noteKossKoss && (
@@ -418,7 +418,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
               {/* Deuxième porte, en une phrase : les autres routines toutes
                   faites, ou le diagnostic qui en compose une sur mesure.
                   Elle remplace le renvoi vers le rayon filtré, qui rendait une
-                  grille de produits à trier — c'est-à-dire le travail que la
+                  grille de produits à trier - c'est-à-dire le travail que la
                   routine venait précisément d'épargner.
 
                   Affichée sans condition : elle ne dépend plus du besoin
@@ -444,8 +444,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
                 n'a plus de course. */}
             {/* Le récapitulatif passe au vert profond.
 
-                Il portait exactement l'habillage des gestes de gauche — même
-                `bg-card`, même `border-border/70`, même `rounded-2xl` — et se
+                Il portait exactement l'habillage des gestes de gauche - même
+                `bg-card`, même `border-border/70`, même `rounded-2xl` - et se
                 lisait donc comme une quatrième carte de la liste, alors qu'il
                 ne décrit rien : il totalise et il engage. La page étant claire
                 de bout en bout (hero, gestes, « autres routines » en sable), le
@@ -484,12 +484,12 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     ))}
                   </ul>
 
-                  {/* Valeur des produits, puis prix de la routine — modèle
+                  {/* Valeur des produits, puis prix de la routine - modèle
                       client. Les DEUX se calculent depuis les produits liés
                       (`routine.totalFcfa`, sommé côté serveur à chaque rendu,
                       jamais lu en base) : le schéma ne porte aucune remise de
                       bundle, les deux montants sont donc identiques
-                      aujourd'hui — mais restent deux lectures distinctes du
+                      aujourd'hui - mais restent deux lectures distinctes du
                       même calcul, jamais une valeur figée recopiée. */}
                   <div className="mt-5 flex items-baseline justify-between gap-3 text-xs text-primary-foreground/60">
                     <span className="uppercase tracking-wide">{t("valueLabel")}</span>
@@ -499,7 +499,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                     {/* Libellé et prix EMPILÉS, pas côte à côte : à côté d'un
                         prix en 2xl, ce libellé plus long que « Valeur des
                         produits » n'a jamais tenu sur une ligne sans déborder
-                        du bloc — que ce soit en passant lui-même à la ligne,
+                        du bloc - que ce soit en passant lui-même à la ligne,
                         ou en repoussant le prix hors du cadre une fois
                         contraint à `nowrap`. Empilé, aucun des deux ne peut
                         plus déborder, quelle que soit la largeur d'écran. */}
@@ -512,8 +512,8 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   </div>
 
                   {/* `mode="achat"` : le clic file au tunnel de commande sans
-                      s'arrêter au panier. Le panier reste traversé — c'est lui
-                      qui porte les lignes que le tunnel relit — mais il n'est
+                      s'arrêter au panier. Le panier reste traversé - c'est lui
+                      qui porte les lignes que le tunnel relit - mais il n'est
                       plus une étape que le visiteur voit.
 
                       `variant="light"` = bouton sable, la variante prévue pour
@@ -527,7 +527,7 @@ export default async function RoutinePage({ params }: { params: Params }) {
                   />
 
                   {/* Accroche courte du master (« Meilleur rapport
-                      efficacité/prix »…), remontée ici depuis l'en-tête — retour
+                      efficacité/prix »…), remontée ici depuis l'en-tête - retour
                       client : c'est au moment de payer qu'elle pèse, pas en tête
                       de page. Repli sur la note d'achat générique (« Les N
                       produits en une seule commande ») pour les routines que le

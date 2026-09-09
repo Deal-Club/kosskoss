@@ -7,7 +7,7 @@ import { ArrowLeft, ChevronUp, ChevronDown, Trash2, Plus, Save, Loader2 } from "
 import type { RoutineAdmin, ProduitChoisissable } from "@/server/kk/routine-admin";
 
 /**
- * Éditeur d'une routine — création et modification.
+ * Éditeur d'une routine - création et modification.
  * Objectif « très facile » : les éléments essentiels (nom, besoin, niveau,
  * code, accroche, description, état) puis les produits dans l'ordre (ajouter,
  * monter/descendre, retirer, nommer le geste).
@@ -203,7 +203,7 @@ export function RoutineEditor({
       <div className="mb-2 flex items-center justify-between">
         <p className="text-sm font-semibold text-foreground">Produits, dans l&apos;ordre</p>
         <span className={`text-xs font-semibold ${servables < 2 ? "text-destructive" : "text-[#16a34a]"}`}>
-          {servables} servable{servables > 1 ? "s" : ""} {servables < 2 && "— 2 minimum pour s'afficher au client"}
+          {servables} servable{servables > 1 ? "s" : ""} {servables < 2 && "- 2 minimum pour s'afficher au client"}
         </span>
       </div>
 
@@ -230,7 +230,7 @@ export function RoutineEditor({
               </div>
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-foreground">{s.productLabel}</p>
-                {!s.servable && <p className="text-xs text-destructive">Inactif ou en rupture — ignoré côté client</p>}
+                {!s.servable && <p className="text-xs text-destructive">Inactif ou en rupture - ignoré côté client</p>}
               </div>
               <label className="text-xs">
                 <span className="sr-only">Nom du geste</span>

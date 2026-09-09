@@ -1,4 +1,4 @@
-// Matrice de décision du Diagnostic Beauté — module pur, sans accès base de
+// Matrice de décision du Diagnostic Beauté - module pur, sans accès base de
 // données.
 //
 // Source : assets/corrections/Quiz Diagnostic Peau KossKoss Select_complète.docx
@@ -12,7 +12,7 @@
 //  - la bascule de sécurité de Q3 (peau réactive) ;
 //  - les conseils contextuels de Q1 (type de peau) et Q4 (environnement).
 // Le moteur (src/server/kk/diagnostic.ts, tâche 3 de ce lot) LIT ce module ;
-// il ne recopie jamais ces règles ni ces textes ailleurs — les recopier dans
+// il ne recopie jamais ces règles ni ces textes ailleurs - les recopier dans
 // un écran créerait deux vérités (contrainte globale n°1 du lot).
 
 /** Les sept besoins du client, chacun relié à deux routines du master. */
@@ -36,7 +36,7 @@ export interface CodesRoutine {
  * Matrice principale : les sept besoins et leurs deux routines.
  *
  * `sensibilite` (BAR-*) n'est jamais désigné directement par une réponse à
- * Q2 — il n'y arrive que par la bascule de sécurité de Q3, voir
+ * Q2 - il n'y arrive que par la bascule de sécurité de Q3, voir
  * `recommander`. `homme` (HOM-*) est hors quiz (aucune réponse ne l'atteint
  * aujourd'hui) : il reste dans la matrice pour un lien direct futur vers la
  * routine homme, et parce que le master l'exige exister pour les 14
@@ -55,7 +55,7 @@ export const MATRICE: Record<Besoin, CodesRoutine> = {
 /**
  * Retrouve le besoin d'un code de routine du master (ex. « TAC-ECO » →
  * `taches`), en LISANT la matrice ci-dessus plutôt qu'en recopiant une
- * seconde table de correspondance — c'est elle qui pose l'étiquette de
+ * seconde table de correspondance - c'est elle qui pose l'étiquette de
  * besoin des 14 routines importées du master (tâche 2 de ce lot). `null` si
  * le code n'appartient à aucun besoin de la matrice.
  */
@@ -78,11 +78,11 @@ function estBesoinQ2(valeur: string | undefined): valeur is Besoin {
 export type Motif = "preoccupation" | "securite";
 
 export interface ReponsesDiagnostic {
-  /** Réponse à Q2 (priorité) — un des cinq besoins de `BESOINS_Q2`. Absente
+  /** Réponse à Q2 (priorité) - un des cinq besoins de `BESOINS_Q2`. Absente
    *  ou étrangère à cette liste : traitée comme une réponse manquante, jamais
    *  comme une hypothèse sur ce que le visiteur aurait voulu dire. */
   q2?: string;
-  /** Réponse à Q3 (réactivité) — "reactive" déclenche la bascule de
+  /** Réponse à Q3 (réactivité) - "reactive" déclenche la bascule de
    *  sécurité. Toute autre valeur, y compris absente ou étrangère à
    *  "reactive"/"tolerante", NE déclenche rien : une réponse illisible ne
    *  doit jamais se faire passer pour une alerte de sécurité qu'elle n'est
@@ -104,7 +104,7 @@ export interface Recommandation {
   /** Motif de la recommandation. `null` si aucune recommandation n'est
    *  possible. */
   motif: Motif | null;
-  /** La préoccupation que le visiteur a déclarée à Q2 — CONSERVÉE même
+  /** La préoccupation que le visiteur a déclarée à Q2 - CONSERVÉE même
    *  quand la bascule de sécurité l'a emporté, pour que l'écran puisse dire
    *  « nous traitons d'abord la sensibilité, avant votre préoccupation »
    *  plutôt que d'avoir l'air de s'être trompé (contrainte globale n°2).
@@ -117,7 +117,7 @@ export interface Recommandation {
  *
  * LA BASCULE DE SÉCURITÉ PRIME SUR LA PRÉOCCUPATION DÉCLARÉE : si Q3 vaut
  * "reactive", le besoin retenu devient `sensibilite`, QUELLE QUE SOIT la
- * réponse à Q2 — y compris absente ou inconnue. Ce n'est pas un bonus de
+ * réponse à Q2 - y compris absente ou inconnue. Ce n'est pas un bonus de
  * score qu'un autre critère pourrait dépasser : c'est une bascule, évaluée
  * en premier, avant toute tentative de résoudre Q2.
  */
@@ -147,7 +147,7 @@ export function recommander(reponses: ReponsesDiagnostic): Recommandation {
   };
 }
 
-// ---- Conseils contextuels — textes exacts du document du client -------------
+// ---- Conseils contextuels - textes exacts du document du client -------------
 //
 // Ce sont des conseils de soin, pas des formulations à améliorer : ils sont
 // recopiés mot pour mot depuis le document du client, sans reformulation.
@@ -178,7 +178,7 @@ const CONSEILS_TYPE_PEAU: Record<ReponseQ1, { fr: string; en: string }> = {
 };
 
 /**
- * Ajustement du conseil selon le type de peau (Q1) — texte exact du document
+ * Ajustement du conseil selon le type de peau (Q1) - texte exact du document
  * du client. Une réponse absente ou inconnue rend une chaîne vide plutôt
  * qu'un texte inventé.
  */
@@ -193,7 +193,7 @@ export function conseilTypePeau(reponseQ1: string | undefined, locale: "fr" | "e
 export type ReponseQ4 = "climatisation" | "chaleur_humidite" | "mixte";
 
 /** Docx, section « Q4 sert à générer un conseil suivant la réponse
- *  donnée » — les trois textes complets, hors le libellé « Conseil
+ *  donnée » - les trois textes complets, hors le libellé « Conseil
  *  KossKoss : » qui est l'habillage constant de l'écran (même convention que
  *  `Product.conseilKossKoss`, voir src/lib/kk/traductions.ts). */
 const CONSEILS_ENVIRONNEMENT: Record<ReponseQ4, { fr: string; en: string }> = {
@@ -212,7 +212,7 @@ const CONSEILS_ENVIRONNEMENT: Record<ReponseQ4, { fr: string; en: string }> = {
 };
 
 /**
- * Conseil selon l'environnement (Q4) — texte exact du document du client.
+ * Conseil selon l'environnement (Q4) - texte exact du document du client.
  * Une réponse absente ou inconnue rend une chaîne vide plutôt qu'un texte
  * inventé.
  */
@@ -224,7 +224,7 @@ export function conseilEnvironnement(reponseQ4: string | undefined, locale: "fr"
 }
 
 /**
- * Message affiché quand la bascule de sécurité s'applique — texte exact du
+ * Message affiché quand la bascule de sécurité s'applique - texte exact du
  * document du client (entre guillemets dans l'original, retirés ici).
  * Exporté pour que l'écran (tâche 3) ne le recopie jamais : une seule source
  * de vérité pour ce texte, comme pour le reste de la matrice.

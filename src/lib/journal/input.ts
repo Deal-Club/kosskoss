@@ -126,7 +126,7 @@ export function parseArticleInput(raw: unknown, now: Date = new Date()): ParseAr
   // traduit », et la boutique anglaise retombera sur le français.
   const englishRaw = Array.isArray(input.blocksEn) ? input.blocksEn : [];
   const english = normalizeBlocks(englishRaw);
-  if (!english.ok) return { ok: false, error: `Version anglaise — ${english.error}` };
+  if (!english.ok) return { ok: false, error: `Version anglaise - ${english.error}` };
 
   // --- Chapeau ---
   // Généré depuis les paragraphes s'il est laissé vide : jamais une troncature

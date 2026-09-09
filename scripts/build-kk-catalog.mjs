@@ -105,7 +105,7 @@ function benefitTags(text) {
   // « taches » distingue l'hyperpigmentation de l'éclat en général : un soin
   // qui ravive le teint n'est pas forcément un correcteur de taches. C'est la
   // première préoccupation des peaux riches en mélanine, et une question à
-  // part entière du diagnostic — sans ce tag, elle n'aurait rien à cibler.
+  // part entière du diagnostic - sans ce tag, elle n'aurait rien à cibler.
   if (/tache|hyperpigment|depigment|melasma|dark ?spot|anti-?pigment|unifiant/.test(t)) out.add("taches");
   if (/acne|imperfection|bouton|point noir|anti-?blemish|blemish/.test(t)) out.add("imperfections");
   if (/sebum|matifi|brillance|anti-?brillance/.test(t)) out.add("matifiant");
@@ -221,7 +221,7 @@ for (const r of assort) {
   let longDesc;
   if (desc) {
     const parts = [];
-    if (desc.zone) parts.push(desc.zone.replace(/\s*[-–]\s*/g, " — ").replace(/\.+$/, "") + ".");
+    if (desc.zone) parts.push(desc.zone.replace(/\s*[-–]\s*/g, " - ").replace(/\.+$/, "") + ".");
     if (desc.probleme) parts.push(`Cible : ${desc.probleme}.`);
     if (desc.benefices.length) parts.push(desc.benefices.join(". ") + ".");
     if (desc.usage) parts.push(`Conseil d'utilisation : ${desc.usage}.`);
@@ -245,7 +245,7 @@ for (const r of assort) {
     matchedDescription: Boolean(desc),
     // Contenance (« 210 ml »…), colonne "Format" de description_produit.csv.
     // Exclu pour les coffrets ("Set") : ce ne sont pas des volumes. Devient la
-    // seule variation du produit dans prisma/seed-kk.ts — le catalogue client
+    // seule variation du produit dans prisma/seed-kk.ts - le catalogue client
     // ne porte qu'une contenance par référence, jamais plusieurs volumes d'un
     // même produit.
     format: format && format.toLowerCase() !== "set" ? format : "",

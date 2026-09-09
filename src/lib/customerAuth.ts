@@ -6,7 +6,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
  * Volontairement séparée du back-office : cookie différent, secret différent,
  * module différent. Une session client signée avec CUSTOMER_SESSION_SECRET ne
  * peut donc jamais être présentée comme une session d'administration, et
- * inversement — même en cas de fuite d'un des deux secrets.
+ * inversement - même en cas de fuite d'un des deux secrets.
  */
 
 export const CUSTOMER_SESSION_COOKIE = "customer_session";
@@ -43,7 +43,7 @@ export interface CustomerSession {
 
 /**
  * Jeton signé HMAC-SHA256 : « charge utile base64url . signature hexadécimale ».
- * La charge utile n'est pas chiffrée — elle ne contient que l'identifiant et
+ * La charge utile n'est pas chiffrée - elle ne contient que l'identifiant et
  * l'adresse, jamais le mot de passe, même haché.
  */
 export function createCustomerSessionToken(customerId: string, email: string): string {

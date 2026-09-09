@@ -32,7 +32,7 @@ interface CampaignStepProductsProps {
  * Le panneau latéral est le cœur de l'affaire : « je lance une campagne pour un
  * produit que je n'ai pas encore saisi » est le cas d'usage le plus fréquent, et
  * il ne doit pas obliger à tout recommencer. Le formulaire produit est réutilisé
- * tel quel — un second formulaire finirait par diverger du premier.
+ * tel quel - un second formulaire finirait par diverger du premier.
  */
 export function CampaignStepProducts({
   products,

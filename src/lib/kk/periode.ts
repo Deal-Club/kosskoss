@@ -5,7 +5,7 @@
  *
  * L'écran, la barre de période (composant client) et la route d'export lisent
  * tous les trois la même période depuis l'URL. En gardant le module sans
- * dépendance, les trois partagent la règle au lieu de la recopier — et surtout
+ * dépendance, les trois partagent la règle au lieu de la recopier - et surtout
  * rien de serveur n'entre dans le paquet du navigateur.
  *
  * ── TOUT SE JOUE EN HEURE LOCALE ────────────────────────────────────────────
@@ -30,7 +30,7 @@ export function estRaccourci(valeur: string | undefined): valeur is Raccourci {
   return valeur !== undefined && RACCOURCIS.includes(valeur);
 }
 
-/** « AAAA-MM-JJ » en heure locale — `toISOString` donnerait le jour UTC. */
+/** « AAAA-MM-JJ » en heure locale - `toISOString` donnerait le jour UTC. */
 export function formatJourIso(date: Date): string {
   const mois = String(date.getMonth() + 1).padStart(2, "0");
   const jour = String(date.getDate()).padStart(2, "0");

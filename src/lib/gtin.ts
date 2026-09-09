@@ -40,7 +40,7 @@ export function isValidGtin(value: string): boolean {
   // - le préfixe « 2 » (plage 20-29) et les préfixes « 02 »/« 04 » sont des
   //   plages GS1 documentées précisément pour les EAN-13 à circulation restreinte ;
   // - l'UPC-A (12 chiffres) utilise aussi un « system number » 2 en tête, mais
-  //   pour un usage différent et légitime en caisse (articles pesés en magasin) —
+  //   pour un usage différent et légitime en caisse (articles pesés en magasin) -
   //   l'exclure produirait des faux positifs sur des UPC réels ;
   // - l'EAN-8 (8 chiffres) n'a pas d'équivalent documenté de ces plages ;
   // - le GTIN-14 (14 chiffres) préfixe un GTIN-13 d'un chiffre indicateur

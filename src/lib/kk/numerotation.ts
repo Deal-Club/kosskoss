@@ -6,7 +6,7 @@
  * repli sur 1 quand le dernier numéro est illisible.
  *
  * Deux copies d'une règle de numérotation divergent, et un numéro qui se répète
- * est un incident comptable — pas un défaut d'affichage.
+ * est un incident comptable - pas un défaut d'affichage.
  */
 
 /** Six chiffres : de quoi tenir un million de documents par an. */

@@ -90,7 +90,7 @@ export async function createSnippet(
   return versFragment(row);
 }
 
-/** Rend null si le fragment n'existe plus — supprimé depuis un autre onglet. */
+/** Rend null si le fragment n'existe plus - supprimé depuis un autre onglet. */
 export async function updateSnippet(
   id: string,
   input: CodeSnippetInput,

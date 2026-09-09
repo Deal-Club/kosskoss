@@ -11,7 +11,7 @@ import {
 import { FAMILLE_PEAU, FAMILLE_PREOCCUPATION } from "./facettes";
 
 /** Vocabulaire de test : reflète les dix clés réellement administrées
- *  aujourd'hui (cinq types de peau, cinq préoccupations) — dont trois qu'une
+ *  aujourd'hui (cinq types de peau, cinq préoccupations) - dont trois qu'une
  *  ancienne liste figée dans le code ignorait (peau_normale, anti_age,
  *  apaisant), ce qui faisait disparaître le filtre en silence. */
 const VOCABULAIRE_TEST: EntreeVocabulaire[] = [
@@ -54,7 +54,7 @@ describe("parseFacettes", () => {
     assert.deepEqual(parseFacettes({}, VOCABULAIRE_TEST), { peau: [], preoccupation: [] });
   });
 
-  it("lit les deux familles séparément — pas une liste mélangée", () => {
+  it("lit les deux familles séparément - pas une liste mélangée", () => {
     const selection = parseFacettes({ peau: "grasse,mixte", preoccupation: "taches" }, VOCABULAIRE_TEST);
     assert.deepEqual(selection, { peau: ["grasse", "mixte"], preoccupation: ["taches"] });
   });
@@ -69,7 +69,7 @@ describe("parseFacettes", () => {
     assert.deepEqual(selection.peau, ["grasse", "mixte"]);
   });
 
-  it("une clé inconnue n'est jamais une erreur — elle reste simplement dans la liste", () => {
+  it("une clé inconnue n'est jamais une erreur - elle reste simplement dans la liste", () => {
     // Aucune validation contre un vocabulaire connu (voir la doctrine de
     // `parseBrands`) : une clé absurde ne fait correspondre aucun produit en
     // aval, ce qui affiche un rayon vide plutôt qu'un 500.
@@ -78,7 +78,7 @@ describe("parseFacettes", () => {
     assert.deepEqual(selection.peau, ["clé-qui-n-existe-pas"]);
   });
 
-  describe("compatibilité ?besoin= — routé depuis le VOCABULAIRE RÉEL, pas une liste figée", () => {
+  describe("compatibilité ?besoin= - routé depuis le VOCABULAIRE RÉEL, pas une liste figée", () => {
     it("traduit un besoin de type de peau dans la famille peau", () => {
       const selection = parseFacettes({ besoin: "peau_grasse" }, VOCABULAIRE_TEST);
       assert.deepEqual(selection, { peau: ["peau_grasse"], preoccupation: [] });
@@ -108,17 +108,17 @@ describe("parseFacettes", () => {
     // (src/lib/kk/besoins.ts, huit clés) ne connaissait pas alors qu'elles
     // sont administrées et cochables en facette (dix clés) : un `?besoin=`
     // vers l'une d'elles disparaissait en silence, le rayon rendait tout.
-    it("route « peau_normale » — absente de l'ancienne liste figée — dans la famille peau", () => {
+    it("route « peau_normale » - absente de l'ancienne liste figée - dans la famille peau", () => {
       const selection = parseFacettes({ besoin: "peau_normale" }, VOCABULAIRE_TEST);
       assert.deepEqual(selection, { peau: ["peau_normale"], preoccupation: [] });
     });
 
-    it("route « anti_age » — absente de l'ancienne liste figée — dans la famille préoccupation", () => {
+    it("route « anti_age » - absente de l'ancienne liste figée - dans la famille préoccupation", () => {
       const selection = parseFacettes({ besoin: "anti_age" }, VOCABULAIRE_TEST);
       assert.deepEqual(selection, { peau: [], preoccupation: ["anti_age"] });
     });
 
-    it("route « apaisant » — absente de l'ancienne liste figée — dans la famille préoccupation", () => {
+    it("route « apaisant » - absente de l'ancienne liste figée - dans la famille préoccupation", () => {
       const selection = parseFacettes({ besoin: "apaisant" }, VOCABULAIRE_TEST);
       assert.deepEqual(selection, { peau: [], preoccupation: ["apaisant"] });
     });
@@ -154,11 +154,11 @@ describe("parsePrix", () => {
     assert.deepEqual(parsePrix({ prixMin: "abc", prixMax: "-500" }), { min: undefined, max: undefined });
   });
 
-  describe("plafond — la faute critique relevée en revue", () => {
+  describe("plafond - la faute critique relevée en revue", () => {
     // `priceCents` est une colonne Postgres `Int` (32 bits signés). Sans
     // plafond, une borne au-delà de 2 147 483 647 part telle quelle dans le
     // `gte`/`lte` de getCatalog : Prisma lève, et la PAGE DE RAYON ENTIÈRE
-    // rend zéro produit — atteignable depuis l'écran, le champ n'avait pas de
+    // rend zéro produit - atteignable depuis l'écran, le champ n'avait pas de
     // `max` HTML (voir catalog-filters.tsx, corrigé dans le même lot).
     const INT32_MAX = 2_147_483_647;
 
@@ -166,11 +166,11 @@ describe("parsePrix", () => {
       assert.deepEqual(parsePrix({ prixMax: "9999999999" }), { min: undefined, max: INT32_MAX });
     });
 
-    it("plafonne aussi la borne basse — un prixMin absurde ne doit pas non plus faire lever Prisma", () => {
+    it("plafonne aussi la borne basse - un prixMin absurde ne doit pas non plus faire lever Prisma", () => {
       assert.deepEqual(parsePrix({ prixMin: "99999999999999" }), { min: INT32_MAX, max: undefined });
     });
 
-    it("ne dépasse jamais le plafond, quelle que soit l'écriture — cas « 1e21 »", () => {
+    it("ne dépasse jamais le plafond, quelle que soit l'écriture - cas « 1e21 »", () => {
       // `parseInt("1e21", 10)` s'arrête au premier caractère non décimal :
       // le résultat vaut 1, déjà minuscule. Le test verrouille la propriété
       // qui compte, plutôt qu'un détail d'implémentation : quoi qu'il arrive,

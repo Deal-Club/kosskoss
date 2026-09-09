@@ -23,14 +23,14 @@ function createClient(): PrismaClient {
       //
       // Une page comme le catalogue lance trois requêtes en parallèle : sur un
       // pool froid, ce sont trois ouvertures simultanées, et l'ancien plafond
-      // de quinze secondes était atteint — d'où les « timeout exceeded when
+      // de quinze secondes était atteint - d'où les « timeout exceeded when
       // trying to connect » intermittents, toujours après un moment sans
       // activité, jamais en usage soutenu.
       connectionTimeoutMillis: 30_000,
       // Conserver les connexions ouvertes plus longtemps en développement :
       // chaque réouverture coûte les 2 à 3 secondes ci-dessus, et un poste de
       // travail alterne des rafales de requêtes et de longues pauses. En
-      // production, les sessions restent courtes — le pooler Neon préfère, et
+      // production, les sessions restent courtes - le pooler Neon préfère, et
       // le calcul est facturé au temps d'activité.
       idleTimeoutMillis: process.env.NODE_ENV === "production" ? 30_000 : 300_000,
       max: 10,
@@ -44,13 +44,13 @@ const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 // Mémorisation dans une variable de module : elle doit être inconditionnelle,
 // quel que soit NODE_ENV. `globalThis` ne sert qu'au rechargement à chaud du
-// développement, qui réévalue les modules — pas à la mémorisation elle-même.
+// développement, qui réévalue les modules - pas à la mémorisation elle-même.
 // (Une mémorisation conditionnée à `NODE_ENV !== "production"` a longtemps
 // été sans conséquence, tant que le client était construit une seule fois à
 // l'évaluation du module. Une fois cette construction déplacée derrière un
 // Proxy déclenché à chaque accès de propriété, la même garde rappelait
-// `createClient()` — donc un nouveau pool `pg` de dix connexions jamais
-// fermé — à chaque `prisma.product`, chaque `prisma.$transaction`, en
+// `createClient()` - donc un nouveau pool `pg` de dix connexions jamais
+// fermé - à chaque `prisma.product`, chaque `prisma.$transaction`, en
 // production. Voir `getClient` et `src/server/prisma.test.ts`.)
 let client: PrismaClient | undefined;
 
@@ -67,7 +67,7 @@ export function getClient(): PrismaClient {
 
 /**
  * Client instancié à la première utilisation plutôt qu'à l'import : un module
- * qui importe merchant.ts pour sa logique pure — les tests, par exemple — n'a
+ * qui importe merchant.ts pour sa logique pure - les tests, par exemple - n'a
  * pas à disposer d'une base.
  */
 export const prisma = new Proxy({} as PrismaClient, {

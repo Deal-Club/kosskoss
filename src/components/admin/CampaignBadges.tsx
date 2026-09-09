@@ -9,7 +9,7 @@ import {
  * Pastilles et jauges communes aux écrans de campagne.
  *
  * Chaque pastille porte son libellé en toutes lettres : la couleur situe d'un
- * coup d'œil, elle ne dit jamais rien à elle seule — même règle que dans
+ * coup d'œil, elle ne dit jamais rien à elle seule - même règle que dans
  * DashboardCharts.tsx.
  */
 export const CAMPAIGN_STATUS_BADGES: Record<CampaignStatus, string> = {

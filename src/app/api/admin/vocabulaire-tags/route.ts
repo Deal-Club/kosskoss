@@ -3,7 +3,7 @@ import { requireCapaciteApi } from "@/lib/adminApi";
 import { enregistrerVocabulaire, type ProductTagAdmin } from "@/server/kk/vocabulaire-tags";
 
 // Note de nommage : le brief de la tâche demandait `/api/admin/product-tags`,
-// mais cette route existe déjà pour un autre usage — associer des tags libres
+// mais cette route existe déjà pour un autre usage - associer des tags libres
 // à un produit (voir src/app/api/admin/product-tags/route.ts et
 // src/server/kk/product-tags.ts). La réutiliser aurait écrasé cette fonction.
 // Le vocabulaire vit donc sous son propre chemin, aligné sur le nom du module
@@ -16,7 +16,7 @@ import { enregistrerVocabulaire, type ProductTagAdmin } from "@/server/kk/vocabu
  * La clé n'est pas modifiable depuis l'écran, mais la route reste appelable
  * directement (curl, script) : elle doit donc revalider chaque champ elle-même
  * plutôt que de faire confiance à l'UI. `family` accepte n'importe quelle
- * chaîne non vide — seules « peau » et « preoccupation » deviennent des
+ * chaîne non vide - seules « peau » et « preoccupation » deviennent des
  * facettes de catalogue, les autres familles restent éditables ici.
  */
 function parseItem(raw: unknown): ProductTagAdmin | null {
@@ -34,7 +34,7 @@ function parseItem(raw: unknown): ProductTagAdmin | null {
   return {
     // `key` et `family` sont validées APRÈS `.trim()` : les stocker brutes
     // laissait passer un `family: " peau "` qui, validé, ne correspondait plus
-    // jamais à la famille des facettes — le tag disparaissait du catalogue sans
+    // jamais à la famille des facettes - le tag disparaissait du catalogue sans
     // qu'aucune erreur ne le signale.
     key: r.key.trim(),
     labelFr: r.labelFr,

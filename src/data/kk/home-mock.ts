@@ -1,5 +1,5 @@
 /**
- * DONNÉES DE DÉMONSTRATION — Accueil KossKoss Select.
+ * DONNÉES DE DÉMONSTRATION - Accueil KossKoss Select.
  *
  * ⚠️ MOCK explicitement marqué (cahier des charges §10 « Gestion des données
  * incomplètes »). Aucune de ces valeurs n'est définitive : elles servent
@@ -12,7 +12,7 @@ import type { KKProductView } from "@/types/kk";
 
 // Aucune de ces vignettes ne porte de `href` : sans fiche produit derrière, le
 // bouton d'ajout rapide et le cœur des favoris restent inertes sur /preview.
-// C'est voulu — la page sert à regarder le rendu, pas à remplir un panier avec
+// C'est voulu - la page sert à regarder le rendu, pas à remplir un panier avec
 // des identifiants qui n'existent pas en base.
 export const MOCK_SELECTION: KKProductView[] = [
   { id: "p1", brand: "Atlas Skincare", name: "Sérum Éclat Nocturne", priceFcfa: 18500, badge: "bestseller", tone: "clay" },

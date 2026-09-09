@@ -67,9 +67,9 @@ function discountLabel(kind: DiscountKind, value: number): string {
   }
 }
 
-/** Taux affiché sous une tuile ; « — » tant que la base de calcul est vide. */
+/** Taux affiché sous une tuile ; « - » tant que la base de calcul est vide. */
 function share(part: number, total: number, suffix: string): string {
-  if (total <= 0) return "—";
+  if (total <= 0) return "-";
   return `${Math.round((part / total) * 100)} % ${suffix}`;
 }
 
@@ -153,7 +153,7 @@ export default async function AdminCampaignDetailPage({
       label: "CA généré",
       icon: Wallet,
       value: formatPrice(stats.revenueCents),
-      note: averageOrderCents > 0 ? `${formatPrice(averageOrderCents)} par commande` : "—",
+      note: averageOrderCents > 0 ? `${formatPrice(averageOrderCents)} par commande` : "-",
     },
     {
       key: "unsubscribed",
@@ -344,7 +344,7 @@ export default async function AdminCampaignDetailPage({
                       {saved > 0 ? (
                         <span className="font-bold text-primary">−{formatPrice(saved)}</span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </td>
                   </tr>
@@ -480,13 +480,13 @@ export default async function AdminCampaignDetailPage({
                     )}
                   </td>
                   <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
-                    {recipient.sentAt ? dateTimeFormatter.format(recipient.sentAt) : "—"}
+                    {recipient.sentAt ? dateTimeFormatter.format(recipient.sentAt) : "-"}
                   </td>
                   <td className="px-4 py-3 text-right text-muted-foreground">
                     {recipient.clickCount}
                   </td>
                   <td className="px-4 py-3 text-right font-semibold whitespace-nowrap text-foreground">
-                    {recipient.attributedCents > 0 ? formatPrice(recipient.attributedCents) : "—"}
+                    {recipient.attributedCents > 0 ? formatPrice(recipient.attributedCents) : "-"}
                   </td>
                 </tr>
               ))}

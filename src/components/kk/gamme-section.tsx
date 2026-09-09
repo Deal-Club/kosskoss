@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import type { BrandFocusView } from "@/server/kk/brand-focus";
 
 /**
- * FOCUS MARQUE — la maison mise en avant sur l'accueil, bloc 3 de la structure
+ * FOCUS MARQUE - la maison mise en avant sur l'accueil, bloc 3 de la structure
  * fournie par le client (« mise en avant Nubiance · storytelling + bénéfices »).
  *
  * ── Ce qu'elle était ──────────────────────────────────────────────────────
@@ -19,7 +19,7 @@ import type { BrandFocusView } from "@/server/kk/brand-focus";
  *
  * ── Ce qu'elle est ────────────────────────────────────────────────────────
  * Une seule prise de parole : la maison, son accroche, son argumentaire, le
- * nombre de références disponibles, et deux portes — le diagnostic, les
+ * nombre de références disponibles, et deux portes - le diagnostic, les
  * routines.
  *
  * Le nom, l'accroche et le texte viennent de `getBrandFocus`, pas d'ici, et le
@@ -41,7 +41,7 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
           Elle était bornée au deux tiers droits, ce qui laissait un aplat de
           fond nu à gauche et une couture visible là où l'image commençait.
           Sa composition s'y prête : les flacons sont cadrés à droite et le vert
-          sombre s'étend sur toute la moitié gauche — c'est ce vert-là qui porte
+          sombre s'étend sur toute la moitié gauche - c'est ce vert-là qui porte
           le texte, et non un aplat rapporté. */}
       <div className="absolute inset-0">
         <Image
@@ -63,15 +63,15 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
               30 %    0,72 → 0,82     78 %  0,15 → 0,34
                                      droite 0    → 0,12
 
-            Deux raisons. D'abord la photo elle-même : ses zones claires — les
-            reflets sur les flacons, le fond dégradé — remontaient sous le
+            Deux raisons. D'abord la photo elle-même : ses zones claires - les
+            reflets sur les flacons, le fond dégradé - remontaient sous le
             texte, et un voile à 45 % au milieu de la course n'y suffisait pas
             pour du blanc.
 
             Ensuite et surtout le MOBILE. Le bloc de texte est borné à 36 rem,
             mais sous 576 px il occupe toute la largeur : la fin de chaque
             ligne tombait alors dans la zone où le voile s'éteignait, c'est-à-
-            dire sur la photo nue. D'où le plancher de 0,12 au bord droit — il
+            dire sur la photo nue. D'où le plancher de 0,12 au bord droit - il
             ne coûte presque rien à la lisibilité des produits sur grand écran,
             et il évite qu'un mot se perde sur un reflet au téléphone. */}
         <div
@@ -90,14 +90,14 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
               Elle n'est plus un encadré au milieu de la section : ELLE EST LA
               SECTION, cadre compris. Le sur-titre « Notre gamme », le titre
               « Un problème, une réponse qui existe. », le paragraphe sur les
-              gênes et les quatre pastilles de préoccupations ont été retirés —
+              gênes et les quatre pastilles de préoccupations ont été retirés -
               quatre niveaux de discours avant d'arriver au seul sujet du bloc.
 
               Les préoccupations restent joignables : le diagnostic, juste en
               dessous, mène au même rayon filtré en posant les bonnes questions,
               et le méga-menu de l'en-tête ouvre le catalogue par besoin. */}
           {focus && (
-            /* SANS CADRE. Le bloc était posé dans un panneau — filet blanc,
+            /* SANS CADRE. Le bloc était posé dans un panneau - filet blanc,
                fond noir à 25 %, flou d'arrière-plan, 28 px de padding. Sur une
                photo déjà voilée, ce cadre ajoutait un second voile par-dessus
                le premier et découpait un rectangle au milieu d'une image qui
@@ -110,7 +110,7 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
                   au moment de présenter quelqu'un d'autre. */}
               <p className="eyebrow eyebrow-on-dark">{t("eyebrow")}</p>
 
-              {/* Le nom porte le titre de la section — c'est lui qu'on doit
+              {/* Le nom porte le titre de la section - c'est lui qu'on doit
                   retenir. En Cinzel, la serif des logotypes de la maison : un
                   nom de marque n'est pas une phrase, il se pose. */}
               <h2 className="wordmark mt-2.5 text-3xl leading-none text-white sm:text-4xl">
@@ -127,7 +127,7 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
               Le bouton de la marque vivait dans le bloc de texte et le lien des
               routines huit pixels plus bas, dans sa propre rangée : deux
               alignements pour deux liens voisins. Ils partagent maintenant la
-              même rangée — le plein d'abord, le lien ensuite —, et
+              même rangée - le plein d'abord, le lien ensuite -, et
               `flex-wrap` les empile proprement quand la largeur manque.
 
               « FAIRE MON DIAGNOSTIC » A ÉTÉ RETIRÉ de cette rangée : il portait
@@ -138,7 +138,7 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
           {/* LES ROUTINES PASSENT EN PREMIER, ET PRENNENT LE PLEIN.
               L'ordre s'inverse : le lien des routines ouvre la rangée, le
               catalogue de la maison le suit. Les deux rôles suivent la position
-              — un lien souligné placé devant un bouton plein resterait second
+              - un lien souligné placé devant un bouton plein resterait second
               pour l'œil quoi qu'en dise l'ordre du DOM, et la rangée se lirait
               de droite à gauche. C'est la même hiérarchie que dans le hero, où
               « Trouvez votre routine » porte l'aplat et le reste suit. */}
@@ -149,7 +149,7 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
                 selon la catégorie et les tags. La Routine Acné, par exemple,
                 mêle deux références Nubiance et deux d'une autre maison.
                 « Nos routines Nubiance » annoncerait donc une composition qui
-                n'existe pas — la formule retenue nomme la maison sans
+                n'existe pas - la formule retenue nomme la maison sans
                 revendiquer l'exclusivité. Le jour où des routines réellement
                 mono-marque sont créées, le libellé peut devenir littéral. */}
             <Link
@@ -162,13 +162,13 @@ export async function GammeSection({ focus }: { focus?: BrandFocusView | null })
 
             {/* Le libellé annonçait « Voir les 9 références Nubiance ».
                 Le compte venait de la base et restait donc juste, mais un petit
-                nombre affiché sur un bouton se lit comme un catalogue maigre —
+                nombre affiché sur un bouton se lit comme un catalogue maigre -
                 il dessert la maison qu'on met en avant.
                 `focus.productCount` sert toujours, en amont : `getBrandFocus`
                 renvoie `null` quand il tombe à zéro, et la section entière
                 disparaît plutôt que de vanter une marque sans stock.
 
-                Le lien passe par la recherche faute de page de marque — c'est
+                Le lien passe par la recherche faute de page de marque - c'est
                 le chemin qu'emprunte déjà la page /marques. */}
             {focus && (
               <Link

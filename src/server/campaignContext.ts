@@ -8,7 +8,7 @@
  *
  * Le cookie n'est délibérément pas `httpOnly` : le panier, rendu côté
  * navigateur, doit pouvoir annoncer la livraison offerte avant la commande.
- * Cette lecture ne sert qu'à l'affichage — le montant réellement facturé est
+ * Cette lecture ne sert qu'à l'affichage - le montant réellement facturé est
  * recalculé côté serveur au moment de créer la commande, où le jeton est
  * revalidé. Rendre le cookie lisible n'ouvre donc aucun droit.
  *

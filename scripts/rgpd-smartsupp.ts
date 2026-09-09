@@ -11,7 +11,7 @@
  * visiteur. Ce n'est pas un cookie nécessaire au fonctionnement de la boutique :
  * il relève du consentement (article 82 de la loi Informatique et Libertés).
  * La page le dit désormais, et porte la mention d'attente déjà utilisée pour le
- * médiateur — même forme, même raison : le point doit être réglé avant la mise
+ * médiateur - même forme, même raison : le point doit être réglé avant la mise
  * en ligne.
  *
  * Ce script ne touche QUE le français, qui est la version qui engage la
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
     const destinataires =
       controle.page.sections.find((s) => s.heading === TITRE_DESTINATAIRES)?.list?.length ?? 0;
     console.log(
-      `${simuler ? "[simulation] " : ""}${SLUG}/fr — ${destinataires} destinataires, ` +
+      `${simuler ? "[simulation] " : ""}${SLUG}/fr - ${destinataires} destinataires, ` +
         `section « ${TITRE_COOKIES} » réécrite, révision ${controle.page.updatedAt}`,
     );
 

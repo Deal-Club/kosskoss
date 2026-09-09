@@ -7,7 +7,7 @@
  *  1. Le compte est facultatif. Rien ici n'est appelé par le tunnel de
  *     commande invité : commander sans compte reste possible et inchangé.
  *     Imposer un compte pour une commande ponctuelle est contraire au principe
- *     de minimisation (art. 5 § 1 c RGPD) — position constante de la CNIL
+ *     de minimisation (art. 5 § 1 c RGPD) - position constante de la CNIL
  *     sur les comptes clients dans le commerce en ligne.
  *
  *  2. Aucune fonction ne révèle si une adresse e-mail est enregistrée.
@@ -16,7 +16,7 @@
  *     Sheet, WSTG-IDNT-04).
  *
  *  3. Supprimer un compte n'efface jamais les commandes : elles restent
- *     soumises aux délais de conservation comptables français — dix ans pour
+ *     soumises aux délais de conservation comptables français - dix ans pour
  *     les livres et pièces justificatives (art. L123-22 du Code de commerce),
  *     six ans au titre du droit de communication de l'administration fiscale
  *     (art. L102 B du Livre des procédures fiscales). L'art. 17 § 3 b RGPD
@@ -47,7 +47,7 @@ import { COUNTRY_CODES, DEFAULT_COUNTRY, isValidPostalCode } from "@/lib/countri
 
 /**
  * Longueur minimale du mot de passe : douze caractères, sans règle de
- * composition imposée. La longueur prime sur la complexité — la CNIL
+ * composition imposée. La longueur prime sur la complexité - la CNIL
  * (délibération 2022-100) et l'OWASP Authentication Cheat Sheet vont dans le
  * même sens, et
  * une contrainte trop bavarde pousse aux mots de passe réutilisés.
@@ -62,13 +62,13 @@ export const PASSWORD_MAX_LENGTH = 200;
 export const RESET_TTL_MINUTES = 30;
 
 /**
- * Pays acceptés dans une adresse — la liste ISO complète proposée par le
+ * Pays acceptés dans une adresse - la liste ISO complète proposée par le
  * sélecteur du tunnel de commande. Le formulaire et le serveur lisent la même
  * source : un pays affiché est donc toujours un pays enregistrable.
  */
 export const SUPPORTED_COUNTRIES = COUNTRY_CODES;
 
-/** Civilités acceptées — texte libre court, pas d'enum Prisma. */
+/** Civilités acceptées - texte libre court, pas d'enum Prisma. */
 export const SALUTATIONS = ["", "m", "mme", "divers"] as const;
 
 /** Adresse de remplacement posée sur les commandes d'un compte supprimé. */
@@ -364,7 +364,7 @@ export async function registerCustomer(input: SignUpInput): Promise<void> {
  *
  * Quand l'adresse n'existe pas, un haché factice est tout de même vérifié :
  * la réponse prend le même temps que pour un compte réel. Un compte désactivé
- * est traité exactement comme un mot de passe faux — la boutique n'a pas à
+ * est traité exactement comme un mot de passe faux - la boutique n'a pas à
  * dire au visiteur qu'il a été bloqué.
  */
 export async function authenticateCustomer(
@@ -555,7 +555,7 @@ async function deliverMail(
   context: string,
 ): Promise<void> {
   if (isAccountMailDevFallback()) {
-    console.info(`[konto] E-mail « ${context} » vers ${to} — aucun fournisseur configuré.`);
+    console.info(`[konto] E-mail « ${context} » vers ${to} - aucun fournisseur configuré.`);
     return;
   }
   try {

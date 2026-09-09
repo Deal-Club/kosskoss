@@ -6,14 +6,14 @@ import { numeroFactureSuivant, PREFIXE_FACTURE } from "./facture-numero";
 // revanche un import de VALEUR : il referme le cycle orders.ts → facture.ts →
 // orders.ts. Ça reste sans danger ici parce qu'aucun des deux modules
 // n'appelle l'export de l'autre pendant l'évaluation du module (au niveau
-// racine) — seulement depuis l'intérieur de fonctions, exécutées après que les
+// racine) - seulement depuis l'intérieur de fonctions, exécutées après que les
 // deux modules sont entièrement chargés.
 import type { OrderRecord } from "@/server/orders";
 import { recordOrderEvent } from "@/server/orders";
 // Module feuille déjà importé par orders.ts : aucun cycle introduit. Typer sur
 // l'union plutôt que sur `string` fait qu'un renommage de statut dans
 // PAYMENT_STATUSES casse la compilation ici, comme il casse déjà le
-// `paymentStatus === "payee"` voisin dans updatePaymentStatus — au lieu de
+// `paymentStatus === "payee"` voisin dans updatePaymentStatus - au lieu de
 // laisser doitEmettreFacture cesser silencieusement d'émettre des factures.
 import type { PaymentStatus } from "@/lib/orderStatus";
 import { buildInvoicePdf, invoiceFilename } from "@/server/invoice";
@@ -25,7 +25,7 @@ import { choisirLangue } from "@/lib/kk/langue";
  * Émission de la facture.
  *
  * Une facture n'existe QU'APRÈS encaissement. Tant qu'un paiement n'est pas
- * reçu, il n'y a pas de document comptable à produire — c'est ce qui distingue
+ * reçu, il n'y a pas de document comptable à produire - c'est ce qui distingue
  * une facture d'un accusé de réception de commande.
  */
 
@@ -47,8 +47,8 @@ export interface FactureEmise {
   numero: string;
   /**
    * `Invoice.issuedAt`, relu de la ligne créée plutôt que recalculé ici : c'est
-   * l'horloge de la base qui fait foi, et c'est cette date — pas celle de la
-   * commande — que le PDF doit imprimer.
+   * l'horloge de la base qui fait foi, et c'est cette date - pas celle de la
+   * commande - que le PDF doit imprimer.
    */
   issuedAt: Date;
 }
@@ -109,10 +109,10 @@ export async function emettreFacture(order: OrderRecord): Promise<FactureEmise |
  *
  * Les deux moitiés sont séparées volontairement : l'écriture en base doit
  * réussir ou être signalée, l'envoi peut échouer sans faire perdre la facture
- * elle-même — la ligne `Invoice` créée par `emettreFacture` reste en base même
+ * elle-même - la ligne `Invoice` créée par `emettreFacture` reste en base même
  * si la génération du PDF ou l'envoi échouent ensuite. Attention : le renvoi
  * manuel depuis le back-office n'est PAS implémenté (il est prévu dans un lot
- * ultérieur) — en attendant, un échec à ce stade doit rester visible dans
+ * ultérieur) - en attendant, un échec à ce stade doit rester visible dans
  * l'historique de la commande, avec un message qui dit la vérité : la facture
  * a été émise, seule sa livraison a raté. D'où le try/catch local ci-dessous,
  * qui porte lui-même la garantie « n'échoue jamais » au lieu de compter sur
@@ -142,7 +142,7 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
   try {
     const pdf = await buildInvoicePdf(order, numero, issuedAt);
     // Même langue que la commande : c'est elle qui a reçu la confirmation, la
-    // facture doit suivre — voir `checkout.ts` pour le même choix côté commande.
+    // facture doit suivre - voir `checkout.ts` pour le même choix côté commande.
     await sendPaymentReceivedEmail({
       to: order.email,
       firstName: order.billing.firstName,
@@ -161,7 +161,7 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
   } catch (error) {
     // La facture EXISTE déjà en base à ce stade (numero non nul, retourné par
     // emettreFacture) : ce qui vient d'échouer, c'est sa livraison, pas son
-    // émission. Le message doit le dire explicitement — sinon l'opérateur lit
+    // émission. Le message doit le dire explicitement - sinon l'opérateur lit
     // « facture non émise » pour une commande qui, elle, a bel et bien une
     // facture, seulement pas encore reçue par le client.
     const message = error instanceof Error ? error.message : String(error);
@@ -179,7 +179,7 @@ export async function emettreEtEnvoyerFacture(order: OrderRecord): Promise<void>
  * Tous les appels de ce module sont sur le chemin d'un paiement déjà encaissé :
  * une écriture d'historique qui échoue ne doit pas faire répondre 500 au
  * webhook, qui redéliverait. `recordOrderEvent` touche par ailleurs la même
- * base dont l'indisponibilité a pu causer l'échec qu'on cherche à consigner —
+ * base dont l'indisponibilité a pu causer l'échec qu'on cherche à consigner -
  * le `console.error` de l'appelant reste alors la seule trace.
  */
 async function consigner(orderId: string, note: string): Promise<void> {

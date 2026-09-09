@@ -77,7 +77,7 @@ function validateAddress(address: AddressValue): CheckoutError | undefined {
 /**
  * Coordonnées pré-remplies quand un client est connecté.
  * Toujours facultatif : sans compte, le tunnel se comporte exactement comme
- * avant. Ces valeurs ne servent qu'au confort de saisie — le rattachement de la
+ * avant. Ces valeurs ne servent qu'au confort de saisie - le rattachement de la
  * commande au compte se décide côté serveur, à partir du cookie de session.
  */
 export interface CheckoutCustomer {
@@ -122,7 +122,7 @@ export function CheckoutFlow({
   // Totaux recalculés ici plutôt que repris du panier : seul le tunnel connaît
   // le mode de livraison retenu. Le récapitulatif de droite suit donc le clic du
   // client immédiatement, sans aller-retour serveur. Le serveur refera le même
-  // calcul à la commande — c'est lui qui facture.
+  // calcul à la commande - c'est lui qui facture.
   const totals = computeTotals(lines, {
     shippingMethodKey,
     freeShipping: campaign.freeShipping,
@@ -559,8 +559,8 @@ export function CheckoutFlow({
               </section>
             )}
 
-            {/* Caractéristiques essentielles des articles — art. 246a § 1 al. 1
-                phr. 1 no 1 EGBGB — reprises juste avant le bouton. */}
+            {/* Caractéristiques essentielles des articles - art. 246a § 1 al. 1
+                phr. 1 no 1 EGBGB - reprises juste avant le bouton. */}
             <section className="rounded-sm border border-border bg-white p-5">
               <h3 className="mb-3 text-sm font-black text-foreground">{t("reviewItems")}</h3>
               <ul className="divide-y divide-border">

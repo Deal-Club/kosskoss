@@ -11,7 +11,7 @@ import { margeUnitaire, tauxMarge } from "@/lib/kk/marge";
  *
  * Ni séparateur de milliers, ni symbole : un tableur doit pouvoir additionner
  * la colonne, et « 12 000 FCFA » n'est pas un nombre. La devise est dite une
- * fois, dans l'en-tête. Rappel : le FCFA n'a pas de sous-unité — les entiers
+ * fois, dans l'en-tête. Rappel : le FCFA n'a pas de sous-unité - les entiers
  * de la base SONT des francs, on ne divise jamais par 100.
  *
  * ── UNE CASE VIDE N'EST PAS UN ZÉRO ─────────────────────────────────────────
@@ -67,7 +67,7 @@ export async function GET(request: Request): Promise<Response> {
   const corps = lignes.map((ligne) => {
     // Total ligne NET : le brut moins la part de remise de commande qui lui
     // revient (voir `@/lib/kk/ventes`). La marge et le taux se calculent
-    // dessus — jamais sur le brut, qui surévaluerait les deux du montant
+    // dessus - jamais sur le brut, qui surévaluerait les deux du montant
     // exact de la remise.
     const totalLigneNet = ligne.lineTotalCents - ligne.remiseCents;
     const coutTotal =

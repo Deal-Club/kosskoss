@@ -7,7 +7,7 @@
  * Lancement direct : tsx prisma/seed.ts
  */
 // Le client de l'application, pour que le seed vise exactement la même base
-// que le site — un second createClient() avait fini par diverger.
+// que le site - un second createClient() avait fini par diverger.
 import { prisma } from "../src/server/prisma";
 import { hashPassword } from "../src/lib/password";
 
@@ -53,17 +53,17 @@ const PAYMENT_METHODS = [
 const INTEGRATIONS = [
   {
     key: "cinetpay_apikey",
-    label: "CinetPay — Clé API",
+    label: "CinetPay - Clé API",
     description: "Clé API du compte CinetPay (Mobile Money et carte bancaire).",
   },
   {
     key: "cinetpay_site_id",
-    label: "CinetPay — Identifiant de site",
+    label: "CinetPay - Identifiant de site",
     description: "Identifiant du site marchand CinetPay.",
   },
   {
     key: "cinetpay_secret_key",
-    label: "CinetPay — Clé secrète",
+    label: "CinetPay - Clé secrète",
     description: "Clé secrète servant à vérifier les notifications de paiement CinetPay.",
   },
   // Ni SMTP ni stockage d'images ici : l'envoi d'e-mails et les images se

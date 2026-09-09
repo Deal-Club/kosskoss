@@ -3,8 +3,8 @@ import { cartLineKey } from "@/lib/variantPricing";
 // Panier de la boutique.
 //
 // Ce module est volontairement isolé de React : il contient les constantes
-// tarifaires, les calculs de montants — repris tels quels côté serveur dans
-// src/server/orders.ts — et un petit magasin persisté dans localStorage que
+// tarifaires, les calculs de montants - repris tels quels côté serveur dans
+// src/server/orders.ts - et un petit magasin persisté dans localStorage que
 // CartProvider branche sur React via useSyncExternalStore.
 //
 // Aucune directive "use client" ici : le serveur importe les constantes et les
@@ -46,7 +46,7 @@ export const SHIPPING_METHODS = [
   },
   {
     key: "express",
-    /** 60,00 € — supplément de service, soumis à la TVA comme la marchandise. */
+    /** 60,00 € - supplément de service, soumis à la TVA comme la marchandise. */
     cents: 6_000,
     minDays: 1,
     maxDays: 2,
@@ -88,7 +88,7 @@ export const MAX_QUANTITY_PER_LINE = 20;
 export const MAX_CART_LINES = 40;
 
 export interface CartLine {
-  /** Identifiant du produit en base — seule donnée à laquelle le serveur se fie. */
+  /** Identifiant du produit en base - seule donnée à laquelle le serveur se fie. */
   productId: string;
   /** Variation choisie (volume) ; absente pour un produit simple. */
   variantId?: string;
@@ -127,7 +127,7 @@ export interface CartTotals {
  *
  * ⚠️ LE NOM MENT, ET C'EST VOULU POUR L'INSTANT. « cents » vient de mlcbois,
  * où les montants étaient des centimes d'euro. Ici l'entier est un FCFA
- * entier : on ne divise pas par cent et on n'affiche pas de décimales — le
+ * entier : on ne divise pas par cent et on n'affiche pas de décimales - le
  * XAF n'a pas de sous-unité (docs/13 §5.1).
  *
  * La fonction affichait « 165,00 € » pour un article à 16 500 FCFA : faux sur
@@ -153,8 +153,8 @@ export function includedVatCents(grossCents: number, ratePercent = VAT_RATE_PERC
 
 export interface TotalsOptions {
   /**
-   * Mode de livraison choisi par le client. Absent, c'est le standard —
-   * gratuit — qui s'applique : le panier et le tiroir latéral affichent donc le
+   * Mode de livraison choisi par le client. Absent, c'est le standard -
+   * gratuit - qui s'applique : le panier et le tiroir latéral affichent donc le
    * montant le plus bas tant que le client n'a rien choisi dans le tunnel.
    */
   shippingMethodKey?: ShippingMethodKey;

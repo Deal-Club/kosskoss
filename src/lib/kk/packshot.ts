@@ -6,7 +6,7 @@ import DETOURES from "@/data/kk/packshots-detoures.json";
  * Les visuels du catalogue sont des JPG, format sans transparence : chaque
  * flacon traîne son fond de studio. Invisible sur une carte blanche, ce fond
  * devient un rectangle gris dès que la vignette est posée sur une teinte de
- * routine — c'est ce que le retour client décrit par « du fait qu'elles ont du
+ * routine - c'est ce que le retour client décrit par « du fait qu'elles ont du
  * background, ça a gâté l'affichage ».
  *
  * `scripts/detourer-packshots.py` produit une version WebP détourée et recadrée

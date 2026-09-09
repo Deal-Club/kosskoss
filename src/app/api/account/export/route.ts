@@ -10,7 +10,7 @@ import { accountErrorResponse } from "@/server/accountMessages";
  * machine, ce que l'art. 20 § 1 exige. Il est servi en pièce jointe pour que le
  * navigateur l'enregistre au lieu de l'afficher.
  *
- * Le mot de passe n'y figure pas, même haché — un export n'a aucune raison de
+ * Le mot de passe n'y figure pas, même haché - un export n'a aucune raison de
  * transporter un secret d'authentification.
  */
 export async function GET() {

@@ -43,7 +43,7 @@ describe("bornesRaccourci", () => {
 
   it("ouvre la borne basse à minuit et ferme la haute à la fin du jour", () => {
     // Sans la fin de journée, une période « du 1er au 31 » perdrait toutes les
-    // ventes du 31 après minuit — c'est-à-dire toutes.
+    // ventes du 31 après minuit - c'est-à-dire toutes.
     const { du, au } = bornesRaccourci("7j", MAINTENANT);
     assert.equal(du.getHours(), 0);
     assert.equal(du.getMinutes(), 0);
@@ -149,7 +149,7 @@ describe("periodeDepuisUrl", () => {
   it("rejette une borne haute inexistante qui déborde dans le futur, même si l'ordre reste valide", () => {
     // Cas critique : la borne basse est valide (31 janvier), la borne haute
     // n'existe pas (31 février) mais déborde vers le futur (3 mars). Sans la
-    // validation d'aller-retour, le débordement ne change pas l'ordre du <= —
+    // validation d'aller-retour, le débordement ne change pas l'ordre du <= -
     // `new Date(2026, 1, 31)` glisse au 3 mars, et 31 janvier <= 3 mars.
     //
     // Avec la validation : au est rejeté → raccourci "30j".

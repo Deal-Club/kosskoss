@@ -48,7 +48,7 @@ export async function POST(request: Request) {
   }
 
   // NORMALISER D'ABORD, VALIDER ENSUITE (règle du contrôleur sur la tâche 1) :
-  // un numéro saisi « +237 658 01 36 46 » — la façon naturelle de l'écrire —
+  // un numéro saisi « +237 658 01 36 46 » - la façon naturelle de l'écrire -
   // est parfaitement valide une fois réduit à ses chiffres par
   // `normaliserParametres`. Le valider sur la saisie brute le rejetterait à
   // tort. Chaque champ est normalisé indépendamment, donc appeler la fonction
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
 
   const resultat = await saveParametres(partiel);
 
-  // Jeton CAPI : un champ VIDE laisse le jeton déjà enregistré inchangé — sinon
+  // Jeton CAPI : un champ VIDE laisse le jeton déjà enregistré inchangé - sinon
   // toute sauvegarde de cet écran, même sans y toucher, l'effacerait. C'est le
   // même principe que les clés des passerelles de paiement (voir
   // /api/admin/payment-gateway) : on n'écrit que ce qui est réellement fourni.
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
 
   // Rafraîchit la boutique. Le passage par la racine est nécessaire : le numéro
   // WhatsApp est lu par le pied de page et par le bouton flottant du gabarit,
-  // donc présent sur TOUTES les pages — même raison qui fait invalider depuis
+  // donc présent sur TOUTES les pages - même raison qui fait invalider depuis
   // la racine les routes des fragments de code et du bandeau d'annonce.
   //
   // Aujourd'hui, la lecture du cookie de consentement dans le gabarit rend
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
   // n'est prérendue), si bien qu'un nouveau numéro apparaîtrait de toute façon.
   // Mais cette propriété ne tient qu'à un `cookies()` qu'un prochain lot peut
   // déplacer ou retirer : sans invalidation ici, la boutique se remettrait alors
-  // à servir l'ancien numéro — mort — jusqu'à ce qu'une écriture sans rapport
+  // à servir l'ancien numéro - mort - jusqu'à ce qu'une écriture sans rapport
   // vienne par hasard rafraîchir le cache, et le critère « modifiable sans
   // redéploiement » redeviendrait faux sans que rien ne le signale. L'appel
   // vide en outre le cache de navigation côté client.

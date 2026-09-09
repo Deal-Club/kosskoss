@@ -6,7 +6,7 @@ import { LocalizedLink as Link } from "./localized-link";
  * Barre de pagination générique, découplée de tout filtre : l'appelant fournit
  * seulement le numéro de page courant, le total, et la façon de construire
  * l'URL d'une page donnée. Utilisée par le catalogue (avec marque, besoin et
- * tri dans l'URL) et par la page de marque (sans aucun filtre) — deux
+ * tri dans l'URL) et par la page de marque (sans aucun filtre) - deux
  * appelants, une seule barre, plutôt que deux copies qui auraient divergé.
  */
 

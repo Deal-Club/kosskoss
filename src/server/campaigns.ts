@@ -1,7 +1,7 @@
 /**
  * Campagnes marketing : création, cycle de vie et mesure.
  *
- * Le module ne compose aucun message et n'en envoie qu'un seul — celui de test.
+ * Le module ne compose aucun message et n'en envoie qu'un seul - celui de test.
  * Le rendu vit dans src/server/emails/campaign.ts et l'envoi de masse dans
  * src/server/campaignDispatcher.ts. Cette séparation n'est pas cosmétique : le
  * répartiteur tourne en tâche de fond, souvent hors de toute requête HTTP, alors
@@ -82,7 +82,7 @@ export interface CampaignProductView {
   path: string;
   /** Prix figé à l'entrée dans la campagne : c'est lui qui s'affiche barré. */
   basePriceCents: number;
-  /** Prix remisé, recalculé à la lecture — jamais stocké, jamais divergent. */
+  /** Prix remisé, recalculé à la lecture - jamais stocké, jamais divergent. */
   priceCents: number;
 }
 
@@ -254,7 +254,7 @@ function productPath(row: ProductRow): string {
   return `/${row.category.group.slug}/${row.category.slug}/${row.slug}`;
 }
 
-/** Sans visuel propre, le produit reprend l'image de sa catégorie — même règle qu'au catalogue. */
+/** Sans visuel propre, le produit reprend l'image de sa catégorie - même règle qu'au catalogue. */
 function productImage(row: ProductRow): string {
   return row.image || row.category.image;
 }
@@ -710,7 +710,7 @@ function normalizeEmail(value: string): string {
  *
  * Fige, au sens propre : une ligne par adresse, avec le nom et la langue tels
  * qu'ils étaient à cet instant. Un client qui change de prénom demain recevra
- * quand même le message préparé aujourd'hui — c'est voulu, la file d'attente ne
+ * quand même le message préparé aujourd'hui - c'est voulu, la file d'attente ne
  * doit pas bouger sous les pieds du répartiteur.
  *
  * Les adresses désinscrites sont écartées ici, avant même d'entrer dans la
@@ -839,7 +839,7 @@ export async function retryFailedRecipients(id: string): Promise<number> {
   if (count === 0) return 0;
 
   // Une campagne déjà close repart : elle n'est plus « envoyée » tant qu'il
-  // reste quelqu'un en file. Une campagne en pause, elle, reste en pause —
+  // reste quelqu'un en file. Une campagne en pause, elle, reste en pause -
   // c'est « reprendre » qui la relance, pas cette fonction.
   if (status === "envoyee") {
     await prisma.campaign.update({
@@ -857,7 +857,7 @@ export async function retryFailedRecipients(id: string): Promise<number> {
  * Envoi d'essai vers l'adresse de l'administrateur.
  *
  * Le jeton est factice et préfixé : les liens de suivi ne mèneront nulle part,
- * ce qui est exactement l'effet recherché — un test ne doit ni compter dans les
+ * ce qui est exactement l'effet recherché - un test ne doit ni compter dans les
  * statistiques ni permettre de désinscrire qui que ce soit. Le message part en
  * français, langue de la boutique.
  */
@@ -927,7 +927,7 @@ export async function listRecipients(id: string): Promise<RecipientView[]> {
  *
  * Le format suédois est le seul que l'ICU rende déjà en ISO : il évite de
  * recomposer la date à la main et, surtout, d'utiliser `toISOString()` qui
- * renverrait le jour UTC — une ouverture à 1 h du matin en été tomberait la
+ * renverrait le jour UTC - une ouverture à 1 h du matin en été tomberait la
  * veille sur la courbe.
  */
 function dayKey(date: Date): string {

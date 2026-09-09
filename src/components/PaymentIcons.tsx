@@ -79,7 +79,7 @@ export function VisaMark() {
   );
 }
 
-/** MTN Mobile Money — jaune de l'opérateur, sigle en capitales. */
+/** MTN Mobile Money - jaune de l'opérateur, sigle en capitales. */
 export function MtnMoneyMark() {
   return (
     <Card label="MTN Mobile Money">
@@ -94,7 +94,7 @@ export function MtnMoneyMark() {
   );
 }
 
-/** Paiement à la livraison — pas une marque mais un geste : des billets.
+/** Paiement à la livraison - pas une marque mais un geste : des billets.
  *  Seule vignette dont le texte est une phrase et non un nom de marque : elle
  *  suit donc la langue de la page. */
 export function CashMark() {
@@ -111,7 +111,7 @@ export function CashMark() {
 }
 
 /**
- * Orange Money — le carré orange de l'opérateur, que tout le monde reconnaît
+ * Orange Money - le carré orange de l'opérateur, que tout le monde reconnaît
  * sur ce marché, et le nom en dessous. Deux lignes plutôt qu'une : « Orange
  * Money » ne tient pas lisiblement sur 48 px de large.
  */
@@ -145,7 +145,7 @@ export function OrangeMoneyMark() {
   );
 }
 
-/** Moov Money — nom posé dans le bleu de l'opérateur, « Money » en orange. */
+/** Moov Money - nom posé dans le bleu de l'opérateur, « Money » en orange. */
 export function MoovMoneyMark() {
   return (
     <Card label="Moov Money">
@@ -354,7 +354,7 @@ type Mark = ComponentType;
  *
  * La correspondance se fait sur la clé, puis sur le nom du pictogramme lucide :
  * un moyen créé à la main avec l'icône « credit-card » montre donc quand même
- * les logos des cartes. Retourne null quand rien n'est reconnu — l'appelant
+ * les logos des cartes. Retourne null quand rien n'est reconnu - l'appelant
  * retombe alors sur le pictogramme.
  */
 export function brandMarksFor(key: string, icon: string): Mark[] | null {

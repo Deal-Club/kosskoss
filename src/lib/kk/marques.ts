@@ -4,7 +4,7 @@
  * ── DEUX FONCTIONS, DEUX RÔLES ──────────────────────────────────────────────
  *
  * `slugify` (src/lib/slugify.ts) fabrique un identifiant d'URL : il écrase tout
- * ce qui n'est pas alphanumérique en tirets. `cleMarque` sert à autre chose —
+ * ce qui n'est pas alphanumérique en tirets. `cleMarque` sert à autre chose -
  * décider si deux écritures désignent la même marque.
  *
  * Les confondre ferait fondre « La Roche Posay » et « LaRochePosay », qui sont

@@ -9,7 +9,7 @@ import { mesurerAction } from "@/lib/kk/mesureNavigateur";
  * La livraison de la boutique se coordonne par WhatsApp : ce clic est donc une
  * étape de conversion réelle, pas un simple lien sortant. On émet
  * `contact_whatsapp` vers GA4 (catégorie « mesure ») et l'événement standard
- * « Contact » vers Meta (catégorie « marketing ») — chacun sous son propre
+ * « Contact » vers Meta (catégorie « marketing ») - chacun sous son propre
  * consentement, via `mesurerAction`. `location` distingue l'origine du clic
  * (bouton flottant, page de confirmation, fiche produit…) pour l'analyse.
  *

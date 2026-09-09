@@ -208,13 +208,13 @@ export function ProductImportForm({ categories }: { categories: CategoryOption[]
                       )}
                     </td>
                     <td className="px-3 py-2 text-muted-foreground">
-                      {row.values.categoryId ?? "—"}
+                      {row.values.categoryId ?? "-"}
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground">{row.values.brand ?? "—"}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{row.values.brand ?? "-"}</td>
                     <td className="px-3 py-2 font-semibold text-foreground">
-                      {row.values.name ?? "—"}
+                      {row.values.name ?? "-"}
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground">{row.values.price ?? "—"}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{row.values.price ?? "-"}</td>
                     <td className="px-3 py-2 text-muted-foreground">
                       {row.values.stock ?? "par défaut"}
                     </td>

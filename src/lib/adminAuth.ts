@@ -14,7 +14,7 @@ function getSecret(): string {
 /**
  * Vrai si la signature des sessions est configurable. À vérifier **avant** de
  * consommer le code à usage unique : sans ce garde-fou, un serveur mal
- * configuré valide le code, le supprime, puis échoue à ouvrir la session —
+ * configuré valide le code, le supprime, puis échoue à ouvrir la session -
  * l'utilisateur perd un code parfaitement valide à chaque tentative.
  */
 export function isSessionSecretConfigured(): boolean {

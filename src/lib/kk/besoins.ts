@@ -6,8 +6,8 @@
  * pastille mènerait à une page vide, ce qui est pire que pas de pastille.
  *
  * Deux registres, parce qu'ils ne répondent pas à la même question :
- *   — le TYPE de peau, qui ne change pas ;
- *   — la PRÉOCCUPATION du moment, qui elle change.
+ *   - le TYPE de peau, qui ne change pas ;
+ *   - la PRÉOCCUPATION du moment, qui elle change.
  *
  * « Taches & marques » figure en tête des préoccupations : sur les peaux
  * riches en mélanine, la moindre inflammation laisse une marque sombre qui

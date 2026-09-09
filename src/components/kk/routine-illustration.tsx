@@ -1,18 +1,18 @@
 /**
- * Illustration de routine — nature morte cosmétique en vectoriel plat.
+ * Illustration de routine - nature morte cosmétique en vectoriel plat.
  *
  * Réponse au retour client sur les cartes de routine : un visuel qui montre un
  * ENSEMBLE de contenants (une routine est une suite de gestes, pas un produit)
- * et qui se décline par la couleur d'une routine à l'autre — « différentes,
+ * et qui se décline par la couleur d'une routine à l'autre - « différentes,
  * mais pas totalement ». Le dispositif tient en trois règles :
  *
  *  1. Le dessin est le même vocabulaire partout (flacon-pompe, pot,
- *     compte-gouttes, petit pot), seule la COMPOSITION change par routine —
+ *     compte-gouttes, petit pot), seule la COMPOSITION change par routine -
  *     deux cartes voisines ne sont jamais la même image recolorée.
  *  2. Les couleurs viennent des jetons `--tint-*-mid` / `--tint-*-deep` de
  *     globals.css : même famille que le fond pastel de la carte, clartés
  *     alignées entre routines.
- *  3. Le laiton (`--gold`) — pompes, couvercles, filets — est l'accent commun
+ *  3. Le laiton (`--gold`) - pompes, couvercles, filets - est l'accent commun
  *     à toutes les scènes : c'est lui qui fait la série.
  *
  * Tout est SVG inline : aucun `id` (pas de collision quand plusieurs cartes
@@ -44,7 +44,7 @@ const CREAM = "var(--cream)";
 /* négatif. La scène les pose ensuite par un simple translate/scale.   */
 /* ------------------------------------------------------------------ */
 
-/** Flacon-pompe — le grand format, silhouette maîtresse de la scène. */
+/** Flacon-pompe - le grand format, silhouette maîtresse de la scène. */
 function PumpBottle({ c }: { c: SceneColors }) {
   return (
     <g>
@@ -66,7 +66,7 @@ function PumpBottle({ c }: { c: SceneColors }) {
   );
 }
 
-/** Pot de soin — large et bas, couvercle laiton. */
+/** Pot de soin - large et bas, couvercle laiton. */
 function Jar({ c }: { c: SceneColors }) {
   return (
     <g>
@@ -80,7 +80,7 @@ function Jar({ c }: { c: SceneColors }) {
   );
 }
 
-/** Flacon compte-gouttes — le sérum, fin et précieux. */
+/** Flacon compte-gouttes - le sérum, fin et précieux. */
 function Dropper({ c }: { c: SceneColors }) {
   return (
     <g>
@@ -101,7 +101,7 @@ function Dropper({ c }: { c: SceneColors }) {
   );
 }
 
-/** Petit pot — baume ou masque, la plus petite silhouette de la série. */
+/** Petit pot - baume ou masque, la plus petite silhouette de la série. */
 function MiniPot({ c }: { c: SceneColors }) {
   return (
     <g>
@@ -113,7 +113,7 @@ function MiniPot({ c }: { c: SceneColors }) {
   );
 }
 
-/** Brin botanique — la touche organique, en retrait derrière les flacons. */
+/** Brin botanique - la touche organique, en retrait derrière les flacons. */
 function Sprig({ c, flip = false }: { c: SceneColors; flip?: boolean }) {
   return (
     <g transform={flip ? "scale(-1 1)" : undefined} opacity="0.85">
@@ -127,13 +127,13 @@ function Sprig({ c, flip = false }: { c: SceneColors; flip?: boolean }) {
 
 /* ------------------------------------------------------------------ */
 /* Compositions. Une par routine : mêmes contenants, arrangement       */
-/* propre — ordre, écarts, échelles, place du disque et du brin.       */
+/* propre - ordre, écarts, échelles, place du disque et du brin.       */
 /* ------------------------------------------------------------------ */
 
 type Vessel = "pump" | "jar" | "dropper" | "mini";
 type Placement = { kind: Vessel; x: number; s?: number };
 type Scene = {
-  /** Disque de fond — le « soleil » qui donne la profondeur. */
+  /** Disque de fond - le « soleil » qui donne la profondeur. */
   sun: { cx: number; cy: number; r: number };
   /** Contenants, de l'arrière vers l'avant (ordre de dessin). */
   items: Placement[];
@@ -252,7 +252,7 @@ export function RoutineIllustration({
         opacity="0.45"
       />
 
-      {/* Arc laiton — l'écho du filet ondulé des arrière-plans du site. */}
+      {/* Arc laiton - l'écho du filet ondulé des arrière-plans du site. */}
       <path
         d={`M${20 + scene.arc.x} 132 C ${100 + scene.arc.x} 108 ${240 + scene.arc.x} 108 ${320 + scene.arc.x} 132`}
         fill="none"
@@ -261,7 +261,7 @@ export function RoutineIllustration({
         opacity="0.5"
       />
 
-      {/* Trois grains d'air, en laiton — jamais au même endroit que le brin. */}
+      {/* Trois grains d'air, en laiton - jamais au même endroit que le brin. */}
       <circle cx={scene.sun.cx + scene.sun.r - 4} cy={scene.sun.cy - scene.sun.r + 2} r="2" fill={GOLD} opacity="0.6" />
       <circle cx={scene.sun.cx - scene.sun.r - 10} cy={scene.sun.cy + 8} r="1.4" fill={GOLD} opacity="0.45" />
       <circle cx={scene.sun.cx + 16} cy={scene.sun.cy - scene.sun.r - 10} r="1.2" fill={c.deep} opacity="0.4" />

@@ -1,5 +1,5 @@
 /**
- * Lecture des événements PayPal — partie pure, sans appel réseau ni base.
+ * Lecture des événements PayPal - partie pure, sans appel réseau ni base.
  *
  * Isolée pour être testable : c'est ici que se joue le rattachement d'un
  * paiement à une commande de la boutique, et PayPal range le `custom_id` à des
@@ -16,7 +16,7 @@ export interface PayPalWebhookEvent {
     purchase_units?: { custom_id?: string; invoice_id?: string }[];
     /**
      * Montant de la capture. PayPal l'exprime en unité principale sous forme de
-     * chaîne décimale — « 214.50 » et non 21450 — contrairement à Stripe et
+     * chaîne décimale - « 214.50 » et non 21450 - contrairement à Stripe et
      * Square qui comptent en centimes.
      */
     amount?: { value?: string; currency_code?: string };

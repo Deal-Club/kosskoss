@@ -2,7 +2,7 @@
  * Écritures et lectures d'administration du Journal.
  *
  * Tout ce qui touche la table `Article` en écriture passe ici, et une seule
- * fonction — `saveArticle` — porte la logique délicate :
+ * fonction - `saveArticle` - porte la logique délicate :
  *
  *   - la résolution du slug, qui dépend des slugs déjà pris et du fait que
  *     l'article ait déjà été publié (gel après publication) ;
@@ -319,7 +319,7 @@ export async function restoreArticles(ids: readonly string[]): Promise<number> {
 }
 
 /**
- * Suppression définitive. Réservée au rôle `superadmin` — le contrôle est fait
+ * Suppression définitive. Réservée au rôle `superadmin` - le contrôle est fait
  * dans la route `/api/admin/journal/bulk`, seule porte d'entrée.
  * Les liens, versions, commentaires et vues partent en cascade.
  *

@@ -5,7 +5,7 @@ import { SUPERADMIN_ROLE } from "@/server/admins";
  * À qui la boutique adresse ses notifications de commande.
  *
  * Extrait de `orderNotifications.ts`, où cette logique servait la route
- * `/api/checkout` — celle de la lignée précédente, aujourd'hui sans appelant.
+ * `/api/checkout` - celle de la lignée précédente, aujourd'hui sans appelant.
  * Le tunnel vivant (`/api/kk/checkout` → `server/kk/checkout.ts`) en a besoin
  * lui aussi, et l'importer depuis l'ancien module y ferait entrer toute sa
  * chaîne de dépendances (facture PDF, virement bancaire, gabarits d'e-mails
@@ -17,7 +17,7 @@ import { SUPERADMIN_ROLE } from "@/server/admins";
  * Adresses du vendeur, dans l'ordre de priorité suivant.
  *
  * 1. ORDER_NOTIFICATION_EMAILS, si elle est renseignée : liste explicite,
- *    séparée par des virgules. Elle fait autorité seule — c'est le moyen de
+ *    séparée par des virgules. Elle fait autorité seule - c'est le moyen de
  *    router les commandes vers une boîte dédiée (ventes@, service@) sans
  *    toucher au code.
  * 2. Sinon : la boîte de la boutique (ADMIN_EMAIL) et les comptes du

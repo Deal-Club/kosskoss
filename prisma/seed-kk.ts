@@ -6,7 +6,7 @@
  * Pour régénérer après une mise à jour des CSV : `node scripts/build-kk-catalog.mjs`.
  *
  * Montants en FCFA ENTIERS dans `priceCents` (XAF sans sous-unité).
- * Lancement : tsx prisma/seed-kk.ts — réinitialise le catalogue puis le recharge.
+ * Lancement : tsx prisma/seed-kk.ts - réinitialise le catalogue puis le recharge.
  * Les images produits sont ajoutées séparément (téléversées en back-office).
  */
 import { readFileSync } from "node:fs";
@@ -34,7 +34,7 @@ type CatalogProduct = {
   image?: string;
   /** Contenance (« 210 ml »…), colonne Format de description_produit.csv.
    *  Vide pour les coffrets ("Set") et pour les rares produits sans
-   *  correspondance de description — voir build-kk-catalog.mjs. */
+   *  correspondance de description - voir build-kk-catalog.mjs. */
   format?: string;
 };
 type Catalog = { groups: CatalogGroup[]; categories: CatalogCategory[]; products: CatalogProduct[] };
@@ -43,7 +43,7 @@ const catalog: Catalog = JSON.parse(
   readFileSync(path.join(process.cwd(), "prisma", "data", "kk-catalog.json"), "utf-8"),
 );
 
-// Initialise le questionnaire du Diagnostic Beauté depuis la config de code —
+// Initialise le questionnaire du Diagnostic Beauté depuis la config de code -
 // une seule fois : si des questions existent déjà (potentiellement éditées en
 // admin), on n'y touche pas.
 async function seedDiagnostic() {
@@ -124,7 +124,7 @@ async function main() {
     // Contenance du catalogue client comme unique variation du produit : la
     // vignette et la fiche l'affichent au titre (« ... - 50 ml »), voir
     // `formatProductTitle`. `productVariant.deleteMany({})` plus haut a déjà
-    // vidé la table pour ce reseed complet — `create` et non `upsert` suffit.
+    // vidé la table pour ce reseed complet - `create` et non `upsert` suffit.
     if (p.format) {
       await prisma.productVariant.create({
         data: {

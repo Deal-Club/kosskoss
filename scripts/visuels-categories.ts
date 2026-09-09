@@ -66,7 +66,7 @@ async function main(): Promise<void> {
 
   if (ECRIRE) await writeFile(FICHIER_NAV, source);
 
-  console.log(ECRIRE ? "Mode écriture." : "Simulation — relancer avec --ecrire pour appliquer.");
+  console.log(ECRIRE ? "Mode écriture." : "Simulation - relancer avec --ecrire pour appliquer.");
   console.log(journal.join("\n"));
   console.log(`\n${remplacees}/${categories.length} vignettes alignées sur un produit réel.`);
 }

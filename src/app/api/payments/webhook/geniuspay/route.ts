@@ -18,17 +18,17 @@ const PROVIDER = "geniuspay" as const;
  *
  * ── L'ORDRE DES CONTRÔLES N'EST PAS ARBITRAIRE ──────────────────────────────
  *
- *  1. Signature — sans elle, n'importe qui peut se déclarer payé.
- *  2. Horodatage — une requête authentique capturée hier reste signée ; seul
+ *  1. Signature - sans elle, n'importe qui peut se déclarer payé.
+ *  2. Horodatage - une requête authentique capturée hier reste signée ; seul
  *     l'horodatage la démasque.
- *  3. Idempotence — AVANT tout traitement. GeniusPay réessaie cinq fois
+ *  3. Idempotence - AVANT tout traitement. GeniusPay réessaie cinq fois
  *     (immédiat, 5 min, 30 min, 2 h, 6 h) ; sans ce verrou, un traitement lent
  *     qui répond 500 après avoir travaillé encaisse deux fois.
  *  4. Traitement.
  *
  * Le corps est lu en TEXTE BRUT et jamais re-sérialisé : `JSON.stringify` d'un
- * objet reparsé ne rend pas les octets d'origine — ordre des clés, espaces,
- * échappements — et la signature ne correspondrait plus.
+ * objet reparsé ne rend pas les octets d'origine - ordre des clés, espaces,
+ * échappements - et la signature ne correspondrait plus.
  *
  * Runtime Node : la vérification de signature a besoin de `node:crypto`.
  */
@@ -49,7 +49,7 @@ function erreur(status: number, title: string, detail: string) {
 export async function POST(request: Request) {
   const config = lireConfig();
   if (!config?.webhookSecret) {
-    // Sans secret configuré, on ne peut rien vérifier — et traiter un webhook
+    // Sans secret configuré, on ne peut rien vérifier - et traiter un webhook
     // non vérifié serait pire que le refuser.
     console.error("[webhook:geniuspay] GENIUSPAY_WEBHOOK_SECRET absent");
     return erreur(503, "Service Unavailable", "Webhook not configured");
@@ -118,7 +118,7 @@ export async function POST(request: Request) {
     });
   } catch {
     // Déjà reçu : on accuse réception sans retraiter. Répondre 200 est
-    // essentiel — un 4xx ferait relancer le prestataire indéfiniment.
+    // essentiel - un 4xx ferait relancer le prestataire indéfiniment.
     return NextResponse.json({ success: true, message: "Already processed" });
   }
 
@@ -149,7 +149,7 @@ export async function POST(request: Request) {
     await marquer(deliveryId, "erreur", message);
 
     // 500 : le prestataire réessaiera, et le verrou d'idempotence est déjà
-    // posé — la relance retombera sur « Already processed ». C'est voulu :
+    // posé - la relance retombera sur « Already processed ». C'est voulu :
     // l'événement est archivé en base avec son erreur, la reprise se fait à la
     // main depuis le back-office plutôt qu'en boucle automatique sur un bogue.
     return erreur(500, "Internal Server Error", "Failed to process webhook");

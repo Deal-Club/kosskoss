@@ -3,7 +3,7 @@
  *
  * L'article ne stocke que des slugs : le prix, le stock, le badge et la
  * disponibilité sont lus au rendu, dans le catalogue. C'est le même
- * raisonnement que sur les routines — un prix recopié dans un contenu
+ * raisonnement que sur les routines - un prix recopié dans un contenu
  * éditorial se désaligne au premier changement de tarif, et personne ne pense à
  * rouvrir un article de l'an dernier pour le corriger.
  *

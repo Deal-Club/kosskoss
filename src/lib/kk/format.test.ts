@@ -10,7 +10,7 @@ import { formatFcfa } from "./format";
  * héritée de l'activité européenne précédente, divisait par 100 et suffixait
  * « € » : une commande de 31 000 F sortait imprimée « 310,00 € » sur la facture
  * du client. C'est la seule règle métier que la facture ne peut pas se
- * permettre de perdre en silence — le filtre WinAnsi de server/invoice.ts efface
+ * permettre de perdre en silence - le filtre WinAnsi de server/invoice.ts efface
  * un « € » sans rien dire, il ne servira pas d'alerte.
  *
  * Le test porte sur `formatFcfa` plutôt que sur `montant()` de server/invoice.ts :

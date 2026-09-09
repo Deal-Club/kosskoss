@@ -6,7 +6,7 @@ import type { ArticleMesure } from "@/lib/kk/mesure";
 
 /**
  * `purchase` : monté UNIQUEMENT quand `order.paymentStatus === "payee"` (voir
- * la page de confirmation) — jamais sur un simple retour de navigateur, pour
+ * la page de confirmation) - jamais sur un simple retour de navigateur, pour
  * la même raison que `paiement.ts` ne fait jamais confiance à ce retour côté
  * serveur : seul le webhook signé fait foi, et c'est lui qui a déjà fait
  * passer la commande en « payée » avant que cette page ne se rende.
@@ -14,16 +14,16 @@ import type { ArticleMesure } from "@/lib/kk/mesure";
  * `reference` est le numéro de commande : `identifiantEvenement("purchase",
  * reference)`, calculé à l'identique ici et dans `src/server/kk/capi.ts`
  * (CAPI), est ce qui permet à Meta de dédupliquer les deux envois du même
- * achat — voir `@/lib/kk/mesure`.
+ * achat - voir `@/lib/kk/mesure`.
  *
  * ── LA GARDE DOIT SURVIVRE AU RECHARGEMENT, PAS SEULEMENT AU DOUBLE MONTAGE ──
  *
  * Un `useRef` empêche un second envoi au double montage du Strict Mode, mais
  * disparaît avec le composant : un rechargement de cette page, un retour
  * arrière suivi d'un « avancer », ou une réouverture du lien de confirmation
- * dans les deux heures du cookie d'accès — tous replacent ce composant à
+ * dans les deux heures du cookie d'accès - tous replacent ce composant à
  * l'état initial et renvoient un second `purchase`. Meta déduplique par
- * `event_id` (voir l'en-tête de `capi.ts`) — mais **GA4 ne déduplique jamais**
+ * `event_id` (voir l'en-tête de `capi.ts`) - mais **GA4 ne déduplique jamais**
  * deux événements `purchase` distincts : sans une garde qui survive au
  * rechargement, le chiffre d'affaires GA4 se retrouve gonflé d'autant de
  * revisites que le client en fait sur cette page.
@@ -31,7 +31,7 @@ import type { ArticleMesure } from "@/lib/kk/mesure";
  * `localStorage`, borné au NUMÉRO DE COMMANDE (une clé par commande, jamais un
  * drapeau global) : un rechargement de la page de confirmation ne renvoie
  * plus l'événement, mais la confirmation d'une AUTRE commande, elle, en envoie
- * bien un — c'est toujours un achat distinct.
+ * bien un - c'est toujours un achat distinct.
  */
 
 export const PREFIXE_STOCKAGE = "mlc.achat-mesure.v1.";

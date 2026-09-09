@@ -3,12 +3,12 @@
  *
  * Au clic sur « ajouter », une copie de la photo se détache de la vignette et
  * file vers l'icône du panier en rapetissant, puis disparaît. Le geste dit ce
- * que le clic vient de faire — sans quoi le tiroir s'ouvre sans qu'on sache
+ * que le clic vient de faire - sans quoi le tiroir s'ouvre sans qu'on sache
  * d'où vient ce qu'il contient.
  *
  * Tout est en position `fixed` sur un calque au-dessus de la page : rien n'est
  * déplacé dans le flux, aucune mise en page n'est recalculée, et l'animation
- * n'affecte pas la vignette d'origine — qui doit rester en place, le produit
+ * n'affecte pas la vignette d'origine - qui doit rester en place, le produit
  * n'ayant pas quitté le catalogue.
  *
  * L'API Web Animations est utilisée directement : elle donne une promesse de
@@ -30,7 +30,7 @@ function mouvementReduit(): boolean {
 /**
  * Fait voler une copie de `source` jusqu'à l'icône du panier.
  *
- * Rend une promesse résolue à la fin du vol — ou immédiatement si l'animation
+ * Rend une promesse résolue à la fin du vol - ou immédiatement si l'animation
  * n'a pas lieu (mouvement réduit, cible absente, source sans image). L'appelant
  * enchaîne dessus sans avoir à savoir si le vol a eu lieu.
  */

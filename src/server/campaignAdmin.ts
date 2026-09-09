@@ -5,7 +5,7 @@
  * choses à l'interface d'administration, réunies ici plutôt qu'ajoutées là-bas
  * pour ne pas alourdir un module dont dépend le répartiteur d'envoi :
  *
- *  1. le catalogue tel que l'assistant doit le montrer — prix en centimes, et
+ *  1. le catalogue tel que l'assistant doit le montrer - prix en centimes, et
  *     surtout la campagne concurrente déjà posée sur l'article ;
  *  2. les commandes attribuées à une campagne, pour son tableau de bord ;
  *  3. le nombre de campagnes en cours d'envoi, affiché dans le menu.
@@ -29,7 +29,7 @@ import {
 
 /**
  * Statuts qui posent réellement une remise sur le catalogue, dérivés de
- * `statusAppliesDiscount()` plutôt que recopiés — même règle que dans
+ * `statusAppliesDiscount()` plutôt que recopiés - même règle que dans
  * src/server/promotions.ts, une seule liste à maintenir.
  */
 const DISCOUNTING_STATUSES: readonly string[] = Object.keys(CAMPAIGN_STATUS_LABELS)
@@ -48,7 +48,7 @@ export interface CampaignProductOption {
   id: string;
   brand: string;
   name: string;
-  /** Visuel du produit, ou celui de sa catégorie en repli — règle du catalogue. */
+  /** Visuel du produit, ou celui de sa catégorie en repli - règle du catalogue. */
   image: string;
   /** Identifiant public « groupe/slug », celui qu'emploient les filtres du back-office. */
   categoryId: string;
@@ -57,8 +57,8 @@ export interface CampaignProductOption {
   stock: number;
   /**
    * Renseigné quand une autre campagne active remise déjà cet article. Deux
-   * campagnes sur un même produit ne cassent rien — c'est la meilleure remise
-   * qui s'applique — mais l'administrateur doit le savoir avant d'envoyer un
+   * campagnes sur un même produit ne cassent rien - c'est la meilleure remise
+   * qui s'applique - mais l'administrateur doit le savoir avant d'envoyer un
    * message qui annonce l'autre prix.
    */
   conflict: ProductCampaignConflict | null;
@@ -181,7 +181,7 @@ export async function listCampaignOrders(campaignId: string): Promise<CampaignOr
   }));
 }
 
-/** Nombre de campagnes dont l'envoi est en route — pastille du menu. */
+/** Nombre de campagnes dont l'envoi est en route - pastille du menu. */
 export async function countRunningCampaigns(): Promise<number> {
   return prisma.campaign.count({ where: { status: "en_cours" } });
 }

@@ -83,7 +83,7 @@ export function autoExcerpt(
 
   const cut = text.slice(0, maxChars);
   const lastSpace = cut.lastIndexOf(" ");
-  const kept = (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:.–—-]+$/, "");
+  const kept = (lastSpace > 0 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:.–-]+$/, "");
   return `${kept}…`;
 }
 
