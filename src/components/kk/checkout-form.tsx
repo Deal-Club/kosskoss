@@ -192,7 +192,10 @@ export function CheckoutForm({
       options.push({
         cle: enLigne[0].key,
         titre: t("step2.onlineTitle"),
-        note: t("step2.comingSoon"),
+        // « Bientôt disponible » SEULEMENT quand aucune passerelle ne tourne :
+        // la note restait affichée passerelle active, sur une option cochée
+        // par défaut — un moyen qui marche annoncé comme indisponible (TK-06).
+        note: passerelleActive ? t("step2.onlineNote") : t("step2.comingSoon"),
         marques,
       });
     }
@@ -213,12 +216,19 @@ export function CheckoutForm({
     }
 
     return options;
-  }, [payments, t]);
+  }, [payments, t, passerelleActive]);
 
   const [paymentMethod, setPaymentMethod] = useState(
-    // On présélectionne le premier moyen qui fonctionne, pas le premier de la
-    // liste : ouvrir la page sur un moyen indisponible est un mauvais départ.
-    payments.find((p) => paiementDisponible(p.key))?.key ?? payments[0]?.key ?? "",
+    // Le paiement à la livraison d'abord (TK-06) : c'est le moyen qui
+    // fonctionne toujours, sans passerelle ni réseau Mobile Money. L'en-ligne
+    // présélectionné bloquait la validation quand la passerelle manquait —
+    // et même active, il ne doit pas être coché d'office sur un marché où
+    // l'espèce à la remise reste la norme. À défaut d'un moyen hors ligne
+    // actif en base, on retombe sur le premier moyen disponible.
+    payments.find((p) => CLES_HORS_LIGNE.includes(p.key))?.key ??
+      payments.find((p) => paiementDisponible(p.key))?.key ??
+      payments[0]?.key ??
+      "",
   );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);

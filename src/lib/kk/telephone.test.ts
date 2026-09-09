@@ -103,5 +103,17 @@ describe("normaliserTelephone", () => {
       // Aucun indicatif pays n'existe en 0 : c'est une saisie mal recopiée.
       assert.equal(normaliserTelephone("+0229610404"), null);
     });
+
+    it("verrouille le plan camerounais quand l'indicatif +237 est écrit", () => {
+      // 237 est NOTRE plan : dix chiffres nationaux derrière un +237 explicite
+      // est une coquille, pas un numéro étranger. La voie internationale, qui
+      // ne contrôle que la longueur E.164, laissait passer ce numéro
+      // injoignable — observé sur une commande réelle (TK-06).
+      assert.equal(normaliserTelephone("+2376775501002"), null);
+      assert.equal(normaliserTelephone("002376775501002"), null);
+      // Le +237 correct, lui, reste accepté (déjà couvert plus haut) et le
+      // préfixe national reste contrôlé même avec indicatif.
+      assert.equal(normaliserTelephone("+237977123456"), null);
+    });
   });
 });

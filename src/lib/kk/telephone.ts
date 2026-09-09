@@ -86,6 +86,13 @@ export function normaliserTelephone(saisie: string): string | null {
   if (!marqueInternational) return null;
 
   const international = chiffres.startsWith("00") ? chiffres.slice(2) : chiffres;
+  // Indicatif 237 écrit en toutes lettres : c'est NOTRE plan, on le connaît —
+  // neuf chiffres commençant par 6 ou 2, rien d'autre. Sans ce contrôle, un
+  // numéro camerounais avec un chiffre en trop (« +237 677 55 010 02 »)
+  // passait par la voie internationale, qui ne vérifie que la longueur E.164,
+  // et une coquille devenait un numéro de livraison injoignable (TK-06). Les
+  // autres pays gardent la règle souple de l'en-tête.
+  if (international.startsWith("237")) return normaliserCameroun(international);
   if (international.length < MIN_INTERNATIONAL) return null;
   if (international.length > MAX_INTERNATIONAL) return null;
   // Aucun indicatif pays ne commence par zéro : ce qui en porte un après le

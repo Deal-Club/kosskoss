@@ -557,7 +557,7 @@
   "commande": {
     "metaTitle": "Finaliser la commande · KossKoss Select",
     "title": "Finaliser la commande",
-    "intro": "Deux minutes, quatre champs. Payez en ligne ou à la livraison, comme il vous arrange.",
+    "intro": "Deux minutes pour finaliser vos informations. Payez en ligne ou à la livraison.",
     "emptyCart": {
       "title": "Votre panier est vide",
       "text": "Choisissez vos soins, ils vous attendront ici.",
@@ -601,6 +601,7 @@
       "ariaLabel": "Moyen de paiement",
       "onlineTitle": "Paiement en ligne",
       "comingSoon": "Bientôt disponible",
+      "onlineNote": "Mobile Money (Orange / MTN) ou carte, règlement sécurisé à la validation",
       "cashNote": "Réglez en espèces à la remise du colis",
       "trustTitle": "Vous choisissez votre moyen.",
       "trustText": "Réglez en ligne à la validation, ou en espèces à la remise du colis."
@@ -674,6 +675,8 @@
       "statusPaid": "est payée. Nous vous contactons sur WhatsApp pour organiser la livraison.",
       "statusPending": "est enregistrée. Confirmez-la via WhatsApp pour organiser le paiement et la livraison.",
       "summaryTitle": "Récapitulatif",
+      "discount": "Remise",
+      "shippingLine": "Livraison ({city})",
       "total": "Total",
       "whatsappButtonPaid": "Organiser la livraison via WhatsApp",
       "whatsappButtonPending": "Confirmer ma commande via WhatsApp",

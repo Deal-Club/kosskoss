@@ -557,7 +557,7 @@
   "commande": {
     "metaTitle": "Checkout · KossKoss Select",
     "title": "Complete your order",
-    "intro": "Two minutes, four fields. Pay online or on delivery, whichever suits you.",
+    "intro": "Two minutes to complete your details. Pay online or on delivery.",
     "emptyCart": {
       "title": "Your cart is empty",
       "text": "Pick your favourites and they'll be waiting for you here.",
@@ -601,6 +601,7 @@
       "ariaLabel": "Payment method",
       "onlineTitle": "Online payment",
       "comingSoon": "Coming soon",
+      "onlineNote": "Mobile Money (Orange / MTN) or card, secure payment at checkout",
       "cashNote": "Pay in cash when your parcel is delivered",
       "trustTitle": "You choose your payment method.",
       "trustText": "Pay online at checkout, or in cash on delivery."
@@ -674,6 +675,8 @@
       "statusPaid": "is paid. We'll contact you on WhatsApp to arrange delivery.",
       "statusPending": "is registered. Confirm it via WhatsApp to arrange payment and delivery.",
       "summaryTitle": "Summary",
+      "discount": "Discount",
+      "shippingLine": "Delivery ({city})",
       "total": "Total",
       "whatsappButtonPaid": "Arrange delivery via WhatsApp",
       "whatsappButtonPending": "Confirm my order via WhatsApp",

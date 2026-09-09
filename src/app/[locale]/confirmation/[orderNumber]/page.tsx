@@ -125,7 +125,7 @@ export default async function ConfirmationPage({
 
   return (
     <div className="flex min-h-screen flex-col">
-      {/* `purchase` : uniquement si le webhook a déjà encaissé — jamais sur un
+      {/* `purchase` : uniquement si le webhook a déjà encaissé - jamais sur un
           simple retour de navigateur, voir l'en-tête de MesureAchat. Le slug
           de chaque ligne, ALIGNÉ SUR LE FLUX GOOGLE MERCHANT (voir
           `identifiantProduitCatalogue`), sert de référence produit, comme sur
@@ -177,13 +177,37 @@ export default async function ConfirmationPage({
                 </li>
               ))}
             </ul>
+            {/* Sous-total, remise éventuelle et frais de livraison AVANT le
+                total (TK-06) : sans eux, la somme des lignes d'articles ne
+                retombait pas sur le total — les frais de livraison, facturés,
+                n'apparaissaient nulle part. Mêmes champs que le calcul serveur
+                (subtotalCents / discountCents / shippingCents, voir
+                server/kk/checkout.ts), jamais une arithmétique refaite ici. */}
+            <div className="mt-4 space-y-2 border-t border-border pt-4 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{t("summary.subtotal")}</span>
+                <span className="figure text-deep">{formatFcfa(order.subtotalCents)}</span>
+              </div>
+              {order.discountCents > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">{t("confirmation.discount")}</span>
+                  <span className="figure text-deep">−{formatFcfa(order.discountCents)}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  {t("confirmation.shippingLine", { city: order.billingCity })}
+                </span>
+                <span className="figure text-deep">{formatFcfa(order.shippingCents)}</span>
+              </div>
+            </div>
             <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
               <span className="font-semibold text-deep">{t("confirmation.total")}</span>
               <span className="figure text-xl font-semibold text-deep">{formatFcfa(order.totalCents)}</span>
             </div>
           </div>
 
-          {/* Action WhatsApp — conversion de fin de parcours (la livraison se
+          {/* Action WhatsApp - conversion de fin de parcours (la livraison se
               coordonne ici), mesurée par LienWhatsApp. */}
           <LienWhatsApp
             href={whatsappHref(order, numeroWhatsapp, tWa)}
