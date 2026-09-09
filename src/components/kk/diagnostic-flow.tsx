@@ -24,11 +24,14 @@ import {
 } from "lucide-react";
 import type { DiagIcon } from "@/lib/kk/diagnostic";
 import { questionVisible } from "@/lib/kk/diagnostic-conditions";
+import { formatFcfa } from "@/lib/kk/format";
 import { mesurerAction } from "@/lib/kk/mesureNavigateur";
 import type { ClientQuestion } from "@/server/kk/diagnostic-data";
 import type { DiagnosticResult } from "@/server/kk/diagnostic";
 import type { KKRoutineView } from "@/types/kk";
 import { Petal } from "./motifs";
+import { LienWhatsApp } from "./lien-whatsapp";
+import { WhatsAppGlyph } from "@/components/WhatsAppGlyph";
 import { RoutineAddToCart } from "./routine-add";
 import { DiagnosticAnalyse, DUREE_ANALYSE } from "./diagnostic-analyse";
 
@@ -96,6 +99,7 @@ export function DiagnosticFlow({
   questions,
   savedAnswerIds,
   locale = "fr",
+  whatsappNumber,
 }: {
   questions: ClientQuestion[];
   /** Réponses du dernier diagnostic du client connecté, lues côté serveur.
@@ -107,6 +111,10 @@ export function DiagnosticFlow({
    *  qui ne s'en sert que pour l'appel réseau, jamais pour changer le texte
    *  affiché. */
   locale?: string;
+  /** Numéro WhatsApp de la boutique (chiffres seuls), lu côté serveur comme
+   *  pour le bouton flottant — voir `numeroWhatsappEffectif`. Vide ou absent :
+   *  le bouton « Envoyer mon bilan » ne se rend pas. */
+  whatsappNumber?: string;
 }) {
   const t = useTranslations("diagnostic");
   const tRoutine = useTranslations("routine");
@@ -235,6 +243,13 @@ export function DiagnosticFlow({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers: answerIds, locale }),
+        // Plafond dur : si la base reste pendue sur une connexion morte
+        // (« Connection terminated unexpectedly », observé avec le Postgres
+        // distant), la requête ne revient jamais et l'écran d'analyse
+        // tournerait à l'infini. Au-delà de 20 s on abandonne : le catch
+        // ci-dessous rend la main avec le message d'échec et le visiteur
+        // peut réessayer — ses réponses sont conservées.
+        signal: AbortSignal.timeout(20_000),
       });
       if (!res.ok) throw new Error(String(res.status));
       const data = (await res.json()) as DiagnosticResult;
@@ -426,8 +441,17 @@ export function DiagnosticFlow({
     // dite à Q2, CONSERVÉE même quand la bascule de sécurité l'a emportée —
     // c'est elle qui permet au bandeau de sécurité, plus bas, de dire « avant
     // votre préoccupation » plutôt que d'avoir l'air de s'être trompé), et
-    // réactivité déclarée.
-    const profil = [result.peauLabel, result.besoinDeclareLabel, result.reactiviteLabel].filter(Boolean);
+    // réactivité déclarée. L'environnement (Q4) entre au profil depuis TK-02 :
+    // « Climat Chaud & Humide » ou « Espaces Climatisés » disent le quotidien
+    // de la peau autant que son type. Les quatre passent par les étiquettes
+    // valorisantes du serveur (voir lib/kk/profil-etiquettes.ts) — jamais la
+    // réponse brute du QCM.
+    const profil = [
+      result.peauLabel,
+      result.besoinDeclareLabel,
+      result.reactiviteLabel,
+      result.environnementLabel,
+    ].filter(Boolean);
 
     // Routine à proposer au formulaire d'envoi par e-mail : l'Essentielle en
     // priorité, la Premium en repli — voir la route qui applique la même
@@ -464,7 +488,7 @@ export function DiagnosticFlow({
             </p>
           )}
 
-          {/* Conseil selon le type de peau (Q1) — texte exact du document du
+          {/* Conseil selon le type de peau (Q1) - texte exact du document du
               client, jamais reformulé ici (src/lib/kk/diagnostic-matrice.ts). */}
           {result.conseilTypePeau && (
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
@@ -474,18 +498,18 @@ export function DiagnosticFlow({
 
           {/* La bascule de sécurité, quand elle s'est appliquée : le texte
               exact du document du client, recopié mot pour mot par
-              diagnostic-matrice.ts (MESSAGE_SECURITE) — jamais reformulé ici.
+              diagnostic-matrice.ts (MESSAGE_SECURITE) - jamais reformulé ici.
               Elle explique pourquoi la routine ci-dessous n'est pas celle de
               la préoccupation déclarée plus haut.
 
               Rendue plus visible qu'un simple conseil : fond et filet pleine
               teinte plutôt que pastel, texte en encre laiton plutôt qu'en vert
-              profond neutre — c'est une mise en garde, elle doit se voir avant
+              profond neutre - c'est une mise en garde, elle doit se voir avant
               d'être lue. Elle reste dans la famille laiton de la charte, pas
               un rouge d'alerte hors palette : ce n'est pas une erreur, c'est
               une recommandation de prudence. `role="status"` + le SEUL cas où
               `result.messageSecurite` est renseigné (la bascule de sécurité de
-              Q3, réservée aux peaux déclarées réactives — voir
+              Q3, réservée aux peaux déclarées réactives - voir
               diagnostic-matrice.ts) garde l'affichage conditionnel : ce
               message n'apparaît jamais pour une peau non réactive. */}
           {result.messageSecurite && (
@@ -532,7 +556,7 @@ export function DiagnosticFlow({
             </div>
           )}
 
-          {/* Conseil selon l'environnement (Q4) — dernier de l'ordre demandé,
+          {/* Conseil selon l'environnement (Q4) - dernier de l'ordre demandé,
               texte exact du document du client. */}
           {result.conseilEnvironnement && (
             <div className="mt-8 rounded-2xl bg-sand/60 p-5 text-sm leading-relaxed text-deep">
@@ -540,9 +564,52 @@ export function DiagnosticFlow({
             </div>
           )}
 
+          {/* Action PRIORITAIRE : envoyer le bilan sur WhatsApp (TK-02).
+              La livraison comme le conseil se coordonnent déjà par WhatsApp -
+              c'est le canal du marché, avant l'e-mail. Le lien `wa.me` ouvre
+              une discussion avec le récapitulatif pré-rempli : profil,
+              routines recommandées et leurs prix, recalculés du catalogue du
+              jour. Aucun coût ni API : c'est le client qui écrit, comme sur la
+              page de confirmation de commande. Sans numéro réglé en
+              back-office, le bloc ne se rend pas. */}
+          {whatsappNumber && (
+            <LienWhatsApp
+              href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+                [
+                  t("waIntro"),
+                  ...(profil.length > 0 ? [t("waProfil", { liste: profil.join(" · ") })] : []),
+                  ...(result.essentielle
+                    ? [
+                        t("waRoutine", {
+                          niveau: t("resultEssentialBadge"),
+                          nom: result.essentielle.name,
+                          prix: formatFcfa(result.essentielle.totalFcfa),
+                        }),
+                      ]
+                    : []),
+                  ...(result.premium
+                    ? [
+                        t("waRoutine", {
+                          niveau: t("resultPremiumBadge"),
+                          nom: result.premium.name,
+                          prix: formatFcfa(result.premium.totalFcfa),
+                        }),
+                      ]
+                    : []),
+                  t("waOutro"),
+                ].join("\n"),
+              )}`}
+              location="diagnostic-bilan"
+              className="kk-fill mt-10 flex w-full max-w-md items-center justify-center gap-2.5 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_-8px_rgba(37,211,102,0.65)] transition hover:brightness-105"
+            >
+              <WhatsAppGlyph className="h-5 w-5" />
+              {t("whatsappSendReport")}
+            </LienWhatsApp>
+          )}
+
           {/* Envoi par e-mail de la routine proposée en premier (Essentielle,
               repli sur Premium). Le libellé nomme explicitement laquelle est
-              envoyée — plutôt que de laisser croire que « cette routine »
+              envoyée - plutôt que de laisser croire que « cette routine »
               recouvre les deux. */}
           {routinePourEmail && (
             <form
@@ -578,7 +645,7 @@ export function DiagnosticFlow({
               </button>
 
               {/* Case décochée par défaut : cocher inscrit, ne pas cocher
-                  n'inscrit à rien — même en demandant l'envoi. */}
+                  n'inscrit à rien - même en demandant l'envoi. */}
               <label className="mt-3 flex items-start gap-2.5 text-xs text-muted-foreground">
                 <input
                   type="checkbox"
@@ -616,12 +683,12 @@ export function DiagnosticFlow({
   return (
     <MinimalShell>
       {/* `isolate` : la section devient son propre contexte d'empilement, ce qui
-          confine le pétale décoratif — sans quoi son `-z-10` le ferait passer
+          confine le pétale décoratif - sans quoi son `-z-10` le ferait passer
           sous le fond de la page, où il disparaîtrait. */}
       <section className="relative isolate mx-auto max-w-3xl px-6 py-10">
         {/* `-z-10` : le pétale est POSITIONNÉ, le titre et les cartes ne le sont
             pas. En CSS, un élément positionné se peint au-dessus de ceux qui ne
-            le sont pas, même s'il vient avant dans le DOM — le motif recouvrait
+            le sont pas, même s'il vient avant dans le DOM - le motif recouvrait
             donc la question et les réponses d'un voile clair. Il repasse
             derrière, à sa place d'ornement. */}
         <Petal className="pointer-events-none absolute -left-24 top-20 -z-10 hidden h-72 w-72 text-sand/60 lg:block" />
@@ -635,7 +702,7 @@ export function DiagnosticFlow({
           />
         </div>
 
-        {/* La question garde son <h1> — c'est bien le titre de l'écran — mais
+        {/* La question garde son <h1> - c'est bien le titre de l'écran - mais
             pas la TAILLE des titres de page.
 
             L'échelle globale monte le h1 jusqu'à 54 px, un calibre voulu pour
@@ -656,7 +723,7 @@ export function DiagnosticFlow({
             question : quatre choix courts n'ont pas besoin de 20 px de marge
             intérieure ni d'une pastille de 40 px. Les quatre tiennent
             désormais dans l'écran avec la question, ce qui est tout l'enjeu
-            d'un questionnaire — voir ses options sans défiler. */}
+            d'un questionnaire - voir ses options sans défiler. */}
         <div className="mt-6 grid gap-3 sm:grid-cols-2">
           {question.answers.map((a) => {
             const active = selected === a.id;
@@ -698,18 +765,16 @@ export function DiagnosticFlow({
             questionnaire n'a pas de question facultative, et un bouton qui
             n'avance pas quand on le presse est pire qu'un bouton grisé.
 
-            Sur la première question, « Précédent » quitte le diagnostic —
-            plutôt que de ramener sur un écran d'intro qui n'existe plus. Sur
-            la dernière, « Suivant » devient « Voir mon résultat » : le libellé
-            doit annoncer un changement d'écran, pas une question de plus. */}
+            Sur la première question, PAS de bouton à gauche : « ← Quitter »
+            doublait la croix « Quitter le diagnostic » de l'en-tête - deux
+            sorties concurrentes sur le même écran (TK-01/TK-02). La croix
+            reste la seule porte ; l'espace réservé garde « Suivant » à droite.
+            Sur la dernière, « Suivant » devient « Voir mon résultat » : le
+            libellé doit annoncer un changement d'écran, pas une question de
+            plus. */}
         <div className="mt-8 flex items-center justify-between gap-3">
           {qIndex === 0 ? (
-            <Link
-              href="/"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-deep"
-            >
-              <ArrowLeft className="h-4 w-4" /> {t("exit")}
-            </Link>
+            <span aria-hidden="true" />
           ) : (
             <button
               type="button"
@@ -770,7 +835,16 @@ function ResultRoutineCard({
 
       <ApercuProduits routine={routine} tRoutine={tRoutine} />
 
-      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4">
+      {/* Le prix du pack, EN GRAND, au-dessus du bouton d'achat (TK-02) : on
+          demandait un achat sans jamais afficher son montant. Toujours
+          `totalFcfa` recalculé côté serveur sur le catalogue du jour - jamais
+          un montant écrit en dur, qui se périmerait au premier changement de
+          prix d'un des produits. */}
+      <p className="figure mt-auto pt-4 font-display text-3xl leading-none text-deep">
+        {formatFcfa(routine.totalFcfa)}
+      </p>
+
+      <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <RoutineAddToCart routine={routine} mode="achat" />
         <Link
           href={routine.href}
@@ -876,8 +950,8 @@ function MinimalShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("diagnostic");
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* En-tête collant. Les écrans longs du parcours — la liste des produits
-          conseillés, surtout — éloignaient « Quitter le diagnostic » de
+      {/* En-tête collant. Les écrans longs du parcours - la liste des produits
+          conseillés, surtout - éloignaient « Quitter le diagnostic » de
           plusieurs hauteurs d'écran : la seule sortie du parcours immersif
           demandait de remonter tout en haut pour être atteinte.
 

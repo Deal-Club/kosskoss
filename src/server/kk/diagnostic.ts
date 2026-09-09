@@ -9,6 +9,7 @@ import {
   type Besoin,
   type Motif,
 } from "@/lib/kk/diagnostic-matrice";
+import { etiquetteProfil } from "@/lib/kk/profil-etiquettes";
 import type { KKRoutineView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 
@@ -80,15 +81,22 @@ async function reponsesParQuestion(
 }
 
 export type DiagnosticResult = {
-  /** Type de peau déclaré (Q1) — libellé traduit, "" si absent. */
+  /** Type de peau déclaré (Q1) — étiquette de profil (« Peau Grasse ») quand
+   *  la clé est connue de `etiquetteProfil`, sinon le libellé brut traduit ;
+   *  "" si absent. */
   peauLabel: string;
   /** Préoccupation déclarée (Q2) — libellé traduit tel que choisi, "" si
    *  absente. CONSERVÉE même quand la bascule de sécurité l'a emportée. */
   besoinDeclareLabel: string;
   /** Phrase de priorité — la description de la réponse Q2 choisie. */
   prioriteTexte: string;
-  /** Réactivité déclarée (Q3) — libellé traduit choisi, "" si absente. */
+  /** Réactivité déclarée (Q3) — étiquette de profil (« Peau Sensible » /
+   *  « Peau Tolérante ») plutôt que le « Oui »/« Non » brut, "" si absente. */
   reactiviteLabel: string;
+  /** Environnement quotidien (Q4) — étiquette de profil (« Climat Chaud &
+   *  Humide », « Espaces Climatisés »), "" si absent. Entré au profil par
+   *  TK-02 : la variable environnementale fait partie du bilan. */
+  environnementLabel: string;
   /** Besoin réellement retenu pour la recommandation, après la bascule de
    *  sécurité éventuelle. `null` si aucune recommandation n'est possible
    *  (Q2 absente ou inconnue, et pas de bascule). */
@@ -139,10 +147,13 @@ export async function computeDiagnostic(
   ]);
 
   return {
-    peauLabel: q1?.label ?? "",
+    // Étiquette de profil d'abord, libellé brut en repli : une réponse créée
+    // en base sans entrée dans la table reste visible telle quelle.
+    peauLabel: etiquetteProfil(q1?.key, locale) ?? q1?.label ?? "",
     besoinDeclareLabel: q2?.label ?? "",
     prioriteTexte: q2?.description ?? "",
-    reactiviteLabel: q3?.label ?? "",
+    reactiviteLabel: etiquetteProfil(q3?.key, locale) ?? q3?.label ?? "",
+    environnementLabel: etiquetteProfil(q4?.key, locale) ?? q4?.label ?? "",
     besoin: resultat.besoin,
     motif: resultat.motif,
     messageSecurite: resultat.motif === "securite" ? MESSAGE_SECURITE[locale] : null,

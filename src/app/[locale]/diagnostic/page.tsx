@@ -4,6 +4,8 @@ import { DiagnosticFlow } from "@/components/kk/diagnostic-flow";
 import { getQuestions } from "@/server/kk/diagnostic-data";
 import { getCurrentCustomer } from "@/server/customerSession";
 import { lireProfil } from "@/server/kk/profil-diagnostic";
+import { getParametres, numeroWhatsappEffectif } from "@/server/kk/parametres";
+import { COMPANY } from "@/content/legal";
 import type { Locale } from "@/i18n/routing";
 
 type Params = Promise<{ locale: Locale }>;
@@ -30,11 +32,19 @@ export default async function DiagnosticPage({ params }: { params: Params }) {
   const customer = await getCurrentCustomer();
   const savedAnswerIds = customer ? await lireProfil(customer.id) : [];
 
+  // Même résolution que le bouton flottant (`WhatsAppButton`) : réglage en
+  // base d'abord, repli sur COMPANY.phone. `getParametres` est mémoïsé par
+  // requête, l'appel ne coûte rien de plus.
+  const parametres = await getParametres();
+  const whatsappNumber =
+    numeroWhatsappEffectif(parametres) || COMPANY.phone.replace(/\D/g, "");
+
   return (
     <DiagnosticFlow
       questions={questions}
       savedAnswerIds={savedAnswerIds.length > 0 ? savedAnswerIds : null}
       locale={locale}
+      whatsappNumber={whatsappNumber}
     />
   );
 }
