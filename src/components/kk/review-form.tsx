@@ -14,11 +14,11 @@ import { Star, Check, Loader2 } from "lucide-react";
  * conclut que le site avale les avis négatifs.
  *
  * ── Ce qui est demandé, et ce qui ne l'est pas ────────────────────────────
- * Un prénom, une note, un texte. La ville et l'e-mail restent facultatifs :
- * l'e-mail ne sert qu'à recontacter en cas de litige et n'est jamais publié
- * (voir server/kk/product-reviews.ts, qui ne le lit même pas). Chaque champ
- * réclamé en plus fait tomber le taux de dépôt, et un avis non déposé ne sert
- * personne.
+ * Un prénom, une note, un texte : rien de plus - retour client, chaque champ
+ * en plus fait tomber le taux de dépôt, et un avis non déposé ne sert
+ * personne. Ville, e-mail et titre restent acceptés par l'API
+ * (server/kk/product-reviews.ts) pour les avis importés ou déposés
+ * autrement, mais ce formulaire ne les demande plus.
  *
  * ── Validation ────────────────────────────────────────────────────────────
  * Les bornes sont celles de l'API (`/api/reviews`) : 2 à 80 caractères pour le
@@ -38,9 +38,6 @@ export function ReviewForm({ productId }: { productId: string }) {
   const [note, setNote] = useState(0);
   const [survol, setSurvol] = useState(0);
   const [nom, setNom] = useState("");
-  const [ville, setVille] = useState("");
-  const [email, setEmail] = useState("");
-  const [titre, setTitre] = useState("");
   const [texte, setTexte] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
@@ -63,10 +60,7 @@ export function ReviewForm({ productId }: { productId: string }) {
         body: JSON.stringify({
           productId,
           authorName: nom.trim(),
-          city: ville.trim(),
-          authorEmail: email.trim(),
           rating: note,
-          title: titre.trim(),
           body: texte.trim(),
         }),
       });
@@ -143,52 +137,15 @@ export function ReviewForm({ productId }: { productId: string }) {
         </div>
       </fieldset>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            {t("quick.firstName")}
-          </span>
-          <input
-            value={nom}
-            onChange={(e) => setNom(e.target.value)}
-            maxLength={NOM_MAX}
-            required
-            className="mt-1.5 w-full rounded-xl border border-input bg-card px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
-          />
-        </label>
-        <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            {t("quick.city")} <span className="normal-case tracking-normal">{t("quick.optional")}</span>
-          </span>
-          <input
-            value={ville}
-            onChange={(e) => setVille(e.target.value)}
-            maxLength={80}
-            className="mt-1.5 w-full rounded-xl border border-input bg-card px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
-          />
-        </label>
-      </div>
-
-      <label className="mt-4 block">
+      <label className="mt-5 block">
         <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {t("quick.emailLabel")} <span className="normal-case tracking-normal">{t("quick.emailOptionalNote")}</span>
+          {t("quick.firstName")}
         </span>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1.5 w-full rounded-xl border border-input bg-card px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
-        />
-      </label>
-
-      <label className="mt-4 block">
-        <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-          {t("quick.titleLabel")} <span className="normal-case tracking-normal">{t("quick.optional")}</span>
-        </span>
-        <input
-          value={titre}
-          onChange={(e) => setTitre(e.target.value)}
-          maxLength={120}
+          value={nom}
+          onChange={(e) => setNom(e.target.value)}
+          maxLength={NOM_MAX}
+          required
           className="mt-1.5 w-full rounded-xl border border-input bg-card px-4 py-2.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-deep"
         />
       </label>

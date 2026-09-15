@@ -1,7 +1,6 @@
 import Image from "next/image";
 import {
   ChevronRight,
-  ArrowDown,
   Check,
   Heart,
   ScanFace,
@@ -13,7 +12,6 @@ import {
   ShieldCheck,
   Award,
   Info,
-  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -27,7 +25,8 @@ import type { KKProductView } from "@/types/kk";
 import type { Locale } from "@/i18n/routing";
 import { BottleMotif, Petal } from "./motifs";
 import { LocalizedLink as Link } from "./localized-link";
-import { AddToCart, BuyNowReminder } from "./add-to-cart";
+import { AddToCart } from "./add-to-cart";
+import { RoutineAddToCart } from "./routine-add";
 import { tintClass } from "./routine-card";
 import { ProductRail } from "./home";
 import { ProductReviews } from "./product-reviews";
@@ -147,23 +146,22 @@ function Gallery({
 }
 
 /**
- * Ligne d'une grappe d'information - « Est-ce pour ma peau ? », « Comment
- * l'utiliser ? », « Le Choix KossKoss Select ? », « En bref » regroupées sous
- * UN SEUL panneau plutôt qu'en quatre bandes plein écran empilées.
+ * Ligne d'une grappe d'information - « Pourquoi vous allez l'aimer », « Est-ce
+ * pour ma peau ? », « Comment l'utiliser ? », « Le Choix KossKoss Select ? »,
+ * « En bref » regroupées sous UN SEUL panneau plutôt qu'en bandes plein écran
+ * empilées.
  *
  * ── POURQUOI CE REGROUPEMENT ─────────────────────────────────────────────
- * Quatre bandes successives, chacune son titre-pastille et sa largeur
- * max-w-7xl, se lisaient comme quatre répétitions du même gabarit - un
- * défilement long où rien ne distinguait « ce qu'il faut savoir » de la
- * suite. Rassemblées dans un seul cadre à accordéon, elles deviennent UNE
- * réponse structurée à « qu'est-ce que j'ai besoin de savoir ? », que le
- * visiteur ouvre ligne par ligne au lieu de tout faire défiler. La première
- * ligne renseignée s'ouvre par défaut (`open`) : la grappe n'apparaît jamais
- * entièrement fermée.
+ * Des bandes successives, chacune son titre-pastille et sa largeur max-w-7xl,
+ * se lisaient comme des répétitions du même gabarit - un défilement long où
+ * rien ne distinguait « ce qu'il faut savoir » de la suite. Rassemblées dans
+ * un seul cadre à accordéon, elles deviennent UNE réponse structurée à
+ * « qu'est-ce que j'ai besoin de savoir ? », que le visiteur ouvre ligne par
+ * ligne au lieu de tout faire défiler. La première ligne renseignée s'ouvre
+ * par défaut (`open`) : la grappe n'apparaît jamais entièrement fermée.
  *
- * Reste HORS de cette grappe : « Pourquoi vous allez l'aimer » (l'accroche,
- * elle doit rester visible sans clic) et « Complétez votre routine » (des
- * cartes produit, pas du texte - un autre registre visuel).
+ * Reste HORS de cette grappe : « Complétez votre routine » (des cartes
+ * produit, pas du texte - un autre registre visuel).
  */
 function DetailRow({
   icon: Icon,
@@ -239,6 +237,7 @@ export async function ProductDetail({
   const locale = (await getLocale()) as Locale;
   const t = await getTranslations("product");
   const tCommon = await getTranslations("common");
+  const tRoutine = await getTranslations("routine");
 
   // Ligne de préoccupations (haut de fiche) et tableau « en bref » puisent
   // dans les MÊMES tags - voir `lib/kk/besoins.ts`. Un produit dont le master
@@ -276,8 +275,6 @@ export async function ProductDetail({
     product.frequence && { label: t("briefFrequenceLabel"), value: product.frequence },
     product.cible && { label: t("briefTargetLabel"), value: product.cible },
     referenceVariant && { label: t("briefFormatLabel"), value: referenceVariant.label },
-    { label: t("briefRefLabel"), value: product.sku },
-    product.gtin && { label: t("briefEanLabel"), value: product.gtin },
     { label: t("briefPriceLabel"), value: formatFcfa(referenceVariant?.priceFcfa ?? product.priceFcfa) },
   ].filter((row): row is { label: string; value: string } => Boolean(row));
 
@@ -291,17 +288,35 @@ export async function ProductDetail({
   // (encore non enrichi par le master) n'affiche pas de panneau vide.
   type DetailRowSpec = { key: string; icon: LucideIcon; title: string; content: React.ReactNode };
   const detailRows = [
+    // « Pourquoi vous allez l'aimer » - anciennement une section à part,
+    // toujours visible sans clic ; déplacée dans le panneau « En savoir
+    // plus » à la demande du client.
+    product.bullets.length > 0 && {
+      key: "whyLove",
+      icon: Heart,
+      title: t("whyLoveTitle"),
+      content: (
+        <ul className="grid gap-x-10 gap-y-3 sm:grid-cols-2">
+          {product.bullets.map((b) => (
+            <li key={b} className="flex items-start gap-2.5">
+              <Check className="mt-0.5 h-4 w-4 shrink-0 text-deep" aria-hidden="true" />
+              {b}
+            </li>
+          ))}
+        </ul>
+      ),
+    },
     product.idealPour && {
       key: "ideal",
       icon: ScanFace,
       title: t("idealForTitle"),
-      content: (
-        <>
-          <span className="font-semibold text-deep">{t("idealForLabel")}</span> {product.idealPour}
-        </>
-      ),
+      content: <>{product.idealPour}</>,
     },
-    (product.usageMatin || product.usageSoir || product.conseilKossKoss || product.precautions) && {
+    (product.usageMatin ||
+      product.usageSoir ||
+      product.frequence ||
+      product.conseilKossKoss ||
+      product.precautions) && {
       key: "usage",
       icon: SunMoon,
       title: t("howToUseTitle"),
@@ -329,8 +344,19 @@ export async function ProductDetail({
               )}
             </div>
           )}
+          {/* Fréquence - même libellé que la ligne « En bref »
+              (`briefFrequenceLabel`), jamais reformulé ici. */}
+          {product.frequence && (
+            <p className={product.usageMatin || product.usageSoir ? "mt-4" : ""}>
+              <span className="font-semibold text-deep">{t("briefFrequenceLabel")} :</span> {product.frequence}
+            </p>
+          )}
           {product.conseilKossKoss && (
-            <p className={`rounded-xl bg-sand/60 p-4 ${product.usageMatin || product.usageSoir ? "mt-4" : ""}`}>
+            <p
+              className={`rounded-xl bg-sand/60 p-4 ${
+                product.usageMatin || product.usageSoir || product.frequence ? "mt-4" : ""
+              }`}
+            >
               <span className="font-semibold text-deep">{t("kosskossAdviceLabel")}</span> {product.conseilKossKoss}
             </p>
           )}
@@ -402,7 +428,7 @@ export async function ProductDetail({
                   beige sur la fiche. */}
               {product.badge && (
                 <span
-                  className={`mb-4 inline-block rounded-full px-3 py-1 text-[0.62rem] font-semibold uppercase tracking-[0.16em] ${
+                  className={`mb-4 inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] ${
                     product.badge === "bestseller"
                       ? "bg-deep text-primary-foreground"
                       : "bg-gold text-deep"
@@ -411,7 +437,7 @@ export async function ProductDetail({
                   {BADGE_LABEL[product.badge][locale === "en" ? "en" : "fr"]}
                 </span>
               )}
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {product.brand}
               </p>
               {/* Le h1 global démarre à 2,5 rem (40 px) - une taille pensée
@@ -420,27 +446,16 @@ export async function ProductDetail({
                   utiles d'un téléphone y tenait sur cinq lignes et occupait à
                   lui seul le tiers du premier écran, repoussant le prix et le
                   bouton d'achat hors de vue.
-                  Il redescend à 1,6 rem sur mobile et retrouve progressivement
+                  Il redescend à 1,35 rem sur mobile et retrouve progressivement
                   sa taille : le nom reste la tête de série de la fiche, il
                   cesse d'en être le contenu principal. */}
               {/* Contenance intégrée AU TITRE (« ... - 50 ml »), demande
                   client - voir `formatProductTitle`. Même variante de
                   référence que la ligne Format du tableau « en bref »
                   ci-dessous et que la présélection du bloc d'achat. */}
-              <h1 className="mt-2 text-[1.6rem] leading-tight text-deep sm:text-[1.9rem] lg:text-[2.15rem]">
+              <h1 className="mt-2 text-[1.35rem] leading-tight text-deep sm:text-[1.6rem] lg:text-[1.85rem]">
                 {formatProductTitle(product.name, referenceVariant?.label)}
               </h1>
-
-              {/* Ligne de préoccupations - modèle client : « Boutons •
-                  Excès de sébum • Peaux mixtes à grasses » (besoin ET type de
-                  peau sur la même ligne). Puise dans les mêmes tags que le
-                  tableau « en bref » plus bas (`besoinLabels`/`peauLabels`) :
-                  aucune donnée n'est demandée deux fois au master. */}
-              {(besoinLabels.length > 0 || peauLabels.length > 0) && (
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.12em] text-gold-ink">
-                  {[...besoinLabels, ...peauLabels].join(" • ")}
-                </p>
-              )}
 
               {/* Puce de traçabilité - modèle client : n'affirme « EAN
                   traçable » que lorsqu'un EAN validé existe réellement (voir
@@ -449,23 +464,30 @@ export async function ProductDetail({
                   consommation, comme pour la note moyenne - voir
                   `KKReviewsSummary` dans src/types/kk.ts). */}
               {product.gtin && (
-                <p className="mt-2 flex items-center gap-1.5 text-[0.72rem] font-medium text-muted-foreground">
-                  <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-deep" aria-hidden="true" />
+                <p className="mt-2 flex items-center gap-1.5 text-base font-medium text-green-700">
+                  <ShieldCheck className="h-4 w-4 shrink-0" aria-hidden="true" />
                   {t("authenticityBadge")}
                 </p>
               )}
 
               {/* Question d'accroche - le problème que le visiteur se pose
-                  avant de lire la solution juste en dessous. */}
+                  avant de lire la solution juste en dessous. Même style que
+                  la description courte juste après - retour client : trop de
+                  tailles/graisses différentes dans le bloc d'achat (badge,
+                  marque, titre, traçabilité, accroche, description...). Deux
+                  styles suffisent ici : le petit texte (badge, marque,
+                  traçabilité, livraison, réf/stock) et ce texte courant. */}
               {product.problemeAccroche && (
-                <p className="mt-3 font-display text-lg leading-snug text-deep">
+                <p className="mt-3 text-base leading-relaxed text-foreground/85">
                   {product.problemeAccroche}
                 </p>
               )}
 
               {/* Solution en une phrase. */}
               {product.shortDescription && (
-                <p className="mt-3 text-muted-foreground">{product.shortDescription}</p>
+                <p className="mt-3 text-base leading-relaxed text-foreground/85">
+                  {product.shortDescription}
+                </p>
               )}
 
               <div className="mt-6">
@@ -480,11 +502,10 @@ export async function ProductDetail({
                   aurait désynchronisé cette ligne du réglage réel dès la
                   première désactivation d'un moyen de paiement. */}
               <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                {t("deliveryMention")}
+                · {t("deliveryMention")}
                 {paymentMethods.length > 0 && (
                   <>
-                    {" · "}
-                    {t("paymentMention", { methods: paymentMethods.map((m) => m.label).join(", ") })}
+                    <br />· {t("paymentMention", { methods: paymentMethods.map((m) => m.label).join(", ") })}
                   </>
                 )}
               </p>
@@ -510,49 +531,15 @@ export async function ProductDetail({
          n'apprenait rien sur le produit qu'on est en train de regarder - le
          même propos est tenu à sa place sur l'accueil et sur /marques. */}
 
-      {/* --- Description ------------------------------------------------------
-          Juste avant « Pourquoi vous allez l'aimer » - retour client : elle
-          encombrait le bloc d'achat en haut de page, qui doit rester court
-          (prix, CTA, livraison), mais reste la première chose lue une fois
-          qu'on passe au corps de la fiche, avant les bénéfices. */}
-      {(product.description || product.shortDescription) && (
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <SectionTitle icon={FileText}>{t("sectionDescription")}</SectionTitle>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-foreground/85">
-            {product.description || product.shortDescription}
-          </p>
-        </section>
-      )}
-
-      {/* --- Pourquoi vous allez l'aimer -----------------------------------
-          Même gabarit que le bloc d'achat et le rail de produits (max-w-7xl) :
-          les sections du corps de fiche étaient plus étroites (max-w-4xl) que
-          ce qui les précède et les suit, et ce décrochage de largeur se voyait
-          à chaque passage de l'une à l'autre. Sur cette largeur, la liste
-          passe en deux colonnes dès `sm` : une colonne unique de lignes
-          courtes flottait dans la page. */}
-      {product.bullets.length > 0 && (
-        <section className="mx-auto max-w-7xl px-6 py-10">
-          <SectionTitle icon={Heart}>{t("whyLoveTitle")}</SectionTitle>
-          <ul className="mt-6 grid gap-x-10 gap-y-3 sm:grid-cols-2">
-            {product.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-2.5 text-sm leading-relaxed text-foreground/85">
-                <Check className="mt-0.5 h-4 w-4 shrink-0 text-deep" aria-hidden="true" />
-                {b}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
       {/* --- En savoir plus ---------------------------------------------------
-          « Est-ce pour ma peau ? », « Comment l'utiliser ? », « Le Choix
-          KossKoss Select ? » et « En bref » : quatre bandes plein écran
-          rassemblées en UN SEUL panneau à accordéon - voir `DetailRow` et le
-          tableau `detailRows` plus haut pour le raisonnement complet. Placé
-          juste après « Pourquoi vous allez l'aimer » (l'accroche, qui reste
-          seule visible sans clic) et avant « Complétez votre routine » (des
-          cartes produit, un autre registre visuel que ce panneau de texte). */}
+          « Pourquoi vous allez l'aimer », « Est-ce pour ma peau ? », « Comment
+          l'utiliser ? », « Le Choix KossKoss Select ? » et « En bref » : cinq
+          bandes plein écran rassemblées en UN SEUL panneau à accordéon - voir
+          `DetailRow` et le tableau `detailRows` plus haut pour le raisonnement
+          complet. « Pourquoi vous allez l'aimer » vivait à part, toujours
+          visible sans clic ; repliée ici dans l'accordéon à la demande du
+          client. Placé avant « Complétez votre routine » (des cartes produit,
+          un autre registre visuel que ce panneau de texte). */}
       {detailRows.length > 0 && (
         <section className="border-t border-border/60 bg-sand/40">
           <div className="mx-auto max-w-7xl px-6 py-10">
@@ -584,9 +571,11 @@ export async function ProductDetail({
             <SectionTitle icon={Layers}>{t("completeRoutineTitle")}</SectionTitle>
             {/* Grille à deux colonnes dès `sm` : un produit dans deux
                 routines (version Éco + Premium, par exemple) les montre côte
-                à côte plutôt qu'empilées. `items-start` - sans lui, la grille
-                étire la carte la plus courte à la hauteur de l'autre. */}
-            <div className="mt-6 grid items-start gap-6 sm:grid-cols-2">
+                à côte plutôt qu'empilées. Étirement par défaut de la grille
+                (pas de `items-start`) - retour client : les cartes doivent
+                toutes avoir la même taille, même si leurs routines n'ont pas
+                le même nombre d'étapes. */}
+            <div className="mt-6 grid gap-6 sm:grid-cols-2">
               {/* Teinte de la routine (`routine.tint`), pas `bg-card` neutre :
                   c'est le même repère de couleur qui identifie chaque routine
                   sur l'accueil et sur sa propre page (voir `tintClass`,
@@ -596,39 +585,51 @@ export async function ProductDetail({
               {routines.map((routine) => (
                 <div
                   key={routine.id}
-                  className={`rounded-2xl border border-border/70 p-6 ${tintClass(routine.tint)}`}
+                  className={`flex flex-col rounded-2xl border border-border/70 p-6 ${tintClass(routine.tint)}`}
                 >
-                  <h3 className="text-deep">{routine.name}</h3>
-                  <ol className="mt-4 space-y-1.5">
-                    {routine.steps.map((step, i) => (
-                      <li key={step.id}>
-                        <div className="flex items-baseline gap-2 text-sm">
-                          <span className="figure font-semibold text-deep">
-                            {String(i + 1).padStart(2, "0")}
-                          </span>
-                          <span
-                            className={
-                              step.product.id === product.id
-                                ? "font-semibold text-deep"
-                                : "text-foreground/85"
-                            }
-                          >
-                            {step.product.brand} · {step.product.name}
-                          </span>
-                        </div>
-                        {i < routine.steps.length - 1 && (
-                          <ArrowDown className="ml-1.5 mt-1 h-3 w-3 text-muted-foreground/50" aria-hidden="true" />
-                        )}
-                      </li>
-                    ))}
-                  </ol>
-                  <Link
-                    href={routine.href}
-                    className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-deep kk-underline"
-                  >
-                    {t("completeRoutineCta")}
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </Link>
+                  {/* `flex-1` - le bouton d'achat qui suit doit s'aligner sur
+                      la même ligne d'une carte à l'autre, quel que soit le
+                      nombre d'étapes de chaque routine : ce bloc absorbe
+                      l'écart de hauteur, le bouton garde un écart constant. */}
+                  <div className="flex-1">
+                    <h3 className="text-deep">{routine.name}</h3>
+                    <ol className="mt-4 space-y-1.5">
+                      {routine.steps.map((step, i) => (
+                        <li key={step.id}>
+                          <div className="flex items-baseline gap-2 text-sm">
+                            <span className="figure font-semibold text-deep">
+                              {String(i + 1).padStart(2, "0")}
+                            </span>
+                            <span
+                              className={
+                                step.product.id === product.id
+                                  ? "font-semibold text-deep"
+                                  : "text-foreground/85"
+                              }
+                            >
+                              {step.product.brand} · {step.product.name}
+                            </span>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                  {/* Prix total + achat direct sur la même ligne - retour
+                      client. Le bouton envoie directement au paiement, pas
+                      vers la page de la routine : même bouton que les
+                      vignettes de routine de l'accueil (`RoutineAddToCart`,
+                      mode="achat") - dépose tous les produits au panier puis
+                      file au tunnel. Hors du bloc `flex-1` ci-dessus : avec
+                      des cartes de même taille, une routine à deux étapes et
+                      une à cinq laissaient cette ligne à deux hauteurs
+                      différentes ; elle est maintenant alignée d'une carte à
+                      l'autre. */}
+                  <div className="mt-4 flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-deep">
+                      {tRoutine("priceFrom", { value: formatFcfa(routine.totalFcfa) })}
+                    </p>
+                    <RoutineAddToCart routine={routine} mode="achat" />
+                  </div>
                 </div>
               ))}
             </div>
@@ -636,25 +637,18 @@ export async function ProductDetail({
         </section>
       )}
 
-      {/* --- Relance Diagnostic Beauté + rappel du bouton d'achat -----------
+      {/* --- Relance Diagnostic Beauté ---------------------------------------
           Modèle client : « Vous hésitez sur le soin adapté à votre peau ? »
-          suivi de [Faire le quiz beauté] et [Ajouter au panier] côte à côte.
-          Le rappel juste en dessous ACHÈTE DIRECTEMENT (retour client : un
-          simple ancrage vers le bloc d'achat plus haut retardait un achat
-          déjà décidé) - voir `BuyNowReminder`, dont le commentaire explique
-          pourquoi ce n'est pas un second `AddToCart` monté sur la page (donc
-          aucun doublon de mesure `view_item`/`add_to_cart`). */}
-      <section className="mx-auto max-w-7xl px-6 pb-4 text-center">
+          suivi de [Faire le quiz beauté]. Le rappel du bouton d'achat
+          (`BuyNowReminder`) qui suivait ce bloc est retiré - retour client :
+          doublon du bouton d'achat déjà présent en haut de fiche. */}
+      <section className="mx-auto max-w-7xl px-6 pb-10 text-center">
         <p className="text-sm text-muted-foreground">
           {t("quizPrompt")}{" "}
           <Link href="/diagnostic" className="font-semibold text-deep kk-underline">
             {t("quizCta")}
           </Link>
         </p>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pb-10">
-        <BuyNowReminder product={product} />
       </section>
 
       {/* Les avis AVANT les produits associés : ils portent sur le produit
